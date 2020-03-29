@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)#垂直布局
         self.verticalLayout.setObjectName("verticalLayout")
-        self.frame = QtWidgets.QFrame(self.centralwidget)#QFrame是是基本控件的基类
+        self.frame = QtWidgets.QFrame(self.centralwidget)#QFrame是基本控件的基类
         self.frame.setFrameShape(QtWidgets.QFrame.Panel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.frame.setObjectName("frame")
@@ -34,7 +34,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addItem(spacerItem)
         self.label_2 = statusLabel.StatusLabel(self.frame)#label2是脸
         self.label_2.setObjectName("label_2")
-        self.horizontalLayout.addWidget(self.label_2)
+        self.horizontalLayout.addWidget(self.label_2, 0 , QtCore.Qt.AlignCenter)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, 
                                             QtWidgets.QSizePolicy.Expanding, 
                                             QtWidgets.QSizePolicy.Minimum)
@@ -62,8 +62,10 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setObjectName("menu")
-        self.menu_H = QtWidgets.QMenu(self.menubar)
-        self.menu_H.setObjectName("menu_H")
+        
+        self.menu2 = QtWidgets.QMenu(self.menubar)
+        self.menu2.setObjectName("menu2")
+        
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -81,13 +83,15 @@ class Ui_MainWindow(object):
         self.action_C = QtWidgets.QAction(MainWindow)
         self.action_C.setCheckable(True)
         self.action_C.setObjectName("action_C")
-        self.action_X = QtWidgets.QAction(MainWindow)
-        self.action_X.setObjectName("action_X")
         self.action_X_2 = QtWidgets.QAction(MainWindow)
         self.action_X_2.setObjectName("action_X_2")
         self.action_I = QtWidgets.QAction(MainWindow)
         self.action_I.setCheckable(True)
         self.action_I.setObjectName("action_I")
+        
+        self.action_N = QtWidgets.QAction(MainWindow)
+        self.action_N.setObjectName("action_N")
+        
         self.menu.addAction(self.action)
         self.menu.addSeparator()
         self.menu.addAction(self.action_B)
@@ -96,26 +100,31 @@ class Ui_MainWindow(object):
         self.menu.addAction(self.action_C)
         self.menu.addSeparator()
         self.menu.addAction(self.action_X_2)
+        self.menu2.addAction(self.action_N)
         self.menubar.addAction(self.menu.menuAction())
-        self.menubar.addAction(self.menu_H.menuAction())
+        self.menubar.addAction(self.menu2.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "扫雷"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "黑猫扫雷"))
         self.label.setText(_translate("MainWindow", "0"))
         self.label_2.setText(_translate("MainWindow", "underway"))
-        self.label_3.setText(_translate("MainWindow", "0"))
+        self.label_3.setText(_translate("MainWindow", "0.00"))
         self.menu.setTitle(_translate("MainWindow", "游戏(&G)"))
+        
+        self.menu2.setTitle(_translate("MainWindow", "设置(&F)"))
+        
         self.action.setText(_translate("MainWindow", "新游戏(&N)"))
         self.action_B.setText(_translate("MainWindow", "初级(&B)"))
         self.action_I.setText(_translate("MainWindow", "中级(&I)"))
         self.action_E.setText(_translate("MainWindow", "高级(&E)"))
         self.action_C.setText(_translate("MainWindow", "自定义(&C)"))
-        self.action_X.setText(_translate("MainWindow", "退出(&X)"))
         self.action_X_2.setText(_translate("MainWindow", "退出(&X)"))
+        
+        self.action_N.setText(_translate("MainWindow", "游戏设置(&N)"))
 
 
 

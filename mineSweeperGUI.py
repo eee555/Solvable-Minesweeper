@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QTimer, QCoreApplication
 from PyQt5.QtGui import QPalette, QPixmap, QFont, QIcon
 from PyQt5.QtWidgets import QLineEdit, QInputDialog
-import superGUI, mineLabel,selfDefinedParameter
+import superGUI, mineLabel,selfDefinedParameter,gameSettings
 import random, sip
 import minesweeper_master
 
@@ -15,10 +15,16 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.finish = False
         self.gamestart = False
         self.mainWindow = MainWindow
-        self.mainWindow.setWindowIcon(QIcon("media/mine.ico"))
+        self.mainWindow.setWindowIcon(QIcon("media/cat.ico"))
         self.mainWindow.setFixedSize(self.mainWindow.minimumSize())
         self.setupUi(self.mainWindow)
         self.mineLabel = []#局面
+        self.gameWinFlag = False
+        self.min3BV = 0
+        self.max3BV = 100000
+        self.timesLimit = 1000
+        self.enuLimit = 30  #最大枚举长度的限制
+    
         
         pixmap0=QPixmap("media/10.png")
         pixmap1=QPixmap("media/11.png")
@@ -47,7 +53,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.setFont(QFont("Roman times", 15, QFont.Bold))
         self.label.setText(str(self.mineNum))
         self.timer = QTimer()
-        self.timer.setInterval(1000)
+        self.timer.setInterval(10)
         self.timer.timeout.connect(self.timeCount)
         self.timeStart = False
 
@@ -58,6 +64,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.action_E.triggered.connect(self.action_Event)
         self.action_C.triggered.connect(self.action_CEvent)
         self.action_X_2.triggered.connect(QCoreApplication.instance().quit)
+        
+        self.action_N.triggered.connect(self.action_NEvent)
         self.actionChecked('B')  # 默认选择初级
         
     def outOfBorder(self, i, j):
@@ -69,8 +77,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         xx=self.row
         yy=self.column
         num = self.mineNum
-        Board = minesweeper_master.layMineSolvable(xx , yy , num , i , j)
-        
+        Board , flagSucess = minesweeper_master.layMineSolvable(xx , yy , num , i , j ,self.min3BV,self.max3BV, self.timesLimit , self.enuLimit)
         
         for r in range(0, xx):
             for c in range(0, yy):
@@ -98,8 +105,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.mineLabel[i].append(label)
                 self.gridLayout.addWidget(label, i, j)#把子控件添加到网格布局管理器中
 
-    def timeCount(self):
-        self.label_3.setText(str(int(self.label_3.text()) + 1))
+    def timeCount(self):#定时器改时间
+        TimeText = str(round(float(self.label_3.text()) + 0.01,2))
+        if TimeText[-2] == '.':
+            TimeText += '0'
+        self.label_3.setText(TimeText)
 
     def DFS(self, i, j, start0):
         if self.mineLabel[i][j].status == 0:
@@ -123,11 +133,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.layMine(i,j)
             self.gamestart=True
         if not self.finish:
-            if self.mineLabel[i][j].num >= 0:
+            if self.mineLabel[i][j].num >= 0 and self.mineLabel[i][j].status == 0:
                 self.DFS(i, j, self.mineLabel[i][j].num == 0)
                 if self.isGameFinished():
                     self.gameWin()
-            else:
+            elif self.mineLabel[i][j].num == -1 and self.mineLabel[i][j].status == 0:
                 self.gameFailed()
 
     def mineAreaRightPressed(self, i, j):
@@ -147,7 +157,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         pass
 
     def mineAreaLeftAndRightPressed(self, i, j):
-#        return 0
         if not self.finish:
             if self.mineLabel[i][j].status == 1:
                 count = 0
@@ -195,7 +204,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         pixmap = QPixmap("media/f0.png")
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
-        self.label_3.setText("0")
+        self.label_3.setText("0.00")
         self.timeStart = False
         self.finish = False
         self.timer.stop()
@@ -213,7 +222,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         pixmap = QPixmap("media/f0.png")
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
-        self.label_3.setText("0")
+        self.label_3.setText("0.00")
         self.timeStart = False
         self.finish = False
         self.timer.stop()
@@ -225,20 +234,27 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         #把窗口尽量缩小，以免从高级改成中级时窗口不能缩小
 
     def gameFinished(self):#游戏结束画残局，停时间，改状态
-        for i in self.mineLabel:
-            for j in i:
-                if j.num == -1 or j.status == 2:
-                    j.setFrameShape(QtWidgets.QFrame.Panel)
-                    j.setFrameShadow(QtWidgets.QFrame.Sunken)
-                    if j.num == -1 and j.status == 2:
+        if self.gameWin:
+            for i in self.mineLabel:
+                for j in i:
+                    if j.num == -1:
                         pixmap = QPixmap("media/03.png")
-                    elif j.num == -1:
-                        pixmap = QPixmap("media/01.png")
-                    else:
-                        pixmap = QPixmap("media/04.png")
-                    j.setPixmap(pixmap)
-                    j.setScaledContents(True)
-                j.status = 1
+                        j.setPixmap(pixmap)
+                        j.setScaledContents(True)
+                    j.status = 1
+        else:
+            for i in self.mineLabel:
+                for j in i:
+                    if j.num == -1 or j.status == 2:
+                        if j.num == -1 and j.status == 2:
+                            pixmap = QPixmap("media/03.png")
+                        elif j.num == -1:
+                            pixmap = QPixmap("media/01.png")
+                        else:
+                            pixmap = QPixmap("media/04.png")
+                        j.setPixmap(pixmap)
+                        j.setScaledContents(True)
+                    j.status = 1
         self.timer.stop()
         self.finish = True
 
@@ -253,12 +269,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         pixmap = QPixmap("media/f3.png")
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
+        self.gameWinFlag = True
         self.gameFinished()
 
     def gameFailed(self):
         pixmap = QPixmap("media/f2.png")
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
+        self.gameWinFlag = False
         self.gameFinished()
 
     def actionChecked(self, k):
@@ -308,3 +326,19 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.column = ui.column
             self.mineNum = ui.mineNum
             self.gameStart()
+            
+    def action_NEvent(self):
+        self.actionChecked('N')
+        ui = gameSettings.Ui_Form(self.min3BV, self.max3BV,
+                                            self.timesLimit,self.enuLimit)
+        ui.Dialog.setModal(True)
+        ui.Dialog.show()
+        ui.Dialog.exec_()
+        if ui.alter:
+            self.min3BV = ui.min3BV
+            self.max3BV = ui.max3BV
+            self.timesLimit = ui.timesLimit
+            self.enuLimit = ui.enuLimit
+        
+        
+        

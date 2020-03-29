@@ -1,9 +1,10 @@
 # author : Wang JiaNing(18201)
 from random import randint, seed
 from itertools import combinations
+# from copy import copy
 
 OutputEnable = 0
-EnuLimit = 30    #枚举极限
+# EnuLimit = 30    #枚举极限
   
 
 def LayMine(Row , Column , MineNum , X0 , Y0):
@@ -293,7 +294,7 @@ def SolveMinus(MatrixA , Matrixx , Matrixb , BoardofGame):
         Matrixx.pop(i)
     return MatrixA , Matrixx , Matrixb , BoardofGame , NotMine
 
-def SolveEnumerate(MatrixA , Matrixx , Matrixb , BoardofGame):
+def SolveEnumerate(MatrixA , Matrixx , Matrixb , BoardofGame,enuLimit=30):
     #枚举法判雷
     NotMine = []
     NotMineRel = []
@@ -347,7 +348,7 @@ def SolveEnumerate(MatrixA , Matrixx , Matrixb , BoardofGame):
                 if MatrixA[i][j] == 1:
                     TableId.append(GroupCol.index(j))
             AllTable = enuOneStep(AllTable , TableId , b)
-        if len(GroupCol) >= EnuLimit:#枚举法的极限
+        if len(GroupCol) >= enuLimit:#枚举法的极限
             return MatrixA , Matrixx , Matrixb , BoardofGame , []
         for j in range(1,len(GroupCol)):
             if AllTable[0][j] == 0:
@@ -446,7 +447,7 @@ def enumerateSub(Col , MineNum):
             Out[-1][i[j]]=1
     return Out
 
-def isSolvable(Board , X0 , Y0):
+def isSolvable(Board , X0 , Y0 , enuLimit):
     #从指定位置开始扫，判断局面是否无猜
     #周围一圈都是雷，那么中间是雷不算猜，中间不是雷算猜
     if unsolvableStructure(Board):#若包含不可判雷结构，则不是无猜
@@ -466,7 +467,7 @@ def isSolvable(Board , X0 , Y0):
         if not NotMine:
             MatrixA , Matrixx , Matrixb , BoardofGame , NotMine = SolveMinus(MatrixA , Matrixx , Matrixb , BoardofGame)
             if not NotMine:
-                MatrixA , Matrixx , Matrixb , BoardofGame , NotMine = SolveEnumerate(MatrixA , Matrixx , Matrixb , BoardofGame)
+                MatrixA , Matrixx , Matrixb , BoardofGame , NotMine = SolveEnumerate(MatrixA , Matrixx , Matrixb , BoardofGame , enuLimit)
                 if not NotMine:
                     return 0
         BoardofGame , AddedCell = addedCellId(Board , BoardofGame , NotMine)
@@ -553,18 +554,74 @@ def print2(arr):
             print(arr[i][j], end='\t')
         print()
 
-def layMineSolvable(Row , Column , MineNum , X0 , Y0):
-    while 1:
+def layMineSolvable(Row , Column , MineNum , X0 , Y0 , Min3BV = 0 , Max3BV = 1e6 , 
+                    MaxTimes = 1e6 , enuLimit = 30):
+    # 3BV下限、上限，最大尝试次数，返回是否成功。
+    # 若不成功返回最后生成的局面（不一定无猜），默认尝试很多次
+    Times = 0
+    while Times < MaxTimes:
         Board = layMineOp(Row , Column , MineNum ,X0, Y0)
-        if isSolvable(Board , X0, Y0):
-            return Board
+        Times += 1
+        Num3BV = cal3BV(Board)
+        if Num3BV >= Min3BV and Num3BV <= Max3BV:
+            if isSolvable(Board , X0, Y0,enuLimit):
+                return Board , 1
+    return Board , 0
+
+def calOp(Board):
+    # 0的8连通域数
+    Row = len(Board)
+    Column = len(Board[0])
+    Op = 0
+    BoardCopy = [[0]*Column for _ in range(Row)]
+    for i in range(0 , Row):
+        for j in range(0 , Column):
+            BoardCopy[i][j] = Board[i][j]
+    for i in range(0 , Row):
+        for j in range(0 , Column):
+            if BoardCopy[i][j] == 0:
+                BoardCopy[i][j] = 1
+                BoardCopy = infectBoard(BoardCopy , i , j)
+                Op += 1
+    return Op
+
+def infectBoard(BoardCopy , x , y):
+    # 递归算连通域
+    Row = len(BoardCopy)
+    Column = len(BoardCopy[0])
+    for i in range(max(0 , x-1), min(Row , x+2)):
+        for j in range(max(0 , y-1), min(Column , y+2)):
+            if BoardCopy[i][j] == 0:
+                BoardCopy[i][j] = 1
+                BoardCopy = infectBoard(BoardCopy , i , j)
+    return BoardCopy
+
+def cal3BV(Board):
+    Row = len(Board)
+    Column = len(Board[0])
+    Num3BV = 0
+    for i in range(0 , Row):
+        for j in range(0 , Column):
+            if Board[i][j] > 0:
+                flag = 1
+                for x in range(max(0 , i-1), min(Row , i+2)):
+                    for y in range(max(0 , j-1), min(Column , j+2)):
+                        if Board[x][y] == 0:
+                            flag = 0
+                if flag:
+                    Num3BV += 1
+    return Num3BV + calOp(Board)
     
 def main():
-    seed(605)
+    # seed(605)
     
-    Board=layMineSolvable(16,10,35,0,0)
-#    print(isSolvable(Board , 5 , 9))
+    Board , flag=layMineSolvable(16,30,99,0,0 , 10 , 150 ,1000)
     # print2(Board)
+    print(flag)
+    # print(calOp(Board))
+    print(cal3BV(Board))
+#    print(isSolvable(Board , 5 , 9))
+    print2(Board)
     
     
 #    Board = [[0, 1,-1, 1,0,0],
