@@ -24,6 +24,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.max3BV = 100000
         self.timesLimit = 1000
         self.enuLimit = 30  #最大枚举长度的限制
+        self.leftHeld = False
+        self.leftAndRightHeld = False #鼠标是否被按下的标志位
+        self.oldCell = (0,0) #鼠标的上个停留位置，用于绘制按下去时的阴影
+        # self.heldStatus = 0 #0代表没有阴影，1代表oldCell处有左键的阴影，2代表双击的阴影
     
         
         pixmap0=QPixmap("media/10.png")
@@ -48,9 +52,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         pe = QPalette()
         pe.setColor(QPalette.WindowText, Qt.black)  # 设置字体颜色
         self.label_3.setPalette(pe)
-        self.label_3.setFont(QFont("Roman times", 15, QFont.Bold))
+        self.label_3.setFont(QFont("Arial", 20, QFont.Bold))
+        self.label_4.setPalette(pe)
+        self.label_4.setFont(QFont("Arial", 12, QFont.Bold))
         self.label.setPalette(pe)
-        self.label.setFont(QFont("Roman times", 15, QFont.Bold))
+        self.label.setFont(QFont("Arial", 20, QFont.Bold))
         self.label.setText(str(self.mineNum))
         self.timer = QTimer()
         self.timer.setInterval(10)
@@ -68,6 +74,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.action_N.triggered.connect(self.action_NEvent)
         self.actionChecked('B')  # 默认选择初级
         
+    
     def outOfBorder(self, i, j):
         if i < 0 or i >= self.row or j < 0 or j >= self.column:
             return True
@@ -77,7 +84,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         xx=self.row
         yy=self.column
         num = self.mineNum
-        Board , flagSucess = minesweeper_master.layMineSolvable(xx , yy , num , i , j ,self.min3BV,self.max3BV, self.timesLimit , self.enuLimit)
+        Board , Parameters = minesweeper_master.layMineSolvable(xx , yy , num , i , j ,self.min3BV,self.max3BV, self.timesLimit , self.enuLimit)
+        
+        if Parameters[0]:
+            text4 = 'Sucess! 3BV=%d\n尝试次数为%d'%(Parameters[1],Parameters[2])
+            self.label_4.setText(text4)
+        else:
+            text4 = 'Failure! 3BV=%d\n尝试次数为%d'%(Parameters[1],Parameters[2])
+            self.label_4.setText(text4)
+        
         
         for r in range(0, xx):
             for c in range(0, yy):
@@ -100,8 +115,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 label.leftAndRightRelease.connect(self.mineAreaLeftAndRightRelease)
                 label.leftRelease.connect(self.mineAreaLeftRelease)
                 label.rightPressed.connect(self.mineAreaRightPressed)
-                label.setStyleSheet("border:0px solid red")
-
+                
+                label.mouseMove.connect(self.mineMouseMove)
+                
                 self.mineLabel[i].append(label)
                 self.gridLayout.addWidget(label, i, j)#把子控件添加到网格布局管理器中
 
@@ -129,16 +145,23 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                             self.DFS(r, c, start0)
 
     def mineAreaLeftRelease(self, i, j):
-        if not self.gamestart:
-            self.layMine(i,j)
-            self.gamestart=True
-        if not self.finish:
-            if self.mineLabel[i][j].num >= 0 and self.mineLabel[i][j].status == 0:
-                self.DFS(i, j, self.mineLabel[i][j].num == 0)
-                if self.isGameFinished():
-                    self.gameWin()
-            elif self.mineLabel[i][j].num == -1 and self.mineLabel[i][j].status == 0:
-                self.gameFailed()
+        if self.leftHeld:
+            self.leftHeld = False #防止双击中的左键弹起被误认为真正的左键弹起
+            if not self.outOfBorder(i, j):
+                #鼠标按住并移出局面时，索引会越界
+                if self.mineLabel[i][j].status == 0:
+                    self.mineLabel[i][j].setPixmap(self.pixmapNum[9])
+                
+                    if not self.gamestart:
+                        self.layMine(i,j)
+                        self.gamestart=True
+                    if not self.finish:
+                        if self.mineLabel[i][j].num >= 0 and self.mineLabel[i][j].status == 0:
+                            self.DFS(i, j, self.mineLabel[i][j].num == 0)
+                            if self.isGameFinished():
+                                self.gameWin()
+                        elif self.mineLabel[i][j].num == -1 and self.mineLabel[i][j].status == 0:
+                            self.gameFailed()
 
     def mineAreaRightPressed(self, i, j):
         if not self.finish:
@@ -154,47 +177,101 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.setText(str(int(self.label.text()) + 1))
 
     def mineAreaLeftPressed(self, i, j):
-        pass
+        self.leftHeld = True
+        self.oldCell = (i,j)
+        if self.mineLabel[i][j].status == 0:
+            self.mineLabel[i][j].setPixmap(self.pixmapNum[0])
+        
+        
 
     def mineAreaLeftAndRightPressed(self, i, j):
+        self.leftAndRightHeld = True
+        self.oldCell = (i,j)
+        for r in range(i - 1, i + 2):
+            for c in range(j - 1, j + 2):
+                if not self.outOfBorder(r, c):
+                    if self.mineLabel[r][c].status == 0:
+                        self.mineLabel[r][c].setPixmap(self.pixmapNum[0])
+        
+    def chordingFlag(self,i , j):
+        # i, j 周围标雷数是否满足双击的要求
         if not self.finish:
             if self.mineLabel[i][j].status == 1:
                 count = 0
                 for r in range(i - 1, i + 2):
                     for c in range(j - 1, j + 2):
                         if not self.outOfBorder(r, c):
-                            if self.mineLabel[r][c].status == 0:
-                                self.mineLabel[r][c].setFrameShape(QtWidgets.QFrame.Panel)
-                                self.mineLabel[r][c].setFrameShadow(QtWidgets.QFrame.Sunken)
-                            elif self.mineLabel[r][c].status == 2:
+                            if self.mineLabel[r][c].status == 2:
                                 count += 1
-                return count == self.mineLabel[i][j].num
+                if count == 0:
+                    return False
+                else:
+                    return count == self.mineLabel[i][j].num
             else:
                 return False
 
     def mineAreaLeftAndRightRelease(self, i, j):
-        if not self.finish:
-            if self.mineLabel[i][j].status == 1:
-                if self.mineAreaLeftAndRightPressed(i, j):
-                    Fail = False
+        self.leftAndRightHeld = False
+        self.leftHeld = False
+        if not self.outOfBorder(i, j):
+            #鼠标按住并移出局面时，索引会越界
+            for r in range(i - 1, i + 2):
+                for c in range(j - 1, j + 2):
+                    if not self.outOfBorder(r, c):
+                        if self.mineLabel[r][c].status == 0:
+                            self.mineLabel[r][c].setPixmap(self.pixmapNum[9])
+                        
+            if not self.finish:
+                if self.mineLabel[i][j].status == 1:
+                    if self.chordingFlag(i, j):
+                        Fail = False
+                        for r in range(i - 1, i + 2):
+                            for c in range(j - 1, j + 2):
+                                if not self.outOfBorder(r, c):
+                                    if self.mineLabel[r][c].status == 0:
+                                        if self.mineLabel[r][c].num >= 0:
+                                            self.DFS(r, c, self.mineLabel[r][c].num == 0)
+                                        else:
+                                            Fail = True
+                        if Fail:
+                            self.gameFailed()
+                
+  
+    def mineMouseMove(self, i, j):
+        if not self.outOfBorder(i, j):
+            if (i,j) != self.oldCell and (self.leftAndRightHeld or self.leftHeld):
+                ii,jj = self.oldCell
+                self.oldCell = (i,j)
+                if self.leftAndRightHeld:
+                    for r in range(ii - 1, ii + 2):
+                        for c in range(jj - 1, jj + 2):
+                            if not self.outOfBorder(r, c):
+                                if self.mineLabel[r][c].status == 0:
+                                    self.mineLabel[r][c].setPixmap(self.pixmapNum[9])
                     for r in range(i - 1, i + 2):
                         for c in range(j - 1, j + 2):
                             if not self.outOfBorder(r, c):
                                 if self.mineLabel[r][c].status == 0:
-                                    if self.mineLabel[r][c].num >= 0:
-                                        self.DFS(r, c, self.mineLabel[r][c].num == 0)
-                                    else:
-                                        Fail = True
-                    if Fail:
-                        self.gameFailed()
-                else:
-                    for r in range(i - 1, i + 2):
-                        for c in range(j - 1, j + 2):
+                                    self.mineLabel[r][c].setPixmap(self.pixmapNum[0])
+                    
+                elif self.leftHeld:
+                    if self.mineLabel[i][j].status == 0:
+                        self.mineLabel[i][j].setPixmap(self.pixmapNum[0])
+                    if self.mineLabel[ii][jj].status == 0:
+                        self.mineLabel[ii][jj].setPixmap(self.pixmapNum[9])
+        else:
+            if self.leftAndRightHeld or self.leftHeld:
+                ii,jj = self.oldCell
+                if self.leftAndRightHeld:
+                    for r in range(ii - 1, ii + 2):
+                        for c in range(jj - 1, jj + 2):
                             if not self.outOfBorder(r, c):
                                 if self.mineLabel[r][c].status == 0:
-                                    self.mineLabel[r][c].setFrameShape(QtWidgets.QFrame.Panel)
-                                    self.mineLabel[r][c].setFrameShadow(QtWidgets.QFrame.Sunken)
-
+                                    self.mineLabel[r][c].setPixmap(self.pixmapNum[9])
+                elif self.leftHeld:
+                    if self.mineLabel[ii][jj].status == 0:
+                        self.mineLabel[ii][jj].setPixmap(self.pixmapNum[9])
+        
     def gameStart(self):#画界面，但是不埋雷
         for i in self.mineLabel:
             for j in i:

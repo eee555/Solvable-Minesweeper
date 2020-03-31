@@ -559,14 +559,21 @@ def layMineSolvable(Row , Column , MineNum , X0 , Y0 , Min3BV = 0 , Max3BV = 1e6
     # 3BV下限、上限，最大尝试次数，返回是否成功。
     # 若不成功返回最后生成的局面（不一定无猜），默认尝试很多次
     Times = 0
+    Parameters = []
     while Times < MaxTimes:
         Board = layMineOp(Row , Column , MineNum ,X0, Y0)
         Times += 1
         Num3BV = cal3BV(Board)
         if Num3BV >= Min3BV and Num3BV <= Max3BV:
             if isSolvable(Board , X0, Y0,enuLimit):
-                return Board , 1
-    return Board , 0
+                Parameters.append(1)
+                Parameters.append(Num3BV)
+                Parameters.append(Times)
+                return Board , Parameters
+    Parameters.append(0)
+    Parameters.append(Num3BV)
+    Parameters.append(Times)
+    return Board , Parameters
 
 def calOp(Board):
     # 0的8连通域数

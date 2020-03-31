@@ -54,6 +54,13 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName("gridLayout")
        
         self.verticalLayout.addWidget(self.frame_2)
+        
+        self.label_4 = QtWidgets.QLabel(MainWindow)#label3是时间
+        self.label_4.setFrameShape(QtWidgets.QFrame.WinPanel)
+        self.label_4.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.label_4.setObjectName("label_4")
+        self.verticalLayout.addWidget(self.label_4)
+        
         MainWindow.setCentralWidget(self.centralwidget)
         
         
@@ -125,6 +132,8 @@ class Ui_MainWindow(object):
         self.action_X_2.setText(_translate("MainWindow", "退出(&X)"))
         
         self.action_N.setText(_translate("MainWindow", "游戏设置(&N)"))
+        
+   
 
 
 
