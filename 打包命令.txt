@@ -1,0 +1,12 @@
+pyuic5 -o gameSettings2.py ui_gs.ui
+pyuic5 -o superGUI3.py main_board.ui
+pyuic5 -o scoresGUI.py ui_scores.ui
+pyuic5 -o gameHelp.py ui_help.ui
+pyuic5 -o gameSetMoreGUI.py ui_gs_more.ui
+pyuic5 -o browserGUI.py ui_browser.ui
+pyuic5 -o termsGUI.py ui_terms.ui
+pyrcc5 src_help_pic.qrc -o src_help_pic_rc.py
+pyuic5 -o gameScores.py ui_scores.ui
+
+
+pyinstaller -i cat.ico main.py -p mineLabel.py -p minesweeper_master.py -p mineSweeperGui.py -p selfDefinedParameter.py -p statusLabel.py -p superGUI.py -p gameSettings.py -p gameAbout.py -p gameHelp.py -p gameTerms.py -p browserGUI.py -p src_help_pic_rc.py -p gameScores.py -p gameSetMoreGUI.py -p mainWindowGUI -w
