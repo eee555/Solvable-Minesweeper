@@ -1,0 +1,4 @@
+@echo off
+pyuic5 -o superGUI.py main_board.ui
+pyuic5 -o superGUI.py main_board.ui
+pause
