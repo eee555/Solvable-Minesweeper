@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1300</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1300</width>
+    <height>800</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1300</width>
+    <height>800</height>
+   </size>
+  </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>黑猫浏览器</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>media/cat.ico</normaloff>media/cat.ico</iconset>
+  </property>
+  <widget class="QWebEngineView" name="webEngineView">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1300</width>
+     <height>800</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>1300</width>
+     <height>800</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>1300</width>
+     <height>800</height>
+    </size>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="url">
+    <url>
+     <string>https://cn.bing.com/?mkt=zh-CN</string>
+    </url>
+   </property>
+   <property name="zoomFactor">
+    <double>1.000000000000000</double>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebEngineView</class>
+   <extends>QWidget</extends>
+   <header location="global">QtWebEngineWidgets/QWebEngineView</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
