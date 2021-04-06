@@ -1,1 +1,8 @@
 __pycache__
+/build/
+/main/
+/.spyproject/
+/src/.spyproject/
+/src/__pycache__/
+*.pyd
+*.zip
