@@ -2,7 +2,7 @@
 
 # 黑猫扫雷v2.2.5——包含8种模式的扫雷项目及高性能算法工具箱
 
-[![ForgiveDB](https://img.shields.io/badge/Solvable-Minesweeper-v2.2.5-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
+[![ForgiveDB](https://img.shields.io/badge/SolvableMinesweeper-v2.2.5-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
 
 黑猫扫雷v2.2.5，内部集成了三大判雷引擎，具有全部6种无猜扫雷模式+标准+win7。采用Python/PyQt5及Rust编写，具有极高的内存安全性及速度。不同于Arbiter的专业、Minesweeper X的小巧，黑猫扫雷的开发人员希望制作出一款很“酷”的扫雷。外观上它只是一款普通的标准扫雷，但它能任意调大小，能调整窗口的透明度。在游戏性方面，弱可猜、强可猜的模式都是独一无二的，也是唯一自带新手教程的扫雷。对于高玩来说，它又是专业的，能够计算3BV/s、STNB、RQP指标并展示。此外，它不会打扰玩家，当玩家不去主动打开时，就不会弹出任何窗口，且任何窗口都可以按下空格键快速关闭。
 
