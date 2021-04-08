@@ -16,9 +16,12 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 建议在`Windows 10`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
 
 ### 通过网盘安装(推荐)
-在下面的[下载链接](#下载链接)中(或者Release目录中)找到最新的版本，然后下载，解压，直接运行`main.exe`文件，开箱即用。
+在下面的[下载链接](#下载链接)中找到最新的版本，然后下载，解压，直接运行`main.exe`文件，开箱即用。
 
-### 手工编译(不推荐)
+### 通过Github Actions安装
+在[Github Actions](https://github.com/eee555/Solvable-Minesweeper/actions)找到构建成功的最近一次提交，点击更新内容，在Artifacts页面可以找到打包好的文件，后面步骤同上。这个方法可以体验最新功能，但不保证稳定性。
+
+### 从源码安装(不推荐)
 在编译之前，请确保自己拥有：
 *   Python 3.7+
 *   Rust
