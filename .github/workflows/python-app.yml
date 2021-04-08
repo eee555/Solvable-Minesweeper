@@ -32,7 +32,7 @@ jobs:
         cd toollib
         cargo build --release
         cd ..
-        toollib/target/release/ms_toollib.dll src/ms_toollib.pyd
+        cp toollib/target/release/ms_toollib.dll src/ms_toollib.pyd
 
     # stop the build if there are Python syntax errors or undefined names
     - name: Lint with flake8
