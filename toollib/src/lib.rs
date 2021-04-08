@@ -192,7 +192,7 @@ fn py_cal3BV(Board: Vec<Vec<i32>>) -> PyResult<usize> {
 }
 
 #[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
-fn layMine(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize, Min3BV: usize, Max3BV: usize, 
+fn layMine(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize, Min3BV: usize, Max3BV: usize,
     MaxTimes: usize, method: usize) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
     // 埋雷，参数依次是行、列、雷数、起手位置的第几行-1、第几列-1
     // 适用于游戏的埋雷算法。
@@ -231,7 +231,7 @@ fn quick_sort(cells: &mut Vec<usize>, left: usize, right: usize) {
         while l < r && cells[r] <= cells[left] {
             r -= 1;
         }
-        
+
         while l < r && cells[l] >= cells[left] {
             l += 1;
         }
@@ -441,7 +441,7 @@ fn py_layMineOpNumber(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: 
 }
 
 #[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
-fn layMineOp(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize, Min3BV: usize, Max3BV: usize, 
+fn layMineOp(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize, Min3BV: usize, Max3BV: usize,
     MaxTimes: usize, method: usize) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
     let mut Times = 0;
     let mut Parameters = vec![];
