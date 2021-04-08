@@ -1,38 +1,17 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
+about: 提供Bug反馈
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**系统信息**
+Windows 10
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**描述bug**
+在此给出复现bug的全过程，期望的输出与程序实际的输出。
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**截图**
+如果提供截图反馈会更好~
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+**备注**
+(无)
