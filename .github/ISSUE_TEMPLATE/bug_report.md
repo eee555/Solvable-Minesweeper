@@ -1,11 +1,11 @@
 ---
 name: Bug report
-about: 提供Bug反馈
+about: 反馈问题
 
 ---
 
 **系统信息**
-Windows 10
+Windows 10/Ubuntu, etc.
 
 **描述bug**
 在此给出复现bug的全过程，期望的输出与程序实际的输出。
