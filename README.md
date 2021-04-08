@@ -16,7 +16,7 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 建议在`Windows 10`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
 
 ### 通过网盘安装(推荐)
-在下面的网盘链接中找到最新的版本，然后下载，解压，直接运行`main.exe`文件，开箱即用。
+在下面的[下载链接](#下载链接)中(或者Release目录中)找到最新的版本，然后下载，解压，直接运行`main.exe`文件，开箱即用。
 
 ### 手工编译(不推荐)
 在编译之前，请确保自己拥有：
@@ -62,7 +62,9 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 
 与同类项目相比，本项目更优秀。
 
-## 正式版v2.0：
+## 下载链接
+
+### 正式版v2.0：
 
 修复若干bug，增加至8种无猜扫雷模式，详细规则还没写好
 
@@ -70,31 +72,31 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 
 提取码：zt6p 
 
-## 正式版v2.1：
+### 正式版v2.1：
 
 修复若干bug，现在点击时脸会发生变化，增加配置文件，现在可以调整窗口为半透明，现在可以调整局面尺寸，增加快捷键F2和1、2、3
 
 链接：[https://wws.lanzous.com/iiVXFfnf4if](https://wws.lanzous.com/iiVXFfnf4if)
 
-## 正式版v2.1.2：
+### 正式版v2.1.2：
 
 修复若干bug，优化一些细节，增加“帮助”菜单，可以阅读一些新手教程
 
 链接：[https://wws.lanzous.com/imt9Hioqkkd](https://wws.lanzous.com/imt9Hioqkkd)
 
-## 正式版v2.1.5：
+### 正式版v2.1.5：
 
 修复一个bug，修改游戏界面成标准扫雷，增加基础扫雷教程，游戏结束按空格可以显示各指标（但还没写完）
 
 链接：[https://wws.lanzous.com/ibdPhjnt91g](https://wws.lanzous.com/ibdPhjnt91g)
 
-## 正式版v2.2：
+### 正式版v2.2：
 
 算法优化：埋雷速度达到37525局/秒，相当于Arbiter的三倍左右，无猜局面埋雷速度15.7局/秒。游戏结束按空格可以显示实力指标的极坐标图。删去了一些无用的功能。
 
 链接：[https://wws.lanzous.com/iq9Ocm8zdtc](https://wws.lanzous.com/iq9Ocm8zdtc)
 
-## 正式版v2.2.5：
+### 正式版v2.2.5：
 
 算法优化：无猜局面埋雷速度达到约252局/秒。修复了上一个版本的严重bug。
 
