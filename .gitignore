@@ -141,3 +141,4 @@ dmypy.json
 # -------- Project --------
 *.zip
 gameSetting.ini
+/src/gameSetting.ini
