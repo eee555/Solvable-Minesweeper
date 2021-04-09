@@ -36,6 +36,7 @@ class Ui_MainWindow(object):
             else:
                 self.min3BV = config.getint('CUSTOM', 'min3BV')
                 self.max3BV = config.getint('CUSTOM', 'max3BV')
+            self.readPredefinedBoard()
         else:
             # 找不到配置文件就初始化
             self.min3BV = 100
@@ -70,12 +71,38 @@ class Ui_MainWindow(object):
                                  'max3BV': 381,
                                  }
             config["CUSTOM"] = {'min3BV': 1,
-                                'max3BV': 999999,
+                                'max3BV': 9999,
                                  }
-            # config["CUSTOM_PRESET_4"] = {'row': 1,
-            #                     'column': 999999,
-            #                     'mineNum': 99
-            #                      }
+            config["CUSTOM_PRESET_4"] = {'row': 16,
+                                         'column': 16,
+                                         'mineNum': 72,
+                                         'gameMode': 2,
+                                         'pixSize': 20,
+                                         'timesLimit': 100000,
+                                         'enuLimit': 30,
+                                         'min3BV': 0,
+                                         'max3BV': 9999,
+                                         }
+            config["CUSTOM_PRESET_5"] = {'row': 16,
+                                         'column': 30,
+                                         'mineNum': 120,
+                                         'gameMode': 2,
+                                         'pixSize': 20,
+                                         'timesLimit': 100000,
+                                         'enuLimit': 30,
+                                         'min3BV': 0,
+                                         'max3BV': 9999,
+                                         }
+            config["CUSTOM_PRESET_6"] = {'row': 24,
+                                         'column': 36,
+                                         'mineNum': 200,
+                                         'gameMode': 2,
+                                         'pixSize': 20,
+                                         'timesLimit': 100000,
+                                         'enuLimit': 30,
+                                         'min3BV': 0,
+                                         'max3BV': 9999,
+                                         }
             with open('gameSetting.ini', 'w') as configfile:
                 config.write(configfile)  # 将对象写入文件
 
@@ -348,12 +375,12 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.actionyouxi_she_zhi.setFont(font)
         self.actionyouxi_she_zhi.setObjectName("actionyouxi_she_zhi")
-        # self.actionqita_she_zhi = QtWidgets.QAction(MainWindow)
-        # font = QtGui.QFont()
-        # font.setFamily("微软雅黑")
-        # font.setPointSize(12)
-        # self.actionqita_she_zhi.setFont(font)
-        # self.actionqita_she_zhi.setObjectName("actionqita_she_zhi")
+        self.action_kuaijiejian = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.action_kuaijiejian.setFont(font)
+        self.action_kuaijiejian.setObjectName("action_kuaijiejian")
         self.actiongaun_yv = QtWidgets.QAction(MainWindow)
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
@@ -381,7 +408,7 @@ class Ui_MainWindow(object):
         self.menu.addSeparator()
         self.menu.addAction(self.actiontui_chu)
         self.menu_2.addAction(self.actionyouxi_she_zhi)
-        # self.menu_2.addAction(self.actionqita_she_zhi)
+        self.menu_2.addAction(self.action_kuaijiejian)
         self.menu_3.addAction(self.actionxis)
         self.menu_3.addAction(self.actionrumjc)
         self.menu_3.addAction(self.actiongaun_yv)
@@ -392,9 +419,9 @@ class Ui_MainWindow(object):
         self.frameShortcut1 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_1), MainWindow)
         self.frameShortcut2 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_2), MainWindow)
         self.frameShortcut3 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_3), MainWindow)
-        # self.frameShortcut5 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_4), MainWindow)
-        # self.frameShortcut6 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_5), MainWindow)
-        # self.frameShortcut7 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_6), MainWindow)
+        self.frameShortcut5 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_4), MainWindow)
+        self.frameShortcut6 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_5), MainWindow)
+        self.frameShortcut7 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_6), MainWindow)
         self.frameShortcut4 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F2), MainWindow)
         self.frameShortcut8 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Space), MainWindow)
 
@@ -422,8 +449,8 @@ class Ui_MainWindow(object):
         self.actiontui_chu.setShortcut(_translate("MainWindow", "X"))
         self.actionyouxi_she_zhi.setText(_translate("MainWindow", "游戏设置"))
         self.actionyouxi_she_zhi.setShortcut(_translate("MainWindow", "S"))
-        # self.actionqita_she_zhi.setText(_translate("MainWindow", "其他设置"))
-        # self.actionqita_she_zhi.setShortcut(_translate("MainWindow", "Q"))
+        self.action_kuaijiejian.setText(_translate("MainWindow", "快捷键设置"))
+        self.action_kuaijiejian.setShortcut(_translate("MainWindow", "Q"))
         self.actiongaun_yv.setText(_translate("MainWindow", "关于"))
         self.actiongaun_yv.setShortcut(_translate("MainWindow", "A"))
         self.actionxis.setText(_translate("MainWindow", "词典"))
@@ -488,3 +515,54 @@ class Ui_MainWindow(object):
         self.pixmapLEDNum = {0: pixLEDmap0, 1: pixLEDmap1, 2: pixLEDmap2, 3: pixLEDmap3,
                         4: pixLEDmap4, 5: pixLEDmap5, 6: pixLEDmap6, 7: pixLEDmap7,
                         8: pixLEDmap8, 9: pixLEDmap9}
+
+
+    def readPredefinedBoard(self):
+        # modTable = [0,1,2,3,4,5,6,7]
+        self.predefinedBoardPara = {}
+        config = configparser.ConfigParser()
+        config.read('gameSetting.ini')
+        self.predefinedBoardPara[4] = [
+            config.getint('CUSTOM_PRESET_4','gameMode'),
+            config.getint('CUSTOM_PRESET_4','max3BV'),
+            config.getint('CUSTOM_PRESET_4','min3BV'),
+            config.getint('CUSTOM_PRESET_4','row'),
+            config.getint('CUSTOM_PRESET_4','column'),
+            config.getint('CUSTOM_PRESET_4','pixSize'),
+            config.getint('CUSTOM_PRESET_4','timesLimit'),
+            config.getint('CUSTOM_PRESET_4','enuLimit'),
+            config.getint('CUSTOM_PRESET_4','mineNum'),
+            ]
+
+        self.predefinedBoardPara[5] = [
+            config.getint('CUSTOM_PRESET_5','gameMode'),
+            config.getint('CUSTOM_PRESET_5','max3BV'),
+            config.getint('CUSTOM_PRESET_5','min3BV'),
+            config.getint('CUSTOM_PRESET_5','row'),
+            config.getint('CUSTOM_PRESET_5','column'),
+            config.getint('CUSTOM_PRESET_5','pixSize'),
+            config.getint('CUSTOM_PRESET_5','timesLimit'),
+            config.getint('CUSTOM_PRESET_5','enuLimit'),
+            config.getint('CUSTOM_PRESET_5','mineNum')]
+
+        self.predefinedBoardPara[6] = [
+            config.getint('CUSTOM_PRESET_6','gameMode'),
+            config.getint('CUSTOM_PRESET_6','max3BV'),
+            config.getint('CUSTOM_PRESET_6','min3BV'),
+            config.getint('CUSTOM_PRESET_6','row'),
+            config.getint('CUSTOM_PRESET_6','column'),
+            config.getint('CUSTOM_PRESET_6','pixSize'),
+            config.getint('CUSTOM_PRESET_6','timesLimit'),
+            config.getint('CUSTOM_PRESET_6','enuLimit'),
+            config.getint('CUSTOM_PRESET_6','mineNum')]
+
+        # self.key_6_gameMode = modTable[config.getint('CUSTOM_PRESET_6','gameMode')]
+        # self.key_6_max3BV = config.getint('CUSTOM_PRESET_6','max3BV')
+        # self.key_6_min3BV = config.getint('CUSTOM_PRESET_6','min3BV')
+        # self.key_6_row = config.getint('CUSTOM_PRESET_6','row')
+        # self.key_6_column = config.getint('CUSTOM_PRESET_6','column')
+        # self.key_6_pixSize = config.getint('CUSTOM_PRESET_6','pixSize')
+        # self.key_6_timesLimit = config.getint('CUSTOM_PRESET_6','timesLimit')
+        # self.key_6_enuLimit = config.getint('CUSTOM_PRESET_6','enuLimit')
+        # self.key_6_mineNum = config.getint('CUSTOM_PRESET_6','mineNum')
+

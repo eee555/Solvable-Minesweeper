@@ -323,7 +323,7 @@ def refreshMineLable(board, MineNum0, BoardofGame):
                     for j in range(max(0, y - 1), min(Column, y + 2)):
                         if board[i][j] == -1:
                             boardNum += 1
-                itemy = boardNum
+                board[x][y] = boardNum
     return board
 
 

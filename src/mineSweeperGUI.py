@@ -2,16 +2,17 @@
 from PyQt5.QtCore import QTimer, QCoreApplication, QPoint
 from PyQt5.QtGui import QPixmap, QPainter
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
-import gameDefinedParameter as gameDefinedParameter
-import superGUI as superGUI
-import gameAbout as gameAbout
-import gameSettings as gameSettings
-import gameHelp as gameHelp
-import gameTerms as gameTerms
-import gameScores as gameScores
-import minesweeper_master as minesweeper_master
+import gameDefinedParameter
+import superGUI
+import gameAbout
+import gameSettings
+import gameHelp
+import gameTerms
+import gameScores
+import minesweeper_master
 import configparser
 import time
+import widgetLib
 
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
@@ -57,7 +58,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actionzi_ding_yi.triggered.connect(self.action_CEvent)
         self.actiontui_chu.triggered.connect(QCoreApplication.instance().quit)
         self.actionyouxi_she_zhi.triggered.connect(self.action_NEvent)
-        # self.actionqita_she_zhi.triggered.connect(self.action_QEvent)
+        self.action_kuaijiejian.triggered.connect(self.action_QEvent)
         self.actionxis.triggered.connect(self.action_HEvent)
         self.actiongaun_yv.triggered.connect(self.action_AEvent)
         self.actionrumjc.triggered.connect(self.action_JEvent)
@@ -77,9 +78,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.frameShortcut2.activated.connect(self.action_IEvent)
         self.frameShortcut3.activated.connect(self.action_Event)
         self.frameShortcut4.activated.connect(self.gameRestart)
-        # self.frameShortcut5.activated.connect(lambda: self.openBrowser(1))
-        # self.frameShortcut6.activated.connect(lambda: self.openBrowser(2))
-        # self.frameShortcut7.activated.connect(lambda: self.openBrowser(3))
+        self.frameShortcut5.activated.connect(lambda: self.predefined_Board(4))
+        self.frameShortcut6.activated.connect(lambda: self.predefined_Board(5))
+        self.frameShortcut7.activated.connect(lambda: self.predefined_Board(6))
         self.frameShortcut8.activated.connect(self.showScores)
 
 
@@ -145,10 +146,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.gameWin()
 
     def ai(self, i, j):
-        #0，1，2，3，4，5，6，7代表：标准、win7、
-        #竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
-        #根据模式处理一次点击的全部流程
-        #返回的最后一个值是一个flag，无论是不是雷，都代表是否失败，True为失败
+        # 0，1，2，3，4，5，6，7代表：标准、win7、
+        # 竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        # 根据模式处理一次点击的全部流程
+        # 返回的最后一个值是一个flag，无论是不是雷，都代表是否失败，True为失败
         # 该函数维护boardofGame，具体为标雷
         # （i，j）一定是未打开状态
         if self.board[i][j] == -1:
@@ -488,6 +489,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actionChecked('E')
         self.setBoard_and_start(16, 30, 99)
 
+    def predefined_Board(self, k):
+        self.gameMode = self.predefinedBoardPara[k][0]
+        self.max3BV = self.predefinedBoardPara[k][1]
+        self.min3BV = self.predefinedBoardPara[k][2]
+        self.timesLimit = self.predefinedBoardPara[k][6]
+        self.enuLimit = self.predefinedBoardPara[k][7]
+        self.pixSize = self.predefinedBoardPara[k][5]
+        self.importLEDPic(self.pixSize)
+        self.label.importCellPic(self.pixSize)
+        self.label_2.reloadFace(self.pixSize)
+        self.setBoard_and_start(self.predefinedBoardPara[k][3],
+                                self.predefinedBoardPara[k][4],
+                                self.predefinedBoardPara[k][8])
+        self.refreshSettingsDefault()
+
     def action_CEvent(self):
         # 点击菜单栏的自定义后回调
         self.actionChecked('C')
@@ -550,6 +566,16 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.gameStart()
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
 
+    def action_QEvent(self):
+        # 词典，即游戏帮助、术语表
+        self.actionChecked('Q')
+        ui = widgetLib.myGameSettingShortcuts()
+        ui.Dialog.setModal(True)
+        ui.Dialog.show()
+        ui.Dialog.exec_()
+        if ui.alter:
+            self.readPredefinedBoard()
+
     def action_HEvent(self):
         # 词典，即游戏帮助、术语表
         self.actionChecked('H')
@@ -591,6 +617,20 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             ui.setModal(True)
             ui.show()
             ui.exec_()
+
+    def refreshSettingsDefault(self):
+        # 刷新游戏设置.ini里默认部分的设置，与当前游戏里一致，
+        # 除了transparency、mainwintop和mainwinleft
+        conf = configparser.ConfigParser()
+        conf.read("gameSetting.ini")
+        conf.set("DEFAULT", "timeslimit", str(self.timesLimit))
+        conf.set("DEFAULT", "enulimit", str(self.enuLimit))
+        conf.set("DEFAULT", "gamemode", str(self.gameMode))
+        conf.set("DEFAULT", "pixsize", str(self.pixSize))
+        conf.set("DEFAULT", "row", str(self.row))
+        conf.set("DEFAULT", "column", str(self.column))
+        conf.set("DEFAULT", "minenum", str(self.mineNum))
+        conf.write(open('gameSetting.ini', "w"))
 
 
 
