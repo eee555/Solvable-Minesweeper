@@ -59,39 +59,14 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 
 ## 同类项目
 
-*   [kaboom](https://pwmarcz.pl/kaboom/)
-*   [Simon Tatham's Mines](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/js/mines.html)
-*   [FairMinesweeper](https://github.com/xseryda/FairMinesweeper/)
+*   [kaboom](https://pwmarcz.pl/kaboom/)：弱无猜扫雷。
+*   [Simon Tatham's Mines](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/js/mines.html)：竞速无猜扫雷。带有局面调整算法，雷数很多时也能埋雷成功。
+*   [FairMinesweeper](https://github.com/xseryda/FairMinesweeper/)：无猜扫雷。不一定能跑通。
+*   [minegauler](https://github.com/LewisGaul/minegauler)：标准扫雷。采用PyQt5实现，有一种在一个格子中埋多个雷的模式。
 
 与同类项目相比，本项目更优秀。
 
 ## 下载链接
-
-### 正式版v2.0：
-
-修复若干bug，增加至8种无猜扫雷模式，详细规则还没写好
-
-链接：https://pan.baidu.com/s/1LXeirXU0-LdEO-8gyb4egg 
-
-提取码：zt6p 
-
-### 正式版v2.1：
-
-修复若干bug，现在点击时脸会发生变化，增加配置文件，现在可以调整窗口为半透明，现在可以调整局面尺寸，增加快捷键F2和1、2、3
-
-链接：[https://wws.lanzous.com/iiVXFfnf4if](https://wws.lanzous.com/iiVXFfnf4if)
-
-### 正式版v2.1.2：
-
-修复若干bug，优化一些细节，增加“帮助”菜单，可以阅读一些新手教程
-
-链接：[https://wws.lanzous.com/imt9Hioqkkd](https://wws.lanzous.com/imt9Hioqkkd)
-
-### 正式版v2.1.5：
-
-修复一个bug，修改游戏界面成标准扫雷，增加基础扫雷教程，游戏结束按空格可以显示各指标（但还没写完）
-
-链接：[https://wws.lanzous.com/ibdPhjnt91g](https://wws.lanzous.com/ibdPhjnt91g)
 
 ### 正式版v2.2：
 
@@ -104,3 +79,9 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 算法优化：无猜局面埋雷速度达到约252局/秒。修复了上一个版本的严重bug。
 
 链接：[https://wws.lanzous.com/iS3wImv2y5e](https://wws.lanzous.com/iS3wImv2y5e)
+
+### 测试版v2.2.6-alpha：
+
+测试版v2.2.6-alpha：修复了若干bug。算法优化：(16,16,72)无猜局面埋雷速度提高200%。新功能：快捷键4、5、6可以快速设置三种不同的自定义的自定义模式。对自定义模式的优化，提高了稳定性。对局面刷新的优化。
+
+链接：[https://wwe.lanzous.com/igPFFo7mwxi](https://wwe.lanzous.com/igPFFo7mwxi)
