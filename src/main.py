@@ -3,6 +3,9 @@ from PyQt5 import QtWidgets
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
+# import os
+# sys.path.append(os.path.realpath('.'))
+
 
 if __name__ == "__main__":
     # appctxt = ApplicationContext()   # 1. Instantiate ApplicationContext

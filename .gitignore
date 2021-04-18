@@ -144,3 +144,5 @@ dmypy.json
 gameSetting.ini
 /src/gameSetting.ini
 /uiFiles/*.py
+/src/.idea/
+/toollib/src/main.rs

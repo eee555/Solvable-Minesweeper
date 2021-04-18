@@ -2,6 +2,7 @@
 from random import randint, seed, choice, shuffle, sample
 from itertools import combinations
 import time
+
 import ms_toollib
 import math
 
@@ -578,7 +579,7 @@ def main():
     time2 = time.time()
     print(time2 - time1)
     print(num/T)
-    
+
 
 
 
