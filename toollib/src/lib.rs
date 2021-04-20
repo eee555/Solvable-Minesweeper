@@ -220,30 +220,6 @@ fn layMine(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize, Min3
     Ok((Board, Parameters))
 }
 
-fn quick_sort(cells: &mut Vec<usize>, left: usize, right: usize) {
-    // Vec<usize>的快速排序，从大到小
-    if left >= right {
-        return;
-    }
-    let mut l = left;
-    let mut r = right;
-    while l < r {
-        while l < r && cells[r] <= cells[left] {
-            r -= 1;
-        }
-
-        while l < r && cells[l] >= cells[left] {
-            l += 1;
-        }
-        cells.swap(l, r);
-    }
-    cells.swap(left, l);
-    if l > 1 {
-        quick_sort(cells, left, l - 1);
-    }
-    quick_sort(cells, r + 1, right);
-}
-
 fn SolveMinus(MatrixA: &Vec<Vec<i32>>, Matrixx: &Vec<(usize, usize)>, Matrixb: &Vec<i32>, BoardofGame: &mut Vec<Vec<i32>>,
 ) -> (Vec<(usize, usize)>, bool) {
     let mut flag = false;
@@ -552,8 +528,7 @@ enuLimit: usize) -> (Vec<(usize, usize)>, bool) {
     }
     IsMineRel.dedup();
     NotMineRel.dedup();
-    let len = max(IsMineRel.len(), 1) - 1;
-    quick_sort(&mut IsMineRel, 0, len);
+    IsMineRel.sort_by(|a, b| b.cmp(&a));
     for i in NotMineRel {
         NotMine.push(Matrixx[i]);
     }
@@ -603,8 +578,7 @@ fn enuOneStep(mut AllTable: Vec<Vec<usize>>, TableId: Vec<usize>, b: i32) -> Vec
             }
         }
     }
-    let len = max(DelId.len(), 1) - 1;
-    quick_sort(&mut DelId, 0, len);
+    DelId.sort_by(|a, b| b.cmp(&a));
     for i in DelId {
         AllTable.remove(i);
     }
