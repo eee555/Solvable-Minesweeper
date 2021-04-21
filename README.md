@@ -63,6 +63,7 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 *   [Simon Tatham's Mines](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/js/mines.html)：竞速无猜扫雷。带有局面调整算法，雷数很多时也能埋雷成功。
 *   [FairMinesweeper](https://github.com/xseryda/FairMinesweeper/)：无猜扫雷。不一定能跑通。
 *   [minegauler](https://github.com/LewisGaul/minegauler)：标准扫雷。采用PyQt5实现，有一种在一个格子中埋多个雷的模式。
+*   [LibreMines](https://github.com/Bollos00/LibreMines)：标准扫雷。采用Qt实现。
 
 与同类项目相比，本项目更优秀。
 
