@@ -1,3 +1,5 @@
 python -m twine upload dist/*
 
 python ./setup.py develop install
+
+https://github.com/PyO3/setuptools-rust
