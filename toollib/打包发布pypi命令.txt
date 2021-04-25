@@ -1,0 +1,3 @@
+pip install maturin
+
+maturin publish
