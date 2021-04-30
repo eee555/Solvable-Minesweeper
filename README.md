@@ -6,6 +6,8 @@
 
 黑猫扫雷v2.2.5是由真正擅长扫雷的玩家开发的扫雷游戏，为高级玩家量身定制。内部集成了三大判雷引擎，具有全部6种无猜扫雷模式+标准+win7。采用Python/PyQt5及Rust编写，具有很高的内存安全性及速度。不同于Arbiter的专业、Minesweeper X的小巧，黑猫扫雷的开发人员希望制作出一款高度智能的扫雷。外观上它只是一款普通的标准扫雷，但它能任意调大小，能调整窗口的透明度。在游戏性方面，弱可猜、强可猜的模式都是独一无二的，也是唯一自带新手教程的扫雷。对于高玩来说，它又是专业的，能够计算3BV/s、STNB、RQP指标并展示。此外，它不会打扰玩家，当玩家不去主动打开时，就不会弹出任何窗口，且任何窗口都可以按下空格键快速关闭。
 
+总而言之，我们是设计哲学是：智能、实用、强大。
+
 目前还在开发过程中，欢迎提意见。
 
 Black Cat Minesweeper v2.2.5, which integrates three major internal mine detection engines, with all six kinds of no-guess minesweeper mode + standard + Win7. Using Python/PyQt5 and Rust, has high safety in memory and speed is different from the Arbiter of professional Minesweeper X of small, black cats demining developers hope to create a cool mine clearance Appearance, it is only a common standard mine, but it can adjust the size at will, can adjust the transparency of the window In terms of gameplay, weak can guess the strong can guess the mode is unique, and the only one of mine own tutorials For high play, it is professional, can calculate 3 bv/s STNBIn addition, it doesn't bother the player, no window pops up when the player doesn't open it, and any window can be quickly closed by pressing the space bar.
