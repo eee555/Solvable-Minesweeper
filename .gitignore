@@ -21,7 +21,9 @@ lib64/
 parts/
 sdist/
 var/
+.idea/
 wheels/
+OCRModel/
 pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
@@ -143,6 +145,7 @@ dmypy.json
 *.zip
 gameSetting.ini
 /src/gameSetting.ini
+/src/test*.py
 /uiFiles/*.py
 /src/.idea/
 /toollib/src/main.rs
