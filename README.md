@@ -50,7 +50,7 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 ```
 
 *   运行程序，大功告成了~
-``` sh
+```sh
     py -3 src/main.py # Windows
     python3 src/main.py # *nix
 ```
