@@ -363,8 +363,8 @@ pub fn refresh_matrixs(
 pub struct big_number {
     // 科学计数法表示的大数字
     // 必定大于等于1，a必定满足小于10大于等于1
-    a: f64,
-    b: i32,
+    pub a: f64,
+    pub b: i32,
 }
 
 impl big_number {

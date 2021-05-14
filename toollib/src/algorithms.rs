@@ -3,9 +3,6 @@ use crate::utils::{
     refreshBoard, refreshMatrix, refresh_matrixs, sum, unsolvableStructure, C_usize, C,
 };
 use itertools::Itertools;
-use pyo3::class::basic::PyObjectProtocol;
-use pyo3::prelude::*;
-use pyo3::wrap_pyfunction;
 use std::cmp::{max, min};
 use std::sync::mpsc;
 use std::sync::{Arc, Mutex};
@@ -120,11 +117,10 @@ pub fn SolveDirect(
     (NotMine, flag)
 }
 
-#[pyfunction]
-fn cal_possibility(
+pub fn cal_possibility(
     board_of_game: Vec<Vec<i32>>,
     mine_num: usize,
-) -> PyResult<(Vec<((usize, usize), f64)>, f64)> {
+) -> (Vec<((usize, usize), f64)>, f64) {
     // 输入局面、未知雷数，返回每一个未知的格子是雷的概率
     // 局面中可以标雷，但必须全部标对
     // 未知雷数为总雷数减去已经标出的雷
@@ -146,7 +142,7 @@ fn cal_possibility(
         let enum_comb_table = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_bs[i]);
         if matrixx_squeeze.len() > 60 {
             // 这里就是考虑格子等同地位后的枚举极限
-            return Ok((vec![], f64::NAN));
+            return (vec![], f64::NAN);
         }
         comb_relp_s.push(combination_relationship);
         enum_comb_table_s.push(enum_comb_table);
@@ -296,10 +292,10 @@ fn cal_possibility(
     }
     let p_unknow = u_s.div_big_num(&T) / unknow_block as f64;
     // 第七步，计算内部未知区域是雷的概率
-    Ok((p, p_unknow))
+    (p, p_unknow)
 }
 
-#[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
+
 pub fn layMineOp(
     Row: usize,
     Column: usize,
@@ -310,7 +306,7 @@ pub fn layMineOp(
     Max3BV: usize,
     MaxTimes: usize,
     method: usize,
-) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
+) -> (Vec<Vec<i32>>, Vec<usize>) {
     let mut Times = 0;
     let mut Parameters = vec![];
     let mut Num3BV = 0;
@@ -323,13 +319,13 @@ pub fn layMineOp(
             Parameters.push(1);
             Parameters.push(Num3BV);
             Parameters.push(Times);
-            return Ok((Board, Parameters));
+            return (Board, Parameters);
         }
     }
     Parameters.push(0);
     Parameters.push(Num3BV);
     Parameters.push(Times);
-    Ok((Board, Parameters))
+    (Board, Parameters)
 }
 
 pub fn SolveEnumerate(
@@ -494,7 +490,6 @@ pub fn isSolvable(Board: &Vec<Vec<i32>>, X0: usize, Y0: usize, enuLimit: usize) 
     }
 }
 
-#[pyfunction(Min3BV = 0, Max3BV = 1000000, MaxTimes = 1000000, enuLimit = 30)]
 pub fn layMineSolvable_thread(
     Row: usize,
     Column: usize,
@@ -505,7 +500,7 @@ pub fn layMineSolvable_thread(
     Max3BV: usize,
     mut MaxTimes: usize,
     enuLimit: usize,
-) -> PyResult<(Vec<Vec<i32>>, [usize; 3])> {
+) -> (Vec<Vec<i32>>, [usize; 3]) {
     // 多线程埋雷无猜
     let mut parameters = [0, 0, 0];
     let mut game_board = vec![vec![0; Column]; Row];
@@ -570,10 +565,9 @@ pub fn layMineSolvable_thread(
             game_board[i][j] = received.0[i][j];
         }
     }
-    Ok((game_board, parameters))
+    (game_board, parameters)
 }
 
-#[pyfunction(Min3BV = 0, Max3BV = 1000000, MaxTimes = 1000000, enuLimit = 30)]
 pub fn layMineSolvable(
     Row: usize,
     Column: usize,
@@ -584,7 +578,7 @@ pub fn layMineSolvable(
     Max3BV: usize,
     MaxTimes: usize,
     enuLimit: usize,
-) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
+) -> (Vec<Vec<i32>>, Vec<usize>) {
     // 3BV下限、上限，最大尝试次数，返回是否成功。
     // 若不成功返回最后生成的局面（不一定无猜），默认尝试十万次
     let mut Times = 0;
@@ -600,7 +594,7 @@ pub fn layMineSolvable(
                 Parameters.push(1);
                 Parameters.push(Num3BV);
                 Parameters.push(Times);
-                return Ok((Board, Parameters));
+                return (Board, Parameters);
             }
         }
     }
@@ -609,10 +603,10 @@ pub fn layMineSolvable(
     Parameters.push(0);
     Parameters.push(Num3BV);
     Parameters.push(Times);
-    Ok((Board, Parameters))
+    (Board, Parameters)
 }
 
-#[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
+
 pub fn layMine(
     Row: usize,
     Column: usize,
@@ -623,7 +617,7 @@ pub fn layMine(
     Max3BV: usize,
     MaxTimes: usize,
     method: usize,
-) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
+) -> (Vec<Vec<i32>>, Vec<usize>) {
     // 埋雷，参数依次是行、列、雷数、起手位置的第几行-1、第几列-1
     // 适用于游戏的埋雷算法。
     // 起手不开空，必不为雷
@@ -641,11 +635,11 @@ pub fn layMine(
             Parameters.push(1);
             Parameters.push(Num3BV);
             Parameters.push(Times);
-            return Ok((Board, Parameters));
+            return (Board, Parameters);
         }
     }
     Parameters.push(0);
     Parameters.push(Num3BV);
     Parameters.push(Times);
-    Ok((Board, Parameters))
+    (Board, Parameters)
 }

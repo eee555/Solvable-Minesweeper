@@ -1,6 +1,6 @@
 [package]
 name = "ms-toollib"
-version = "1.0.5"
+version = "1.0.6"
 edition = "2018"
 authors = ["Wang Jianing <wangjianing@88.com>"]
 
@@ -19,9 +19,9 @@ version = "0.8.3"
 [dependencies.itertools]
 version = "0.10.0"
 
-#[lib]
-#name = "ms_toollib"
-#crate-type = ["cdylib"]
+[lib]
+name = "ms_toollib"
+crate-type = ["cdylib"]
 
 
 

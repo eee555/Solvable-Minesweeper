@@ -7,11 +7,14 @@ use std::cmp::{max, min};
 
 mod utils;
 use utils::{
-    cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard,
-    refreshMatrix, unsolvableStructure,
+    cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard, refreshMatrix,
+    unsolvableStructure,
 };
 mod algorithms;
-use algorithms::{SolveDirect, SolveEnumerate, SolveMinus, isSolvable};
+use algorithms::{
+    cal_possibility, isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate,
+    SolveMinus, layMine, layMineSolvable
+};
 
 // 负责rust和python之间的接口，类似文档
 
@@ -117,6 +120,82 @@ fn py_unsolvableStructure(BoardCheck: Vec<Vec<i32>>) -> PyResult<bool> {
 #[pyfunction(enuLimit = 30)]
 fn py_isSolvable(Board: Vec<Vec<i32>>, X0: usize, Y0: usize, enuLimit: usize) -> PyResult<bool> {
     Ok(isSolvable(&Board, X0, Y0, enuLimit))
+}
+
+#[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
+pub fn py_layMineOp(
+    Row: usize,
+    Column: usize,
+    MineNum: usize,
+    X0: usize,
+    Y0: usize,
+    Min3BV: usize,
+    Max3BV: usize,
+    MaxTimes: usize,
+    method: usize,
+) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
+    Ok(layMineOp(
+        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
+    ))
+}
+
+#[pyfunction(Min3BV = 0, Max3BV = 1000000, MaxTimes = 1000000, enuLimit = 30)]
+pub fn py_layMineSolvable(
+    Row: usize,
+    Column: usize,
+    MineNum: usize,
+    X0: usize,
+    Y0: usize,
+    Min3BV: usize,
+    Max3BV: usize,
+    MaxTimes: usize,
+    method: usize,
+) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
+    Ok(layMineSolvable(
+        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
+    ))
+}
+
+#[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
+pub fn py_layMine(
+    Row: usize,
+    Column: usize,
+    MineNum: usize,
+    X0: usize,
+    Y0: usize,
+    Min3BV: usize,
+    Max3BV: usize,
+    MaxTimes: usize,
+    method: usize,
+) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
+    Ok(layMine(
+        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
+    ))
+}
+
+#[pyfunction(Min3BV = 0, Max3BV = 1000000, MaxTimes = 1000000, enuLimit = 30)]
+pub fn py_layMineSolvable_thread(
+    Row: usize,
+    Column: usize,
+    MineNum: usize,
+    X0: usize,
+    Y0: usize,
+    Min3BV: usize,
+    Max3BV: usize,
+    mut MaxTimes: usize,
+    enuLimit: usize,
+) -> PyResult<(Vec<Vec<i32>>, [usize; 3])> {
+    Ok(layMineSolvable_thread(
+        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, enuLimit,
+    ))
+}
+
+#[pyfunction]
+fn py_cal_possibility(
+    board_of_game: Vec<Vec<i32>>,
+    mine_num: usize,
+) -> PyResult<(Vec<((usize, usize), f64)>, f64)> {
+    Ok(cal_possibility(board_of_game, mine_num))
 }
 
 #[pyclass]
@@ -348,18 +427,18 @@ fn ms_toollib(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_cal3BV, m)?)?;
     m.add_function(wrap_pyfunction!(py_layMineNumber, m)?)?;
     m.add_function(wrap_pyfunction!(py_refreshBoard, m)?)?;
-    m.add_function(wrap_pyfunction!(layMine, m)?)?;
+    m.add_function(wrap_pyfunction!(py_layMine, m)?)?;
     m.add_function(wrap_pyfunction!(py_SolveMinus, m)?)?;
     m.add_function(wrap_pyfunction!(py_layMineOpNumber, m)?)?;
-    m.add_function(wrap_pyfunction!(layMineOp, m)?)?;
+    m.add_function(wrap_pyfunction!(py_layMineOp, m)?)?;
     m.add_function(wrap_pyfunction!(py_SolveDirect, m)?)?;
     m.add_function(wrap_pyfunction!(py_SolveEnumerate, m)?)?;
     m.add_function(wrap_pyfunction!(py_unsolvableStructure, m)?)?;
     m.add_function(wrap_pyfunction!(py_isSolvable, m)?)?;
     m.add_function(wrap_pyfunction!(py_enuOneStep, m)?)?;
-    m.add_function(wrap_pyfunction!(layMineSolvable, m)?)?;
-    m.add_function(wrap_pyfunction!(layMineSolvable_thread, m)?)?;
-    m.add_function(wrap_pyfunction!(cal_possibility, m)?)?;
+    m.add_function(wrap_pyfunction!(py_layMineSolvable, m)?)?;
+    m.add_function(wrap_pyfunction!(py_layMineSolvable_thread, m)?)?;
+    m.add_function(wrap_pyfunction!(py_cal_possibility, m)?)?;
     m.add_class::<minesweeperBoard>()?;
     Ok(())
 }
