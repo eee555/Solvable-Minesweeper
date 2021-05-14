@@ -149,3 +149,4 @@ gameSetting.ini
 /uiFiles/*.py
 /src/.idea/
 /toollib/src/main.rs
+src/picture.png
