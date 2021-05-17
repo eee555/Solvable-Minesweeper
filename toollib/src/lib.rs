@@ -13,7 +13,7 @@ use utils::{
 mod algorithms;
 use algorithms::{
     cal_possibility, isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate,
-    SolveMinus, layMine, layMineSolvable
+    SolveMinus, layMine, layMineSolvable, sample_3BVs_exp
 };
 
 // 负责rust和python之间的接口，类似文档
@@ -196,6 +196,11 @@ fn py_cal_possibility(
     mine_num: usize,
 ) -> PyResult<(Vec<((usize, usize), f64)>, f64)> {
     Ok(cal_possibility(board_of_game, mine_num))
+}
+
+#[pyfunction]
+fn py_sample_3BVs_exp(X0: usize, Y0: usize, n: usize) -> PyResult<Vec<usize>> {
+    Ok((&sample_3BVs_exp(X0, Y0, n)).to_vec())
 }
 
 #[pyclass]
@@ -439,6 +444,7 @@ fn ms_toollib(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_layMineSolvable, m)?)?;
     m.add_function(wrap_pyfunction!(py_layMineSolvable_thread, m)?)?;
     m.add_function(wrap_pyfunction!(py_cal_possibility, m)?)?;
+    m.add_function(wrap_pyfunction!(py_sample_3BVs_exp, m)?)?;
     m.add_class::<minesweeperBoard>()?;
     Ok(())
 }

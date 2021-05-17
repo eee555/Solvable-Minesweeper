@@ -764,6 +764,99 @@ pub fn unsolvableStructure(BoardCheck: &Vec<Vec<i32>>) -> bool {
     false
 }
 
+pub fn cal3BV_exp(Board: &Vec<Vec<i32>>) -> usize {
+    // 用于高级局面的3BV
+    let mut board = Board.clone();
+    let mut op_id = 0;
+    let mut op_list = [false; 200];
+    let mut bv = 0;
+    for x in 0..16 {
+        for y in 0..30 {
+            if board[x][y] > 0 {
+                board[x][y] = 1000000;
+                bv += 1;
+            } else if board[x][y] == 0 {
+                let mut min_op_id = 1000;
+                let mut flag_op = false; // 该空周围有无空的标志位
+                if x >= 1 {
+                    for j in max(1, y) - 1..min(30, y + 2) {
+                        if board[x - 1][j] > 999999 {
+                            board[x - 1][j] = 1;
+                            bv -= 1;
+                        } else if Board[x - 1][j] == 0 {
+                            if board[x - 1][j] < min_op_id {
+                                if flag_op {
+                                    op_list[min_op_id as usize] = false;
+                                } else {
+                                    flag_op = true;
+                                }
+                                min_op_id = board[x - 1][j];
+                            }
+                        }
+                    }
+                }
+                if y >= 1 {
+                    if board[x][y - 1] > 999999 {
+                        board[x][y - 1] = 1;
+                        bv -= 1;
+                    } else if Board[x][y - 1] == 0 {
+                        if board[x][y - 1] < min_op_id {
+                            if flag_op {
+                                op_list[min_op_id as usize] = false;
+                            } else {
+                                flag_op = true;
+                            }
+                            min_op_id = board[x][y - 1];
+                        }
+                    }
+                }
+                if !flag_op {
+                    op_id += 1;
+                    op_list[op_id as usize] = true;
+                }
+            }
+        }
+    }
+    for x in (0..16).rev() {
+        for y in (0..30).rev() {
+            if board[x][y] == 0 {
+                if x <= 14 {
+                    for j in max(1, y) - 1..min(30, y + 2) {
+                        if board[x + 1][j] > 999999 {
+                            board[x + 1][j] = 1;
+                            bv -= 1;
+                        } else if Board[x + 1][j] == 0 {
+                            if board[x + 1][j] < board[x][y] {
+                                op_list[board[x][y] as usize] = false;
+                                board[x][y] = board[x + 1][j];
+                            }
+                        }
+                    }
+                }
+                if y <= 28 {
+                    if board[x][y + 1] > 999999 {
+                        board[x][y + 1] = 1;
+                        bv -= 1;
+                    } else if Board[x][y + 1] == 0 {
+                        if board[x][y + 1] < board[x][y] {
+                            op_list[board[x][y] as usize] = false;
+                            board[x][y] = board[x][y + 1];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for i in 0..op_id + 1 {
+        if op_list[i] {
+            bv += 1;
+        }
+    }
+    bv
+}
+
+
+
 
 
 

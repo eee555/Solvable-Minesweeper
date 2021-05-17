@@ -130,7 +130,8 @@ fn infectBoard(mut Board: Vec<Vec<i32>>, x: usize, y: usize) -> Vec<Vec<i32>> {
     Board
 }
 
-fn cal3BV(Board: &Vec<Vec<i32>>) -> usize {
+fn cal3BV_exp(Board: &Vec<Vec<i32>>) -> usize {
+    // 用于高级局面的3BV
     let mut board = Board.clone();
     let mut op_id = 0;
     let mut op_list = [false; 200];
@@ -185,7 +186,7 @@ fn cal3BV(Board: &Vec<Vec<i32>>) -> usize {
     for x in (0..16).rev() {
         for y in (0..30).rev() {
             if board[x][y] == 0 {
-                if x <= 16 - 2 {
+                if x <= 14 {
                     for j in max(1, y) - 1..min(30, y + 2) {
                         if board[x + 1][j] > 999999 {
                             board[x + 1][j] = 1;
@@ -198,7 +199,7 @@ fn cal3BV(Board: &Vec<Vec<i32>>) -> usize {
                         }
                     }
                 }
-                if y <= 30 - 2 {
+                if y <= 28 {
                     if board[x][y + 1] > 999999 {
                         board[x][y + 1] = 1;
                         bv -= 1;
@@ -212,14 +213,11 @@ fn cal3BV(Board: &Vec<Vec<i32>>) -> usize {
             }
         }
     }
-    // println!("{:?}", bv);
     for i in 0..op_id + 1 {
         if op_list[i] {
             bv += 1;
         }
     }
-    // println!("{:?}", bv);
-    // println!("{:?}", Board);
     bv
 }
 

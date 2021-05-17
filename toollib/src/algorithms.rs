@@ -1,12 +1,14 @@
 use crate::utils::{
     big_number, cal3BV, combine, enuOneStep, enum_comb, layMineNumber, layMineOpNumber,
-    refreshBoard, refreshMatrix, refresh_matrixs, sum, unsolvableStructure, C_usize, C,
+    refreshBoard, refreshMatrix, refresh_matrixs, sum, unsolvableStructure, C_usize, C, cal3BV_exp
 };
 use itertools::Itertools;
 use std::cmp::{max, min};
 use std::sync::mpsc;
 use std::sync::{Arc, Mutex};
 use std::thread;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 // 中高级的算法，例如无猜埋雷、判雷引擎、计算概率
 // 文件结构是algorithms单方面引用utils，但暂时把所有文件写在同一个目录内，以后分开
@@ -643,3 +645,72 @@ pub fn layMine(
     Parameters.push(Times);
     (Board, Parameters)
 }
+
+pub fn sample_3BVs_exp(X0: usize, Y0: usize, n: usize) -> [usize; 382] {
+    // 从标准高级中采样计算3BV
+    // 16线程计算
+    let n0 = n / 16;
+    let mut threads = vec![];
+    for i in 0..16 {
+        let join_item = thread::spawn(move || -> [usize; 382] { lay_mine_number_study_exp(X0, Y0, n0) });
+        threads.push(join_item);
+    }
+    let mut aa = [0; 382];
+    for i in threads.into_iter().map(|c| c.join().unwrap()) {
+        for ii in 0..382 {
+            aa[ii] += i[ii];
+        }
+    }
+    aa
+}
+
+fn lay_mine_number_study_exp(X0: usize, Y0: usize, n: usize) -> [usize; 382] {
+    // 专用埋雷并计算3BV引擎，用于研究
+    let mut rng = thread_rng();
+    // let area: usize = 16 * 30 - 1;
+    let pointer = X0 + Y0 * 16;
+    let mut bv_record = [0; 382];
+    for id in 0..n {
+        let mut Board1Dim = [0; 479];
+        for i in 380..479 {
+            Board1Dim[i] = -1;
+        }
+
+        Board1Dim.shuffle(&mut rng);
+        let mut Board1Dim_2 = [0; 480];
+        // Board1Dim_2.reserve(area + 1);
+
+        for i in 0..pointer {
+            Board1Dim_2[i] = Board1Dim[i];
+        }
+        Board1Dim_2[pointer] = 0;
+        for i in pointer..479 {
+            Board1Dim_2[i + 1] = Board1Dim[i];
+        }
+        let mut Board: Vec<Vec<i32>> = vec![vec![0; 30]; 16];
+        for i in 0..480 {
+            if Board1Dim_2[i] < 0 {
+                let x = i % 16;
+                let y = i / 16;
+                Board[x][y] = -1;
+                for j in max(1, x) - 1..min(16, x + 2) {
+                    for k in max(1, y) - 1..min(30, y + 2) {
+                        if Board[j][k] >= 0 {
+                            Board[j][k] += 1;
+                        }
+                    }
+                }
+            }
+        }
+        bv_record[cal3BV_exp(&Board)] += 1;
+    }
+    bv_record
+}
+
+
+
+
+
+
+
+
