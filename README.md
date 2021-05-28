@@ -66,7 +66,7 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 *   [FairMinesweeper](https://github.com/xseryda/FairMinesweeper/)：无猜扫雷。不一定能跑通。
 *   [minegauler](https://github.com/LewisGaul/minegauler)：标准扫雷。采用PyQt5实现，有一种在一个格子中埋多个雷的模式。
 *   [LibreMines](https://github.com/Bollos00/LibreMines)：标准扫雷。采用Qt实现，在国际网受到大量关注。
-*   [swinekeeper](https://github.com/curtisbright/swinekeeper)：标准扫雷。采用Qt实现，按F3能够计算每格是雷的概率。
+*   [Truffle-Swine Keeper](https://github.com/curtisbright/swinekeeper)：标准扫雷。采用Qt实现，按F3能够计算每格是雷的概率。
 
 与同类项目相比，本项目更优秀。
 
