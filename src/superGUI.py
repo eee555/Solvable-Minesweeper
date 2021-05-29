@@ -24,6 +24,9 @@ class Ui_MainWindow(object):
             self.row = config.getint("DEFAULT", "row")
             self.column = config.getint("DEFAULT", "column")
             self.mineNum = config.getint("DEFAULT", "mineNum")
+            self.auto_replay = config.getint("DEFAULT", "auto_replay") # 完成度低于该百分比炸雷自动重开
+            self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
+            self.gameover_flag = config.getint("DEFAULT", "gameover_flag") # 游戏结束后自动标雷
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
                 self.min3BV = config.getint('BEGINNER', 'min3BV')
                 self.max3BV = config.getint('BEGINNER', 'max3BV')
@@ -59,7 +62,10 @@ class Ui_MainWindow(object):
                                  'mainWinLeft': 200,
                                  'row': 16,
                                  'column': 30,
-                                 'mineNum': 99
+                                 'mineNum': 99,
+                                 "auto_replay": 0,
+                                 "auto_show_score": 0,
+                                 "gameover_flag": 1,
                                  }
             config["BEGINNER"] = {'min3BV': 2,
                                  'max3BV': 54,

@@ -499,7 +499,7 @@
      <x>0</x>
      <y>0</y>
      <width>946</width>
-     <height>33</height>
+     <height>32</height>
     </rect>
    </property>
    <property name="font">
@@ -684,6 +684,9 @@
      <pointsize>12</pointsize>
     </font>
    </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
   </action>
   <action name="actionsdf_2">
    <property name="text">
@@ -694,6 +697,9 @@
      <family>微软雅黑</family>
      <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="shortcut">
+    <string>Z</string>
    </property>
   </action>
  </widget>

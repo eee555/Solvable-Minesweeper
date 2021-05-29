@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>783</width>
-    <height>355</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>783</width>
-    <height>355</height>
+    <height>360</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>783</width>
-    <height>355</height>
+    <height>360</height>
    </size>
   </property>
   <property name="mouseTracking">
@@ -36,8 +36,8 @@
    <property name="geometry">
     <rect>
      <x>650</x>
-     <y>100</y>
-     <width>101</width>
+     <y>90</y>
+     <width>111</width>
      <height>51</height>
     </rect>
    </property>
@@ -72,8 +72,8 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>650</x>
-     <y>200</y>
-     <width>101</width>
+     <y>220</y>
+     <width>111</width>
      <height>51</height>
     </rect>
    </property>
@@ -90,9 +90,9 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>620</x>
-     <y>40</y>
+     <y>10</y>
      <width>20</width>
-     <height>281</height>
+     <height>341</height>
     </rect>
    </property>
    <property name="orientation">
@@ -103,7 +103,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>220</y>
+     <y>230</y>
      <width>581</width>
      <height>20</height>
     </rect>
@@ -116,7 +116,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>240</y>
+     <y>250</y>
      <width>571</width>
      <height>91</height>
     </rect>
@@ -232,7 +232,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>185</y>
+     <y>195</y>
      <width>160</width>
      <height>22</height>
     </rect>
@@ -251,7 +251,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>180</y>
+     <y>190</y>
      <width>71</width>
      <height>31</height>
     </rect>
@@ -276,7 +276,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>545</x>
-     <y>180</y>
+     <y>190</y>
      <width>41</width>
      <height>31</height>
     </rect>
@@ -307,7 +307,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>590</x>
-     <y>180</y>
+     <y>190</y>
      <width>21</width>
      <height>31</height>
     </rect>
@@ -328,7 +328,7 @@ color:white;font: bold;</string>
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -570,7 +570,7 @@ color:white;font: bold;</string>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>340</x>
@@ -791,6 +791,25 @@ color:white;font: bold;</string>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>160</y>
+     <width>151</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>结束后标雷</string>
+   </property>
   </widget>
  </widget>
  <resources/>

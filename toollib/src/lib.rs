@@ -254,8 +254,8 @@ impl minesweeperBoard {
                 self.solved3BV += 1;
                 self.ces += 1;
                 refreshBoard(
-                    &self.board.clone(),
-                    &mut self.gameBoard.clone(),
+                    &self.board,
+                    &mut self.gameBoard,
                     vec![(x, y)],
                 );
                 return;
@@ -265,8 +265,8 @@ impl minesweeperBoard {
             }
             _ => {
                 refreshBoard(
-                    &self.board.clone(),
-                    &mut self.gameBoard.clone(),
+                    &self.board,
+                    &mut self.gameBoard,
                     vec![(x, y)],
                 );
                 if self.numIs3BV(x, y) {
@@ -334,13 +334,17 @@ impl minesweeperBoard {
         let mut chordingCells = vec![]; // 未打开的格子的集合
         let mut flagedNum = 0; // 双击点周围的标雷数
         let mut surround3BV = 0; // 周围的3BV
+        let mut flag_ch_op = false; // 是否通过双击开空了：一次双击最多打开一个空
         for i in max(1, x) - 1..min(self.Row, x + 2) {
             for j in max(1, y) - 1..min(self.Column, y + 2) {
                 if i != x || j != y {
                     if self.gameBoard[i][j] == 11 {
                         flagedNum += 1
                     }
-                    if self.gameBoard[i][j] == 10 {
+                    if self.gameBoard[i][j] == 10 && self.board[i][j] != -1 {
+                        if self.board[i][j] == 0 {
+                            flag_ch_op = true;
+                        }
                         flagChordingUseful = true;
                         chordingCells.push((i, j));
                         if self.numIs3BV(i, j) {
@@ -353,21 +357,24 @@ impl minesweeperBoard {
         if flagedNum == self.gameBoard[x][y] && flagChordingUseful {
             self.ces += 1;
             self.solved3BV += surround3BV;
+            if flag_ch_op {
+                self.solved3BV += 1;
+            }
             refreshBoard(
-                &self.board.clone(),
-                &mut self.gameBoard.clone(),
+                &self.board,
+                &mut self.gameBoard,
                 chordingCells,
             );
         }
     }
     pub fn numIs3BV(&self, x: usize, y: usize) -> bool {
         // 判断该数字是不是3BV，0也可以
-        if self.board[x][y] == 0 {
-            return true;
+        if self.board[x][y] == -1 {
+            return false;
         }
         for i in max(1, x) - 1..min(self.Row, x + 2) {
             for j in max(1, y) - 1..min(self.Column, y + 2) {
-                if self.board[i][j] == 0 && (x != i || y != j) {
+                if self.board[i][j] == 0 {
                     return false;
                 }
             }

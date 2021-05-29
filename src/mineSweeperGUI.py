@@ -62,7 +62,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actionxis.triggered.connect(self.action_HEvent)
         self.actiongaun_yv.triggered.connect(self.action_AEvent)
         self.actionrumjc.triggered.connect(self.action_JEvent)
-        
+
         config = configparser.ConfigParser()
         config.read('gameSetting.ini')
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
@@ -222,7 +222,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.operationStream.append(('r2', (i, j)))  # 记录鼠标动作
             self.label_2.setPixmap(QPixmap(self.pixmapNum[14]))
             self.label_2.setScaledContents(True)
-    
+
     def mineAreaRightPressed(self, i, j):
         if not self.finish:
             self.operationStream.append(('r1', (i, j)))  # 记录鼠标动作
@@ -433,7 +433,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_2.setScaledContents(True)
         self.gameWinFlag = False
         self.gameFinished()
-        
+
     def showMineNum(self, n):
         # 显示剩余雷数，雷数大于等于0，小于等于999，整数
         if n >= 0 and n <= 999:
@@ -451,7 +451,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label_12.setPixmap(self.pixmapLEDNum[9])
             self.label_13.setPixmap(self.pixmapLEDNum[9])
             return
-         
+
     def showTime(self, t):
         # 显示剩余时间，时间数大于等于0，小于等于999秒，整数
         if t >= 0 and t <= 999:
@@ -461,7 +461,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             return
         elif t >= 1000:
             return
-    
+
     def actionChecked(self, k):
         # 菜单前面打勾
         self.actionchu_ji.setChecked(False)
@@ -548,8 +548,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
 
     def action_NEvent(self):
+        # 游戏设置
         self.actionChecked('N')
-        ui = gameSettings.Ui_Form()
+        ui = gameSettings.ui_Form()
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()

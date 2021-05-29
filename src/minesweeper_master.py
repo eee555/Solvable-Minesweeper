@@ -19,7 +19,7 @@ layMineNumber = ms_toollib.py_layMineNumber
 # 通用标准埋雷引擎
 # 输出为二维的列表
 
-layMine = ms_toollib.layMine
+layMine = ms_toollib.py_layMine
 # layMine(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6, MaxTimes = 1e6, method = 'filter')
 # 布雷，参数依次是行、列、雷数、起手位置的第几行-1、第几列-1
 # 适用于游戏的埋雷算法。
@@ -33,7 +33,7 @@ layMineOpNumber = ms_toollib.py_layMineOpNumber
 # 这个函数用于给刚埋好雷的局面写数字
 # 输出为二维列表
 
-layMineOp = ms_toollib.layMineOp
+layMineOp = ms_toollib.py_layMineOp
 # layMineOp(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6, MaxTimes = 1e6)
 # 用于游戏埋雷，参数依次是行、列、雷数、起手位置的第几行-1、第几列-1
 # 起手必开空，不校验雷数是否超过空格数
@@ -360,7 +360,7 @@ def print2(arr, mode = 0):
             print()
 
 # layMineSolvable = ms_toollib.layMineSolvable
-layMineSolvable = ms_toollib.layMineSolvable_thread
+layMineSolvable = ms_toollib.py_layMineSolvable_thread
 # layMineSolvable(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6,
 #                 MaxTimes = 1e6, enuLimit = 30)
 # 3BV下限、上限，最大尝试次数，返回是否成功。
