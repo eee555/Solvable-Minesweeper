@@ -76,16 +76,16 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 
 算法优化：高级埋雷速度达到37525局/秒，相当于Arbiter的三倍左右，高级无猜局面埋雷速度15.7局/秒。游戏结束按空格可以显示实力指标的极坐标图。删去了一些无用的功能。
 
-链接：[https://wws.lanzous.com/iq9Ocm8zdtc](https://wws.lanzous.com/iq9Ocm8zdtc)
+链接：[https://wws.lanzoui.com/iq9Ocm8zdtc](https://wws.lanzous.com/iq9Ocm8zdtc)
 
 ### 正式版v2.2.5：
 
 算法优化：高级无猜局面埋雷速度达到约252局/秒。修复了上一个版本的严重bug。
 
-链接：[https://wws.lanzous.com/iS3wImv2y5e](https://wws.lanzous.com/iS3wImv2y5e)
+链接：[https://wws.lanzoui.com/iS3wImv2y5e](https://wws.lanzous.com/iS3wImv2y5e)
 
 ### 测试版v2.2.6-alpha：
 
 修复了若干bug。算法优化：(16,16,72)无猜局面埋雷速度提高200%。新功能：快捷键4、5、6可以快速设置三种不同的自定义的自定义模式。对自定义模式的优化，提高了稳定性。对局面刷新的优化。
 
-链接：[https://wwe.lanzous.com/igPFFo7mwxi](https://wwe.lanzous.com/igPFFo7mwxi)
+链接：[https://wwe.lanzoui.com/igPFFo7mwxi](https://wwe.lanzous.com/igPFFo7mwxi)
