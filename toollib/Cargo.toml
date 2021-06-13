@@ -18,9 +18,9 @@ futures = "0.3.15"
 tract-onnx = "0.14.2"
 
 
-#[lib]
-#name = "ms_toollib"
-#crate-type = ["cdylib"]
+[lib]
+name = "ms_toollib"
+crate-type = ["cdylib"]
 
 
 
