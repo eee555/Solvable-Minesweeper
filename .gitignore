@@ -149,3 +149,5 @@ gameSetting.ini
 /uiFiles/*.py
 /src/.idea/
 src/picture.png
+src/params.onnx
+toollib/frame.csv

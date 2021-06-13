@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QPainter, QColor, QPixmap
+from PyQt5.QtGui import QPainter, QColor, QPixmap, QFont
 from PyQt5.QtWidgets import QWidget
 
 class mineLabel(QWidget):
@@ -11,17 +11,20 @@ class mineLabel(QWidget):
     leftAndRightPressed = QtCore.pyqtSignal (int, int)
     leftAndRightRelease = QtCore.pyqtSignal (int, int)
     mouseMove = QtCore.pyqtSignal (int, int)
-    
+
+
 
     def __init__(self, row, column, pixSize):
         super (mineLabel, self).__init__ ()
         self.leftAndRightClicked = False
+        self.paintPossibility = False  # 是否打印概率
         # self.status = 0  # 0、1、2、3代表没挖开、挖开、标雷、踩到雷的红雷
         self.pixSize = pixSize
         self.row = row
         self.column = column
         self.board = [[10] * column for _ in range(row)]
         # 0~8，10代表未打开，11代表标雷，12代表红雷，13代表叉雷，14代表雷，-2代表被按下的阴影
+        self.boardPossibility = [[0.0] * column for _ in range(row)]
         self.importCellPic(pixSize)
 
     def mousePressEvent(self, e):  # 重载一下鼠标点击事件
@@ -63,10 +66,15 @@ class mineLabel(QWidget):
         super().paintEvent(event)
         painter = QPainter()
         painter.begin(self)
+        painter.setFont(QFont('Roman times',8))
         for i in range(0, self.row):
             for j in range(0, self.column):
                 if self.board[i][j] == 10:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[9]))
+                    if self.paintPossibility:
+                        painter.setOpacity(self.boardPossibility[i][j])
+                        painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[14]))
+                        painter.setOpacity(1.0)
                 elif self.board[i][j] <= 0:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[0]))
                 elif self.board[i][j] == 1:
@@ -107,6 +115,7 @@ class mineLabel(QWidget):
         pixmap7 = QPixmap("media/17.png")
         pixmap8 = QPixmap("media/18.png")
         pixmap9 = QPixmap("media/00.png")
+        pixmap_mine = QPixmap("media/01.png")
         pixmap10 = QPixmap("media/03.png")
         pixmap11 = QPixmap("media/02.png")
         pixmap12 = QPixmap("media/01.png")
@@ -121,13 +130,14 @@ class mineLabel(QWidget):
         pixmap7 = pixmap7.scaled(pixSize, pixSize)
         pixmap8 = pixmap8.scaled(pixSize, pixSize)
         pixmap9 = pixmap9.scaled(pixSize, pixSize)
+        pixmap_mine = pixmap_mine.scaled(pixSize, pixSize)
         pixmap10 = pixmap10.scaled(pixSize, pixSize)
         pixmap11 = pixmap11.scaled(pixSize, pixSize)
         pixmap12 = pixmap12.scaled(pixSize, pixSize)
         pixmap13 = pixmap13.scaled(pixSize, pixSize)
         self.pixmapNum = {0: pixmap0, 1: pixmap1, 2: pixmap2, 3: pixmap3, 4: pixmap4,
                      5: pixmap5, 6: pixmap6, 7: pixmap7, 8: pixmap8, 9: pixmap9,
-                     10: pixmap10, 11: pixmap11, 12: pixmap12, 13: pixmap13}
+                     10: pixmap10, 11: pixmap11, 12: pixmap12, 13: pixmap13, 14:pixmap_mine}
 
 
 

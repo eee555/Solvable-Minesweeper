@@ -122,6 +122,10 @@ SolveEnumerate = ms_toollib.py_SolveEnumerate
 # SolveEnumerate(MatrixA, Matrixx, Matrixb, BoardofGame, enuLimit=30)
 #枚举法判雷
 
+calPossibility = ms_toollib.py_cal_possibility
+
+calPossibility_onboard = ms_toollib.py_cal_possibility_onboard
+
 def refreshMatrixWithNotMine(MatrixA,Matrixx,Matrixb,NotMine):
     # 用非雷刷新三个矩阵，同时删掉全为0的行
     # MatrixA,Matrixx,Matrixb = refreshMatrixWithNotMine(MatrixA,Matrixx,Matrixb,NotMine)
@@ -534,7 +538,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
         scoresValue.append(math.atan(STNB/20)*0.63661977)
         scoresValue.append((0.1097*IOE**3+0.3169*IOE*IOE-0.01307*IOE+0.0005845)/(IOE*IOE-1.342*IOE+0.899))
         scoresValue.append(math.atan(50/RQP)*0.63661977)
-    return scores, scoresValue
+    return scores, scoresValue, msBoard
 
 
 

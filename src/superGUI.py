@@ -53,6 +53,9 @@ class Ui_MainWindow(object):
             self.row = 16
             self.column = 30
             self.mineNum = 99
+            self.auto_replay = -1
+            self.auto_show_score = 101
+            self.gameover_flag = 1
             config["DEFAULT"] = {'timesLimit': 1000,
                                  'enuLimit': 30,
                                  'gameMode': 0,
@@ -63,8 +66,8 @@ class Ui_MainWindow(object):
                                  'row': 16,
                                  'column': 30,
                                  'mineNum': 99,
-                                 "auto_replay": 0,
-                                 "auto_show_score": 0,
+                                 "auto_replay": -1,
+                                 "auto_show_score": 101,
                                  "gameover_flag": 1,
                                  }
             config["BEGINNER"] = {'min3BV': 2,
@@ -430,6 +433,7 @@ class Ui_MainWindow(object):
         self.frameShortcut7 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_6), MainWindow)
         self.frameShortcut4 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F2), MainWindow)
         self.frameShortcut8 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Space), MainWindow)
+        self.frameShortcut9 = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Space"), MainWindow)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -479,6 +483,7 @@ class Ui_MainWindow(object):
         self.label.rightPressed.connect(self.mineAreaRightPressed)
         self.label.rightRelease.connect(self.mineAreaRightRelease)
         self.label.mouseMove.connect(self.mineMouseMove)
+        self.mainWindow.keyRelease.connect(self.mineKeyReleaseEvent)
 
         self.label.setObjectName("label")
         self.label.resize(QSize(self.pixSize*self.column, self.pixSize*self.row))

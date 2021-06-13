@@ -1,5 +1,5 @@
 # from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QCoreApplication, QPoint
+from PyQt5.QtCore import QTimer, QCoreApplication, QPoint, Qt
 from PyQt5.QtGui import QPixmap, QPainter
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
 import gameDefinedParameter
@@ -12,13 +12,18 @@ import gameScores
 import minesweeper_master
 import configparser
 import time
-import widgetLib
+import gameSettingShortcuts
+import captureScreen
+# import sys
+# from PyQt5.QtWidgets import QApplication
 
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow):
+        self.mainWindow = MainWindow
         super(MineSweeperGUI, self).__init__(MainWindow)
         # MineSweeperGUI父类的init中读.ini、读图片、设置字体、局面初始化等
+        
         self.finish = False
         self.gamestart = False
 
@@ -26,9 +31,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.gameWinFlag = False
         self.leftHeld = False
         self.leftAndRightHeld = False  # 鼠标是否被按下的标志位
+        self.spaceHold = False # 空格是否按下的标志位
         self.oldCell = (0, 0)  # 鼠标的上个停留位置，用于绘制按下去时的阴影
         self.boardofGame = [[10] * self.column for _ in range(self.row)]
-        # boardofGame保存了判雷AI所看到的局面,不需要维护，只需要维持传递
+        # boardofGame保存了判雷AI所看到（心目中）的局面, 不需要维护，只需要维持传递
         # 包括0~8，10代表未打开，11代表标雷
         # 比如，玩家没有标出来的雷，AI会在这上面标出来，但不一定标全
         self.notMine = []  # 保存AI判出来的雷
@@ -45,8 +51,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.timer = QTimer()
         self.timer.setInterval(1000)  # 一千毫秒回调一次的定时器
         self.timer.timeout.connect(self.timeCount)
-        text4 = '1'
-        self.label_info.setText(text4)
+        # text4 = '1'
+        # self.label_info.setText(text4)
         self.mineUnFlagedNum = self.mineNum  # 没有标出的雷，显示在左上角
         self.showMineNum(self.mineUnFlagedNum)    # 在左上角画雷数
 
@@ -82,6 +88,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.frameShortcut6.activated.connect(lambda: self.predefined_Board(5))
         self.frameShortcut7.activated.connect(lambda: self.predefined_Board(6))
         self.frameShortcut8.activated.connect(self.showScores)
+        self.frameShortcut9.activated.connect(self.screenShot)
 
 
 
@@ -94,8 +101,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         xx = self.row
         yy = self.column
         num = self.mineNum
-        if self.gameMode >= 3:  # 如果是模式3及以后，需要用判雷器
-            self.boardofGame = [[10] * self.column for _ in range(self.row)]
+        # AI心目中的局面
+        self.boardofGame = [[10] * self.column for _ in range(self.row)]
 
         if self.gameMode == 2 or self.gameMode == 3 or self.gameMode == 6:
             # 根据模式生成局面
@@ -182,6 +189,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                             return True
                     else:
                         return True
+        # print(self.boardofGame)
 
     def mineAreaLeftRelease(self, i, j):
         if not self.finish:
@@ -246,7 +254,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label_2.setPixmap(QPixmap(self.pixmapNum[15]))
             self.label_2.setScaledContents(True)
             if self.label.board[i][j] == 10:
-                self.label.board[i][j] = -2
+                self.label.board[i][j] = -2  # -2是指，局面中，由于双击的高亮，导致看起来像0的格子
                 self.label.update()
 
     def mineAreaLeftAndRightPressed(self, i, j):
@@ -260,6 +268,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                         if self.label.board[r][c] == 10:
                             self.label.board[r][c] = -2
             self.label.update()
+
+    def mineKeyReleaseEvent(self, keyName):
+        if keyName == 'Space':
+            self.spaceHold = False
+            # print('False')
+            self.label.paintPossibility = False
+            self.label.update()
+
 
     def chordingFlag(self, i, j):
         # i, j 周围标雷数是否满足双击的要求
@@ -371,6 +387,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.board = [[0] * self.column for _ in range(self.row)]
         self.operationStream = []  # 记录整局的鼠标操作流，格式为[('l1',(x,y)),('r1',(x,y)),('c2',(x,y))]
         self.boardofGame = [[10] * self.column for _ in range(self.row)]
+        self.label.paintPossibility = False
 
     def gameRestart(self):  # 画界面，但是不埋雷，改数据而不是重新生成label
         # 点击脸时调用
@@ -386,13 +403,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.board = [[10] * self.column for _ in range(self.row)]
         self.label.update()
         self.gamestart = False
+        self.label.paintPossibility = False
 
     def gameFinished(self):  # 游戏结束画残局，停时间，改状态
         # print(self.operationStream)#调试用，否则请注释
         self.endTime = time.time()
         self.gameTime = self.endTime - self.startTime # 精确的游戏时间
         self.timer.stop()
-        if self.gameWinFlag:
+        if self.gameWinFlag and self.gameover_flag:
             for idx, row in enumerate(self.board):
                 for idy, item in enumerate(row):
                     if item == -1:
@@ -425,14 +443,44 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
         self.gameWinFlag = True
-        self.gameFinished()
+        if self.row == 8 and self.column == 8 and self.mineNum == 10:
+            Difficulty = 1
+        elif self.row == 16 and self.column == 16 and self.mineNum == 40:
+            Difficulty = 2
+        elif self.row == 16 and self.column == 30 and self.mineNum == 99:
+            Difficulty = 3
+        else:
+            Difficulty = 4
+        self.scores, self.scoresValue, msBoard = minesweeper_master.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
+                                                      self.operationStream, self.board, Difficulty)
+        if msBoard.solved3BV / minesweeper_master.cal3BV(self.board) * 100 >= self.auto_show_score:
+            self.gameFinished()
+            self.showScores()
+        else:
+            self.gameFinished()
 
     def gameFailed(self): # 失败后改脸和状态变量
         pixmap = QPixmap(self.pixmapNum[16])
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
         self.gameWinFlag = False
-        self.gameFinished()
+        if self.row == 8 and self.column == 8 and self.mineNum == 10:
+            Difficulty = 1
+        elif self.row == 16 and self.column == 16 and self.mineNum == 40:
+            Difficulty = 2
+        elif self.row == 16 and self.column == 30 and self.mineNum == 99:
+            Difficulty = 3
+        else:
+            Difficulty = 4
+        self.scores, self.scoresValue, msBoard = minesweeper_master.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
+                                                      self.operationStream, self.board, Difficulty)
+        if msBoard.solved3BV / minesweeper_master.cal3BV(self.board) * 100 >= self.auto_show_score:
+            self.gameFinished()
+            self.showScores()
+        elif msBoard.solved3BV / minesweeper_master.cal3BV(self.board) * 100 <= self.auto_replay:
+            self.gameRestart()
+        else:
+            self.gameFinished()
 
     def showMineNum(self, n):
         # 显示剩余雷数，雷数大于等于0，小于等于999，整数
@@ -561,6 +609,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.enuLimit = ui.enuLimit
             self.gameMode = ui.gameMode
             self.pixSize = ui.pixSize
+            self.auto_replay = ui.auto_replay
+            self.auto_show_score = ui.auto_show_score
+            self.gameover_flag = ui.gameover_flag
             self.importLEDPic(self.pixSize)
             self.label.importCellPic(self.pixSize)
             self.label_2.reloadFace(self.pixSize)
@@ -570,7 +621,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_QEvent(self):
         # 词典，即游戏帮助、术语表
         self.actionChecked('Q')
-        ui = widgetLib.myGameSettingShortcuts()
+        ui = gameSettingShortcuts.myGameSettingShortcuts()
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -601,23 +652,66 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.show()
         ui.Dialog.exec_()
 
+    def screenShot(self):
+        # app = QApplication(sys.argv)
+        # windows = captureScreen.CaptureScreen()
+        # windows.show()
+        # sys.exit(app.exec_())
+        ui = captureScreen.CaptureScreen()
+        ui.show()
+        ui.exec_()
+        if len(ui.board) == 8 and len(ui.board[0]) == 8:
+            self.setBoard_and_start(8, 8, 10)
+            self.mineNum = 10
+        elif len(ui.board) == 16 and len(ui.board[0]) == 16:
+            self.setBoard_and_start(16, 16, 40)
+            self.mineNum = 40
+        elif len(ui.board) == 16 and len(ui.board[0]) == 30:
+            self.setBoard_and_start(16, 30, 99)
+            self.mineNum = 99
+        else:
+            return
+        self.label.board = ui.board
+        self.label.boardPossibility = minesweeper_master.calPossibility_onboard(ui.board, self.mineNum)
+        self.label.paintPossibility = True
+        self.label.update()
+        self.finish = True
+        self.spaceHold = True
+        # print(ui.board)
+
     def showScores(self):
-        # 游戏结束后，按空格展示成绩
-        if self.finish:
-            if self.row == 8 and self.column == 8 and self.mineNum == 10:
-                Difficulty = 1
-            elif self.row == 16 and self.column == 16 and self.mineNum == 40:
-                Difficulty = 2
-            elif self.row == 16 and self.column == 30 and self.mineNum == 99:
-                Difficulty = 3
+        if not self.spaceHold:
+            self.spaceHold = True
+            # print('true')
+            # 游戏结束后，按空格展示成绩
+            if self.finish:
+            #     if self.row == 8 and self.column == 8 and self.mineNum == 10:
+            #         Difficulty = 1
+            #     elif self.row == 16 and self.column == 16 and self.mineNum == 40:
+            #         Difficulty = 2
+            #     elif self.row == 16 and self.column == 30 and self.mineNum == 99:
+            #         Difficulty = 3
+            #     else:
+            #         Difficulty = 4
+                # scores, scoresValue = minesweeper_master.calScores(self.gameMode, self.gameWinFlag, self.gameTime,
+                #                                       self.operationStream, self.board, Difficulty)
+                ui = gameScores.Ui_Form(self.scores, self.scoresValue)
+                ui.setModal(True)
+                ui.show()
+                ui.exec_()
+            # 展示每格概率
             else:
-                Difficulty = 4
-            scores, scoresValue = minesweeper_master.calScores(self.gameMode, self.gameWinFlag, self.gameTime,
-                                                  self.operationStream, self.board, Difficulty)
-            ui = gameScores.Ui_Form(scores, scoresValue)
-            ui.setModal(True)
-            ui.show()
-            ui.exec_()
+                self.label.paintPossibility = True
+                mineNum = self.mineNum
+                for i in self.boardofGame:
+                    for j in i:
+                        if j == 11:
+                            mineNum -= 1
+                self.label.boardPossibility = minesweeper_master.calPossibility_onboard(self.boardofGame, mineNum)
+                # print(self.label.boardPossibility)
+                self.label.update()
+
+
 
     def refreshSettingsDefault(self):
         # 刷新游戏设置.ini里默认部分的设置，与当前游戏里一致，

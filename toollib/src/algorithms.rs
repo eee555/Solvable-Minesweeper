@@ -1,14 +1,17 @@
 use crate::utils::{
-    big_number, cal3BV, combine, enuOneStep, enum_comb, layMineNumber, layMineOpNumber,
-    refreshBoard, refreshMatrix, refresh_matrixs, sum, unsolvableStructure, C_usize, C, cal3BV_exp
+    big_number, cal3BV, cal3BV_exp, combine, enuOneStep, enum_comb, layMineNumber, layMineOpNumber,
+    refreshBoard, refreshMatrix, refresh_matrixs, sum, unsolvableStructure, C_usize, C,
 };
+use crate::OBR::ImageBoard;
 use itertools::Itertools;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 use std::cmp::{max, min};
 use std::sync::mpsc;
 use std::sync::{Arc, Mutex};
 use std::thread;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
+use tract_ndarray::Array;
+use tract_onnx::prelude::*;
 
 // 中高级的算法，例如无猜埋雷、判雷引擎、计算概率
 // 文件结构是algorithms单方面引用utils，但暂时把所有文件写在同一个目录内，以后分开
@@ -120,7 +123,7 @@ pub fn SolveDirect(
 }
 
 pub fn cal_possibility(
-    board_of_game: Vec<Vec<i32>>,
+    board_of_game: &Vec<Vec<i32>>,
     mine_num: usize,
 ) -> (Vec<((usize, usize), f64)>, f64) {
     // 输入局面、未知雷数，返回每一个未知的格子是雷的概率
@@ -296,7 +299,6 @@ pub fn cal_possibility(
     // 第七步，计算内部未知区域是雷的概率
     (p, p_unknow)
 }
-
 
 pub fn layMineOp(
     Row: usize,
@@ -608,7 +610,6 @@ pub fn layMineSolvable(
     (Board, Parameters)
 }
 
-
 pub fn layMine(
     Row: usize,
     Column: usize,
@@ -652,7 +653,8 @@ pub fn sample_3BVs_exp(X0: usize, Y0: usize, n: usize) -> [usize; 382] {
     let n0 = n / 16;
     let mut threads = vec![];
     for i in 0..16 {
-        let join_item = thread::spawn(move || -> [usize; 382] { lay_mine_number_study_exp(X0, Y0, n0) });
+        let join_item =
+            thread::spawn(move || -> [usize; 382] { lay_mine_number_study_exp(X0, Y0, n0) });
         threads.push(join_item);
     }
     let mut aa = [0; 382];
@@ -707,10 +709,71 @@ fn lay_mine_number_study_exp(X0: usize, Y0: usize, n: usize) -> [usize; 382] {
     bv_record
 }
 
+fn OBR_cell(
+    cell_image: &Vec<f32>,
+    model: &tract_onnx::prelude::SimplePlan<
+        tract_onnx::prelude::TypedFact,
+        std::boxed::Box<dyn tract_onnx::prelude::TypedOp>,
+        tract_onnx::prelude::Graph<
+            tract_onnx::prelude::TypedFact,
+            std::boxed::Box<dyn tract_onnx::prelude::TypedOp>,
+        >,
+    >,
+) -> TractResult<i32> {
+    // 光学识别单个cell
 
+    let image: Tensor = Array::from_shape_vec((1, 3, 16, 16), (*cell_image).clone())
+        .unwrap()
+        .into();
+    let result = model.run(tvec!(image))?;
 
+    let best = result[0]
+        .to_array_view::<f32>()?
+        .iter()
+        .cloned()
+        .zip(1..)
+        .max_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+    match best.unwrap().1 {
+        1 => Ok(0),
+        2 => Ok(1),
+        3 => Ok(2),
+        4 => Ok(3),
+        5 => Ok(4),
+        6 => Ok(5),
+        7 => Ok(6),
+        8 => Ok(7),
+        9 => Ok(8),
+        10 => Ok(10),
+        _ => Ok(11),
+    }
+}
 
-
-
-
-
+pub fn OBR_board(data_vec: Vec<usize>, height: usize, width: usize) -> Result<Vec<Vec<i32>>, ()> {
+    if (height <= 24 || width <= 3) {
+        return Ok(vec![vec![201]]);
+    }
+    let mut image_board = ImageBoard::new(data_vec, height, width);
+    image_board.get_pos_pixel();
+    if (image_board.r <= 3 || image_board.c <= 3) {
+        return Ok(vec![vec![200]]);
+    }
+    let mut board = vec![vec![0i32; image_board.c]; image_board.r];
+    let model = (tract_onnx::onnx()
+        .model_for_path("params.onnx")
+        .unwrap()
+        .with_input_fact(
+            0,
+            InferenceFact::dt_shape(f32::datum_type(), tvec!(1, 3, 16, 16)),
+        )
+        .unwrap()
+        .into_optimized()
+        .unwrap()
+        .into_runnable())
+    .unwrap();
+    for i in 0..image_board.r {
+        for j in 0..image_board.c {
+            board[i][j] = OBR_cell(&image_board.extra_save_cell(i, j, 16), &model).unwrap();
+        }
+    }
+    Ok(board)
+}

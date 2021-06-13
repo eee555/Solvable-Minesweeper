@@ -13,8 +13,10 @@ use utils::{
 mod algorithms;
 use algorithms::{
     cal_possibility, isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate,
-    SolveMinus, layMine, layMineSolvable, sample_3BVs_exp
+    SolveMinus, layMine, layMineSolvable, sample_3BVs_exp, OBR_board,
 };
+mod OBR;
+
 
 // 负责rust和python之间的接口，类似文档
 
@@ -195,12 +197,40 @@ fn py_cal_possibility(
     board_of_game: Vec<Vec<i32>>,
     mine_num: usize,
 ) -> PyResult<(Vec<((usize, usize), f64)>, f64)> {
-    Ok(cal_possibility(board_of_game, mine_num))
+    Ok(cal_possibility(&board_of_game, mine_num))
+}
+
+#[pyfunction]
+fn py_cal_possibility_onboard(
+    board_of_game: Vec<Vec<i32>>,
+    mine_num: usize,
+) -> PyResult<Vec<Vec<f64>>> {
+    let mut p = vec![vec![-1.0; board_of_game[0].len()]; board_of_game.len()];
+    let pp = cal_possibility(&board_of_game, mine_num);
+    for i in pp.0 {
+        p[i.0.0][i.0.1] = i.1;
+    }
+    for r in 0..board_of_game.len() {
+        for c in 0..board_of_game[0].len() {
+            if board_of_game[r][c] == 11 {
+                p[r][c] = 1.0;
+            }
+            else if board_of_game[r][c] == 10 && p[r][c] < -0.5 {
+                p[r][c] = pp.1;
+            }
+        }
+    }
+    Ok(p)
 }
 
 #[pyfunction]
 fn py_sample_3BVs_exp(X0: usize, Y0: usize, n: usize) -> PyResult<Vec<usize>> {
     Ok((&sample_3BVs_exp(X0, Y0, n)).to_vec())
+}
+
+#[pyfunction]
+fn py_OBR_board(data_vec: Vec<usize>, height: usize, width: usize) -> PyResult<Vec<Vec<i32>>> {
+    Ok(OBR_board(data_vec, height, width).unwrap())
 }
 
 #[pyclass]
@@ -452,6 +482,8 @@ fn ms_toollib(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_layMineSolvable_thread, m)?)?;
     m.add_function(wrap_pyfunction!(py_cal_possibility, m)?)?;
     m.add_function(wrap_pyfunction!(py_sample_3BVs_exp, m)?)?;
+    m.add_function(wrap_pyfunction!(py_OBR_board, m)?)?;
+    m.add_function(wrap_pyfunction!(py_cal_possibility_onboard, m)?)?;
     m.add_class::<minesweeperBoard>()?;
     Ok(())
 }

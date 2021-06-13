@@ -8,7 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import configparser
-from ui.ui_gs import Ui_Form
+from ui.ui_gameSettings import Ui_Form
 
 class ui_Form(Ui_Form):
     def __init__(self):
@@ -80,12 +80,15 @@ class ui_Form(Ui_Form):
         #只有点确定才能进来
 
         self.alter = True
-        self.min3BV = self.spinBox_6.value()  # 改到这里还没改完
-        self.max3BV = int(self.lineEdit_2.text())
-        self.timesLimit = int(self.lineEdit_3.text())
-        self.enuLimit = int(self.lineEdit_4.text())
+        self.min3BV = self.spinBox_6.value()
+        self.max3BV = self.spinBox_7.value()
+        self.timesLimit = self.spinBox_8.value()
+        self.enuLimit = self.spinBox_9.value()
         self.transparency = self.horizontalSlider.value()
-        self.pixSize = int(self.lineEdit_5.text())
+        self.pixSize = self.spinBox_10.value()
+        self.auto_replay = self.spinBox_11.value()
+        self.auto_show_score = self.spinBox_12.value()
+        self.gameover_flag = 1 if self.checkBox.isChecked() else 0
         # gameMode = 0，1，2，3，4，5，6，7代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         if self.radioButton.isChecked() == True:
@@ -114,6 +117,9 @@ class ui_Form(Ui_Form):
         conf.set("DEFAULT", "gameMode", str(self.gameMode))
         conf.set("DEFAULT", "transparency", str(self.transparency))
         conf.set("DEFAULT", "pixSize", str(self.pixSize))
+        conf.set("DEFAULT", "auto_replay", str(self.auto_replay))
+        conf.set("DEFAULT", "auto_show_score", str(self.auto_show_score))
+        conf.set("DEFAULT", "gameover_flag", str(self.gameover_flag))
         conf.write(open('gameSetting.ini', "w"))
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             conf.set("BEGINNER", "min3BV", str(self.min3BV))
