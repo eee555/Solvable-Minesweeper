@@ -116,12 +116,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if Parameters[0]:
             # text4 = 'Sucess! 3BV=%d\n尝试次数为%d'%(Parameters[1],Parameters[2])
             # text4 = 'ttt'
-            text4 = 'Success! 尝试次数为%d' % (Parameters[2])
+            text4 = 'Success!'
             self.label_info.setText(text4)
         else:
             # text4 = 'Failure! 3BV=%d\n尝试次数为%d'%(Parameters[1],Parameters[2])
             # text4 = 'iii'
-            text4 = 'Failure! 尝试次数为%d' % (Parameters[2])
+            text4 = 'Failure!'
             self.label_info.setText(text4)
 
         for r in range(0, xx):
@@ -274,6 +274,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.spaceHold = False
             # print('False')
             self.label.paintPossibility = False
+            self.label.setMouseTracking(False)
             self.label.update()
 
 
@@ -333,6 +334,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.update()
 
     def mineMouseMove(self, i, j):
+        # 按住空格后的鼠标移动事件，与概率的显示有关
+        if self.spaceHold:
+            text4 = '{:.3f}'.format(max(0, self.label.boardPossibility[i][j]))
+            self.label_info.setText(text4)
+            return
+        # 正常情况的鼠标移动事件，与高亮的显示有关
         if not self.finish:
             if not self.outOfBorder(i, j):
                 if (i, j) != self.oldCell and (self.leftAndRightHeld or self.leftHeld):
@@ -388,6 +395,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.operationStream = []  # 记录整局的鼠标操作流，格式为[('l1',(x,y)),('r1',(x,y)),('c2',(x,y))]
         self.boardofGame = [[10] * self.column for _ in range(self.row)]
         self.label.paintPossibility = False
+        self.label.setMouseTracking(False)
 
     def gameRestart(self):  # 画界面，但是不埋雷，改数据而不是重新生成label
         # 点击脸时调用
@@ -404,6 +412,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.update()
         self.gamestart = False
         self.label.paintPossibility = False
+        self.label.setMouseTracking(False)
 
     def gameFinished(self):  # 游戏结束画残局，停时间，改状态
         # print(self.operationStream)#调试用，否则请注释
@@ -702,6 +711,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             # 展示每格概率
             else:
                 self.label.paintPossibility = True
+                self.label.setMouseTracking(True)
                 mineNum = self.mineNum
                 for i in self.boardofGame:
                     for j in i:

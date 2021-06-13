@@ -177,6 +177,8 @@ pub fn cal_possibility(
                             for d in 0..s.len() {
                                 if c != d {
                                     sss *= C_usize(comb_relp_s[i][d].len(), s[d])
+                                } else {
+                                    sss *= C_usize(comb_relp_s[i][d].len() - 1, s[d] - 1);
                                 }
                             }
                             ss.push(sss);
@@ -194,6 +196,8 @@ pub fn cal_possibility(
                             for d in 0..s.len() {
                                 if c != d {
                                     sss *= C_usize(comb_relp_s[i][d].len(), s[d])
+                                } else {
+                                    sss *= C_usize(comb_relp_s[i][d].len() - 1, s[d] - 1);
                                 }
                             }
                             table_cell_minenum[i][fs.unwrap()][c] += sss;
