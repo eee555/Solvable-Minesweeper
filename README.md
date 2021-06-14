@@ -49,6 +49,8 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
     cp toollib/target/release/ms_toollib.dll src/ms_toollib.pyd
 ```
 
+*   将toollib/下的神经网络模型参数文件params.onnx复制、粘贴到main.py同一级目录，即src/
+
 *   运行程序，大功告成了~
 ```sh
     py -3 src/main.py # Windows
@@ -89,3 +91,9 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 修复了若干bug。算法优化：(16,16,72)无猜局面埋雷速度提高200%。新功能：快捷键4、5、6可以快速设置三种不同的自定义的自定义模式。对自定义模式的优化，提高了稳定性。对局面刷新的优化。
 
 链接：[https://wwe.lanzoui.com/igPFFo7mwxi](https://wwe.lanzous.com/igPFFo7mwxi)
+
+### 正式版v2.3：
+
+修复了若干bug。现在可以设置自动重开、自动弹窗、结束后标雷。按住空格键可以计算每格是雷的概率。组合键“Ctrl+空格”可以截图计算每格是雷的概率。
+
+链接：[https://wwe.lanzoui.com/i2axoq686kb](https://wwe.lanzoui.com/i2axoq686kb)
