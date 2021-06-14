@@ -29,6 +29,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         self.operationStream = []
         self.gameWinFlag = False
+        self.showShot = False # 展示OBR功能的状态
         self.leftHeld = False
         self.leftAndRightHeld = False  # 鼠标是否被按下的标志位
         self.spaceHold = False # 空格是否按下的标志位
@@ -270,7 +271,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.update()
 
     def mineKeyReleaseEvent(self, keyName):
-        if keyName == 'Space':
+        if keyName == 'Space' and not self.showShot:
             self.spaceHold = False
             # print('False')
             self.label.paintPossibility = False
@@ -389,6 +390,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.timer.stop()
         self.initMineArea()
         self.gamestart = False
+        self.showShot = False
         self.mainWindow.setMinimumSize(0, 0)
         self.mainWindow.resize(0, 0)
         self.board = [[0] * self.column for _ in range(self.row)]
@@ -412,6 +414,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.update()
         self.gamestart = False
         self.label.paintPossibility = False
+        self.showShot = False
         self.label.setMouseTracking(False)
 
     def gameFinished(self):  # 游戏结束画残局，停时间，改状态
@@ -662,10 +665,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.exec_()
 
     def screenShot(self):
-        # app = QApplication(sys.argv)
-        # windows = captureScreen.CaptureScreen()
-        # windows.show()
-        # sys.exit(app.exec_())
+        if self.showShot:
+            return
         ui = captureScreen.CaptureScreen()
         ui.show()
         ui.exec_()
@@ -683,27 +684,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.board = ui.board
         self.label.boardPossibility = minesweeper_master.calPossibility_onboard(ui.board, self.mineNum)
         self.label.paintPossibility = True
+        self.showShot = True
         self.label.update()
         self.finish = True
         self.spaceHold = True
+        self.label.setMouseTracking(True)
         # print(ui.board)
 
     def showScores(self):
+        if self.showShot:
+            return
         if not self.spaceHold:
             self.spaceHold = True
             # print('true')
             # 游戏结束后，按空格展示成绩
             if self.finish:
-            #     if self.row == 8 and self.column == 8 and self.mineNum == 10:
-            #         Difficulty = 1
-            #     elif self.row == 16 and self.column == 16 and self.mineNum == 40:
-            #         Difficulty = 2
-            #     elif self.row == 16 and self.column == 30 and self.mineNum == 99:
-            #         Difficulty = 3
-            #     else:
-            #         Difficulty = 4
-                # scores, scoresValue = minesweeper_master.calScores(self.gameMode, self.gameWinFlag, self.gameTime,
-                #                                       self.operationStream, self.board, Difficulty)
                 ui = gameScores.Ui_Form(self.scores, self.scoresValue)
                 ui.setModal(True)
                 ui.show()
