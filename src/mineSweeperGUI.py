@@ -665,8 +665,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.exec_()
 
     def screenShot(self):
-        if self.showShot:
-            return
+        # if self.showShot:
+        #     return
         ui = captureScreen.CaptureScreen()
         ui.show()
         ui.exec_()
