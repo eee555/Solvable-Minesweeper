@@ -12,8 +12,9 @@
 
 Black Cat Minesweeper v2.2.5, which integrates three major internal mine detection engines, with all six kinds of no-guess minesweeper mode + standard + Win7. Using Python/PyQt5 and Rust, has high safety in memory and speed is different from the Arbiter of professional Minesweeper X of small, black cats demining developers hope to create a cool mine clearance Appearance, it is only a common standard mine, but it can adjust the size at will, can adjust the transparency of the window In terms of gameplay, weak can guess the strong can guess the mode is unique, and the only one of mine own tutorials For high play, it is professional, can calculate 3 bv/s STNBIn addition, it doesn't bother the player, no window pops up when the player doesn't open it, and any window can be quickly closed by pressing the space bar.
 
-使用教程：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
-其他文档（施工中）：[https://eee555.github.io](https://eee555.github.io)
++ 使用教程：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
+
++ 其他文档（施工中）：[https://eee555.github.io](https://eee555.github.io)
 
 ## 安装
 建议在`Windows 10`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
