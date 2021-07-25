@@ -7,7 +7,7 @@ import ms_toollib
 import math
 
 OutputEnable = 0
-seedNum = 60223
+# seedNum = 60223
 
 
 # EnuLimit = 30    #枚举极限

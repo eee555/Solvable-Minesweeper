@@ -17,7 +17,6 @@ import captureScreen
 # import sys
 # from PyQt5.QtWidgets import QApplication
 
-
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow):
         self.mainWindow = MainWindow
@@ -193,11 +192,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # print(self.boardofGame)
 
     def mineAreaLeftRelease(self, i, j):
-        if not self.finish:
+        if not self.finish and not self.spaceHold:
             self.label_2.setPixmap(QPixmap(self.pixmapNum[14]))
             self.label_2.setScaledContents(True)
             self.operationStream.append(('l2', (i, j)))  # 记录鼠标动作
-        if self.leftHeld:
+        if self.leftHeld and not self.finish and not self.spaceHold:
             self.leftHeld = False  # 防止双击中的左键弹起被误认为真正的左键弹起
             if not self.outOfBorder(i, j) and not self.finish:
                 # 鼠标按住并移出局面时，索引会越界
@@ -227,13 +226,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.update()
 
     def mineAreaRightRelease(self, i, j):
-        if not self.finish:
+        if not self.finish and not self.spaceHold:
             self.operationStream.append(('r2', (i, j)))  # 记录鼠标动作
             self.label_2.setPixmap(QPixmap(self.pixmapNum[14]))
             self.label_2.setScaledContents(True)
 
     def mineAreaRightPressed(self, i, j):
-        if not self.finish:
+        if not self.finish and not self.spaceHold:
             self.operationStream.append(('r1', (i, j)))  # 记录鼠标动作
             self.label_2.setPixmap(QPixmap(self.pixmapNum[15]))
             self.label_2.setScaledContents(True)
@@ -250,7 +249,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def mineAreaLeftPressed(self, i, j):
         self.leftHeld = True
         self.oldCell = (i, j)
-        if not self.finish:
+        if not self.finish and not self.spaceHold:
             self.operationStream.append(('l1', (i, j)))  # 记录鼠标动作
             self.label_2.setPixmap(QPixmap(self.pixmapNum[15]))
             self.label_2.setScaledContents(True)
@@ -261,7 +260,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def mineAreaLeftAndRightPressed(self, i, j):
         self.leftAndRightHeld = True
         self.oldCell = (i, j)
-        if not self.finish:
+        if not self.finish and not self.spaceHold:
             self.operationStream.append(('c1', (i, j)))  # 记录鼠标动作
             for r in range(i - 1, i + 2):
                 for c in range(j - 1, j + 2):
@@ -298,7 +297,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def mineAreaLeftAndRightRelease(self, i, j):
         self.leftAndRightHeld = False
         self.leftHeld = False
-        if not self.finish:
+        if not self.finish and not self.spaceHold:
             self.operationStream.append(('c2', (i, j)))  # 记录鼠标动作
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
@@ -415,6 +414,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.gamestart = False
         self.label.paintPossibility = False
         self.showShot = False
+        self.spaceHold = False
         self.label.setMouseTracking(False)
 
     def gameFinished(self):  # 游戏结束画残局，停时间，改状态
@@ -704,7 +704,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 ui.show()
                 ui.exec_()
             # 展示每格概率
-            else:
+            elif self.gamestart:
                 self.label.paintPossibility = True
                 self.label.setMouseTracking(True)
                 mineNum = self.mineNum
