@@ -12,7 +12,9 @@
 
 Black Cat Minesweeper v2.2.5, which integrates three major internal mine detection engines, with all six kinds of no-guess minesweeper mode + standard + Win7. Using Python/PyQt5 and Rust, has high safety in memory and speed is different from the Arbiter of professional Minesweeper X of small, black cats demining developers hope to create a cool mine clearance Appearance, it is only a common standard mine, but it can adjust the size at will, can adjust the transparency of the window In terms of gameplay, weak can guess the strong can guess the mode is unique, and the only one of mine own tutorials For high play, it is professional, can calculate 3 bv/s STNBIn addition, it doesn't bother the player, no window pops up when the player doesn't open it, and any window can be quickly closed by pressing the space bar.
 
-使用教程：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
++ 使用教程：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
+
++ 其他文档（施工中）：[https://eee555.github.io](https://eee555.github.io)
 
 ## 安装
 建议在`Windows 10`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
@@ -60,17 +62,6 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 ## 实现原理
 
 （还没写，计划弄出3.5以后回头来写）
-
-## 同类项目
-
-*   [kaboom](https://pwmarcz.pl/kaboom/)：弱无猜扫雷。
-*   [Simon Tatham's Mines](https://www.chiark.greenend.org.uk/~sgtatham/puzzles/js/mines.html)：竞速无猜扫雷。带有局面调整算法，雷数很多时也能埋雷成功。
-*   [FairMinesweeper](https://github.com/xseryda/FairMinesweeper/)：无猜扫雷。不一定能跑通。
-*   [minegauler](https://github.com/LewisGaul/minegauler)：标准扫雷。采用PyQt5实现，有一种在一个格子中埋多个雷的模式。
-*   [LibreMines](https://github.com/Bollos00/LibreMines)：标准扫雷。采用Qt实现，在国际网受到大量关注。
-*   [Truffle-Swine Keeper](https://github.com/curtisbright/swinekeeper)：标准扫雷。采用Qt实现，按F3能够计算每格是雷的概率。
-
-与同类项目相比，本项目更优秀。
 
 ## 下载链接
 
