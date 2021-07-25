@@ -567,7 +567,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_CEvent(self):
         # 点击菜单栏的自定义后回调
         self.actionChecked('C')
-        ui = gameDefinedParameter.Ui_Form(self.row, self.column, self.mineNum)
+        ui = gameDefinedParameter.ui_Form(self.row, self.column, self.mineNum)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()

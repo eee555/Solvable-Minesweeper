@@ -92,12 +92,12 @@ color:white;font: bold;</string>
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>30</x>
      <y>20</y>
-     <width>291</width>
+     <width>306</width>
      <height>157</height>
     </rect>
    </property>
@@ -134,7 +134,7 @@ color:white;font: bold;</string>
        <number>6</number>
       </property>
       <property name="maximum">
-       <number>100</number>
+       <number>1000</number>
       </property>
       <property name="displayIntegerBase">
        <number>10</number>
@@ -167,7 +167,7 @@ color:white;font: bold;</string>
        <number>6</number>
       </property>
       <property name="maximum">
-       <number>100</number>
+       <number>2000</number>
       </property>
       <property name="displayIntegerBase">
        <number>10</number>
@@ -200,7 +200,7 @@ color:white;font: bold;</string>
        <number>1</number>
       </property>
       <property name="maximum">
-       <number>5000</number>
+       <number>1000000</number>
       </property>
       <property name="displayIntegerBase">
        <number>10</number>

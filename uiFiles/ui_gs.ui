@@ -672,10 +672,10 @@ color:white;font: bold;</string>
        </font>
       </property>
       <property name="toolTip">
-       <string>完成度小于此百分比局面自动重开</string>
+       <string>完成度小于等于此百分比局面自动重开</string>
       </property>
       <property name="toolTipDuration">
-       <number>-1</number>
+       <number>0</number>
       </property>
       <property name="text">
        <string>自动重开</string>
@@ -737,7 +737,10 @@ color:white;font: bold;</string>
        </font>
       </property>
       <property name="toolTip">
-       <string>完成度大于此百分比的局面自动弹窗</string>
+       <string>完成度大于等于此百分比的局面自动弹窗</string>
+      </property>
+      <property name="toolTipDuration">
+       <number>0</number>
       </property>
       <property name="text">
        <string>自动弹窗</string>
@@ -783,10 +786,10 @@ color:white;font: bold;</string>
        <number>0</number>
       </property>
       <property name="maximum">
-       <number>100</number>
+       <number>101</number>
       </property>
       <property name="value">
-       <number>80</number>
+       <number>101</number>
       </property>
      </widget>
     </item>
