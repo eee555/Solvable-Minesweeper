@@ -59,6 +59,7 @@ def refreshBoard2(Board , BoardofGame, ClickedPoses):
     return BoardofGame
 
 refreshMatrix = ms_toollib.py_refreshMatrix
+refresh_matrixs = ms_toollib.py_refresh_matrixs
 # refreshMatrix(BoardofGame)
 # BoardofGame必须且肯定是正确标雷的游戏局面，但不需要标全
 # 根据游戏局面生成矩阵
@@ -363,6 +364,18 @@ def print2(arr, mode = 0):
                 print('%3.d'%j.status, end='')
             print()
 
+def debug_laymine(*args):
+    b=[[ 0,  0,  1,  1,  1,  0,  1, -1],
+       [ 0,  1,  2, -1,  2,  1,  1,  1],
+       [ 0,  2, -1,  4,  3, -1,  1,  0],
+       [ 0,  3, -1, -1,  2,  1,  1,  0],
+       [ 0,  3, -1,  4,  2,  1,  1,  0],
+       [ 0,  3, -1,  3,  2, -1,  2,  0],
+       [ 0,  2, -1,  2,  2, -1,  2,  0],
+       [ 0,  1,  1,  1,  1,  1,  1,  0]]
+    return b, [True]
+
+
 # layMineSolvable = ms_toollib.layMineSolvable
 layMineSolvable = ms_toollib.py_layMineSolvable_thread
 # layMineSolvable(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6,
@@ -372,6 +385,7 @@ layMineSolvable = ms_toollib.py_layMineSolvable_thread
 # 工具箱里的这两个函数，一个是单线程，一个是多线程
 # 性能对比：(16, 16, 72) -> 10.49, 32.02
 # (16, 30, 99) -> 2.98, 2.66
+# layMineSolvable = debug_laymine
 
 
 calOp = ms_toollib.py_calOp # 输入列表的局面，计算空，0的8连通域数
@@ -391,8 +405,8 @@ def isJudgeable(BoardofGame, EnuLimit=30):
         MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
         BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
         if not NotMine:
-            MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-            BoardofGame, NotMine, flag = SolveEnumerate(MatrixA, Matrixx, Matrixb, BoardofGame, EnuLimit)
+            Matrix_as, Matrix_xs, Matrix_bs, _ = refresh_matrixs(BoardofGame)
+            BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
             if not NotMine:
                 return BoardofGame, False
     return BoardofGame, True
@@ -409,21 +423,10 @@ def xyisJudgeable(BoardofGame, x, y, EnuLimit=30):
         MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
         BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
         if (x,y) not in NotMine:
-            MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-            BoardofGame, NotMine, flag = SolveEnumerate(MatrixA, Matrixx, Matrixb, BoardofGame, EnuLimit)
+            Matrix_as, Matrix_xs, Matrix_bs, _ = refresh_matrixs(BoardofGame)
+            BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
             if (x,y) not in NotMine:
-                MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-                BoardofGame, NotMine, flag = SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
-                if (x,y) not in NotMine:
-                    MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-                    BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
-                    if (x,y) not in NotMine:
-                        return False
-                    # 我也不知道为什么这样能work
-                    #     MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-                    #     BoardofGame, NotMine, flag = SolveEnumerate(MatrixA, Matrixx, Matrixb, BoardofGame, EnuLimit)
-                    #     if (x,y) not in NotMine:
-                    #         return False
+                return False
     return True
 
 def calBoardIndex(Board):

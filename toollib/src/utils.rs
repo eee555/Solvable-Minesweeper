@@ -256,13 +256,11 @@ pub fn refresh_matrixs(
                 for m in max(1, i) - 1..min(Row, i + 2) {
                     for n in max(1, j) - 1..min(Column, j + 2) {
                         if board_of_game[m][n] == 10 {
-                            if !all_cell.iter().any(|x| x.0 == i && x.1 == j) {
-                                all_cell.push((i, j));
-                            }
+                            all_cell.push((i, j));
                         }
                     }
                 }
-            } else if board_of_game[i][j] == 10 {
+            } else if board_of_game[i][j] == 10 {  // 数内部有几个格子
                 let mut flag = true;
                 for m in max(1, i) - 1..min(Row, i + 2) {
                     for n in max(1, j) - 1..min(Column, j + 2) {
@@ -312,9 +310,8 @@ pub fn refresh_matrixs(
                     continue;
                 }
                 let mut flag_be_neighbor = false;
-                for m in max(1, min(x_t, x_e)) - 1..min(Row, max(x_t + 2, x_e + 2)) {
-                    for n in max(1, min(y_t, y_e)) - 1..max(Row, min(y_t + 2, y_e + 2)) {
-                        // 貌似xy不对称，不知道为什么，md自己都看不懂
+                for m in max(1, max(x_t, x_e)) - 1..min(Row, min(x_t + 2, x_e + 2)) {
+                    for n in max(1, max(y_t, y_e)) - 1..min(Column, min(y_t + 2, y_e + 2)) {
                         if board_of_game[m][n] == 10 {
                             flag_be_neighbor = true;
                             break;

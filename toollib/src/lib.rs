@@ -8,7 +8,7 @@ use std::cmp::{max, min};
 mod utils;
 use utils::{
     cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard, refreshMatrix,
-    unsolvableStructure,
+    unsolvableStructure, refresh_matrixs
 };
 mod algorithms;
 use algorithms::{
@@ -25,6 +25,13 @@ fn py_refreshMatrix(
     BoardofGame: Vec<Vec<i32>>,
 ) -> PyResult<(Vec<Vec<i32>>, Vec<(usize, usize)>, Vec<i32>)> {
     Ok(refreshMatrix(&BoardofGame))
+}
+
+#[pyfunction]
+fn py_refresh_matrixs(
+    BoardofGame: Vec<Vec<i32>>,
+) -> PyResult<(Vec<Vec<Vec<i32>>>, Vec<Vec<(usize, usize)>>, Vec<Vec<i32>>, usize)> {
+    Ok(refresh_matrixs(&BoardofGame))
 }
 
 #[pyfunction]
@@ -95,13 +102,13 @@ fn py_layMineOpNumber(
 
 #[pyfunction(enuLimit = 30)]
 fn py_SolveEnumerate(
-    MatrixA: Vec<Vec<i32>>,
-    Matrixx: Vec<(usize, usize)>,
-    Matrixb: Vec<i32>,
+    Matrix_as: Vec<Vec<Vec<i32>>>,
+    Matrix_xs: Vec<Vec<(usize, usize)>>,
+    Matrix_bs: Vec<Vec<i32>>,
     mut BoardofGame: Vec<Vec<i32>>,
     enuLimit: usize,
 ) -> PyResult<(Vec<Vec<i32>>, Vec<(usize, usize)>, bool)> {
-    let (notMine, flag) = SolveEnumerate(&MatrixA, &Matrixx, &Matrixb, &mut BoardofGame, enuLimit);
+    let (notMine, flag) = SolveEnumerate(&Matrix_as, &Matrix_xs, &Matrix_bs, &mut BoardofGame, enuLimit);
     Ok((BoardofGame, notMine, flag))
 }
 
@@ -465,6 +472,7 @@ impl PyObjectProtocol for minesweeperBoard {
 #[pymodule]
 fn ms_toollib(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_refreshMatrix, m)?)?;
+    m.add_function(wrap_pyfunction!(py_refresh_matrixs, m)?)?;
     m.add_function(wrap_pyfunction!(py_calOp, m)?)?;
     m.add_function(wrap_pyfunction!(py_cal3BV, m)?)?;
     m.add_function(wrap_pyfunction!(py_layMineNumber, m)?)?;

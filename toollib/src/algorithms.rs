@@ -337,104 +337,29 @@ pub fn layMineOp(
 }
 
 pub fn SolveEnumerate(
-    MatrixA: &Vec<Vec<i32>>,
-    Matrixx: &Vec<(usize, usize)>,
-    Matrixb: &Vec<i32>,
+    matrix_as: &Vec<Vec<Vec<i32>>>,
+    matrix_xs: &Vec<Vec<(usize, usize)>>,
+    matrix_bs: &Vec<Vec<i32>>,
     BoardofGame: &mut Vec<Vec<i32>>,
     enuLimit: usize,
 ) -> (Vec<(usize, usize)>, bool) {
+    // 第二代枚举法判雷引擎
+    // 输入的矩阵都是分块好的
+    // 只判断哪些不是雷，不判断哪些是雷，不修改输入进来的局面
     let mut flag = false;
     let mut NotMine = vec![];
-    let mut NotMineRel = vec![];
-    let mut IsMineRel = vec![];
-    let mut MatrixColumn = Matrixx.len();
-    let MatrixRow = Matrixb.len();
-    let mut ColId: Vec<usize> = (0..MatrixColumn).collect();
-    let mut RowId: Vec<usize> = (0..MatrixRow).collect();
-    let mut TempCol = vec![];
-    let mut TempRow = vec![];
-    while let Some(top) = ColId.pop() {
-        // while ColId {
-        TempCol.push(top);
-        let mut Groupb = vec![];
-        let mut Groupx = vec![];
-        let mut GroupCol: Vec<usize> = vec![];
-        let mut GroupRow = vec![];
-        while !(TempCol.is_empty() && TempRow.is_empty()) {
-            if !TempCol.is_empty() {
-                for i in 0..MatrixRow {
-                    let len = TempCol.len() - 1;
-                    if MatrixA[i][TempCol[len]] == 1 {
-                        for ii in (0..RowId.len()).rev() {
-                            TempRow.push(RowId[ii]);
-                            RowId.remove(ii);
-                        }
-                    }
-                }
-                if let Some(temp) = TempCol.pop() {
-                    GroupCol.push(temp);
-                    Groupx.push(Matrixx[temp]);
+    let block_num = matrix_xs.len();
+    for i in 0..block_num {
+        let a = enum_comb(&matrix_as[i], &matrix_xs[i], &matrix_bs[i]); // a记录了当前块的所有情况
+        let cell_num = matrix_xs[i].len();
+        'outer: for j in (0..cell_num).rev() {
+            for k in 0..a.len() {
+                if a[k][j] == 1 {
+                    continue'outer;
                 }
             }
-            if !TempRow.is_empty() {
-                for j in 0..MatrixColumn {
-                    let len = TempRow.len() - 1;
-                    if MatrixA[TempRow[len]][j] == 1 {
-                        for jj in (0..ColId.len()).rev() {
-                            TempCol.push(jj);
-                            ColId.remove(jj);
-                        }
-                    }
-                }
-                if let Some(temp) = TempRow.pop() {
-                    GroupRow.push(temp);
-                    Groupb.push(Matrixb[temp]);
-                }
-            }
+            NotMine.push(matrix_xs[i][j]);
         }
-        if GroupCol.len() >= enuLimit {
-            continue;
-        }
-        let mut AllTable: Vec<Vec<usize>> = vec![vec![2; GroupCol.len()]];
-        for i in GroupRow {
-            let b = Matrixb[i];
-            let mut TableId = vec![];
-            for j in 0..GroupCol.len() {
-                if MatrixA[i][GroupCol[j]] == 1 {
-                    TableId.push(GroupCol[j]);
-                }
-            }
-            AllTable = enuOneStep(AllTable, TableId, b);
-        }
-        for j in 0..GroupCol.len() {
-            if AllTable[0][j] == 0 {
-                NotMineRel.push(GroupCol[j]);
-                for i in 1..AllTable.len() {
-                    if AllTable[i][j] == 1 {
-                        NotMineRel.pop();
-                        break;
-                    }
-                }
-            } else {
-                IsMineRel.push(GroupCol[j]);
-                for i in 1..AllTable.len() {
-                    if AllTable[i][j] == 0 {
-                        IsMineRel.pop();
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    IsMineRel.dedup();
-    NotMineRel.dedup();
-    IsMineRel.sort_by(|a, b| b.cmp(&a));
-    for i in NotMineRel {
-        NotMine.push(Matrixx[i]);
-    }
-    for i in IsMineRel {
-        let (m, n) = Matrixx[i];
-        BoardofGame[m][n] = 11;
     }
     (NotMine, flag)
 }
@@ -483,7 +408,8 @@ pub fn isSolvable(Board: &Vec<Vec<i32>>, X0: usize, Y0: usize, enuLimit: usize) 
             NotMine = ans.0;
             flag = ans.1;
             if !flag {
-                let ans = SolveEnumerate(&MatrixA, &Matrixx, &Matrixb, &mut BoardofGame, enuLimit);
+                let (mut Matrix_as, mut Matrix_xs, mut Matrix_bs, _) = refresh_matrixs(&BoardofGame);
+                let ans = SolveEnumerate(&Matrix_as, &Matrix_xs, &Matrix_bs, &mut BoardofGame, enuLimit);
                 NotMine = ans.0;
                 flag = ans.1;
                 if !flag {
@@ -587,6 +513,7 @@ pub fn layMineSolvable(
     MaxTimes: usize,
     enuLimit: usize,
 ) -> (Vec<Vec<i32>>, Vec<usize>) {
+    // 单线程埋雷无猜
     // 3BV下限、上限，最大尝试次数，返回是否成功。
     // 若不成功返回最后生成的局面（不一定无猜），默认尝试十万次
     let mut Times = 0;

@@ -517,6 +517,12 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>仅对于强无猜、竞速无猜、强可猜，本参数生效。众所周知，判雷是NP难题，即一种不可简化的、在有限长时间内无法计算出的问题。这就意味着，有时即使局面的确存在解，也不存在任何算法可以计算出。软件内部集成了三大判雷引擎，采用了高效的判雷算法，但即使如此，如果有太多个方格相邻，其数量超过最大枚举长度，且不能分割，算法便会放弃枚举。这个数值的推荐值为20~35</string>
+      </property>
+      <property name="toolTipDuration">
+       <number>0</number>
+      </property>
       <property name="text">
        <string>最大枚举长度</string>
       </property>
@@ -718,7 +724,7 @@ color:white;font: bold;</string>
        <bool>false</bool>
       </property>
       <property name="minimum">
-       <number>0</number>
+       <number>-1</number>
       </property>
       <property name="maximum">
        <number>100</number>
