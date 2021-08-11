@@ -13,6 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
+        Form.setWindowModality(QtCore.Qt.NonModal)
         Form.resize(783, 360)
         Form.setMinimumSize(QtCore.QSize(783, 360))
         Form.setMaximumSize(QtCore.QSize(783, 360))
@@ -20,6 +21,7 @@ class Ui_Form(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("media/cat.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Form.setWindowIcon(icon)
+        Form.setStyleSheet("")
         self.pushButton = QtWidgets.QPushButton(Form)
         self.pushButton.setGeometry(QtCore.QRect(650, 90, 111, 51))
         font = QtGui.QFont()
@@ -63,6 +65,21 @@ class Ui_Form(object):
         font.setFamily("黑体")
         font.setPointSize(12)
         self.radioButton.setFont(font)
+        self.radioButton.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton.setObjectName("radioButton")
         self.gridLayout.addWidget(self.radioButton, 0, 0, 1, 1)
         self.radioButton_7 = QtWidgets.QRadioButton(self.layoutWidget)
@@ -70,6 +87,21 @@ class Ui_Form(object):
         font.setFamily("黑体")
         font.setPointSize(12)
         self.radioButton_7.setFont(font)
+        self.radioButton_7.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton_7.setObjectName("radioButton_7")
         self.gridLayout.addWidget(self.radioButton_7, 0, 3, 1, 1)
         self.radioButton_4 = QtWidgets.QRadioButton(self.layoutWidget)
@@ -77,6 +109,21 @@ class Ui_Form(object):
         font.setFamily("黑体")
         font.setPointSize(12)
         self.radioButton_4.setFont(font)
+        self.radioButton_4.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton_4.setObjectName("radioButton_4")
         self.gridLayout.addWidget(self.radioButton_4, 1, 1, 1, 1)
         self.radioButton_5 = QtWidgets.QRadioButton(self.layoutWidget)
@@ -84,6 +131,21 @@ class Ui_Form(object):
         font.setFamily("黑体")
         font.setPointSize(12)
         self.radioButton_5.setFont(font)
+        self.radioButton_5.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton_5.setObjectName("radioButton_5")
         self.gridLayout.addWidget(self.radioButton_5, 0, 2, 1, 1)
         self.radioButton_8 = QtWidgets.QRadioButton(self.layoutWidget)
@@ -91,6 +153,21 @@ class Ui_Form(object):
         font.setFamily("黑体")
         font.setPointSize(12)
         self.radioButton_8.setFont(font)
+        self.radioButton_8.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton_8.setObjectName("radioButton_8")
         self.gridLayout.addWidget(self.radioButton_8, 1, 3, 1, 1)
         self.radioButton_2 = QtWidgets.QRadioButton(self.layoutWidget)
@@ -98,6 +175,21 @@ class Ui_Form(object):
         font.setFamily("Arial")
         font.setPointSize(12)
         self.radioButton_2.setFont(font)
+        self.radioButton_2.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton_2.setObjectName("radioButton_2")
         self.gridLayout.addWidget(self.radioButton_2, 1, 0, 1, 1)
         self.radioButton_3 = QtWidgets.QRadioButton(self.layoutWidget)
@@ -105,6 +197,21 @@ class Ui_Form(object):
         font.setFamily("黑体")
         font.setPointSize(12)
         self.radioButton_3.setFont(font)
+        self.radioButton_3.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton_3.setObjectName("radioButton_3")
         self.gridLayout.addWidget(self.radioButton_3, 0, 1, 1, 1)
         self.radioButton_6 = QtWidgets.QRadioButton(self.layoutWidget)
@@ -112,6 +219,21 @@ class Ui_Form(object):
         font.setFamily("黑体")
         font.setPointSize(12)
         self.radioButton_6.setFont(font)
+        self.radioButton_6.setStyleSheet("QRadioButton::indicator {\n"
+"    height: 14px;\n"
+"    width: 14px;\n"
+"    border-style:solid;\n"
+"    border-radius:7px;\n"
+"    border-width: 1px;\n"
+"}\n"
+"QRadioButton::indicator:checked {\n"
+"    border-color: #48a5fd;\n"
+"    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);\n"
+"}\n"
+"QRadioButton::indicator:!checked {\n"
+"    border-color: #a9b7c6;\n"
+"    background-color: #fbfdfa;\n"
+"}")
         self.radioButton_6.setObjectName("radioButton_6")
         self.gridLayout.addWidget(self.radioButton_6, 1, 2, 1, 1)
         self.horizontalSlider = QtWidgets.QSlider(Form)
@@ -173,6 +295,15 @@ class Ui_Form(object):
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.spinBox_6.setFont(font)
+        self.spinBox_6.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
         self.spinBox_6.setFrame(True)
         self.spinBox_6.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_6.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -202,6 +333,15 @@ class Ui_Form(object):
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.spinBox_7.setFont(font)
+        self.spinBox_7.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
         self.spinBox_7.setFrame(True)
         self.spinBox_7.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_7.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -231,6 +371,15 @@ class Ui_Form(object):
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.spinBox_8.setFont(font)
+        self.spinBox_8.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
         self.spinBox_8.setFrame(True)
         self.spinBox_8.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_8.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -261,6 +410,15 @@ class Ui_Form(object):
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.spinBox_9.setFont(font)
+        self.spinBox_9.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
         self.spinBox_9.setFrame(True)
         self.spinBox_9.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_9.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -300,6 +458,15 @@ class Ui_Form(object):
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.spinBox_10.setFont(font)
+        self.spinBox_10.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
         self.spinBox_10.setFrame(True)
         self.spinBox_10.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_10.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -330,6 +497,15 @@ class Ui_Form(object):
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.spinBox_11.setFont(font)
+        self.spinBox_11.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
         self.spinBox_11.setFrame(True)
         self.spinBox_11.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_11.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -360,6 +536,15 @@ class Ui_Form(object):
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.spinBox_12.setFont(font)
+        self.spinBox_12.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
         self.spinBox_12.setFrame(True)
         self.spinBox_12.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_12.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -371,11 +556,12 @@ class Ui_Form(object):
         self.spinBox_12.setObjectName("spinBox_12")
         self.gridLayout_3.addWidget(self.spinBox_12, 2, 1, 1, 1)
         self.checkBox = QtWidgets.QCheckBox(Form)
-        self.checkBox.setGeometry(QtCore.QRect(350, 160, 151, 19))
+        self.checkBox.setGeometry(QtCore.QRect(350, 160, 151, 31))
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
         font.setPointSize(12)
         self.checkBox.setFont(font)
+        self.checkBox.setStyleSheet("")
         self.checkBox.setObjectName("checkBox")
 
         self.retranslateUi(Form)
@@ -401,7 +587,7 @@ class Ui_Form(object):
         self.label_2.setText(_translate("Form", "3BV最小值"))
         self.label.setText(_translate("Form", "3BV最大值"))
         self.label_3.setText(_translate("Form", "最大尝试次数"))
-        self.label_4.setToolTip(_translate("Form", "仅对于强无猜、竞速无猜、强可猜，本参数生效。众所周知，判雷是NP难题，即一种不可简化的、在有限长时间内无法计算出的问题。这就意味着，有时即使局面的确存在解，也不存在任何算法可以计算出。软件内部集成了三大判雷引擎，采用了高效的判雷算法，但即使如此，如果有太多个方格相邻，其数量超过最大枚举长度，且不能分割，算法便会放弃枚举。这个数值的推荐值为20~35"))
+        self.label_4.setToolTip(_translate("Form", "<html><head/><body><p>仅对于强无猜、竞速无猜、强可猜，本参数生效。众所周知，判<span style=\" font-family:\'-apple-system\',\'SF UI Text\',\'Arial\',\'PingFang SC\',\'Hiragino Sans GB\',\'Microsoft YaHei\',\'WenQuanYi Micro Hei\',\'sans-serif\'; font-size:14px; color:#222226; background-color:#ffffff;\">\\r\\n</span>雷是NP难题，即一种不可简化的、在有限长时间内无法计算出的<span style=\" font-family:\'-apple-system\',\'SF UI Text\',\'Arial\',\'PingFang SC\',\'Hiragino Sans GB\',\'Microsoft YaHei\',\'WenQuanYi Micro Hei\',\'sans-serif\'; font-size:14px; color:#222226; background-color:#ffffff;\">\\r\\n</span>问题。这就意味着，有时即使局面的确存在解，也不存在任何算<span style=\" font-family:\'-apple-system\',\'SF UI Text\',\'Arial\',\'PingFang SC\',\'Hiragino Sans GB\',\'Microsoft YaHei\',\'WenQuanYi Micro Hei\',\'sans-serif\'; font-size:14px; color:#222226; background-color:#ffffff;\">\\r\\n</span>法可以计算出。软件内部集成了三大判雷引擎，采用了高效的判<span style=\" font-family:\'-apple-system\',\'SF UI Text\',\'Arial\',\'PingFang SC\',\'Hiragino Sans GB\',\'Microsoft YaHei\',\'WenQuanYi Micro Hei\',\'sans-serif\'; font-size:14px; color:#222226; background-color:#ffffff;\">\\r\\n</span>雷算法，但即使如此，如果有太多个方格相邻，其数量超过最大<span style=\" font-family:\'-apple-system\',\'SF UI Text\',\'Arial\',\'PingFang SC\',\'Hiragino Sans GB\',\'Microsoft YaHei\',\'WenQuanYi Micro Hei\',\'sans-serif\'; font-size:14px; color:#222226; background-color:#ffffff;\">\\r\\n</span>枚举长度，且不能分割，算法便会放弃枚举。这个数值的推荐值<span style=\" font-family:\'-apple-system\',\'SF UI Text\',\'Arial\',\'PingFang SC\',\'Hiragino Sans GB\',\'Microsoft YaHei\',\'WenQuanYi Micro Hei\',\'sans-serif\'; font-size:14px; color:#222226; background-color:#ffffff;\">\\r\\n</span>为20~35</p></body></html>"))
         self.label_4.setText(_translate("Form", "最大枚举长度"))
         self.label_6.setText(_translate("Form", "方格边长"))
         self.label_9.setToolTip(_translate("Form", "完成度小于等于此百分比局面自动重开"))

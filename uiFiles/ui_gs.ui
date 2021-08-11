@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>Form</class>
  <widget class="QWidget" name="Form">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -31,6 +34,9 @@
   <property name="windowIcon">
    <iconset>
     <normaloff>media/cat.ico</normaloff>media/cat.ico</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
@@ -130,6 +136,23 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
+      </property>
       <property name="text">
        <string>标准</string>
       </property>
@@ -142,6 +165,23 @@ color:white;font: bold;</string>
         <family>黑体</family>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
       </property>
       <property name="text">
        <string>强可猜</string>
@@ -156,6 +196,23 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
+      </property>
       <property name="text">
        <string>弱无猜</string>
       </property>
@@ -168,6 +225,23 @@ color:white;font: bold;</string>
         <family>黑体</family>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
       </property>
       <property name="text">
        <string>竞速无猜</string>
@@ -182,6 +256,23 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
+      </property>
       <property name="text">
        <string>弱可猜</string>
       </property>
@@ -194,6 +285,23 @@ color:white;font: bold;</string>
         <family>Arial</family>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
       </property>
       <property name="text">
        <string>Win7</string>
@@ -208,6 +316,23 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
+      </property>
       <property name="text">
        <string>强无猜</string>
       </property>
@@ -220,6 +345,23 @@ color:white;font: bold;</string>
         <family>黑体</family>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QRadioButton::indicator {
+    height: 14px;
+    width: 14px;
+    border-style:solid;
+    border-radius:7px;
+    border-width: 1px;
+}
+QRadioButton::indicator:checked {
+    border-color: #48a5fd;
+    background-color: qradialgradient(cx:0.5, cy:0.5, radius:0.4,fx:0.5, fy:0.5, stop:0 #ffffff, stop:0.5 #ffffff, stop:0.6 #48a5fd, stop:1 #48a5fd);
+}
+QRadioButton::indicator:!checked {
+    border-color: #a9b7c6;
+    background-color: #fbfdfa;
+}</string>
       </property>
       <property name="text">
        <string>准无猜</string>
@@ -365,6 +507,17 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
+      </property>
       <property name="frame">
        <bool>true</bool>
       </property>
@@ -423,6 +576,17 @@ color:white;font: bold;</string>
         <family>微软雅黑</family>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
       </property>
       <property name="frame">
        <bool>true</bool>
@@ -483,6 +647,17 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
+      </property>
       <property name="frame">
        <bool>true</bool>
       </property>
@@ -518,7 +693,7 @@ color:white;font: bold;</string>
        </font>
       </property>
       <property name="toolTip">
-       <string>仅对于强无猜、竞速无猜、强可猜，本参数生效。众所周知，判雷是NP难题，即一种不可简化的、在有限长时间内无法计算出的问题。这就意味着，有时即使局面的确存在解，也不存在任何算法可以计算出。软件内部集成了三大判雷引擎，采用了高效的判雷算法，但即使如此，如果有太多个方格相邻，其数量超过最大枚举长度，且不能分割，算法便会放弃枚举。这个数值的推荐值为20~35</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;仅对于强无猜、竞速无猜、强可猜，本参数生效。众所周知，判雷是NP难题，即一种不可简化的、在有限长时间内无法计算出的问题。这就意味着，有时即使局面的确存在解，也不存在任何算法可以计算出。软件内部集成了三大判雷引擎，采用了高效的判雷算法，但即使如此，如果有太多个方格相邻，其数量超过最大枚举长度，且不能分割，算法便会放弃枚举。这个数值的推荐值为20~35&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="toolTipDuration">
        <number>0</number>
@@ -547,6 +722,17 @@ color:white;font: bold;</string>
         <family>微软雅黑</family>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
       </property>
       <property name="frame">
        <bool>true</bool>
@@ -643,6 +829,17 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
+      </property>
       <property name="frame">
        <bool>true</bool>
       </property>
@@ -707,6 +904,17 @@ color:white;font: bold;</string>
         <family>微软雅黑</family>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
       </property>
       <property name="frame">
        <bool>true</bool>
@@ -773,6 +981,17 @@ color:white;font: bold;</string>
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
+      </property>
       <property name="frame">
        <bool>true</bool>
       </property>
@@ -807,7 +1026,7 @@ color:white;font: bold;</string>
      <x>350</x>
      <y>160</y>
      <width>151</width>
-     <height>19</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -815,6 +1034,9 @@ color:white;font: bold;</string>
      <family>微软雅黑</family>
      <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>结束后标雷</string>

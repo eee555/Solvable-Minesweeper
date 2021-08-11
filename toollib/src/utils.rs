@@ -95,6 +95,138 @@ pub fn refreshMatrix(BoardofGame: &Vec<Vec<i32>>) -> (Vec<Vec<i32>>, Vec<(usize,
     (MatrixA, Matrixx, Matrixb)
 }
 
+pub fn refresh_matrixs(
+    board_of_game: &Vec<Vec<i32>>,
+) -> (
+    Vec<Vec<Vec<i32>>>,
+    Vec<Vec<(usize, usize)>>,
+    Vec<Vec<i32>>,
+    usize,
+    usize,
+) {
+    // 根据游戏局面分块生成矩阵。分块的数据结构是最外面再套一层Vec
+    // board_of_game必须且肯定是正确标雷的游戏局面，但不需要标全
+    // 矩阵的行和列都可能有重复
+    // unknow_block是未知格子数量, is_mine_num是标出的是雷的数量
+    let Row = board_of_game.len();
+    let Column = board_of_game[0].len();
+    let mut unknow_block = 0;
+    let mut is_mine_num = 0;
+    let mut matrix_as = vec![];
+    let mut matrix_xs = vec![];
+    let mut matrix_bs = vec![];
+    let mut all_cell: Vec<(usize, usize)> = vec![]; // 记录所有周围有未打开格子的数字的位置
+    for i in 0..Row {
+        for j in 0..Column {
+            if board_of_game[i][j] > 0 && board_of_game[i][j] < 10 {
+                'outer: for m in max(1, i) - 1..min(Row, i + 2) {
+                    for n in max(1, j) - 1..min(Column, j + 2) {
+                        if board_of_game[m][n] == 10 {
+                            all_cell.push((i, j));
+                            break 'outer;
+                        }
+                    }
+                }
+            } else if board_of_game[i][j] == 10 {
+                // 数内部有几个格子
+                let mut flag = true;
+                for m in max(1, i) - 1..min(Row, i + 2) {
+                    for n in max(1, j) - 1..min(Column, j + 2) {
+                        if board_of_game[m][n] < 10 {
+                            flag = false;
+                        }
+                    }
+                }
+                if flag {
+                    unknow_block += 1;
+                }
+            } else if board_of_game[i][j] == 11 {
+                is_mine_num += 1;
+            }
+        }
+    }
+    let mut p = 0; //指针，代表第几块
+    // println!("{:?}", all_cell);
+    while !all_cell.is_empty() {
+        matrix_xs.push(vec![]);
+        matrix_bs.push(vec![]);
+        let x_0 = all_cell[0].0;
+        let y_0 = all_cell[0].1;
+        let mut num_cells = vec![]; // 记录了当前块的数字格的坐标
+        let mut temp_cells = vec![]; // 记录了待查找的数字格的坐标
+        let mut flag_num = 0;
+        for m in max(1, x_0) - 1..min(Row, x_0 + 2) {
+            for n in max(1, y_0) - 1..min(Column, y_0 + 2) {
+                if board_of_game[m][n] == 10 {
+                    matrix_xs[p].push((m, n));
+                }
+                if board_of_game[m][n] == 11 {
+                    flag_num += 1;
+                }
+            }
+        }
+        matrix_bs[p].push(board_of_game[x_0][y_0] - flag_num);
+        num_cells.push((x_0, y_0));
+        temp_cells.push((x_0, y_0));
+        while !temp_cells.is_empty() {
+            let x_e = temp_cells[0].0;
+            let y_e = temp_cells[0].1;
+            temp_cells.remove(0);
+            for t in (1..all_cell.len()).rev() {
+                // 从temp_cells中拿出一个格子，找出与其相邻的所有格子，加入temp_cells和matrix_bs、matrix_xs
+                let x_t = all_cell[t].0;
+                let y_t = all_cell[t].1;
+                if x_t >= x_e + 3 || x_e >= x_t + 3 || y_t >= y_e + 3 || y_e >= y_t + 3 {
+                    continue;
+                }
+                let mut flag_be_neighbor = false;
+                for m in max(1, max(x_t, x_e)) - 1..min(Row, min(x_t + 2, x_e + 2)) {
+                    for n in max(1, max(y_t, y_e)) - 1..min(Column, min(y_t + 2, y_e + 2)) {
+                        if board_of_game[m][n] == 10 {
+                            flag_be_neighbor = true;
+                            break;
+                        }
+                    }
+                } // 从局面上看，如果两个数字有相同的未知格子，那么就会分到同一块
+                if flag_be_neighbor {
+                    let mut flag_num = 0;
+                    for m in max(1, x_t) - 1..min(Row, x_t + 2) {
+                        for n in max(1, y_t) - 1..min(Column, y_t + 2) {
+                            if board_of_game[m][n] == 10 {
+                                if !matrix_xs[p].iter().any(|x| x.0 == m && x.1 == n) {
+                                    matrix_xs[p].push((m, n));
+                                }
+                            }
+                            if board_of_game[m][n] == 11 {
+                                flag_num += 1;
+                            }
+                        }
+                    }
+                    matrix_bs[p].push(board_of_game[x_t][y_t] - flag_num);
+                    num_cells.push((x_t, y_t));
+                    temp_cells.push(all_cell[t]);
+                    all_cell.remove(t);
+                }
+            }
+        }
+        matrix_as.push(vec![vec![0; matrix_xs[p].len()]; matrix_bs[p].len()]);
+        for i in 0..num_cells.len() {
+            for j in 0..matrix_xs[p].len() {
+                if num_cells[i].0 <= matrix_xs[p][j].0 + 1
+                    && matrix_xs[p][j].0 <= num_cells[i].0 + 1
+                    && num_cells[i].1 <= matrix_xs[p][j].1 + 1
+                    && matrix_xs[p][j].1 <= num_cells[i].1 + 1
+                {
+                    matrix_as[p][i][j] = 1;
+                }
+            }
+        }
+        all_cell.remove(0);
+        p += 1;
+    }
+    (matrix_as, matrix_xs, matrix_bs, unknow_block, is_mine_num)
+}
+
 pub fn layMineNumber(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize) -> Vec<Vec<i32>> {
     // 通用标准埋雷引擎
     // 输出为二维的局面
@@ -229,132 +361,6 @@ pub fn sum(v: &Vec<i32>) -> i32 {
         ret += *i;
     }
     ret
-}
-
-pub fn refresh_matrixs(
-    board_of_game: &Vec<Vec<i32>>,
-) -> (
-    Vec<Vec<Vec<i32>>>,
-    Vec<Vec<(usize, usize)>>,
-    Vec<Vec<i32>>,
-    usize,
-) {
-    // 根据游戏局面分块生成矩阵。分块的数据结构是最外面再套一层Vec
-    // board_of_game必须且肯定是正确标雷的游戏局面，但不需要标全
-    // 矩阵的行和列都可能有重复
-    // unknow_block是未知格子数量
-    let Row = board_of_game.len();
-    let Column = board_of_game[0].len();
-    let mut unknow_block = 0;
-    let mut matrix_as = vec![];
-    let mut matrix_xs = vec![];
-    let mut matrix_bs = vec![];
-    let mut all_cell: Vec<(usize, usize)> = vec![]; // 记录所有周围有未打开格子的数字的位置
-    for i in 0..Row {
-        for j in 0..Column {
-            if board_of_game[i][j] > 0 && board_of_game[i][j] < 10 {
-                for m in max(1, i) - 1..min(Row, i + 2) {
-                    for n in max(1, j) - 1..min(Column, j + 2) {
-                        if board_of_game[m][n] == 10 {
-                            all_cell.push((i, j));
-                        }
-                    }
-                }
-            } else if board_of_game[i][j] == 10 {  // 数内部有几个格子
-                let mut flag = true;
-                for m in max(1, i) - 1..min(Row, i + 2) {
-                    for n in max(1, j) - 1..min(Column, j + 2) {
-                        if board_of_game[m][n] < 10 {
-                            flag = false;
-                        }
-                    }
-                }
-                if flag {
-                    unknow_block += 1;
-                }
-            }
-        }
-    }
-    let mut p = 0; //指针，代表第几块
-    // println!("{:?}", all_cell);
-    while !all_cell.is_empty() {
-        matrix_xs.push(vec![]);
-        matrix_bs.push(vec![]);
-        let x_0 = all_cell[0].0;
-        let y_0 = all_cell[0].1;
-        let mut num_cells = vec![]; // 记录了当前块的数字格的坐标
-        let mut temp_cells = vec![]; // 记录了待查找的数字格的坐标
-        let mut flag_num = 0;
-        for m in max(1, x_0) - 1..min(Row, x_0 + 2) {
-            for n in max(1, y_0) - 1..min(Column, y_0 + 2) {
-                if board_of_game[m][n] == 10 {
-                    matrix_xs[p].push((m, n));
-                }
-                if board_of_game[m][n] == 11 {
-                    flag_num += 1;
-                }
-            }
-        }
-        matrix_bs[p].push(board_of_game[x_0][y_0] - flag_num);
-        num_cells.push((x_0, y_0));
-        temp_cells.push((x_0, y_0));
-        while !temp_cells.is_empty() {
-            let x_e = temp_cells[0].0;
-            let y_e = temp_cells[0].1;
-            temp_cells.remove(0);
-            for t in (1..all_cell.len()).rev() {
-                // 从temp_cells中拿出一个格子，找出与其相邻的所有格子，加入temp_cells和matrix_bs、matrix_xs
-                let x_t = all_cell[t].0;
-                let y_t = all_cell[t].1;
-                if x_t >= x_e + 3 || x_e >= x_t + 3 || y_t >= y_e + 3 || y_e >= y_t + 3 {
-                    continue;
-                }
-                let mut flag_be_neighbor = false;
-                for m in max(1, max(x_t, x_e)) - 1..min(Row, min(x_t + 2, x_e + 2)) {
-                    for n in max(1, max(y_t, y_e)) - 1..min(Column, min(y_t + 2, y_e + 2)) {
-                        if board_of_game[m][n] == 10 {
-                            flag_be_neighbor = true;
-                            break;
-                        }
-                    }
-                } // 从局面上看，如果两个数字有相同的未知格子，那么就会分到同一块
-                if flag_be_neighbor {
-                    let mut flag_num = 0;
-                    for m in max(1, x_t) - 1..min(Row, x_t + 2) {
-                        for n in max(1, y_t) - 1..min(Column, y_t + 2) {
-                            if board_of_game[m][n] == 10 {
-                                if !matrix_xs[p].iter().any(|x| x.0 == m && x.1 == n) {
-                                    matrix_xs[p].push((m, n));
-                                }
-                            }
-                            if board_of_game[m][n] == 11 {
-                                flag_num += 1;
-                            }
-                        }
-                    }
-                    matrix_bs[p].push(board_of_game[x_t][y_t] - flag_num);
-                    num_cells.push((x_t, y_t));
-                    temp_cells.push(all_cell[t]);
-                    all_cell.remove(t);
-                }
-            }
-        }
-        matrix_as.push(vec![vec![0; matrix_xs[p].len()]; matrix_bs[p].len()]);
-        for i in 0..num_cells.len() {
-            for j in 0..matrix_xs[p].len() {
-                if num_cells[i].0 <= matrix_xs[p][j].0 + 1
-                    && matrix_xs[p][j].0 <= num_cells[i].0 + 1
-                    && num_cells[i].1 <= matrix_xs[p][j].1 + 1
-                    && matrix_xs[p][j].1 <= num_cells[i].1 + 1
-                {
-                    matrix_as[p][i][j] = 1;
-                }
-            }
-        }
-        all_cell.remove(0);
-        p += 1;
-    }
-    (matrix_as, matrix_xs, matrix_bs, unknow_block)
 }
 
 #[derive(Clone, Debug)]
@@ -763,7 +769,7 @@ pub fn unsolvableStructure(BoardCheck: &Vec<Vec<i32>>) -> bool {
 }
 
 pub fn cal3BV_exp(Board: &Vec<Vec<i32>>) -> usize {
-    // 用于高级局面的3BV
+    // 专用于高级局面的3BV快速计算
     let mut board = Board.clone();
     let mut op_id = 0;
     let mut op_list = [false; 200];
@@ -852,6 +858,55 @@ pub fn cal3BV_exp(Board: &Vec<Vec<i32>>) -> usize {
     }
     bv
 }
+
+pub fn legalize_board(board: &mut Vec<Vec<i32>>) {
+    // 把局面合法化：只能合法化简单的情况，不能应付所有的情况！因为检查一个局面是否合法也是NP难的
+    // 局面中标记的标准是10为待判的雷，1到8，11为已知必然是雷的位置，12是已知必然非雷的位置
+    let row = board.len();
+    let column = board[0].len();
+    for x in 0..row {
+        for y in 0.. column {
+            if board[x][y] <= -1 || board[x][y] >= 13 || board[x][y] == 9 {
+                // 把局面中明显未定义的数字改成未打开
+                board[x][y] = 10;
+            }
+            else if board[x][y] == 10 {
+                'outer: for i in max(1, x) - 1..min(row, x + 2) {
+                    for j in max(1, y) - 1..min(column, y + 2) {
+                        if board[i][j] == 0 {
+                            // 把周围有0的未打开的格子确定为一定非雷
+                            // 这种局面对于游戏而言是合法的，但不利于算法处理
+                            // 因此在这里就处理掉
+                            board[x][y] = 12;
+                            break'outer;
+                        }
+                    }
+                }
+            }
+            else if board[x][y] >= 1 && board[x][y] <= 8 {
+                let mut mine_num_limit = 0;
+                for i in max(1, x) - 1..min(row, x + 2) {
+                    for j in max(1, y) - 1..min(column, y + 2) {
+                        if board[i][j] == 10 || board[i][j] == 11 {
+                            // 局面中的数字不能大于周围的雷数
+                            mine_num_limit += 1;
+                        }
+                    }
+                }
+                board[x][y] = min(board[x][y], mine_num_limit);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 

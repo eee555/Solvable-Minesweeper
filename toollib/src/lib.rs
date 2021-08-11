@@ -12,8 +12,8 @@ use utils::{
 };
 mod algorithms;
 use algorithms::{
-    cal_possibility, isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate,
-    SolveMinus, layMine, layMineSolvable, sample_3BVs_exp, OBR_board,
+    cal_possibility, cal_possibility_onboard, isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate,
+    SolveMinus, layMine, layMineSolvable, sample_3BVs_exp, OBR_board, mark_board,
 };
 mod OBR;
 
@@ -30,7 +30,7 @@ fn py_refreshMatrix(
 #[pyfunction]
 fn py_refresh_matrixs(
     BoardofGame: Vec<Vec<i32>>,
-) -> PyResult<(Vec<Vec<Vec<i32>>>, Vec<Vec<(usize, usize)>>, Vec<Vec<i32>>, usize)> {
+) -> PyResult<(Vec<Vec<Vec<i32>>>, Vec<Vec<(usize, usize)>>, Vec<Vec<i32>>, usize, usize)> {
     Ok(refresh_matrixs(&BoardofGame))
 }
 
@@ -204,6 +204,9 @@ fn py_cal_possibility(
     board_of_game: Vec<Vec<i32>>,
     mine_num: usize,
 ) -> PyResult<(Vec<((usize, usize), f64)>, f64)> {
+    // mine_num为局面中雷的总数，不管有没有标
+    let mut board_of_game = board_of_game.clone();
+    mark_board(&mut board_of_game);
     Ok(cal_possibility(&board_of_game, mine_num))
 }
 
@@ -212,22 +215,10 @@ fn py_cal_possibility_onboard(
     board_of_game: Vec<Vec<i32>>,
     mine_num: usize,
 ) -> PyResult<Vec<Vec<f64>>> {
-    let mut p = vec![vec![-1.0; board_of_game[0].len()]; board_of_game.len()];
-    let pp = cal_possibility(&board_of_game, mine_num);
-    for i in pp.0 {
-        p[i.0.0][i.0.1] = i.1;
-    }
-    for r in 0..board_of_game.len() {
-        for c in 0..board_of_game[0].len() {
-            if board_of_game[r][c] == 11 {
-                p[r][c] = 1.0;
-            }
-            else if board_of_game[r][c] == 10 && p[r][c] < -0.5 {
-                p[r][c] = pp.1;
-            }
-        }
-    }
-    Ok(p)
+    // mine_num为局面中雷的总数，不管有没有标
+    let mut board_of_game = board_of_game.clone();
+    mark_board(&mut board_of_game);
+    Ok(cal_possibility_onboard(&board_of_game, mine_num))
 }
 
 #[pyfunction]

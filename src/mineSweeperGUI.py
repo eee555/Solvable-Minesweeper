@@ -708,10 +708,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.paintPossibility = True
                 self.label.setMouseTracking(True)
                 mineNum = self.mineNum
-                for i in self.boardofGame:
-                    for j in i:
-                        if j == 11:
-                            mineNum -= 1
+                # for i in self.boardofGame:
+                #     for j in i:
+                #         if j == 11:
+                #             mineNum -= 1
                 self.label.boardPossibility = minesweeper_master.calPossibility_onboard(self.boardofGame, mineNum)
                 # print(self.label.boardPossibility)
                 self.label.update()
