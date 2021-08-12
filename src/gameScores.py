@@ -7,7 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QPainter, QPen, QBrush,QPalette,QFont,QImage,QPainterPath, QPolygon,QPixmap, QRadialGradient,QGradient,QLinearGradient,QConicalGradient
+from PyQt5.QtGui import QPainter, QPen, QBrush, QPalette, QFont, QImage, QPainterPath
+from PyQt5.QtGui import QPolygon, QPixmap, QRadialGradient, QGradient, QLinearGradient, QConicalGradient
 import math
 
 class Ui_Form(QtWidgets.QDialog):

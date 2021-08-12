@@ -36,7 +36,7 @@
     <normaloff>media/cat.ico</normaloff>media/cat.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">background-color:#F2F2F2</string>
   </property>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">

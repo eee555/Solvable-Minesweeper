@@ -1,6 +1,6 @@
 [package]
 name = "ms-toollib"
-version = "1.1.0"
+version = "1.1.1"
 edition = "2018"
 authors = ["Wang Jianing <wangjianing@88.com>"]
 
