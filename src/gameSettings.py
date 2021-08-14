@@ -10,6 +10,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import configparser
 from ui.ui_gameSettings import Ui_Form
 from uiComponents import RoundQDialog
+# from PyQt5.QtWidgets import  QWidget, QDialog
 
 class ui_Form(Ui_Form):
     def __init__(self):
@@ -40,6 +41,7 @@ class ui_Form(Ui_Form):
             self.max3BV = config.getint('CUSTOM', 'max3BV')
         self.alter = False
         self.Dialog = RoundQDialog()
+        # self.Dialog = QDialog()
         self.setupUi (self.Dialog)
         self.setParameter ()
         self.Dialog.setWindowIcon (QtGui.QIcon ("media/cat.ico"))

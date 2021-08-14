@@ -39,26 +39,6 @@ jobs:
       run: |
         flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
 
-    - name: transform ui to py with pyuic5
-      run: |
-        cd uiFiles
-        pyuic5 -o ui_gameSettings.py ui_gs.ui
-        pyuic5 -o ui_gameSettingShortcuts.py ui_gs_shortcuts.ui
-        pyuic5 -o ui_defined_parameter.py ui_defined_parameter.ui
-        pyuic5 -o ui_mine_num_bar.py ui_mine_num_bar.ui
-        cd ..
-        md src/ui
-        cp uiFiles/ui_gameSettings.py src/ui/ui_gameSettings.py
-        cp uiFiles/ui_gameSettingShortcuts.py src/ui/ui_gameSettingShortcuts.py
-        cp uiFiles/ui_defined_parameter.py src/ui/ui_defined_parameter.py
-        cp uiFiles/ui_mine_num_bar.py src/ui/ui_mine_num_bar.py
-
-    - name: transform qrc to py with pyrcc5
-      run: |
-        cd src
-        pyrcc5 src_help_pic.qrc -o src_help_pic_rc.py
-        cd ..
-
     - name: Package with PyInstaller
       run: |
         pyinstaller -i cat.ico -w -y --clean --add-data "./media/*;./media" -p src src/main.py
@@ -69,4 +49,4 @@ jobs:
       if: success()
       with:
         name: blackcat-snapshot
-        path: dist/
+        path: dist/main/
