@@ -1,6 +1,6 @@
 # from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QCoreApplication, QPoint, Qt
-from PyQt5.QtGui import QPixmap, QPainter
+from PyQt5.QtCore import QTimer, QCoreApplication
+from PyQt5.QtGui import QPixmap
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
 import gameDefinedParameter
 import superGUI, gameAbout, gameSettings, gameHelp, gameTerms, gameScores,\

@@ -13,10 +13,9 @@ Created on Sat Aug 14 00:34:24 2021
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
 from uiComponents import RoundQWidget
 from ui.ui_mine_num_bar import Ui_Form
-from uiComponents import RoundQDialog
 
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)

@@ -1,6 +1,6 @@
 from ui.ui_gameSettingShortcuts import Ui_Form
 import configparser
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui
 from uiComponents import RoundQDialog
 
 # 继承自ui文件生成的原始的.py

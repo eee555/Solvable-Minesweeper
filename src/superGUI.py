@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QSize
 import mineLabel as mineLabel
 from uiComponents import StatusLabel
-import configparser, mine_num_bar
+import configparser
 from PyQt5.QtGui import QPalette, QPixmap, QFont, QIcon
 
 class Ui_MainWindow(object):
