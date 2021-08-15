@@ -6,7 +6,7 @@ use utils::{
 };
 mod algorithms;
 use algorithms::{
-    isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate,
+    isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate, cal_possibility,
     SolveMinus, layMine, layMineSolvable, sample_3BVs_exp, OBR_board, mark_board, cal_possibility_onboard,
 };
 mod OBR;
@@ -178,7 +178,8 @@ fn enum_comb(
     matrixx_squeeze: &Vec<(usize, usize)>,
     Matrixb: &Vec<i32>,
 ) -> Vec<Vec<usize>> {
-    // 返回一个包含所有情况的表
+    // 暴力枚举，返回一个包含所有情况的表，无任何优化
+    // matrixA_squeeze包含0，1，2，3等，代表是几个格子压缩为一个
     let Column = matrixx_squeeze.len();
     let Row = matrixA_squeeze.len();
     let mut enum_comb_table = vec![vec![0; Column]];
@@ -273,14 +274,16 @@ pub fn refresh_matrixs(
     Vec<Vec<(usize, usize)>>,
     Vec<Vec<i32>>,
     usize,
+    usize,
 ) {
     // 根据游戏局面分块生成矩阵。分块的数据结构是最外面再套一层Vec
     // board_of_game必须且肯定是正确标雷的游戏局面，但不需要标全
     // 矩阵的行和列都可能有重复
-    // unknow_block是未知格子数量
+    // unknow_block是未知格子数量, is_mine_num是标出的是雷的数量
     let Row = board_of_game.len();
     let Column = board_of_game[0].len();
     let mut unknow_block = 0;
+    let mut is_mine_num = 0;
     let mut matrix_as = vec![];
     let mut matrix_xs = vec![];
     let mut matrix_bs = vec![];
@@ -296,7 +299,8 @@ pub fn refresh_matrixs(
                         }
                     }
                 }
-            } else if board_of_game[i][j] == 10 {  // 数内部有几个格子
+            } else if board_of_game[i][j] == 10 {
+                // 数内部有几个格子
                 let mut flag = true;
                 for m in max(1, i) - 1..min(Row, i + 2) {
                     for n in max(1, j) - 1..min(Column, j + 2) {
@@ -308,6 +312,8 @@ pub fn refresh_matrixs(
                 if flag {
                     unknow_block += 1;
                 }
+            } else if board_of_game[i][j] == 11 {
+                is_mine_num += 1;
             }
         }
     }
@@ -390,224 +396,106 @@ pub fn refresh_matrixs(
         all_cell.remove(0);
         p += 1;
     }
-    (matrix_as, matrix_xs, matrix_bs, unknow_block)
+    (matrix_as, matrix_xs, matrix_bs, unknow_block, is_mine_num)
 }
 
-fn cal_possibility(
-    board_of_game: &Vec<Vec<i32>>,
-    mut mine_num: usize,
-) -> (Vec<((usize, usize), f64)>, f64) {
-    // 输入局面、未被标出的雷数，返回每一个未知的格子是雷的概率
-    // 局面中可以标雷，但必须全部标对
-    // 未知雷数为总雷数减去已经标出的雷
-    // 若超出枚举长度，那些格子的概率不予返回
-    // 输出所有边缘格子是雷的概率和内部未知格子是雷的概率
-    // 若没有内部未知区域，返回NaN
-    let mut p = vec![];
-    let mut table_cell_minenum: Vec<Vec<Vec<usize>>> = vec![]; // 每块每格雷数表：记录了每块每格（或者地位等同的复合格）、每种总雷数下的是雷情况数
-    let mut comb_relp_s = vec![]; // 记录了方格的组合关系
-    let mut enum_comb_table_s = vec![];
-    let mut table_minenum: Vec<[Vec<usize>; 2]> = vec![]; // 每块雷数分布表：记录了每块（不包括内部块）每种总雷数下的是雷总情况数
-                                                          // let mut table_t: Vec<usize> = vec![]; // 每块情况总数表：记录了每块总共有几种可能的情况
-    let (matrix_as, matrix_xs, matrix_bs, unknow_block) = refresh_matrixs(&board_of_game);
-    let block_num = matrix_as.len(); // 整个局面被分成的块数
+fn enum_count(
+    matrixA_squeeze: &Vec<Vec<i32>>,
+    matrixx_squeeze: &Vec<(usize, usize)>,
+    matrix_b: &Vec<i32>,
+    combination_relationship: &Vec<Vec<usize>>) -> Result<([Vec<usize>; 2], Vec<Vec<usize>>), usize>{
+    // 枚举并统计，得到每块雷数分布表和每块每格雷数表，顺便计算最小、最大雷数
+    let mut table_minenum: [Vec<usize>; 2] = [vec![], vec![]];
+    // 每块雷数分布表：记录了每块（不包括内部块）每种总雷数下的是雷总情况数
+    // 例如：[[17, 18, 19, 20, 21, 22, 23, 24], [48, 2144, 16872, 49568, 68975, 48960, 16608, 2046]]
+    let mut table_cell_minenum: Vec<Vec<usize>> = vec![];
+    // 每块每格雷数表：记录了每块每格（或者地位等同的复合格）、每种总雷数下的是雷情况数
 
-    for i in 0..block_num {
-        let (matrixA_squeeze, matrixx_squeeze, combination_relationship) =
-            combine(matrix_as[i].clone(), matrix_xs[i].clone());
-        let enum_comb_table = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_bs[i]);
-        if matrixx_squeeze.len() > 60 {
-            // 这里就是考虑格子等同地位后的枚举极限
-            return (vec![], f64::NAN);
-        }
-        comb_relp_s.push(combination_relationship);
-        enum_comb_table_s.push(enum_comb_table);
-        // println!("{:?}", enum_comb_table_s);
+    if matrixx_squeeze.len() > 45 {
+        // 超出枚举极限长度
+        return Err(0)
     }
-
-    // 分块枚举后，根据雷数限制，删除某些情况
-    for i in 0..block_num {
-        table_cell_minenum.push(vec![]);
-        table_minenum.push([vec![], vec![]]);
-        for s in enum_comb_table_s[i].clone() {
-            println!("s: {:?}", s);
-            let s_sum = s.iter().sum::<usize>();
-            let mut si_num = 1; // 由于enum_comb_table中的格子每一个都代表了与其地位等同的所有格子，由此的情况数
-            for s_i in 0..s.len() {
-                si_num *= C_usize(comb_relp_s[i][s_i].len(), s[s_i]);
-            }
-            // println!("si_num = {:?}", si_num);
-            let fs = table_minenum[i][0].clone().iter().position(|x| *x == s_sum);
-            // println!("table_minenum = {:?}", table_minenum);
-            // println!("fs = {:?}", fs);
-            match fs {
-                None => {
-                    table_minenum[i][0].push(s_sum);
-                    table_minenum[i][1].push(si_num);
-                    let mut ss = vec![];
-                    for c in 0..s.len() {
-                        if s[c] == 0 {
-                            ss.push(0);
-                        } else {
-                            let mut sss = 1;
-                            for d in 0..s.len() {
-                                if c != d {
-                                    sss *= C_usize(comb_relp_s[i][d].len(), s[d]);
-                                    // println!("comb_relp_s = {:?}", comb_relp_s);
-                                    // println!("sss = {:?}", sss);
-                                } else {
-                                    sss *= C_usize(comb_relp_s[i][d].len() - 1, s[d] - 1);
-                                }
+    let enum_comb_table = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_b);
+    if enum_comb_table.len() == 0 {
+        // 无解局面
+        return Err(1)
+    }
+    for s in enum_comb_table.clone() {
+        // println!("s: {:?}", s);
+        let s_sum = s.iter().sum::<usize>();
+        let mut si_num = 1; // 由于enum_comb_table中的格子每一个都代表了与其地位等同的所有格子，由此的情况数
+        for s_i in 0..s.len() {
+            si_num *= C_usize(combination_relationship[s_i].len(), s[s_i]);
+        }
+        // println!("si_num = {:?}", si_num);
+        let fs = table_minenum[0].clone().iter().position(|x| *x == s_sum);
+        // println!("table_minenum = {:?}", table_minenum);
+        // println!("fs = {:?}", fs);
+        match fs {
+            None => {
+                table_minenum[0].push(s_sum);
+                table_minenum[1].push(si_num);
+                let mut ss = vec![];
+                for c in 0..s.len() {
+                    if s[c] == 0 {
+                        ss.push(0);
+                    } else {
+                        let mut sss = 1;
+                        for d in 0..s.len() {
+                            if c != d {
+                                sss *= C_usize(combination_relationship[d].len(), s[d]);
+                                // println!("comb_relp_s = {:?}", comb_relp_s);
+                                // println!("sss = {:?}", sss);
+                            } else {
+                                sss *= C_usize(combination_relationship[d].len() - 1, s[d] - 1);
                             }
-                            ss.push(sss);
                         }
+                        ss.push(sss);
                     }
-                    table_cell_minenum[i].push(ss);
-                    // println!("table_minenum: {:?}", table_minenum);
-                    // println!("table_cell_minenum:{:?}", table_cell_minenum);
                 }
-                _ => {
-                    table_minenum[i][1][fs.unwrap()] += si_num;
-                    for c in 0..s.len() {
-                        if s[c] == 0 {
-                            continue;
-                        } else {
-                            let mut sss = 1;
-                            for d in 0..s.len() {
-                                if c != d {
-                                    sss *= C_usize(comb_relp_s[i][d].len(), s[d]);
-                                    // println!("comb_relp_s=={:?}", comb_relp_s);
-                                    // println!("s=={:?}", s);
-                                } else {
-                                    sss *= C_usize(comb_relp_s[i][d].len() - 1, s[d] - 1);
-                                }
+                table_cell_minenum.push(ss);
+                // println!("table_minenum: {:?}", table_minenum);
+                // println!("table_cell_minenum:{:?}", table_cell_minenum);
+            }
+            _ => {
+                table_minenum[1][fs.unwrap()] += si_num;
+                for c in 0..s.len() {
+                    if s[c] == 0 {
+                        continue;
+                    } else {
+                        let mut sss = 1;
+                        for d in 0..s.len() {
+                            if c != d {
+                                sss *= C_usize(combination_relationship[d].len(), s[d]);
+                                // println!("comb_relp_s=={:?}", comb_relp_s);
+                                // println!("s=={:?}", s);
+                            } else {
+                                sss *= C_usize(combination_relationship[d].len() - 1, s[d] - 1);
                             }
-                            table_cell_minenum[i][fs.unwrap()][c] += sss;
                         }
+                        table_cell_minenum[fs.unwrap()][c] += sss;
                     }
                 }
             }
         }
-    } // 第一步，整理出每块每格雷数情况表、每块雷数分布表、每块雷分布情况总数表
-    // println!("table_minenum: {:?}", table_minenum);
-    // println!("table_cell_minenum:{:?}", table_cell_minenum);
-    let mut min_num = 0;
-    let mut max_num = 0;
-    for i in 0..block_num {
-        min_num += table_minenum[i][0].iter().min().unwrap();
-        max_num += table_minenum[i][0].iter().max().unwrap();
     }
-    max_num = min(max_num, mine_num);
-    let unknow_mine_num: Vec<usize> =
-        (mine_num - max_num..min(mine_num - min_num, unknow_block) + 1).collect();
-    // 这里的写法存在极小的风险，例如边缘格雷数分布是0，1，3，而我们直接认为了可能有2
-    let mut unknow_mine_s_num = vec![];
-    for i in &unknow_mine_num {
-        unknow_mine_s_num.push(C(unknow_block, *i));
-    }
-    // 第二步，整理内部未知块雷数分布表，并筛选。这样内部未知雷块和边缘雷块的地位视为几乎等同，但数据结构不同
-    table_minenum.push([unknow_mine_num.clone(), vec![]]);
-    // 这里暂时不知道怎么写，目前这样写浪费了几个字节的内存
-    // 未知区域的情况数随雷数的分布不能存在表table_minenum中，因为格式不一样，后者是大数类型
-    let mut mine_in_each_block = (0..block_num + 1)
-        .map(|i| 0..table_minenum[i][0].len())
-        .multi_cartesian_product()
-        .collect::<Vec<_>>();
-    for i in (0..mine_in_each_block.len()).rev() {
-        let mut total_num = 0;
-        for j in 0..block_num + 1 {
-            total_num += table_minenum[j][0][mine_in_each_block[i][j]];
-        }
-        if total_num != mine_num {
-            mine_in_each_block.remove(i);
-        }
-    }
-    // 第三步，枚举每块雷数情况索引表：行代表每种情况，列代表每块雷数的索引，最后一列代表未知区域雷数
-    let mut table_minenum_other: Vec<Vec<big_number>> = vec![];
-    for i in 0..block_num + 1 {
-        table_minenum_other.push(vec![big_number { a: 0.0, b: 0 }; table_minenum[i][0].len()]);
-    } // 初始化
-    for s in mine_in_each_block {
-        for i in 0..block_num {
-            let mut s_num = big_number { a: 1.0, b: 0 };
-            let mut s_mn = mine_num; // 未知区域中的雷数
-            for j in 0..block_num {
-                if i != j {
-                    s_num.mul_usize(table_minenum[j][1][s[j]]);
-                }
-                s_mn -= table_minenum[j][0][s[j]];
-            }
-            let ps = unknow_mine_num.iter().position(|x| *x == s_mn).unwrap();
-            s_num.mul_big_number(&unknow_mine_s_num[ps]);
-            table_minenum_other[i][s[i]].add_big_number(&s_num);
-        }
-        let mut s_num = big_number { a: 1.0, b: 0 };
-        let mut s_mn = mine_num; // 未知区域中的雷数
-        for j in 0..block_num {
-            s_num.mul_usize(table_minenum[j][1][s[j]]);
-            s_mn -= table_minenum[j][0][s[j]];
-        }
-        let ps = unknow_mine_num.iter().position(|x| *x == s_mn).unwrap();
-        table_minenum_other[block_num][ps].add_big_number(&s_num);
-    }
-    // 第四步，计算每块其他雷数情况表
-    let mut T = big_number { a: 0.0, b: 0 };
-    for i in 0..unknow_mine_s_num.len() {
-        let mut t = table_minenum_other[block_num][i].clone();
-        t.mul_big_number(&unknow_mine_s_num[i]);
-        T.add_big_number(&t);
-    }
-    // 第五步，计算局面总情况数
 
-    for i in 0..block_num {
-        for cells_id in 0..comb_relp_s[i].len() {
-            let cells_len = comb_relp_s[i][cells_id].len();
-            for cell_id in 0..cells_len {
-                let mut s_cell = big_number { a: 0.0, b: 0 };
-                for s in 0..table_minenum_other[i].len() {
-                    let mut o = table_minenum_other[i][s].clone();
-                    o.mul_usize(table_cell_minenum[i][s][cells_id]);
-                    s_cell.add_big_number(&o);
-                }
-                let p_cell = s_cell.div_big_num(&T);
-                let id = comb_relp_s[i][cells_id][cell_id];
-                p.push((matrix_xs[i][id], p_cell));
-                // println!("p_cell: {:?}", p_cell);
-                // println!("s_cell: {:?}", s_cell);
-                // println!("T: {:?}", T);
-                // println!("table_cell_minenum: {:?}", table_cell_minenum);
-            }
-        }
-    }
-    // 第六步，计算边缘每格是雷的概率
-    let mut u_s = big_number { a: 0.0, b: 0 };
-    for i in 0..unknow_mine_num.len() {
-        let mut u = table_minenum_other[block_num][i].clone();
-        u.mul_big_number(&unknow_mine_s_num[i]);
-        u.mul_usize(unknow_mine_num[i]);
-        u_s.add_big_number(&u);
-    }
-    // println!("{:?}", table_minenum);
-    // println!("table_cell_minenum----{:?}", table_cell_minenum);
-    // println!("{:?}", unknow_mine_num);
-    // println!("{:?}", unknow_mine_s_num);
-    let p_unknow = u_s.div_big_num(&T) / unknow_block as f64;
-    // 第七步，计算内部未知区域是雷的概率
-    (p, p_unknow)
+    Ok((table_minenum, table_cell_minenum))
 }
 
 fn main() {
-    // let game_board = vec![
-    //     vec![ 1, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![ 1, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![ 2, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
-    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
-    // ];
+    // println!("执行main");
+    let game_board = vec![
+        vec![ 1, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![ 1, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![ 2, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
+        vec![10, 10, 10, 10, 10, 10, 10, 10, 10],
+    ];
     // let ans = cal_possibility(&game_board, 10);
 
     // let game_board = vec![
@@ -646,33 +534,44 @@ fn main() {
     // ];
     // let ans = cal_possibility(&game_board, 10);
 
-    let game_board = vec![
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 2, 1, 1, 2, 1, 1, 1, 10, 10, 3, 2, 3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 2, 1, 0, 0, 0, 0, 0, 1, 3, 3, 2, 0, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 1, 0, 0, 0, 1, 1, 1, 0, 1, 10, 1, 1, 1, 1, 1, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 2, 1, 1, 0, 1, 10, 1, 0, 1, 1, 2, 2, 10, 1, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 1, 0, 2, 2, 2, 1, 1, 1, 1, 10, 3, 2, 0, 1, 3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 2, 1, 2, 10, 2, 1, 10, 1, 2, 3, 10, 1, 0, 0, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 3, 3, 2, 2, 1, 10, 10, 1, 0, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 3, 10, 1, 1, 1, 2, 1, 1, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 0, 0, 1, 10, 1, 1, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 0, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 1, 2, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
-        vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
-    ];
+    // let game_board = vec![
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 2, 1, 1, 2, 1, 1, 1, 10, 10, 3, 2, 3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 2, 1, 0, 0, 0, 0, 0, 1, 3, 3, 2, 0, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 1, 0, 0, 0, 1, 1, 1, 0, 1, 10, 1, 1, 1, 1, 1, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 2, 1, 1, 0, 1, 10, 1, 0, 1, 1, 2, 2, 10, 1, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 1, 0, 2, 2, 2, 1, 1, 1, 1, 10, 3, 2, 0, 1, 3, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 2, 1, 2, 10, 2, 1, 10, 1, 2, 3, 10, 1, 0, 0, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 3, 3, 2, 2, 1, 10, 10, 1, 0, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 3, 10, 1, 1, 1, 2, 1, 1, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 0, 0, 1, 10, 1, 1, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 0, 0, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 2, 1, 2, 2, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+    // ];
+    // let game_board = vec![
+    //     vec![2, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 3, 10, 1],
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![3, 10, 4, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], 
+    //     vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+    // ];
     let mut game_board = game_board.clone();
     mark_board(&mut game_board);
-    println!("{:?}", game_board);
-    let (mut MatrixA, mut Matrixx, mut Matrixb, _) = refresh_matrixs(&game_board);
-    
-    println!("{:?}", MatrixA);
-    println!("{:?}", Matrixx);
-    println!("{:?}", Matrixb);
-    let ans = cal_possibility_onboard(&game_board, 99);
+    // println!("{:?}", game_board);
+    // let (mut MatrixA, mut Matrixx, mut Matrixb, _) = refresh_matrixs(&game_board);
+    // println!("{:?}", MatrixA);
+    // println!("{:?}", Matrixx);
+    // println!("{:?}", Matrixb);
+    let ans = cal_possibility(&game_board, 76.0);
     println!("{:?}", ans);
 
     // let game_board = vec![

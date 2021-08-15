@@ -8,15 +8,15 @@ use std::cmp::{max, min};
 mod utils;
 use utils::{
     cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard, refreshMatrix,
-    unsolvableStructure, refresh_matrixs
+    refresh_matrixs, unsolvableStructure,
 };
 mod algorithms;
 use algorithms::{
-    cal_possibility, cal_possibility_onboard, isSolvable, layMineOp, layMineSolvable_thread, SolveDirect, SolveEnumerate,
-    SolveMinus, layMine, layMineSolvable, sample_3BVs_exp, OBR_board, mark_board,
+    cal_possibility, cal_possibility_onboard, isSolvable, layMine, layMineOp, layMineSolvable,
+    layMineSolvable_thread, mark_board, sample_3BVs_exp, OBR_board, SolveDirect, SolveEnumerate,
+    SolveMinus,
 };
 mod OBR;
-
 
 // 负责rust和python之间的接口，类似文档
 
@@ -30,7 +30,13 @@ fn py_refreshMatrix(
 #[pyfunction]
 fn py_refresh_matrixs(
     BoardofGame: Vec<Vec<i32>>,
-) -> PyResult<(Vec<Vec<Vec<i32>>>, Vec<Vec<(usize, usize)>>, Vec<Vec<i32>>, usize, usize)> {
+) -> PyResult<(
+    Vec<Vec<Vec<i32>>>,
+    Vec<Vec<(usize, usize)>>,
+    Vec<Vec<i32>>,
+    usize,
+    usize,
+)> {
     Ok(refresh_matrixs(&BoardofGame))
 }
 
@@ -108,7 +114,13 @@ fn py_SolveEnumerate(
     mut BoardofGame: Vec<Vec<i32>>,
     enuLimit: usize,
 ) -> PyResult<(Vec<Vec<i32>>, Vec<(usize, usize)>, bool)> {
-    let (notMine, flag) = SolveEnumerate(&Matrix_as, &Matrix_xs, &Matrix_bs, &mut BoardofGame, enuLimit);
+    let (notMine, flag) = SolveEnumerate(
+        &Matrix_as,
+        &Matrix_xs,
+        &Matrix_bs,
+        &mut BoardofGame,
+        enuLimit,
+    );
     Ok((BoardofGame, notMine, flag))
 }
 
@@ -202,9 +214,10 @@ pub fn py_layMineSolvable_thread(
 #[pyfunction]
 fn py_cal_possibility(
     board_of_game: Vec<Vec<i32>>,
-    mine_num: usize,
-) -> PyResult<(Vec<((usize, usize), f64)>, f64)> {
+    mine_num: f64,
+) -> PyResult<(Vec<((usize, usize), f64)>, f64, [usize; 3])> {
     // mine_num为局面中雷的总数，不管有没有标
+    // 还返回局面中雷数的范围
     let mut board_of_game = board_of_game.clone();
     mark_board(&mut board_of_game);
     Ok(cal_possibility(&board_of_game, mine_num))
@@ -213,8 +226,8 @@ fn py_cal_possibility(
 #[pyfunction]
 fn py_cal_possibility_onboard(
     board_of_game: Vec<Vec<i32>>,
-    mine_num: usize,
-) -> PyResult<Vec<Vec<f64>>> {
+    mine_num: f64,
+) -> PyResult<(Vec<Vec<f64>>, [usize; 3])> {
     // mine_num为局面中雷的总数，不管有没有标
     let mut board_of_game = board_of_game.clone();
     mark_board(&mut board_of_game);
@@ -228,7 +241,12 @@ fn py_sample_3BVs_exp(X0: usize, Y0: usize, n: usize) -> PyResult<Vec<usize>> {
 
 #[pyfunction]
 fn py_OBR_board(data_vec: Vec<usize>, height: usize, width: usize) -> PyResult<Vec<Vec<i32>>> {
-    Ok(OBR_board(data_vec, height, width).unwrap())
+    // Ok(OBR_board(data_vec, height, width).unwrap())
+    match OBR_board(data_vec, height, width) {
+        //判断方法结果
+        Ok(ans) => Ok(ans),
+        Err(e) => Ok(vec![vec![200]]),
+    }
 }
 
 #[pyclass]
@@ -281,22 +299,14 @@ impl minesweeperBoard {
             0 => {
                 self.solved3BV += 1;
                 self.ces += 1;
-                refreshBoard(
-                    &self.board,
-                    &mut self.gameBoard,
-                    vec![(x, y)],
-                );
+                refreshBoard(&self.board, &mut self.gameBoard, vec![(x, y)]);
                 return;
             }
             -1 => {
                 return;
             }
             _ => {
-                refreshBoard(
-                    &self.board,
-                    &mut self.gameBoard,
-                    vec![(x, y)],
-                );
+                refreshBoard(&self.board, &mut self.gameBoard, vec![(x, y)]);
                 if self.numIs3BV(x, y) {
                     self.solved3BV += 1;
                     self.ces += 1;
@@ -388,11 +398,7 @@ impl minesweeperBoard {
             if flag_ch_op {
                 self.solved3BV += 1;
             }
-            refreshBoard(
-                &self.board,
-                &mut self.gameBoard,
-                chordingCells,
-            );
+            refreshBoard(&self.board, &mut self.gameBoard, chordingCells);
         }
     }
     pub fn numIs3BV(&self, x: usize, y: usize) -> bool {

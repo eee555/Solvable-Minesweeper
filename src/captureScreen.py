@@ -110,7 +110,7 @@ class CaptureScreen(QDialog):
         image = self.captureImage.toImage()
         self.width = image.rect().width()
         self.height = image.rect().height()
-        pp = image.colorTable()
+        # pp = image.colorTable()
 
         bits = image.bits()
         bits.setsize(image.byteCount())
@@ -118,23 +118,9 @@ class CaptureScreen(QDialog):
         s = Struct(str(byteCount) + 'B')
         self.data = s.unpack(bits[0:])
         
-        import sys
-        f = open("output.txt", "w")
-        t = sys.stdout
-        sys.stdout = f
-        sys.stdout.write("11")
-        sys.stdout = t
-        f.close()
         
         self.board = ms_toollib.py_OBR_board(self.data, self.height, self.width)
         
-        import sys
-        f = open("output.txt", "w")
-        t = sys.stdout
-        sys.stdout = f
-        sys.stdout.write("12")
-        sys.stdout = t
-        f.close()
 
         # print(ms_toollib.py_OBR_board(self.data, self.height, self.width))
 
