@@ -21,8 +21,8 @@ class RoundQDialog(QDialog):
         super(RoundQDialog, self).__init__(parent)
         self.border_width = 5
         self.m_drag = False
-        # self.setAttribute(Qt.WA_TranslucentBackground)
-        # self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
 
     def paintEvent(self, event):
    	# # 阴影
@@ -83,8 +83,8 @@ class RoundQWidget(QWidget):
         super(RoundQWidget, self).__init__(parent)
         self.border_width = 5
         self.m_drag = False
-        # self.setAttribute(Qt.WA_TranslucentBackground)
-        # self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
 
     def paintEvent(self, event):
    	# # 阴影
