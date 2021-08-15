@@ -7,10 +7,9 @@ Created on Wed Aug 11 20:04:25 2021
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import  QWidget, QDialog
 from PyQt5.QtCore import Qt, QRectF
-# from PyQt5.Qt import  QApplication, QDialog
-from PyQt5.QtGui import QPainter, QPainterPath
-# from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QFont, QImage, QPainterPath
-from PyQt5.QtGui import QBrush, QColor
+from PyQt5.Qt import  QApplication, QDialog
+from PyQt5.QtGui import QPainter, QPainterPath, QCursor
+from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QFont, QImage, QPainterPath
 from PyQt5.QtGui import QPixmap
 import configparser
 # ui相关的小组件，非窗口
