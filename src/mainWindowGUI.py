@@ -1,6 +1,7 @@
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 import configparser
+import sys
 # 定义关闭主窗口后的事件
 # 重写QMainWindow
 class MainWindow(QtWidgets.QMainWindow):
