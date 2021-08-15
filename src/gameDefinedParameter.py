@@ -6,10 +6,8 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtGui
-from PyQt5.Qt import  QApplication, QDialog
+from PyQt5 import QtCore, QtGui, QtWidgets
 from ui.ui_defined_parameter import Ui_Form
-from uiComponents import RoundQDialog
 
 class ui_Form(Ui_Form):
     def __init__(self, row, column, num):
@@ -19,13 +17,13 @@ class ui_Form(Ui_Form):
         # self.maxRow = 1e6
         # self.maxColumn = 1e6
         self.alter = False
-        self.Dialog = RoundQDialog()
+        self.Dialog = QtWidgets.QDialog()
         self.setupUi (self.Dialog)
         self.setParameter()
         self.Dialog.setWindowIcon (QtGui.QIcon ("media/mine.ico"))
         self.pushButton_3.clicked.connect (self.processParameter)
         self.pushButton_2.clicked.connect (self.Dialog.close)
-        
+
     def setParameter(self):
         self.spinBox.setValue (self.row)
         self.spinBox_2.setValue (self.column)
@@ -47,7 +45,7 @@ if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication
     import sys
     app = QApplication(sys.argv)
-    demo = ui_Form(8, 8, 10)
+    demo = Ui_Form(8, 8, 10)
     demo.Dialog.show()
     sys.exit(app.exec_())
 

@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>220</height>
+    <height>200</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>600</width>
-    <height>220</height>
+    <height>200</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>600</width>
-    <height>220</height>
+    <height>200</height>
    </size>
   </property>
   <property name="sizeIncrement">
@@ -38,14 +38,11 @@
   <property name="windowOpacity">
    <double>10.000000000000000</double>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-color:#F2F2F2</string>
-  </property>
   <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>130</y>
+     <y>120</y>
      <width>181</width>
      <height>51</height>
     </rect>
@@ -63,7 +60,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>50</y>
+     <y>40</y>
      <width>181</width>
      <height>51</height>
     </rect>
@@ -99,7 +96,7 @@ color:white;font: bold;</string>
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>30</y>
+     <y>20</y>
      <width>306</width>
      <height>157</height>
     </rect>
@@ -115,16 +112,8 @@ color:white;font: bold;</string>
      <widget class="QLabel" name="label">
       <property name="font">
        <font>
-        <family>黑体</family>
         <pointsize>16</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
        </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 16pt &quot;黑体&quot;;
-color:black;</string>
       </property>
       <property name="text">
        <string>行数(row)</string>
@@ -135,16 +124,8 @@ color:black;</string>
      <widget class="QSpinBox" name="spinBox">
       <property name="font">
        <font>
-        <family>黑体</family>
         <pointsize>16</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
        </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 16pt &quot;黑体&quot;;
-color:black;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -164,16 +145,8 @@ color:black;</string>
      <widget class="QLabel" name="label_2">
       <property name="font">
        <font>
-        <family>黑体</family>
         <pointsize>16</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
        </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 16pt &quot;黑体&quot;;
-color:black;</string>
       </property>
       <property name="text">
        <string>列数(column)</string>
@@ -184,16 +157,8 @@ color:black;</string>
      <widget class="QSpinBox" name="spinBox_2">
       <property name="font">
        <font>
-        <family>黑体</family>
         <pointsize>16</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
        </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 16pt &quot;黑体&quot;;
-color:black;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -213,16 +178,8 @@ color:black;</string>
      <widget class="QLabel" name="label_3">
       <property name="font">
        <font>
-        <family>黑体</family>
         <pointsize>16</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
        </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 16pt &quot;黑体&quot;;
-color:black;</string>
       </property>
       <property name="text">
        <string>雷数(number)</string>
@@ -233,16 +190,8 @@ color:black;</string>
      <widget class="QSpinBox" name="spinBox_3">
       <property name="font">
        <font>
-        <family>黑体</family>
         <pointsize>16</pointsize>
-        <weight>50</weight>
-        <italic>false</italic>
-        <bold>false</bold>
        </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">font: 16pt &quot;黑体&quot;;
-color:black;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

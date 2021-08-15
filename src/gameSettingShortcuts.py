@@ -1,14 +1,13 @@
 from ui.ui_gameSettingShortcuts import Ui_Form
 import configparser
 from PyQt5 import QtGui, QtWidgets
-from uiComponents import RoundQDialog
 
 # 继承自ui文件生成的原始的.py
 # 减少ui文件生成的原始的.py的改动
 
 class myGameSettingShortcuts(Ui_Form):
     def __init__(self):
-        self.Dialog = RoundQDialog()
+        self.Dialog = QtWidgets.QDialog()
         self.setupUi(self.Dialog)
         self.setParameter()
         self.Dialog.setWindowIcon(QtGui.QIcon ("media/cat.ico"))
