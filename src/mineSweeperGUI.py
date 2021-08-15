@@ -699,15 +699,62 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def screenShot(self):
         # ‘ctrl’ + ‘space’ 事件，启动截图
+        
+        import sys
+        f = open("output.txt", "w")
+        t = sys.stdout
+        sys.stdout = f
+        sys.stdout.write("进入")
+        sys.stdout = t
+        f.close()
+        
         ui = captureScreen.CaptureScreen()
+        
+        f = open("output.txt", "w")
+        t = sys.stdout
+        sys.stdout = f
+        sys.stdout.write("1")
+        sys.stdout = t
+        f.close()
+        
         ui.show()
+        
+        f = open("output.txt", "w")
+        t = sys.stdout
+        sys.stdout = f
+        sys.stdout.write("2")
+        sys.stdout = t
+        f.close()
+        
         ui.exec_()
+        
+        f = open("output.txt", "w")
+        t = sys.stdout
+        sys.stdout = f
+        sys.stdout.write("3")
+        sys.stdout = t
+        f.close()
         
         if len(ui.board) < 6 or len(ui.board[0]) < 6:
             return
         
+        f = open("output.txt", "w")
+        t = sys.stdout
+        sys.stdout = f
+        sys.stdout.write("4")
+        sys.stdout = t
+        f.close()
+        
         ans = minesweeper_master.calPossibility_onboard(ui.board, 
                                                       0.20625 if len(ui.board[0]) >= 24 else 0.15625)
+        
+        f = open("output.txt", "w")
+        t = sys.stdout
+        sys.stdout = f
+        sys.stdout.write("5")
+        sys.stdout = t
+        f.close()
+        
         self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * len(ui.board))
         self.num_bar_ui.QWidget.barSetMineNum.connect(self.showMineNum)
         self.num_bar_ui.QWidget.barSetMineNumCalPoss.connect(self.showMineNumCalPoss)
@@ -731,6 +778,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.spaceHold = True
         self.label.setMouseTracking(True)
         self.game_state = 'study'    # 局面进入研究模式
+        
+        f = open("output.txt", "w")
+        t = sys.stdout
+        sys.stdout = f
+        sys.stdout.write("6")
+        sys.stdout = t
+        f.close()
 
     def showScores(self):
         # 按空格
