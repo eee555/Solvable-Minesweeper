@@ -25,39 +25,38 @@ class RoundQDialog(QDialog):
         # self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
 
     def paintEvent(self, event):
-        ...
    	# # 阴影
-        # path = QPainterPath()
-        # path.setFillRule(Qt.WindingFill)
+        path = QPainterPath()
+        path.setFillRule(Qt.WindingFill)
 
-        # pat = QPainter(self)
-        # pat.setRenderHint(pat.Antialiasing)
-        # pat.fillPath(path, QBrush(Qt.white))
+        pat = QPainter(self)
+        pat.setRenderHint(pat.Antialiasing)
+        pat.fillPath(path, QBrush(Qt.white))
 
-        # color = QColor(192, 192, 192, 50)
+        color = QColor(192, 192, 192, 50)
 
-        # for i in range(10):
-        #     i_path = QPainterPath()
-        #     i_path.setFillRule(Qt.WindingFill)
-        #     ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
-        #     # i_path.addRect(ref)
-        #     i_path.addRoundedRect(ref, self.border_width, self.border_width)
-        #     color.setAlpha(150 - i**0.5*50)
-        #     pat.setPen(color)
-        #     pat.drawPath(i_path)
+        for i in range(10):
+            i_path = QPainterPath()
+            i_path.setFillRule(Qt.WindingFill)
+            ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
+            # i_path.addRect(ref)
+            i_path.addRoundedRect(ref, self.border_width, self.border_width)
+            color.setAlpha(150 - i**0.5*50)
+            pat.setPen(color)
+            pat.drawPath(i_path)
 
-        # # 圆角
-        # pat2 = QPainter(self)
-        # pat2.setRenderHint(pat2.Antialiasing)  # 抗锯齿
-        # pat2.setBrush(QtGui.QColor(242, 242, 242, 255))
-        # pat2.setPen(Qt.transparent)
+        # 圆角
+        pat2 = QPainter(self)
+        pat2.setRenderHint(pat2.Antialiasing)  # 抗锯齿
+        pat2.setBrush(QtGui.QColor(242, 242, 242, 255))
+        pat2.setPen(Qt.transparent)
 
-        # rect = self.rect()
-        # rect.setLeft(9)
-        # rect.setTop(9)
-        # rect.setWidth(rect.width()-9)
-        # rect.setHeight(rect.height()-9)
-        # pat2.drawRoundedRect(rect, 10, 10)
+        rect = self.rect()
+        rect.setLeft(9)
+        rect.setTop(9)
+        rect.setWidth(rect.width()-9)
+        rect.setHeight(rect.height()-9)
+        pat2.drawRoundedRect(rect, 10, 10)
         
     def mousePressEvent(self, e):
         if e.button() == Qt.LeftButton:
@@ -88,39 +87,38 @@ class RoundQWidget(QWidget):
         # self.setWindowFlags(Qt.FramelessWindowHint | Qt.Window)
 
     def paintEvent(self, event):
-        ...
    	# # 阴影
-        # path = QPainterPath()
-        # path.setFillRule(Qt.WindingFill)
+        path = QPainterPath()
+        path.setFillRule(Qt.WindingFill)
 
-        # pat = QPainter(self)
-        # pat.setRenderHint(pat.Antialiasing)
-        # pat.fillPath(path, QBrush(Qt.white))
+        pat = QPainter(self)
+        pat.setRenderHint(pat.Antialiasing)
+        pat.fillPath(path, QBrush(Qt.white))
 
-        # color = QColor(192, 192, 192, 50)
+        color = QColor(192, 192, 192, 50)
 
-        # for i in range(10):
-        #     i_path = QPainterPath()
-        #     i_path.setFillRule(Qt.WindingFill)
-        #     ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
-        #     # i_path.addRect(ref)
-        #     i_path.addRoundedRect(ref, self.border_width, self.border_width)
-        #     color.setAlpha(150 - i**0.5*50)
-        #     pat.setPen(color)
-        #     pat.drawPath(i_path)
+        for i in range(10):
+            i_path = QPainterPath()
+            i_path.setFillRule(Qt.WindingFill)
+            ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
+            # i_path.addRect(ref)
+            i_path.addRoundedRect(ref, self.border_width, self.border_width)
+            color.setAlpha(150 - i**0.5*50)
+            pat.setPen(color)
+            pat.drawPath(i_path)
 
-        # # 圆角
-        # pat2 = QPainter(self)
-        # pat2.setRenderHint(pat2.Antialiasing)  # 抗锯齿
-        # pat2.setBrush(QtGui.QColor(242, 242, 242, 255))
-        # pat2.setPen(Qt.transparent)
+        # 圆角
+        pat2 = QPainter(self)
+        pat2.setRenderHint(pat2.Antialiasing)  # 抗锯齿
+        pat2.setBrush(QtGui.QColor(242, 242, 242, 255))
+        pat2.setPen(Qt.transparent)
 
-        # rect = self.rect()
-        # rect.setLeft(9)
-        # rect.setTop(9)
-        # rect.setWidth(rect.width()-9)
-        # rect.setHeight(rect.height()-9)
-        # pat2.drawRoundedRect(rect, 10, 10)
+        rect = self.rect()
+        rect.setLeft(9)
+        rect.setTop(9)
+        rect.setWidth(rect.width()-9)
+        rect.setHeight(rect.height()-9)
+        pat2.drawRoundedRect(rect, 10, 10)
         
     def mousePressEvent(self, e):
         if e.button() == Qt.LeftButton:
@@ -175,8 +173,8 @@ class StatusLabel (QtWidgets.QLabel):
                 
 
 
-class xxx (QtWidgets.QLabel):
-    ...
+# class xxx (QtWidgets.QLabel):
+#     ...
     
     
     
