@@ -8,7 +8,6 @@ import mineSweeperGUI as mineSweeperGUI
 
 
 if __name__ == "__main__":
-    
     # appctxt = ApplicationContext()   # 1. Instantiate ApplicationContext
     app = QtWidgets.QApplication (sys.argv)
     # app.aboutToQuit.connect(app.deleteLater)
@@ -17,8 +16,6 @@ if __name__ == "__main__":
     mainWindow.show()
     # exit_code = appctxt.app.exec_()  # 2. Invoke appctxt.app.exec_()
     sys.exit(app.exec_())
-    
-    
 
 #    雷密度较大时，生成无猜局面采用自适应的鲁棒“快速模式”
 #    生成极端bv局面时采用鲁棒的“快速模式”，仅对标准模式有效？

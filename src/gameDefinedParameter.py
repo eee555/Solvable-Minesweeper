@@ -7,7 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtGui
-from PyQt5.Qt import QApplication, QDialog
+from PyQt5.Qt import  QApplication, QDialog
 from ui.ui_defined_parameter import Ui_Form
 from uiComponents import RoundQDialog
 
