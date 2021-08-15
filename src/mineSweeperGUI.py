@@ -726,7 +726,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         sys.stdout = t
         f.close()
         
-        ui.exec()
+        ui.exec_()
         
         f = open("output.txt", "w")
         t = sys.stdout
