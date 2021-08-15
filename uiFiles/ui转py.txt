@@ -1,7 +1,6 @@
 @echo off
+pyuic5 -o superGUI.py main_board.ui
 pyuic5 -o gameSettingShortcuts.py ui_gs_shortcuts.ui
 pyuic5 -o ui_gameSettings.py ui_gs.ui
 pyuic5 -o ui_defined_parameter.py ui_defined_parameter.ui
-pyuic5 -o ui_main_board.py main_board.ui
-pyuic5 -o ui_mine_num_bar.py ui_mine_num_bar.ui
 pause

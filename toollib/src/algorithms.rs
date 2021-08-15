@@ -1,5 +1,5 @@
 use crate::utils::{
-    big_number, cal3BV, cal3BV_exp, combine, enuOneStep, enum_comb, layMineNumber, layMineOpNumber, enum_count,
+    big_number, cal3BV, cal3BV_exp, combine, enuOneStep, enum_comb, layMineNumber, layMineOpNumber,
     refreshBoard, refreshMatrix, refresh_matrixs, sum, unsolvableStructure, C_usize, C, legalize_board,
 };
 use crate::OBR::ImageBoard;
@@ -128,104 +128,116 @@ pub fn SolveDirect(
 
 pub fn cal_possibility(
     board_of_game: &Vec<Vec<i32>>,
-    mut mine_num: f64,
-) -> (Vec<((usize, usize), f64)>, f64, [usize; 3]) {
-    // 输入局面、未被标出的雷数，返回每一个未知的格子是雷的概率
+    mine_num: usize,
+) -> (Vec<((usize, usize), f64)>, f64) {
+    // 输入局面、未知雷数，返回每一个未知的格子是雷的概率
     // 局面中可以标雷，但必须全部标对
-    // 未知雷数为总雷数减去已经标出的雷
+    // mine_num为局面中雷的总数，不管有没有标
     // 若超出枚举长度，那些格子的概率不予返回
     // 输出所有边缘格子是雷的概率和内部未知格子是雷的概率
     // 若没有内部未知区域，返回NaN
     let mut p = vec![];
-    let mut table_cell_minenum_s: Vec<Vec<Vec<usize>>> = vec![];
-    // 每块每格雷数表：记录了每块每格（或者地位等同的复合格）、每种总雷数下的是雷情况数
+    let mut table_cell_minenum: Vec<Vec<Vec<usize>>> = vec![]; // 每块每格雷数表：记录了每块每格（或者地位等同的复合格）、每种总雷数下的是雷情况数
     let mut comb_relp_s = vec![]; // 记录了方格的组合关系
-    // let mut enum_comb_table_s = vec![];
-    let mut table_minenum_s: Vec<[Vec<usize>; 2]> = vec![];
-    // 每块雷数分布表：记录了每块（不包括内部块）每种总雷数下的是雷总情况数
-    // 例如：[[[17, 18, 19, 20, 21, 22, 23, 24], [48, 2144, 16872, 49568, 68975, 48960, 16608, 2046]]]
-    let (matrix_a_s, matrix_x_s, matrix_b_s, unknow_block, is_mine_num) = refresh_matrixs(&board_of_game);
-    // println!("matrix_x_s: {:?}", matrix_x_s);
-    // println!("board_of_game: {:?}", board_of_game);
-    let block_num = matrix_a_s.len(); // 整个局面被分成的块数
+    let mut enum_comb_table_s = vec![];
+    let mut table_minenum: Vec<[Vec<usize>; 2]> = vec![]; // 每块雷数分布表：记录了每块（不包括内部块）每种总雷数下的是雷总情况数
+                                                          // let mut table_t: Vec<usize> = vec![]; // 每块情况总数表：记录了每块总共有几种可能的情况
+    let (matrix_as, matrix_xs, matrix_bs, unknow_block, is_mine_num) = refresh_matrixs(&board_of_game);
+    let mine_num = mine_num - is_mine_num;
+    let block_num = matrix_as.len(); // 整个局面被分成的块数
 
-    let mut matrixA_squeeze_s: Vec<Vec<Vec<i32>>> = vec![];
-    let mut matrixx_squeeze_s: Vec<Vec<(usize, usize)>> = vec![];
-    // let mut min_max_mine_num = [0, 0];
     for i in 0..block_num {
         let (matrixA_squeeze, matrixx_squeeze, combination_relationship) =
-            combine(matrix_a_s[i].clone(), matrix_x_s[i].clone());
-        // let enum_comb_table = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_bs[i]);
-        // if matrixx_squeeze.len() > 60 {
-        //     // 这里就是考虑格子等同地位后的枚举极限
-        //     return (vec![], f64::NAN, [0, 0]);
-        // }
-        // println!("压缩后的combination_relationship：{:?}", combination_relationship);
+            combine(matrix_as[i].clone(), matrix_xs[i].clone());
+        let enum_comb_table = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_bs[i]);
+        if matrixx_squeeze.len() > 45 {
+            // 这里就是考虑格子等同地位后的枚举极限，经实验设为45比较保险
+            return (vec![], f64::NAN);
+        }
         comb_relp_s.push(combination_relationship);
-        // println!("所有情况数：{:?}", &enum_comb_table.len());
-        // println!("压缩后的matrixA_squeeze：{:?}", matrixA_squeeze);
-        // println!("压缩后的matrixx_squeeze：{:?}", matrixx_squeeze);
-        
-        // enum_comb_table_s.push(enum_comb_table);
-        matrixA_squeeze_s.push(matrixA_squeeze);
-        matrixx_squeeze_s.push(matrixx_squeeze);
+        enum_comb_table_s.push(enum_comb_table);
     }
-    
-    // println!("组合情况：{:?}", comb_relp_s);
+
     // 分块枚举后，根据雷数限制，删除某些情况
     for i in 0..block_num {
-        let (table_minenum_i, table_cell_minenum_i) =
-        match enum_count(&matrixA_squeeze_s[i], &matrixx_squeeze_s[i], &matrix_b_s[i], &comb_relp_s[i]) {
-            Ok((table_minenum_i, table_cell_minenum_i)) => (table_minenum_i, table_cell_minenum_i),
-            Err(e) => return (vec![], f64::NAN, [0, 0, 0]),
-        };
-        
-        // min_max_mine_num[0] += table_minenum_i[0][0];
-        // min_max_mine_num[1] += table_minenum_i[0][table_minenum_i[0].len() - 1];
-
-        table_cell_minenum_s.push(table_cell_minenum_i);
-        table_minenum_s.push(table_minenum_i);
+        table_cell_minenum.push(vec![]);
+        table_minenum.push([vec![], vec![]]);
+        for s in enum_comb_table_s[i].clone() {
+            let s_sum = s.iter().sum::<usize>();
+            let mut si_num = 1; // 由于enum_comb_table中的格子每一个都代表了与其地位等同的所有格子，由此的情况数
+            for s_i in 0..s.len() {
+                si_num *= C_usize(comb_relp_s[i][s_i].len(), s[s_i]);
+            }
+            let fs = table_minenum[i][0].clone().iter().position(|x| *x == s_sum);
+            match fs {
+                None => {
+                    table_minenum[i][0].push(s_sum);
+                    table_minenum[i][1].push(si_num);
+                    let mut ss = vec![];
+                    for c in 0..s.len() {
+                        if s[c] == 0 {
+                            ss.push(0);
+                        } else {
+                            let mut sss = 1;
+                            for d in 0..s.len() {
+                                if c != d {
+                                    sss *= C_usize(comb_relp_s[i][d].len(), s[d])
+                                } else {
+                                    sss *= C_usize(comb_relp_s[i][d].len() - 1, s[d] - 1);
+                                }
+                            }
+                            ss.push(sss);
+                        }
+                    }
+                    table_cell_minenum[i].push(ss);
+                }
+                _ => {
+                    table_minenum[i][1][fs.unwrap()] += si_num;
+                    for c in 0..s.len() {
+                        if s[c] == 0 {
+                            continue;
+                        } else {
+                            let mut sss = 1;
+                            for d in 0..s.len() {
+                                if c != d {
+                                    sss *= C_usize(comb_relp_s[i][d].len(), s[d])
+                                } else {
+                                    sss *= C_usize(comb_relp_s[i][d].len() - 1, s[d] - 1);
+                                }
+                            }
+                            table_cell_minenum[i][fs.unwrap()][c] += sss;
+                        }
+                    }
+                }
+            }
+        }
     } // 第一步，整理出每块每格雷数情况表、每块雷数分布表、每块雷分布情况总数表
-    // println!("table_minenum: {:?}", table_minenum);
-    // println!("table_cell_minenum:{:?}", table_cell_minenum);
-    let mut min_mine_num = 0;
-    let mut max_mine_num = 0;
+    let mut min_num = 0;
+    let mut max_num = 0;
     for i in 0..block_num {
-        min_mine_num += table_minenum_s[i][0].iter().min().unwrap();
-        max_mine_num += table_minenum_s[i][0].iter().max().unwrap();
+        min_num += table_minenum[i][0].iter().min().unwrap();
+        max_num += table_minenum[i][0].iter().max().unwrap();
     }
-    let mine_num = if mine_num <= 1.0 {
-        let mn = ((board_of_game.len() * board_of_game[0].len()) as f64 * mine_num) as usize;
-        // println!("mn:{:?}", mn);
-        // println!("min_mine_num:{:?}", min_mine_num);
-        // println!("max_mine_num:{:?}", max_mine_num);
-        // println!("unknow_block:{:?}", unknow_block);
-        // println!("is_mine_num:{:?}", is_mine_num);
-        min(max(mn, min_mine_num), max_mine_num + unknow_block)
-    } else {
-        mine_num as usize - is_mine_num
-    };
-
-    max_mine_num = min(max_mine_num, mine_num);
+    max_num = min(max_num, mine_num);
     let unknow_mine_num: Vec<usize> =
-        (mine_num - max_mine_num..min(mine_num - min_mine_num, unknow_block) + 1).collect();
+        (mine_num - max_num..min(mine_num - min_num, unknow_block) + 1).collect();
     // 这里的写法存在极小的风险，例如边缘格雷数分布是0，1，3，而我们直接认为了可能有2
     let mut unknow_mine_s_num = vec![];
     for i in &unknow_mine_num {
         unknow_mine_s_num.push(C(unknow_block, *i));
     }
     // 第二步，整理内部未知块雷数分布表，并筛选。这样内部未知雷块和边缘雷块的地位视为几乎等同，但数据结构不同
-    table_minenum_s.push([unknow_mine_num.clone(), vec![]]);
+    table_minenum.push([unknow_mine_num.clone(), vec![]]);
     // 这里暂时不知道怎么写，目前这样写浪费了几个字节的内存
     // 未知区域的情况数随雷数的分布不能存在表table_minenum中，因为格式不一样，后者是大数类型
     let mut mine_in_each_block = (0..block_num + 1)
-        .map(|i| 0..table_minenum_s[i][0].len())
+        .map(|i| 0..table_minenum[i][0].len())
         .multi_cartesian_product()
         .collect::<Vec<_>>();
     for i in (0..mine_in_each_block.len()).rev() {
         let mut total_num = 0;
         for j in 0..block_num + 1 {
-            total_num += table_minenum_s[j][0][mine_in_each_block[i][j]];
+            total_num += table_minenum[j][0][mine_in_each_block[i][j]];
         }
         if total_num != mine_num {
             mine_in_each_block.remove(i);
@@ -234,7 +246,7 @@ pub fn cal_possibility(
     // 第三步，枚举每块雷数情况索引表：行代表每种情况，列代表每块雷数的索引，最后一列代表未知区域雷数
     let mut table_minenum_other: Vec<Vec<big_number>> = vec![];
     for i in 0..block_num + 1 {
-        table_minenum_other.push(vec![big_number { a: 0.0, b: 0 }; table_minenum_s[i][0].len()]);
+        table_minenum_other.push(vec![big_number { a: 0.0, b: 0 }; table_minenum[i][0].len()]);
     } // 初始化
     for s in mine_in_each_block {
         for i in 0..block_num {
@@ -242,9 +254,9 @@ pub fn cal_possibility(
             let mut s_mn = mine_num; // 未知区域中的雷数
             for j in 0..block_num {
                 if i != j {
-                    s_num.mul_usize(table_minenum_s[j][1][s[j]]);
+                    s_num.mul_usize(table_minenum[j][1][s[j]]);
                 }
-                s_mn -= table_minenum_s[j][0][s[j]];
+                s_mn -= table_minenum[j][0][s[j]];
             }
             let ps = unknow_mine_num.iter().position(|x| *x == s_mn).unwrap();
             s_num.mul_big_number(&unknow_mine_s_num[ps]);
@@ -253,8 +265,8 @@ pub fn cal_possibility(
         let mut s_num = big_number { a: 1.0, b: 0 };
         let mut s_mn = mine_num; // 未知区域中的雷数
         for j in 0..block_num {
-            s_num.mul_usize(table_minenum_s[j][1][s[j]]);
-            s_mn -= table_minenum_s[j][0][s[j]];
+            s_num.mul_usize(table_minenum[j][1][s[j]]);
+            s_mn -= table_minenum[j][0][s[j]];
         }
         let ps = unknow_mine_num.iter().position(|x| *x == s_mn).unwrap();
         table_minenum_other[block_num][ps].add_big_number(&s_num);
@@ -275,16 +287,12 @@ pub fn cal_possibility(
                 let mut s_cell = big_number { a: 0.0, b: 0 };
                 for s in 0..table_minenum_other[i].len() {
                     let mut o = table_minenum_other[i][s].clone();
-                    o.mul_usize(table_cell_minenum_s[i][s][cells_id]);
+                    o.mul_usize(table_cell_minenum[i][s][cells_id]);
                     s_cell.add_big_number(&o);
                 }
                 let p_cell = s_cell.div_big_num(&T);
                 let id = comb_relp_s[i][cells_id][cell_id];
-                p.push((matrix_x_s[i][id], p_cell));
-                // println!("p_cell: {:?}", p_cell);
-                // println!("s_cell: {:?}", s_cell);
-                // println!("T: {:?}", T);
-                // println!("table_cell_minenum: {:?}", table_cell_minenum);
+                p.push((matrix_xs[i][id], p_cell));
             }
         }
     }
@@ -296,21 +304,15 @@ pub fn cal_possibility(
         u.mul_usize(unknow_mine_num[i]);
         u_s.add_big_number(&u);
     }
-    // println!("{:?}", table_minenum);
-    // println!("table_cell_minenum----{:?}", table_cell_minenum);
-    // println!("{:?}", unknow_mine_num);
-    // println!("{:?}", unknow_mine_s_num);
     let p_unknow = u_s.div_big_num(&T) / unknow_block as f64;
     // 第七步，计算内部未知区域是雷的概率
-
-    
-    (p, p_unknow, [min_mine_num + is_mine_num, mine_num, max_mine_num + is_mine_num + unknow_block])
+    (p, p_unknow)
 }
 
 pub fn cal_possibility_onboard(
     board_of_game: &Vec<Vec<i32>>,
-    mine_num: f64,
-) -> (Vec<Vec<f64>>, [usize; 3]) {
+    mine_num: usize,
+) -> Vec<Vec<f64>> {
     let mut p = vec![vec![-1.0; board_of_game[0].len()]; board_of_game.len()];
     let pp = cal_possibility(&board_of_game, mine_num);
     for i in pp.0 {
@@ -327,7 +329,7 @@ pub fn cal_possibility_onboard(
             }
         }
     }
-    (p, pp.2)
+    p
 }
 
 pub fn layMineOp(

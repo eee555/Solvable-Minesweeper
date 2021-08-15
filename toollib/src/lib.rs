@@ -202,10 +202,9 @@ pub fn py_layMineSolvable_thread(
 #[pyfunction]
 fn py_cal_possibility(
     board_of_game: Vec<Vec<i32>>,
-    mine_num: f64,
-) -> PyResult<(Vec<((usize, usize), f64)>, f64, [usize; 3])> {
+    mine_num: usize,
+) -> PyResult<(Vec<((usize, usize), f64)>, f64)> {
     // mine_num为局面中雷的总数，不管有没有标
-    // 还返回局面中雷数的范围
     let mut board_of_game = board_of_game.clone();
     mark_board(&mut board_of_game);
     Ok(cal_possibility(&board_of_game, mine_num))
@@ -214,8 +213,8 @@ fn py_cal_possibility(
 #[pyfunction]
 fn py_cal_possibility_onboard(
     board_of_game: Vec<Vec<i32>>,
-    mine_num: f64,
-) -> PyResult<(Vec<Vec<f64>>, [usize; 3])> {
+    mine_num: usize,
+) -> PyResult<Vec<Vec<f64>>> {
     // mine_num为局面中雷的总数，不管有没有标
     let mut board_of_game = board_of_game.clone();
     mark_board(&mut board_of_game);

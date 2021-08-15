@@ -1,1 +1,0 @@
-pyrcc5 src_help_pic.qrc -o src_help_pic_rc.py

@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QSize
 import mineLabel as mineLabel
-from uiComponents import StatusLabel
-import configparser, mine_num_bar
+import statusLabel as statusLabel
+import configparser
 from PyQt5.QtGui import QPalette, QPixmap, QFont, QIcon
 
 class Ui_MainWindow(object):
@@ -122,8 +122,6 @@ class Ui_MainWindow(object):
         # self.mineLabel = []  # 局面
         self.initMineArea()
         self.label_2.leftRelease.connect(self.gameRestart)
-        self.MinenumTimeWigdet.mouseReleaseEvent = self.gameRestart
-        
         self.label_2.setPixmap(self.pixmapNum[14])
         self.label_2.setScaledContents(True)
         pe = QPalette()
@@ -143,8 +141,6 @@ class Ui_MainWindow(object):
         self.label_info.setPalette(pe)         # 最下面的框
         self.label_info.setFont(QFont("Arial", 20, QFont.Bold))
         self.label_info.setText(str(self.mineNum))
-        
-        
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(973, 217)
@@ -252,7 +248,7 @@ class Ui_MainWindow(object):
         # self.frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.frame.setObjectName("frame")
 
-        self.label_2 = StatusLabel(self.frame)
+        self.label_2 = statusLabel.StatusLabel(self.frame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -474,7 +470,6 @@ class Ui_MainWindow(object):
 
 
     def initMineArea(self):
-        # self.label就是中间的局面
         for i in range(self.gridLayout.count()):
             w = self.gridLayout.itemAt(i).widget()
             w.setParent(None)
@@ -488,9 +483,8 @@ class Ui_MainWindow(object):
         self.label.rightPressed.connect(self.mineAreaRightPressed)
         self.label.rightRelease.connect(self.mineAreaRightRelease)
         self.label.mouseMove.connect(self.mineMouseMove)
-        
         self.mainWindow.keyRelease.connect(self.mineKeyReleaseEvent)
-        
+
         self.label.setObjectName("label")
         self.label.resize(QSize(self.pixSize*self.column, self.pixSize*self.row))
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)

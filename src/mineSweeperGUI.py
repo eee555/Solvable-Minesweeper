@@ -3,11 +3,17 @@ from PyQt5.QtCore import QTimer, QCoreApplication, QPoint, Qt
 from PyQt5.QtGui import QPixmap, QPainter
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
 import gameDefinedParameter
-import superGUI, gameAbout, gameSettings, gameHelp, gameTerms, gameScores,\
-    gameSettingShortcuts, captureScreen, mine_num_bar
+import superGUI
+import gameAbout
+import gameSettings
+import gameHelp
+import gameTerms
+import gameScores
 import minesweeper_master
 import configparser
 import time
+import gameSettingShortcuts
+import captureScreen
 # import sys
 # from PyQt5.QtWidgets import QApplication
 
@@ -84,7 +90,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.frameShortcut8.activated.connect(self.showScores)
         self.frameShortcut9.activated.connect(self.screenShot)
 
-        self.game_state = 'ready'
+
 
     def outOfBorder(self, i, j):
         if i < 0 or i >= self.row or j < 0 or j >= self.column:
@@ -391,16 +397,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.boardofGame = [[10] * self.column for _ in range(self.row)]
         self.label.paintPossibility = False
         self.label.setMouseTracking(False)
-        
-        if self.game_state == 'study':
-            self.game_state = 'ready'
-            self.num_bar_ui.QWidget.close()
 
-    def gameRestart(self, e = None):  # 画界面，但是不埋雷，改数据而不是重新生成label
-        if e:
-        # 点脸周围时，会传入一个e参数
-            if not (self.MinenumTimeWigdet.width() >= e.localPos().x() >= 0 and 0 <= e.localPos().y() <= self.MinenumTimeWigdet.height()):
-                return
+    def gameRestart(self):  # 画界面，但是不埋雷，改数据而不是重新生成label
         # 点击脸时调用
         self.time = 0
         self.showTime(self.time)
@@ -418,10 +416,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.showShot = False
         self.spaceHold = False
         self.label.setMouseTracking(False)
-        
-        if self.game_state == 'study':
-            self.game_state = 'ready'
-            self.num_bar_ui.QWidget.close()
 
     def gameFinished(self):  # 游戏结束画残局，停时间，改状态
         # print(self.operationStream)#调试用，否则请注释
@@ -502,33 +496,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def showMineNum(self, n):
         # 显示剩余雷数，雷数大于等于0，小于等于999，整数
-        # if needCalPoss:
-        #     ans = minesweeper_master.calPossibility_onboard(self.label.board, self.mineNum)
-        #     self.label.boardPossibility = ans[0]
-        #     self.label.update()
-        self.mineNumShow = n
-        if n >= 0 and n <= 999:
-            self.label_11.setPixmap(self.pixmapLEDNum[n//100])
-            self.label_12.setPixmap(self.pixmapLEDNum[n//10%10])
-            self.label_13.setPixmap(self.pixmapLEDNum[n%10])
-            return
-        elif n < 0:
-            self.label_11.setPixmap(self.pixmapLEDNum[0])
-            self.label_12.setPixmap(self.pixmapLEDNum[0])
-            self.label_13.setPixmap(self.pixmapLEDNum[0])
-            return
-        elif n >= 1000:
-            self.label_11.setPixmap(self.pixmapLEDNum[9])
-            self.label_12.setPixmap(self.pixmapLEDNum[9])
-            self.label_13.setPixmap(self.pixmapLEDNum[9])
-            return
-        
-    def showMineNumCalPoss(self):
-        ans = minesweeper_master.calPossibility_onboard(self.label.board, self.mineNumShow)
-        self.label.boardPossibility = ans[0]
-        self.label.update()
-        
-        n = self.mineNumShow
         if n >= 0 and n <= 999:
             self.label_11.setPixmap(self.pixmapLEDNum[n//100])
             self.label_12.setPixmap(self.pixmapLEDNum[n//10%10])
@@ -698,42 +665,33 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.exec_()
 
     def screenShot(self):
-        # ‘ctrl’ + ‘space’ 事件，启动截图
+        # if self.showShot:
+        #     return
         ui = captureScreen.CaptureScreen()
         ui.show()
         ui.exec_()
-        
-        if len(ui.board) < 6 or len(ui.board[0]) < 6:
+        if len(ui.board) == 8 and len(ui.board[0]) == 8:
+            self.setBoard_and_start(8, 8, 10)
+            self.mineNum = 10
+        elif len(ui.board) == 16 and len(ui.board[0]) == 16:
+            self.setBoard_and_start(16, 16, 40)
+            self.mineNum = 40
+        elif len(ui.board) == 16 and len(ui.board[0]) == 30:
+            self.setBoard_and_start(16, 30, 99)
+            self.mineNum = 99
+        else:
             return
-        
-        ans = minesweeper_master.calPossibility_onboard(ui.board, 
-                                                      0.20625 if len(ui.board[0]) >= 24 else 0.15625)
-        self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * len(ui.board))
-        self.num_bar_ui.QWidget.barSetMineNum.connect(self.showMineNum)
-        self.num_bar_ui.QWidget.barSetMineNumCalPoss.connect(self.showMineNumCalPoss)
-        self.num_bar_ui.setSignal()
-        
-        self.mainWindow.closeEvent_.connect(self.num_bar_ui.QWidget.close)
-        
-        self.num_bar_ui.QWidget.show()
-        # self.showMineNum(ans[1][1])
-        
-        self.setBoard_and_start(len(ui.board), len(ui.board[0]), ans[1][1])
-        self.mineNum = ans[1][1]
-        
         self.label.board = ui.board
-        ans = minesweeper_master.calPossibility_onboard(ui.board, self.mineNum)
-        self.label.boardPossibility = ans[0]
+        self.label.boardPossibility = minesweeper_master.calPossibility_onboard(ui.board, self.mineNum)
         self.label.paintPossibility = True
         self.showShot = True
         self.label.update()
         self.finish = True
         self.spaceHold = True
         self.label.setMouseTracking(True)
-        self.game_state = 'study'    # 局面进入研究模式
+        # print(ui.board)
 
     def showScores(self):
-        # 按空格
         if self.showShot:
             return
         if not self.spaceHold:
@@ -750,8 +708,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.paintPossibility = True
                 self.label.setMouseTracking(True)
                 mineNum = self.mineNum
-                ans = minesweeper_master.calPossibility_onboard(self.boardofGame, mineNum)
-                self.label.boardPossibility = ans[0]
+                # for i in self.boardofGame:
+                #     for j in i:
+                #         if j == 11:
+                #             mineNum -= 1
+                self.label.boardPossibility = minesweeper_master.calPossibility_onboard(self.boardofGame, mineNum)
                 # print(self.label.boardPossibility)
                 self.label.update()
 
