@@ -48,7 +48,6 @@ jobs:
         pyuic5 -o ui_main_board.py main_board.ui
         pyuic5 -o ui_mine_num_bar.py ui_mine_num_bar.ui
         cd ..
-        md src/ui
         cp uiFiles/ui_gameSettings.py src/ui/ui_gameSettings.py
         cp uiFiles/ui_gameSettingShortcuts.py src/ui/ui_gameSettingShortcuts.py
         cp uiFiles/ui_defined_parameter.py src/ui/ui_defined_parameter.py
