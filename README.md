@@ -27,7 +27,7 @@ Black Cat Minesweeper v2.2.5, which integrates three major internal mine detecti
 
 ### 从源码安装(不推荐)
 在编译之前，请确保自己拥有：
-*   Python 3.7/Python 3.8（**Python 3.9会找不到ms_toollib.pyd**，原因不明）
+*   Python 3.7/Python 3.8（**Python 3.9和3.10会找不到ms_toollib.pyd**，原因不明）
 *   Rust
 *   会用Powershell或者其它命令行工具的能力
 
