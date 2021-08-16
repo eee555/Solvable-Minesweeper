@@ -446,6 +446,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     # 计算游戏得分，展示用，返回一个字典，都是字符串
     # gameBoard是带数字的
     # print(operationStream)
+    time = max(time, 1e-4)
     Row = len(Board)
     Column = len(Board[0])
     s = Row * Column
@@ -459,19 +460,19 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     scores['EstTime'] = '{:.3f}'.format(time) if winflag else '{:.3f}'.format(min(999, time*BBBV/max(msBoard.solved3BV, 0.001)))
     scores['Ops'] = str(indexes['Ops'])
     scores['Isls'] = str(indexes['Isls'])
-    scores['Left'] = str(msBoard.left) + '@' + '{:.3f}'.format(msBoard.left/time)
-    scores['Right'] = str(msBoard.right) + '@' + '{:.3f}'.format(msBoard.right/time)
+    scores['Left'] = str(msBoard.left) + '@' + ('--' if time < 1e-3 else '{:.3f}'.format(msBoard.left/(time)))
+    scores['Right'] = str(msBoard.right) + '@' + ('--' if time < 1e-3 else '{:.3f}'.format(msBoard.right/time))
     scores['Double'] = str(msBoard.chording)
     clNum = msBoard.left + msBoard.right + msBoard.chording
-    scores['Cl'] = str(clNum) + '@' + '{:.3f}'.format(clNum/time)
+    scores['Cl'] = str(clNum) + '@' + ('--' if time < 1e-3 else '{:.3f}'.format(clNum/time))
     IOE = msBoard.solved3BV/clNum
     scores['IOE'] = '{:.3f}'.format(IOE)
     scores['Thrp'] = '{:.3f}'.format(msBoard.solved3BV/msBoard.ces)
     scores['Corr'] = '{:.3f}'.format(msBoard.ces/(msBoard.left + msBoard.right + msBoard.chording))
-    BBBV_s = msBoard.solved3BV/time
+    BBBV_s = min(100, msBoard.solved3BV/time)
     scores['3BV/s'] = '{:.3f}'.format(BBBV_s)
-    RQP = time**2/BBBV if winflag else 999
-    scores['RQP'] = '{:.3f}'.format(RQP)
+    RQP = time**2/BBBV
+    scores['RQP'] = '{:.3f}'.format(RQP) if winflag else '--'
     if Difficulty == 1:
         STNB = 47.22/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)
     elif Difficulty == 2:
@@ -480,9 +481,10 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
         STNB = 435.001/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)
     else:
         STNB = 0
+    STNB = min(STNB, 1000)
     scores['STNB'] = '{:.3f}'.format(STNB)
-    scores['STNC'] = '{:.3f}'.format((0.0016*s*s+0.1020*s+24.8904)/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)**1.7)
-    Ce_s = msBoard.ces/time
+    scores['STNB'] = '{:.3f}'.format((0.0016*s*s+0.1020*s+24.8904)/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)**1.7)
+    Ce_s = min(20, msBoard.ces/time)
     scores['Ce/s'] = '{:.3f}'.format(Ce_s)
     scores['Ces'] = str(msBoard.ces) + '@' + '{:.3f}'.format(Ce_s)
     if mode == 0:
@@ -504,7 +506,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     if Difficulty == 1:
         scores['Difficulty'] = '初级'
         scoresValue = []
-        scoresValue.append(-0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
+        scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*0.7)*0.63661977)
         Time = time if winflag else 999
         scoresValue.append(math.atan(10/Time)*0.63661977)
@@ -514,7 +516,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     elif Difficulty == 2:
         scores['Difficulty'] = '中级'
         scoresValue = []
-        scoresValue.append(-0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
+        scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*1.1)*0.63661977)
         Time = time if winflag else 999
         scoresValue.append(math.atan(150/Time)*0.63661977)
@@ -524,7 +526,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     elif Difficulty == 3:
         scores['Difficulty'] = '高级'
         scoresValue = []
-        scoresValue.append(-0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
+        scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*1.2)*0.63661977)
         Time = time if winflag else 999
         scoresValue.append(math.atan(300/Time)*0.63661977)
@@ -534,13 +536,14 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     elif Difficulty == 4:
         scores['Difficulty'] = '自定义'
         scoresValue = []
-        scoresValue.append(-0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
+        scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*1.2)*0.63661977)
         Time = time if winflag else 999
         scoresValue.append(math.atan(300/Time)*0.63661977)
         scoresValue.append(math.atan(STNB/20)*0.63661977)
         scoresValue.append((0.1097*IOE**3+0.3169*IOE*IOE-0.01307*IOE+0.0005845)/(IOE*IOE-1.342*IOE+0.899))
         scoresValue.append(math.atan(50/RQP)*0.63661977)
+    # print(scoresValue)
     return scores, scoresValue, msBoard
 
 

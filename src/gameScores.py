@@ -130,7 +130,7 @@ class Ui_Form(QtWidgets.QDialog):
         # scoresValue在0到1之间，展示雷达图用
         painter = QPainter(self)
         angle_0 = 0  # 起始位置弧度，向上为0，顺时针为正
-        scoresName = ['Ce/s', '3BV/s', 'RTime', 'STNC', 'IOE', 'RQP']
+        scoresName = ['Ce/s', '3BV/s', 'RTime', 'STNB', 'IOE', 'RQP']
 
         painter.setPen(self.pen1)
         painter.setFont(QFont('Arial',16))  # 设置字体和大小

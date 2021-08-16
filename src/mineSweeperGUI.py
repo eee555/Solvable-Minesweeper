@@ -204,7 +204,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                         self.layMine(i, j)
                         self.gamestart = True
                         self.boardofGame = minesweeper_master.refreshBoard(self.board, self.boardofGame, [(i, j)])
-                        self.DFS(i, j)
+                        # self.DFS(i, j)
                         self.startTime = time.time()
                         self.DFS(i, j)
 
@@ -721,13 +721,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.mainWindow.closeEvent_.connect(self.num_bar_ui.QWidget.close)
         
         self.num_bar_ui.QWidget.show()
-        # self.showMineNum(ans[1][1])
         
         self.setBoard_and_start(len(ui.board), len(ui.board[0]), ans[1][1])
-        self.mineNum = ans[1][1]
+        self.mineNumShow = ans[1][1]
         
         self.label.board = ui.board
-        ans = minesweeper_master.calPossibility_onboard(ui.board, self.mineNum)
+        ans = minesweeper_master.calPossibility_onboard(ui.board, self.mineNumShow)
         self.label.boardPossibility = ans[0]
         self.label.paintPossibility = True
         self.showShot = True
