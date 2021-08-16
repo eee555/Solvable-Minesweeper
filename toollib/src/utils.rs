@@ -675,6 +675,11 @@ pub fn enum_count(
         // 无解局面
         return Err(1)
     }
+    // println!("全部情况：{:?}", enum_comb_table);
+    // println!("matrixA_squeeze={:?}", matrixA_squeeze);
+    // println!("matrixx_squeeze={:?}", matrixx_squeeze);
+    // println!("matrix_b={:?}", matrix_b);
+    // println!("combination_relationship={:?}", combination_relationship);
     for s in enum_comb_table.clone() {
         // println!("s: {:?}", s);
         let s_sum = s.iter().sum::<usize>();

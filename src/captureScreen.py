@@ -51,29 +51,9 @@ class CaptureScreen(QDialog):
     def mouseReleaseEvent(self, event):
         self.endPosition = event.pos()
         
-        
-        import sys
-        f = open("output.txt", "w")
-        t = sys.stdout
-        sys.stdout = f
-        sys.stdout.write("14")
-        sys.stdout = t
-        f.close()
-        
-        
         self.isMousePressLeft = False
         if self.captureImage is not None:
             self.getBoard()
-            
-            
-            f = open("output.txt", "w")
-            t = sys.stdout
-            sys.stdout = f
-            sys.stdout.write("13")
-            sys.stdout = t
-            f.close()
-            
-            
             self.close()
 
     def paintBackgroundImage(self):
@@ -117,7 +97,6 @@ class CaptureScreen(QDialog):
         byteCount = image.byteCount()
         s = Struct(str(byteCount) + 'B')
         self.data = s.unpack(bits[0:])
-        
         
         self.board = ms_toollib.py_OBR_board(self.data, self.height, self.width)
         

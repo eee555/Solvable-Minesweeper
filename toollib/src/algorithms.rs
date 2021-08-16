@@ -201,7 +201,7 @@ pub fn cal_possibility(
         // println!("max_mine_num:{:?}", max_mine_num);
         // println!("unknow_block:{:?}", unknow_block);
         // println!("is_mine_num:{:?}", is_mine_num);
-        min(max(mn, min_mine_num), max_mine_num + unknow_block)
+        min(max(mn - is_mine_num, min_mine_num), max_mine_num + unknow_block)
     } else {
         mine_num as usize - is_mine_num
     };
@@ -304,7 +304,7 @@ pub fn cal_possibility(
     // 第七步，计算内部未知区域是雷的概率
 
     
-    (p, p_unknow, [min_mine_num + is_mine_num, mine_num, max_mine_num + is_mine_num + unknow_block])
+    (p, p_unknow, [min_mine_num + is_mine_num, mine_num + is_mine_num, max_mine_num + is_mine_num + unknow_block])
 }
 
 pub fn cal_possibility_onboard(
@@ -709,7 +709,7 @@ pub fn OBR_board(data_vec: Vec<usize>, height: usize, width: usize) -> Result<Ve
     // 输入列向量形式的三通道的像素数据，图像的高度、宽度；
     // 为什么输入形式这么奇怪呢？是为了适配python截图出来的原始数据
     // 输出是不一定合法的局面
-    if (height <= 24 || width <= 3) {
+    if (height <= 24 || width <= 24) {
         return Err("one input size of the board is smaller than 3".to_string());
     }
     let mut image_board = ImageBoard::new(data_vec, height, width);
