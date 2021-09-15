@@ -2,6 +2,7 @@ use std::cmp::{max, min};
 use rand::thread_rng;
 use rand::seq::SliceRandom;
 use itertools::Itertools;
+use std::convert::TryInto;
 
 // 整个模块是最底层的一些小工具，如埋雷、局面分块、计算3BV等
 
@@ -456,19 +457,29 @@ pub fn C(n: usize, k: usize) -> big_number {
     c
 }
 
-pub fn C_usize(n: usize, k: usize) -> usize {
-    // 小数字的组合数计算
-    if n < k + k {
-        return C_usize(n, n - k);
-    };
-    let mut c = 1;
-    for i in 0..k {
-        c *= n - i;
-    }
-    for i in 0..k {
-        c /= i + 1;
-    }
-    c
+pub fn C_usize(n: u8, k: u8) -> u8 {
+    // 8以内小数字的组合数计算
+    // if n < k + k {
+    //     return C_usize(n, n - k);
+    // };
+    // let mut c = 1;
+    // for i in 0..k {
+    //     c *= n - i;
+    // }
+    // for i in 0..k {
+    //     c /= i + 1;
+    // }
+    // c
+    let a = [[1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [1, 2, 1, 0, 0, 0, 0, 0, 0],
+    [1, 3, 3, 1, 0, 0, 0, 0, 0],
+    [1, 4, 6, 4, 1, 0, 0, 0, 0],
+    [1, 5, 10, 10, 5, 1, 0, 0, 0],
+    [1, 6, 15, 20, 15, 6, 1, 0, 0],
+    [1, 7, 21, 35, 35, 21, 7, 1, 0],
+    [1, 8, 28, 56, 70, 56, 28, 8, 1]];
+    a[n as usize][k as usize]
 }
 
 pub fn combine(
@@ -514,11 +525,11 @@ pub fn enum_comb(
     matrixA_squeeze: &Vec<Vec<i32>>,
     matrixx_squeeze: &Vec<(usize, usize)>,
     Matrixb: &Vec<i32>,
-) -> Vec<Vec<usize>> {
+) -> Vec<Vec<u8>> {
     // 返回一个包含所有情况的表
     let Column = matrixx_squeeze.len();
     let Row = matrixA_squeeze.len();
-    let mut enum_comb_table = vec![vec![0; Column]];
+    let mut enum_comb_table: Vec<Vec<u8>> = vec![vec![0; Column]];
     let mut not_enum_cell: Vec<bool> = vec![true; Column]; // 记录每个位置是否被枚举过，true是没有被枚举过
     let mut enum_cell_table: Vec<Vec<usize>> = vec![];
     for row in 0..Row {
@@ -547,8 +558,8 @@ pub fn enum_comb(
             enum_comb_table.retain(|item| {
                 enum_cell
                     .iter()
-                    .fold(0, |sum: usize, i: &usize| sum + item[*i])
-                    == Matrixb[row] as usize
+                    .fold(0, |sum: u8, i: &usize| sum + item[*i])
+                    == Matrixb[row] as u8
             });
         // 第三步，若子枚举表为空，不用将子枚举表与主枚举表合并；且只检查主枚举表是否满足当前这条规则，删除一些不满足的
         } else {
@@ -558,7 +569,7 @@ pub fn enum_comb(
                 if flag_1 {
                     for m in 0..new_enum_cell.len() {
                         for n in 0..enum_comb_table_len {
-                            enum_comb_table[n][new_enum_cell[m]] = item[m] as usize;
+                            enum_comb_table[n][new_enum_cell[m]] = item[m] as u8;
                         }
                     }
                     flag_1 = false;
@@ -566,7 +577,7 @@ pub fn enum_comb(
                     for n in 0..enum_comb_table_len {
                         let mut one_row_in_new_table = enum_comb_table[n].clone();
                         for m in 0..new_enum_cell.len() {
-                            one_row_in_new_table[new_enum_cell[m]] = item[m] as usize;
+                            one_row_in_new_table[new_enum_cell[m]] = item[m] as u8;
                         }
                         enum_comb_table.push(one_row_in_new_table);
                     }
@@ -586,15 +597,15 @@ pub fn enum_comb(
                 enum_comb_table.retain(|item| {
                     enum_cell_table[equ]
                         .iter()
-                        .fold(0, |sum: usize, i: &usize| sum + item[*i])
-                        == Matrixb[equ] as usize
+                        .fold(0, |sum: u8, i: &usize| sum + item[*i])
+                        == Matrixb[equ] as u8
                 });
             }
             enum_comb_table.retain(|item| {
                 enum_cell
                     .iter()
-                    .fold(0, |sum: usize, i: &usize| sum + item[*i])
-                    == Matrixb[row] as usize
+                    .fold(0, |sum: u8, i: &usize| sum + item[*i])
+                    == Matrixb[row] as u8
             }); // 这段重复了，不过不影响性能，之后优化
                 // 第六步，用本条规则、以及涉及的之前所有规则过滤所有情况
         }
@@ -670,7 +681,7 @@ pub fn enum_count(
         // 超出枚举极限长度
         return Err(0)
     }
-    let enum_comb_table = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_b);
+    let enum_comb_table: Vec<Vec<u8>> = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_b);
     if enum_comb_table.len() == 0 {
         // 无解局面
         return Err(1)
@@ -682,19 +693,19 @@ pub fn enum_count(
     // println!("combination_relationship={:?}", combination_relationship);
     for s in enum_comb_table.clone() {
         // println!("s: {:?}", s);
-        let s_sum = s.iter().sum::<usize>();
+        let s_sum = s.iter().sum::<u8>();
         let mut si_num = 1; // 由于enum_comb_table中的格子每一个都代表了与其地位等同的所有格子，由此的情况数
         for s_i in 0..s.len() {
-            si_num *= C_usize(combination_relationship[s_i].len(), s[s_i]);
+            si_num *= C_usize(combination_relationship[s_i].len() as u8, s[s_i]);
         }
         // println!("si_num = {:?}", si_num);
-        let fs = table_minenum[0].clone().iter().position(|x| *x == s_sum);
+        let fs = table_minenum[0].clone().iter().position(|x| *x == s_sum.into());
         // println!("table_minenum = {:?}", table_minenum);
         // println!("fs = {:?}", fs);
         match fs {
             None => {
-                table_minenum[0].push(s_sum);
-                table_minenum[1].push(si_num);
+                table_minenum[0].push(s_sum.into());
+                table_minenum[1].push(si_num.into());
                 let mut ss = vec![];
                 for c in 0..s.len() {
                     if s[c] == 0 {
@@ -703,14 +714,14 @@ pub fn enum_count(
                         let mut sss = 1;
                         for d in 0..s.len() {
                             if c != d {
-                                sss *= C_usize(combination_relationship[d].len(), s[d]);
+                                sss *= C_usize(combination_relationship[d].len().try_into().unwrap(), s[d]);
                                 // println!("comb_relp_s = {:?}", comb_relp_s);
                                 // println!("sss = {:?}", sss);
                             } else {
-                                sss *= C_usize(combination_relationship[d].len() - 1, s[d] - 1);
+                                sss *= C_usize((combination_relationship[d].len() - 1).try_into().unwrap(), s[d] - 1);
                             }
                         }
-                        ss.push(sss);
+                        ss.push(sss as usize);
                     }
                 }
                 table_cell_minenum.push(ss);
@@ -718,7 +729,7 @@ pub fn enum_count(
                 // println!("table_cell_minenum:{:?}", table_cell_minenum);
             }
             _ => {
-                table_minenum[1][fs.unwrap()] += si_num;
+                table_minenum[1][fs.unwrap()] += si_num as usize;
                 for c in 0..s.len() {
                     if s[c] == 0 {
                         continue;
@@ -726,14 +737,14 @@ pub fn enum_count(
                         let mut sss = 1;
                         for d in 0..s.len() {
                             if c != d {
-                                sss *= C_usize(combination_relationship[d].len(), s[d]);
+                                sss *= C_usize(combination_relationship[d].len().try_into().unwrap(), s[d]);
                                 // println!("comb_relp_s=={:?}", comb_relp_s);
                                 // println!("s=={:?}", s);
                             } else {
-                                sss *= C_usize(combination_relationship[d].len() - 1, s[d] - 1);
+                                sss *= C_usize((combination_relationship[d].len() - 1).try_into().unwrap(), s[d] - 1);
                             }
                         }
-                        table_cell_minenum[fs.unwrap()][c] += sss;
+                        table_cell_minenum[fs.unwrap()][c] += sss as usize;
                     }
                 }
             }
