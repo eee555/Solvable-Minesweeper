@@ -698,7 +698,9 @@ fn cal_table_minenum_recursion_step(
     combination_relationship: &Vec<Vec<usize>>,
 ) {
     let cells_num = matrixA_squeeze[0].len();
-    if idx + 1 == cells_num {
+    if idx == cells_num {
+        //终止条件
+
 
     }
 }
@@ -722,7 +724,7 @@ pub fn cal_table_minenum_recursion(
         (0..cells_num + 1).collect::<Vec<usize>>(),
         vec![0; cells_num],
     ];
-    let mut table_cell_minenum: Vec<Vec<usize>> = vec![];
+    let mut table_cell_minenum: Vec<Vec<usize>> = vec![vec![0; cells_num]; cells_num];
     for i in 0..cells_num {
         cal_table_minenum_recursion_step(
             0,
