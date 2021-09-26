@@ -1,12 +1,10 @@
-use std::cmp::{max, min};
-use rand::thread_rng;
-use rand::seq::SliceRandom;
 use itertools::Itertools;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
+use std::cmp::{max, min};
 use std::convert::TryInto;
 
 // 整个模块是最底层的一些小工具，如埋雷、局面分块、计算3BV等
-
-
 
 pub fn calOp(mut Board: Vec<Vec<i32>>) -> usize {
     // 输入局面，计算空，即0的8连通域数
@@ -40,7 +38,9 @@ fn infectBoard(mut Board: Vec<Vec<i32>>, x: usize, y: usize) -> Vec<Vec<i32>> {
     Board
 }
 
-pub fn refreshMatrix(BoardofGame: &Vec<Vec<i32>>) -> (Vec<Vec<i32>>, Vec<(usize, usize)>, Vec<i32>) {
+pub fn refreshMatrix(
+    BoardofGame: &Vec<Vec<i32>>,
+) -> (Vec<Vec<i32>>, Vec<(usize, usize)>, Vec<i32>) {
     // BoardofGame必须且肯定是正确标雷的游戏局面，但不需要标全
     // 根据游戏局面生成矩阵，不分块。效率低，待改进。
     let Row = BoardofGame.len();
@@ -147,7 +147,7 @@ pub fn refresh_matrixs(
         }
     }
     let mut p = 0; //指针，代表第几块
-    // println!("{:?}", all_cell);
+                   // println!("{:?}", all_cell);
     while !all_cell.is_empty() {
         matrix_xs.push(vec![]);
         matrix_bs.push(vec![]);
@@ -228,7 +228,13 @@ pub fn refresh_matrixs(
     (matrix_as, matrix_xs, matrix_bs, unknow_block, is_mine_num)
 }
 
-pub fn layMineNumber(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize) -> Vec<Vec<i32>> {
+pub fn layMineNumber(
+    Row: usize,
+    Column: usize,
+    MineNum: usize,
+    X0: usize,
+    Y0: usize,
+) -> Vec<Vec<i32>> {
     // 通用标准埋雷引擎
     // 输出为二维的局面
     let mut rng = thread_rng();
@@ -266,14 +272,23 @@ pub fn layMineNumber(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: u
     Board
 }
 
-pub fn layMineOpNumber(Row: usize, Column: usize, MineNum: usize, X0: usize, Y0: usize) -> Vec<Vec<i32>> {
+pub fn layMineOpNumber(
+    Row: usize,
+    Column: usize,
+    MineNum: usize,
+    X0: usize,
+    Y0: usize,
+) -> Vec<Vec<i32>> {
     let mut rng = thread_rng();
     let mut areaOp = 9;
     if X0 == 0 || Y0 == 0 || X0 == Row - 1 || Y0 == Column - 1 {
-        if X0 == 0 && Y0 == 0 || X0 == 0 && Y0 == Column - 1 || X0 == Row - 1 && Y0 == 0 || X0 == Row - 1 && Y0 == Column - 1 {
+        if X0 == 0 && Y0 == 0
+            || X0 == 0 && Y0 == Column - 1
+            || X0 == Row - 1 && Y0 == 0
+            || X0 == Row - 1 && Y0 == Column - 1
+        {
             areaOp = 4;
-        }
-        else {
+        } else {
             areaOp = 6;
         }
     }
@@ -333,7 +348,11 @@ pub fn cal3BV(Board: &Vec<Vec<i32>>) -> usize {
     cal3BVonIsland(&Board) + calOp(Board.clone())
 }
 
-pub fn refreshBoard(Board: &Vec<Vec<i32>>, BoardofGame: &mut Vec<Vec<i32>>, mut ClickedPoses: Vec<(usize, usize)>) {
+pub fn refreshBoard(
+    Board: &Vec<Vec<i32>>,
+    BoardofGame: &mut Vec<Vec<i32>>,
+    mut ClickedPoses: Vec<(usize, usize)>,
+) {
     let Row = Board.len();
     let Column = Board[0].len();
     // let mut i: usize = 0;
@@ -342,13 +361,12 @@ pub fn refreshBoard(Board: &Vec<Vec<i32>>, BoardofGame: &mut Vec<Vec<i32>>, mut 
         let (i, j) = top;
         if Board[i][j] > 0 {
             BoardofGame[i][j] = Board[i][j];
-        }
-        else if Board[i][j] == 0 {
+        } else if Board[i][j] == 0 {
             BoardofGame[i][j] = 0;
             for m in max(1, i) - 1..min(Row, i + 2) {
                 for n in max(1, j) - 1..min(Column, j + 2) {
-                    if (i!=m || j!=n) && BoardofGame[m][n] == 10 {
-                        ClickedPoses.push((m,n));
+                    if (i != m || j != n) && BoardofGame[m][n] == 10 {
+                        ClickedPoses.push((m, n));
                     }
                 }
             }
@@ -430,7 +448,7 @@ impl big_number {
     pub fn div_usize(&mut self, k: usize) {
         // 计算大数除以正整数。这里被除数大于等于0；除数大于等于1
         if self.a < 1e-8 && self.b == 1 {
-            return
+            return;
         } else {
             self.a /= k as f64;
             while self.a < 1.0 {
@@ -470,15 +488,17 @@ pub fn C_usize(n: u8, k: u8) -> u8 {
     //     c /= i + 1;
     // }
     // c
-    let a = [[1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 0, 0, 0, 0],
-    [1, 2, 1, 0, 0, 0, 0, 0, 0],
-    [1, 3, 3, 1, 0, 0, 0, 0, 0],
-    [1, 4, 6, 4, 1, 0, 0, 0, 0],
-    [1, 5, 10, 10, 5, 1, 0, 0, 0],
-    [1, 6, 15, 20, 15, 6, 1, 0, 0],
-    [1, 7, 21, 35, 35, 21, 7, 1, 0],
-    [1, 8, 28, 56, 70, 56, 28, 8, 1]];
+    let a = [
+        [1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0, 0, 0, 0],
+        [1, 2, 1, 0, 0, 0, 0, 0, 0],
+        [1, 3, 3, 1, 0, 0, 0, 0, 0],
+        [1, 4, 6, 4, 1, 0, 0, 0, 0],
+        [1, 5, 10, 10, 5, 1, 0, 0, 0],
+        [1, 6, 15, 20, 15, 6, 1, 0, 0],
+        [1, 7, 21, 35, 35, 21, 7, 1, 0],
+        [1, 8, 28, 56, 70, 56, 28, 8, 1],
+    ];
     a[n as usize][k as usize]
 }
 
@@ -610,6 +630,7 @@ pub fn enum_comb(
                 // 第六步，用本条规则、以及涉及的之前所有规则过滤所有情况
         }
         enum_cell_table.push(enum_cell);
+        println!("enum_comb_table.len = {:?}", enum_comb_table.len());
     }
     enum_comb_table
 }
@@ -665,26 +686,84 @@ pub fn enuOneStep(mut AllTable: Vec<Vec<usize>>, TableId: Vec<usize>, b: i32) ->
     AllTable
 }
 
-pub fn enum_count(
+fn cal_table_minenum_recursion_step(
+    idx: usize,
+    current_amount: usize,
+    table_minenum: &mut [Vec<usize>; 2],
+    table_cell_minenum: &mut Vec<Vec<usize>>,
+    upper_limit: &mut Vec<usize>,
+    lower_limit: &mut Vec<usize>,
+    matrixA_squeeze: &Vec<Vec<i32>>,
+    matrix_b: &Vec<i32>,
+    combination_relationship: &Vec<Vec<usize>>,
+) {
+    let cells_num = matrixA_squeeze[0].len();
+    if idx + 1 == cells_num {
+
+    }
+}
+
+pub fn cal_table_minenum_recursion(
     matrixA_squeeze: &Vec<Vec<i32>>,
     matrixx_squeeze: &Vec<(usize, usize)>,
     matrix_b: &Vec<i32>,
-    combination_relationship: &Vec<Vec<usize>>) -> Result<([Vec<usize>; 2], Vec<Vec<usize>>), usize>{
-    // 枚举并统计，得到每块雷数分布表和每块每格雷数表，顺便计算最小、最大雷数
+    combination_relationship: &Vec<Vec<usize>>,
+) -> Result<([Vec<usize>; 2], Vec<Vec<usize>>), usize> {
+    // 递归算法，得到雷数分布表和每格是雷情况数表，顺便计算最小、最大雷数
+    let cells_num = matrixx_squeeze.len();
+    if cells_num > 60 {
+        // 超出枚举极限长度
+        return Err(0);
+    }
+    let mut flag_legal_board = false;
+    let mut upper_limit = vec![0; cells_num];
+    let mut lower_limit = vec![0; cells_num];
+    let mut table_minenum: [Vec<usize>; 2] = [
+        (0..cells_num + 1).collect::<Vec<usize>>(),
+        vec![0; cells_num],
+    ];
+    let mut table_cell_minenum: Vec<Vec<usize>> = vec![];
+    for i in 0..cells_num {
+        cal_table_minenum_recursion_step(
+            0,
+            0,
+            &mut table_minenum,
+            &mut table_cell_minenum,
+            &mut upper_limit,
+            &mut lower_limit,
+            &matrixA_squeeze,
+            &matrix_b,
+            &combination_relationship,
+        );
+    }
+
+    if flag_legal_board {
+        Ok((table_minenum, table_cell_minenum))
+    } else {
+        return Err(1);
+    }
+}
+
+pub fn cal_table_minenum_enum(
+    matrixA_squeeze: &Vec<Vec<i32>>,
+    matrixx_squeeze: &Vec<(usize, usize)>,
+    matrix_b: &Vec<i32>,
+    combination_relationship: &Vec<Vec<usize>>,
+) -> Result<([Vec<usize>; 2], Vec<Vec<usize>>), usize> {
+    // 枚举并统计，得到雷数分布表和每格是雷情况数表
     let mut table_minenum: [Vec<usize>; 2] = [vec![], vec![]];
-    // 每块雷数分布表：记录了每块（不包括内部块）每种总雷数下的是雷总情况数
+    // 雷数分布表表：记录了每块（不包括内部块）每种总雷数下的是雷总情况数
     // 例如：[[17, 18, 19, 20, 21, 22, 23, 24], [48, 2144, 16872, 49568, 68975, 48960, 16608, 2046]]
     let mut table_cell_minenum: Vec<Vec<usize>> = vec![];
-    // 每块每格雷数表：记录了每块每格（或者地位等同的复合格）、每种总雷数下的是雷情况数
-    
+    // 每格是雷情况数表：记录了每块每格（或者地位等同的复合格）、每种总雷数下的是雷情况数
     if matrixx_squeeze.len() > 45 {
         // 超出枚举极限长度
-        return Err(0)
+        return Err(0);
     }
     let enum_comb_table: Vec<Vec<u8>> = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_b);
     if enum_comb_table.len() == 0 {
         // 无解局面
-        return Err(1)
+        return Err(1);
     }
     // println!("全部情况：{:?}", enum_comb_table);
     // println!("matrixA_squeeze={:?}", matrixA_squeeze);
@@ -699,7 +778,10 @@ pub fn enum_count(
             si_num *= C_usize(combination_relationship[s_i].len() as u8, s[s_i]);
         }
         // println!("si_num = {:?}", si_num);
-        let fs = table_minenum[0].clone().iter().position(|x| *x == s_sum.into());
+        let fs = table_minenum[0]
+            .clone()
+            .iter()
+            .position(|x| *x == s_sum.into());
         // println!("table_minenum = {:?}", table_minenum);
         // println!("fs = {:?}", fs);
         match fs {
@@ -714,11 +796,17 @@ pub fn enum_count(
                         let mut sss = 1;
                         for d in 0..s.len() {
                             if c != d {
-                                sss *= C_usize(combination_relationship[d].len().try_into().unwrap(), s[d]);
+                                sss *= C_usize(
+                                    combination_relationship[d].len().try_into().unwrap(),
+                                    s[d],
+                                );
                                 // println!("comb_relp_s = {:?}", comb_relp_s);
                                 // println!("sss = {:?}", sss);
                             } else {
-                                sss *= C_usize((combination_relationship[d].len() - 1).try_into().unwrap(), s[d] - 1);
+                                sss *= C_usize(
+                                    (combination_relationship[d].len() - 1).try_into().unwrap(),
+                                    s[d] - 1,
+                                );
                             }
                         }
                         ss.push(sss as usize);
@@ -737,11 +825,17 @@ pub fn enum_count(
                         let mut sss = 1;
                         for d in 0..s.len() {
                             if c != d {
-                                sss *= C_usize(combination_relationship[d].len().try_into().unwrap(), s[d]);
+                                sss *= C_usize(
+                                    combination_relationship[d].len().try_into().unwrap(),
+                                    s[d],
+                                );
                                 // println!("comb_relp_s=={:?}", comb_relp_s);
                                 // println!("s=={:?}", s);
                             } else {
-                                sss *= C_usize((combination_relationship[d].len() - 1).try_into().unwrap(), s[d] - 1);
+                                sss *= C_usize(
+                                    (combination_relationship[d].len() - 1).try_into().unwrap(),
+                                    s[d] - 1,
+                                );
                             }
                         }
                         table_cell_minenum[fs.unwrap()][c] += sss as usize;
@@ -769,98 +863,208 @@ pub fn unsolvableStructure(BoardCheck: &Vec<Vec<i32>>) -> bool {
             }
         }
     }
-    for i in 0..Row-2 {       // 检查左右两侧的工
-        if i < Row-3 {
-            if Board[i][0] == -1 && Board[i][1] == -1 && Board[i+3][0] == -1 && Board[i+3][1] == -1 &&
-             Board[i+1][0]+Board[i+2][0] == -1 || Board[i][Column-1] == -1 && Board[i][Column-2] == -1 &&
-              Board[i+3][Column-1] == -1 && Board[i+3][Column-2] == -1 && Board[i+1][Column-1]+Board[i+2][Column-1] == -1 {
-                return true
+    for i in 0..Row - 2 {
+        // 检查左右两侧的工
+        if i < Row - 3 {
+            if Board[i][0] == -1
+                && Board[i][1] == -1
+                && Board[i + 3][0] == -1
+                && Board[i + 3][1] == -1
+                && Board[i + 1][0] + Board[i + 2][0] == -1
+                || Board[i][Column - 1] == -1
+                    && Board[i][Column - 2] == -1
+                    && Board[i + 3][Column - 1] == -1
+                    && Board[i + 3][Column - 2] == -1
+                    && Board[i + 1][Column - 1] + Board[i + 2][Column - 1] == -1
+            {
+                return true;
             }
         }
-        if Board[i][2] == -1 && Board[i+1][2] == -1 && Board[i+2][2] == -1 && Board[i+1][0]+Board[i+1][1] == -1 ||
-         Board[i][Column-3] == -1 && Board[i+1][Column-3] == -1 && Board[i+2][Column-3] == -1 &&
-          Board[i+1][Column-1] + Board[i+1][Column-2] == -1 || Board[i][0] == -1 && Board[i][1] == -1 &&
-           Board[i+1][1] == -1 && Board[i+2][1] == -1 && Board[i+2][0] == -1 && Board[i+1][0] == 0 ||
-            Board[i][Column-1] == -1 && Board[i][Column-2] == -1 && Board[i+1][Column-2] == -1 &&
-             Board[i+2][Column-2] == -1 && Board[i+2][Column-1] == -1 && Board[i+1][Column-1] == 0 {
-            return true
+        if Board[i][2] == -1
+            && Board[i + 1][2] == -1
+            && Board[i + 2][2] == -1
+            && Board[i + 1][0] + Board[i + 1][1] == -1
+            || Board[i][Column - 3] == -1
+                && Board[i + 1][Column - 3] == -1
+                && Board[i + 2][Column - 3] == -1
+                && Board[i + 1][Column - 1] + Board[i + 1][Column - 2] == -1
+            || Board[i][0] == -1
+                && Board[i][1] == -1
+                && Board[i + 1][1] == -1
+                && Board[i + 2][1] == -1
+                && Board[i + 2][0] == -1
+                && Board[i + 1][0] == 0
+            || Board[i][Column - 1] == -1
+                && Board[i][Column - 2] == -1
+                && Board[i + 1][Column - 2] == -1
+                && Board[i + 2][Column - 2] == -1
+                && Board[i + 2][Column - 1] == -1
+                && Board[i + 1][Column - 1] == 0
+        {
+            return true;
         }
-        if i < Row-3 {
-            if Board[i][2] == -1 && Board[i+3][2] == -1 && Board[i+1][0]+Board[i+1][1] == -1 &&
-             Board[i+1][1]+Board[i+2][1] == -1 && Board[i+2][1]+Board[i+2][0] == -1 || Board[i][Column-3] == -1 &&
-              Board[i+3][Column-3] == -1 && Board[i+1][Column-1]+Board[i+1][Column-2] == -1 &&
-               Board[i+1][Column-2]+Board[i+2][Column-2] == -1 && Board[i+2][Column-2]+Board[i+2][Column-1] == -1 {
-                return true
+        if i < Row - 3 {
+            if Board[i][2] == -1
+                && Board[i + 3][2] == -1
+                && Board[i + 1][0] + Board[i + 1][1] == -1
+                && Board[i + 1][1] + Board[i + 2][1] == -1
+                && Board[i + 2][1] + Board[i + 2][0] == -1
+                || Board[i][Column - 3] == -1
+                    && Board[i + 3][Column - 3] == -1
+                    && Board[i + 1][Column - 1] + Board[i + 1][Column - 2] == -1
+                    && Board[i + 1][Column - 2] + Board[i + 2][Column - 2] == -1
+                    && Board[i + 2][Column - 2] + Board[i + 2][Column - 1] == -1
+            {
+                return true;
             }
         }
     }
-    for j in 0..Column-2 {          // 检查上下两侧
-        if j < Column-3 {
-            if Board[0][j] == -1 && Board[1][j] == -1 && Board[0][j+3] == -1 && Board[1][j+3] == -1 &&
-             Board[0][j+1]+Board[0][j+2] == -1 || Board[Row-1][j] == -1 && Board[Row-2][j] == -1 &&
-              Board[Row-1][j+3] == -1 && Board[Row-2][j+3] == -1 && Board[Row-1][j+1]+Board[Row-1][j+2] == -1 {
-                return true
+    for j in 0..Column - 2 {
+        // 检查上下两侧
+        if j < Column - 3 {
+            if Board[0][j] == -1
+                && Board[1][j] == -1
+                && Board[0][j + 3] == -1
+                && Board[1][j + 3] == -1
+                && Board[0][j + 1] + Board[0][j + 2] == -1
+                || Board[Row - 1][j] == -1
+                    && Board[Row - 2][j] == -1
+                    && Board[Row - 1][j + 3] == -1
+                    && Board[Row - 2][j + 3] == -1
+                    && Board[Row - 1][j + 1] + Board[Row - 1][j + 2] == -1
+            {
+                return true;
             }
         }
-        if Board[2][j] == -1 && Board[2][j+1] == -1 && Board[2][j+2] == -1 && Board[0][j+1]+Board[1][j+1] == -1 ||
-         Board[Row-3][j] == -1 && Board[Row-3][j+1] == -1 && Board[Row-3][j+2] == -1 &&
-          Board[Row-1][j+1]+Board[Row-2][j+1] == -1 || Board[0][j] == -1 && Board[1][j] == -1 &&
-           Board[1][j+1] == -1 && Board[1][j+2] == -1 && Board[0][j+2] == -1 && Board[0][j+1] == 0 ||
-            Board[Row-1][j] == -1 && Board[Row-2][j] == -1 && Board[Row-2][j+1] == -1 && Board[Row-2][j+2] == -1 &&
-             Board[Row-1][j+2] == -1 && Board[Row-1][j+1] == 0 {
-            return true
+        if Board[2][j] == -1
+            && Board[2][j + 1] == -1
+            && Board[2][j + 2] == -1
+            && Board[0][j + 1] + Board[1][j + 1] == -1
+            || Board[Row - 3][j] == -1
+                && Board[Row - 3][j + 1] == -1
+                && Board[Row - 3][j + 2] == -1
+                && Board[Row - 1][j + 1] + Board[Row - 2][j + 1] == -1
+            || Board[0][j] == -1
+                && Board[1][j] == -1
+                && Board[1][j + 1] == -1
+                && Board[1][j + 2] == -1
+                && Board[0][j + 2] == -1
+                && Board[0][j + 1] == 0
+            || Board[Row - 1][j] == -1
+                && Board[Row - 2][j] == -1
+                && Board[Row - 2][j + 1] == -1
+                && Board[Row - 2][j + 2] == -1
+                && Board[Row - 1][j + 2] == -1
+                && Board[Row - 1][j + 1] == 0
+        {
+            return true;
         }
-        if j < Column-3 {
-            if Board[2][j] == -1 && Board[2][j+3] == -1 && Board[0][j+1]+Board[1][j+1] == -1 &&
-             Board[1][j+1]+Board[1][j+2] == -1 && Board[1][j+2]+Board[0][j+2] == -1 || Board[Row-3][j] == -1 &&
-              Board[Row-3][j+3] == -1 && Board[Row-1][j+1]+Board[Row-2][j+1] == -1 &&
-               Board[Row-2][j+1]+Board[Row-2][j+2] == -1 && Board[Row-2][j+2]+Board[Row-1][j+2] == -1 {
-                return true
+        if j < Column - 3 {
+            if Board[2][j] == -1
+                && Board[2][j + 3] == -1
+                && Board[0][j + 1] + Board[1][j + 1] == -1
+                && Board[1][j + 1] + Board[1][j + 2] == -1
+                && Board[1][j + 2] + Board[0][j + 2] == -1
+                || Board[Row - 3][j] == -1
+                    && Board[Row - 3][j + 3] == -1
+                    && Board[Row - 1][j + 1] + Board[Row - 2][j + 1] == -1
+                    && Board[Row - 2][j + 1] + Board[Row - 2][j + 2] == -1
+                    && Board[Row - 2][j + 2] + Board[Row - 1][j + 2] == -1
+            {
+                return true;
             }
         }
     }
-    if Board[0][2] == -1 && Board[1][2] == -1 && Board[0][0]+Board[0][1] == -1 || Board[2][0] == -1 &&
-     Board[2][1] == -1 && Board[0][0]+Board[1][0] == -1 || Board[0][Column-3] == -1 && Board[1][Column-3] == -1 &&
-      Board[0][Column-1]+Board[0][Column-2] == -1 || Board[2][Column-1] == -1 && Board[2][Column-2] == -1 &&
-       Board[0][Column-1]+Board[1][Column-1] == -1 || Board[Row-1][2] == -1 && Board[Row-2][2] == -1 &&
-        Board[Row-1][0]+Board[Row-1][1] == -1 || Board[Row-3][0] == -1 && Board[Row-3][1] == -1 &&
-         Board[Row-1][0]+Board[Row-2][0] == -1 || Board[Row-1][Column-3] == -1 && Board[Row-2][Column-3] == -1 &&
-          Board[Row-1][Column-1]+Board[Row-1][Column-2] == -1 || Board[Row-3][Column-1] == -1 &&
-           Board[Row-3][Column-2] == -1 && Board[Row-1][Column-1]+Board[Row-2][Column-1] == -1 ||
-            Board[0][1]+Board[1][1]+Board[1][0] == -3 && Board[0][0] == 0 ||
-             Board[0][Column-2]+Board[1][Column-2]+Board[1][Column-1] == -3 && Board[0][Column-1] == 0 ||
-              Board[Row-1][Column-2]+Board[Row-2][Column-2]+Board[Row-2][Column-1] == -3 && Board[Row-1][Column-1] == 0 ||
-               Board[Row-1][1]+Board[Row-2][1]+Board[Row-2][0] == -3 && Board[Row-1][0] == 0 || Board[2][2] == -1 &&
-                Board[0][1]+Board[1][1] == -1 && Board[1][0]+Board[1][1] == -1 || Board[Row-3][2] == -1 &&
-                 Board[Row-1][1]+Board[Row-2][1] == -1 && Board[Row-2][0]+Board[Row-2][1] == -1 ||
-                  Board[Row-3][Column-3] == -1 && Board[Row-1][Column-2]+Board[Row-2][Column-2] == -1 &&
-                   Board[Row-2][Column-1]+Board[Row-2][Column-2] == -1 || Board[2][Column-3] == -1 &&
-                    Board[0][Column-2]+Board[1][Column-2] == -1 && Board[1][Column-1]+Board[1][Column-2] == -1 {     //检查四个角
-        return true
+    if Board[0][2] == -1 && Board[1][2] == -1 && Board[0][0] + Board[0][1] == -1
+        || Board[2][0] == -1 && Board[2][1] == -1 && Board[0][0] + Board[1][0] == -1
+        || Board[0][Column - 3] == -1
+            && Board[1][Column - 3] == -1
+            && Board[0][Column - 1] + Board[0][Column - 2] == -1
+        || Board[2][Column - 1] == -1
+            && Board[2][Column - 2] == -1
+            && Board[0][Column - 1] + Board[1][Column - 1] == -1
+        || Board[Row - 1][2] == -1
+            && Board[Row - 2][2] == -1
+            && Board[Row - 1][0] + Board[Row - 1][1] == -1
+        || Board[Row - 3][0] == -1
+            && Board[Row - 3][1] == -1
+            && Board[Row - 1][0] + Board[Row - 2][0] == -1
+        || Board[Row - 1][Column - 3] == -1
+            && Board[Row - 2][Column - 3] == -1
+            && Board[Row - 1][Column - 1] + Board[Row - 1][Column - 2] == -1
+        || Board[Row - 3][Column - 1] == -1
+            && Board[Row - 3][Column - 2] == -1
+            && Board[Row - 1][Column - 1] + Board[Row - 2][Column - 1] == -1
+        || Board[0][1] + Board[1][1] + Board[1][0] == -3 && Board[0][0] == 0
+        || Board[0][Column - 2] + Board[1][Column - 2] + Board[1][Column - 1] == -3
+            && Board[0][Column - 1] == 0
+        || Board[Row - 1][Column - 2] + Board[Row - 2][Column - 2] + Board[Row - 2][Column - 1]
+            == -3
+            && Board[Row - 1][Column - 1] == 0
+        || Board[Row - 1][1] + Board[Row - 2][1] + Board[Row - 2][0] == -3 && Board[Row - 1][0] == 0
+        || Board[2][2] == -1 && Board[0][1] + Board[1][1] == -1 && Board[1][0] + Board[1][1] == -1
+        || Board[Row - 3][2] == -1
+            && Board[Row - 1][1] + Board[Row - 2][1] == -1
+            && Board[Row - 2][0] + Board[Row - 2][1] == -1
+        || Board[Row - 3][Column - 3] == -1
+            && Board[Row - 1][Column - 2] + Board[Row - 2][Column - 2] == -1
+            && Board[Row - 2][Column - 1] + Board[Row - 2][Column - 2] == -1
+        || Board[2][Column - 3] == -1
+            && Board[0][Column - 2] + Board[1][Column - 2] == -1
+            && Board[1][Column - 1] + Board[1][Column - 2] == -1
+    {
+        //检查四个角
+        return true;
     }
-    for i in 0..Row-2 {        // 找中间的工、回、器形结构
-        for j in 0..Column-2 {
-            if j < Column-3 {
-                if Board[i][j] == -1 && Board[i+1][j] == -1 && Board[i+2][j] == -1 && Board[i][j+3] == -1 &&
-                 Board[i+1][j+3] == -1 && Board[i+2][j+3] == -1 && Board[i+1][j+1]+Board[i+1][j+2] == -1 {
-                    return true
+    for i in 0..Row - 2 {
+        // 找中间的工、回、器形结构
+        for j in 0..Column - 2 {
+            if j < Column - 3 {
+                if Board[i][j] == -1
+                    && Board[i + 1][j] == -1
+                    && Board[i + 2][j] == -1
+                    && Board[i][j + 3] == -1
+                    && Board[i + 1][j + 3] == -1
+                    && Board[i + 2][j + 3] == -1
+                    && Board[i + 1][j + 1] + Board[i + 1][j + 2] == -1
+                {
+                    return true;
                 }
             }
-            if i < Row-3 {
-                if Board[i][j] == -1 && Board[i][j+1] == -1 && Board[i][j+2] == -1 && Board[i+3][j] == -1 &&
-                 Board[i+3][j+1] == -1 && Board[i+3][j+2] == -1 && Board[i+1][j+1]+Board[i+2][j+1] == -1 {
-                    return true
+            if i < Row - 3 {
+                if Board[i][j] == -1
+                    && Board[i][j + 1] == -1
+                    && Board[i][j + 2] == -1
+                    && Board[i + 3][j] == -1
+                    && Board[i + 3][j + 1] == -1
+                    && Board[i + 3][j + 2] == -1
+                    && Board[i + 1][j + 1] + Board[i + 2][j + 1] == -1
+                {
+                    return true;
                 }
             }
-            if Board[i][j] == -1 && Board[i+1][j] == -1 && Board[i+2][j] == -1 && Board[i][j+1] == -1 &&
-             Board[i+2][j+1] == -1 && Board[i][j+2] == -1 && Board[i+1][j+2] == -1 && Board[i+2][j+2] == -1 && Board[i+1][j+1] == 0 {
-                return true
+            if Board[i][j] == -1
+                && Board[i + 1][j] == -1
+                && Board[i + 2][j] == -1
+                && Board[i][j + 1] == -1
+                && Board[i + 2][j + 1] == -1
+                && Board[i][j + 2] == -1
+                && Board[i + 1][j + 2] == -1
+                && Board[i + 2][j + 2] == -1
+                && Board[i + 1][j + 1] == 0
+            {
+                return true;
             }
-            if j < Column-3 && i < Row-3 {
-                if Board[i][j] == -1 && Board[i+3][j] == -1 && Board[i][j+3] == -1 && Board[i+3][j+3] == -1 &&
-                 Board[i+1][j+1]+Board[i+2][j+1] == -1 && Board[i+1][j+1]+Board[i+1][j+2] == -1 &&
-                  Board[i+2][j+1]+Board[i+2][j+2] == -1 {
-                    return true
+            if j < Column - 3 && i < Row - 3 {
+                if Board[i][j] == -1
+                    && Board[i + 3][j] == -1
+                    && Board[i][j + 3] == -1
+                    && Board[i + 3][j + 3] == -1
+                    && Board[i + 1][j + 1] + Board[i + 2][j + 1] == -1
+                    && Board[i + 1][j + 1] + Board[i + 1][j + 2] == -1
+                    && Board[i + 2][j + 1] + Board[i + 2][j + 2] == -1
+                {
+                    return true;
                 }
             }
         }
@@ -965,12 +1169,11 @@ pub fn legalize_board(board: &mut Vec<Vec<i32>>) {
     let row = board.len();
     let column = board[0].len();
     for x in 0..row {
-        for y in 0.. column {
+        for y in 0..column {
             if board[x][y] <= -1 || board[x][y] >= 13 || board[x][y] == 9 {
                 // 把局面中明显未定义的数字改成未打开
                 board[x][y] = 10;
-            }
-            else if board[x][y] == 10 {
+            } else if board[x][y] == 10 {
                 'outer: for i in max(1, x) - 1..min(row, x + 2) {
                     for j in max(1, y) - 1..min(column, y + 2) {
                         if board[i][j] == 0 {
@@ -978,12 +1181,11 @@ pub fn legalize_board(board: &mut Vec<Vec<i32>>) {
                             // 这种局面对于游戏而言是合法的，但不利于算法处理
                             // 因此在这里就处理掉
                             board[x][y] = 12;
-                            break'outer;
+                            break 'outer;
                         }
                     }
                 }
-            }
-            else if board[x][y] >= 1 && board[x][y] <= 8 {
+            } else if board[x][y] >= 1 && board[x][y] <= 8 {
                 let mut mine_num_limit = 0;
                 for i in max(1, x) - 1..min(row, x + 2) {
                     for j in max(1, y) - 1..min(column, y + 2) {
@@ -998,26 +1200,3 @@ pub fn legalize_board(board: &mut Vec<Vec<i32>>) {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
