@@ -1,7 +1,7 @@
 use crate::utils::{
     big_number, cal3BV, cal3BV_exp, combine, enuOneStep, enum_comb, layMineNumber, 
     layMineOpNumber, cal_table_minenum_enum, cal_table_minenum_recursion,
-    refreshBoard, refreshMatrix, refresh_matrixs, sum, unsolvableStructure, C_usize, C, legalize_board,
+    refreshBoard, refresh_matrix, refresh_matrixs, sum, unsolvableStructure, C_query, C, legalize_board,
 };
 use crate::OBR::ImageBoard;
 use itertools::Itertools;
@@ -426,7 +426,7 @@ pub fn isSolvable(Board: &Vec<Vec<i32>>, X0: usize, Y0: usize, enuLimit: usize) 
     let mut NotMine;
     let mut flag;
     loop {
-        let (mut MatrixA, mut Matrixx, mut Matrixb) = refreshMatrix(&BoardofGame);
+        let (mut MatrixA, mut Matrixx, mut Matrixb) = refresh_matrix(&BoardofGame);
         let ans = SolveDirect(&mut MatrixA, &mut Matrixx, &mut Matrixb, &mut BoardofGame);
         NotMine = ans.0;
         flag = ans.1;
@@ -745,13 +745,13 @@ pub fn mark_board(board: &mut Vec<Vec<i32>>) {
     // 对局面用单集合、双集合判雷引擎，快速标雷、标非雷
     // 以供概率计算引擎处理
     // 相当于一种预处理，先标出容易计算的
-    let (mut matrix_a, mut matrix_x, mut matrix_b) = refreshMatrix(&board);
+    let (mut matrix_a, mut matrix_x, mut matrix_b) = refresh_matrix(&board);
     let ans = SolveDirect(&mut matrix_a, &mut matrix_x, &mut matrix_b, board);
     let not_mine = ans.0;
     for i in not_mine {
         board[i.0][i.1] = 12;
     }
-    let (matrix_a, matrix_x, matrix_b) = refreshMatrix(&board);
+    let (matrix_a, matrix_x, matrix_b) = refresh_matrix(&board);
     let ans = SolveMinus(&matrix_a, &matrix_x, &matrix_b, board);
     let not_mine = ans.0;
     for i in not_mine {

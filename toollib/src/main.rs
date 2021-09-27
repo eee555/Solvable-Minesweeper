@@ -1,7 +1,7 @@
-// 二进制枚举引擎研发
+// 枚举引擎改进
 mod utils;
 use utils::{
-    refreshMatrix, enum_comb
+    refresh_matrix, enum_comb, refresh_matrixs, cal_table_minenum_recursion, combine
 };
 
 
@@ -20,10 +20,11 @@ fn main() {
         vec![10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
     ];
 
-    let (MatrixA, Matrixx, Matrixb) = refreshMatrix(&game_board);
-    let table = enum_comb(&MatrixA, &Matrixx, &Matrixb);
+    let (matrix_a, matrix_x, matrix_b) = refresh_matrix(&game_board);
+    let (matrix_a_s, matrix_x_s, combination_relationship) = combine(matrix_a, matrix_x);
+    let table = cal_table_minenum_recursion(&matrix_a_s, &matrix_x_s, &matrix_b, &combination_relationship);
 
     // let a: u128 = 0b1111011010110;
-    println!("{:?}", MatrixA.len());
+    // println!("{:?}", matrix_a.len());
 
 }

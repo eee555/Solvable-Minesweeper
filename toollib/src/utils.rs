@@ -38,7 +38,7 @@ fn infectBoard(mut Board: Vec<Vec<i32>>, x: usize, y: usize) -> Vec<Vec<i32>> {
     Board
 }
 
-pub fn refreshMatrix(
+pub fn refresh_matrix(
     BoardofGame: &Vec<Vec<i32>>,
 ) -> (Vec<Vec<i32>>, Vec<(usize, usize)>, Vec<i32>) {
     // BoardofGame必须且肯定是正确标雷的游戏局面，但不需要标全
@@ -475,19 +475,12 @@ pub fn C(n: usize, k: usize) -> big_number {
     c
 }
 
-pub fn C_usize(n: u8, k: u8) -> u8 {
-    // 8以内小数字的组合数计算
-    // if n < k + k {
-    //     return C_usize(n, n - k);
-    // };
-    // let mut c = 1;
-    // for i in 0..k {
-    //     c *= n - i;
-    // }
-    // for i in 0..k {
-    //     c /= i + 1;
-    // }
-    // c
+pub fn C_query<T, U>(n: T, k: U) -> usize
+where
+    T: Into<usize>,
+    U: Into<usize>,
+{
+    // 查表计算8以内小数字的组合数
     let a = [
         [1, 0, 0, 0, 0, 0, 0, 0, 0],
         [1, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -499,7 +492,7 @@ pub fn C_usize(n: u8, k: u8) -> u8 {
         [1, 7, 21, 35, 35, 21, 7, 1, 0],
         [1, 8, 28, 56, 70, 56, 28, 8, 1],
     ];
-    a[n as usize][k as usize]
+    a[n.into()][k.into()]
 }
 
 pub fn combine(
@@ -686,13 +679,32 @@ pub fn enuOneStep(mut AllTable: Vec<Vec<usize>>, TableId: Vec<usize>, b: i32) ->
     AllTable
 }
 
+fn cal_cell_and_equation_map(matrix_a: &Vec<Vec<i32>>) -> (Vec<Vec<usize>>, Vec<Vec<usize>>) {
+    // cell_to_equation_map是方程中未知数的索引到方程的索引的映射
+    // 方程中的未知数可以理解成未知的格子，每个方程可以理解成局面中的一个数字
+    // 也可以理解成矩阵A的稀疏表示
+    let cells_num = matrix_a[0].len();
+    let equations_num = matrix_a.len();
+    let mut cell_to_equation_map = vec![vec![]; cells_num];
+    let mut equation_to_cell_map = vec![vec![]; equations_num];
+    for i in 0..equations_num {
+        for j in 0..cells_num {
+            if matrix_a[i][j] == 1 {
+                equation_to_cell_map[i].push(j);
+                cell_to_equation_map[j].push(i);
+            }
+        }
+    }
+    (cell_to_equation_map, equation_to_cell_map)
+}
+
 fn cal_table_minenum_recursion_step(
     idx: usize,
     current_amount: usize,
     table_minenum: &mut [Vec<usize>; 2],
     table_cell_minenum: &mut Vec<Vec<usize>>,
-    upper_limit: &mut Vec<usize>,
-    lower_limit: &mut Vec<usize>,
+    mut upper_limit: usize,
+    mut lower_limit: usize,
     matrixA_squeeze: &Vec<Vec<i32>>,
     matrix_b: &Vec<i32>,
     combination_relationship: &Vec<Vec<usize>>,
@@ -700,9 +712,10 @@ fn cal_table_minenum_recursion_step(
     let cells_num = matrixA_squeeze[0].len();
     if idx == cells_num {
         //终止条件
-
-
+        return
     }
+
+    println!("{:?}", combination_relationship);
 }
 
 pub fn cal_table_minenum_recursion(
@@ -718,26 +731,28 @@ pub fn cal_table_minenum_recursion(
         return Err(0);
     }
     let mut flag_legal_board = false;
-    let mut upper_limit = vec![0; cells_num];
-    let mut lower_limit = vec![0; cells_num];
+    let mut upper_limit = 0;
+    let mut lower_limit = 0;
     let mut table_minenum: [Vec<usize>; 2] = [
         (0..cells_num + 1).collect::<Vec<usize>>(),
         vec![0; cells_num],
     ];
+    let (cell_to_equation_map, equation_to_cell_map) = cal_cell_and_equation_map(&matrixA_squeeze);
+    // 计算两个映射表以减少复杂度
+    
+
     let mut table_cell_minenum: Vec<Vec<usize>> = vec![vec![0; cells_num]; cells_num];
-    for i in 0..cells_num {
-        cal_table_minenum_recursion_step(
-            0,
-            0,
-            &mut table_minenum,
-            &mut table_cell_minenum,
-            &mut upper_limit,
-            &mut lower_limit,
-            &matrixA_squeeze,
-            &matrix_b,
-            &combination_relationship,
-        );
-    }
+    cal_table_minenum_recursion_step(
+        0,
+        0,
+        &mut table_minenum,
+        &mut table_cell_minenum,
+        upper_limit,
+        lower_limit,
+        &matrixA_squeeze,
+        &matrix_b,
+        &combination_relationship,
+    );
 
     if flag_legal_board {
         Ok((table_minenum, table_cell_minenum))
@@ -777,7 +792,7 @@ pub fn cal_table_minenum_enum(
         let s_sum = s.iter().sum::<u8>();
         let mut si_num = 1; // 由于enum_comb_table中的格子每一个都代表了与其地位等同的所有格子，由此的情况数
         for s_i in 0..s.len() {
-            si_num *= C_usize(combination_relationship[s_i].len() as u8, s[s_i]);
+            si_num *= C_query(combination_relationship[s_i].len(), s[s_i]);
         }
         // println!("si_num = {:?}", si_num);
         let fs = table_minenum[0]
@@ -798,17 +813,11 @@ pub fn cal_table_minenum_enum(
                         let mut sss = 1;
                         for d in 0..s.len() {
                             if c != d {
-                                sss *= C_usize(
-                                    combination_relationship[d].len().try_into().unwrap(),
-                                    s[d],
-                                );
+                                sss *= C_query(combination_relationship[d].len(), s[d]);
                                 // println!("comb_relp_s = {:?}", comb_relp_s);
                                 // println!("sss = {:?}", sss);
                             } else {
-                                sss *= C_usize(
-                                    (combination_relationship[d].len() - 1).try_into().unwrap(),
-                                    s[d] - 1,
-                                );
+                                sss *= C_query((combination_relationship[d].len() - 1), s[d] - 1);
                             }
                         }
                         ss.push(sss as usize);
@@ -827,17 +836,11 @@ pub fn cal_table_minenum_enum(
                         let mut sss = 1;
                         for d in 0..s.len() {
                             if c != d {
-                                sss *= C_usize(
-                                    combination_relationship[d].len().try_into().unwrap(),
-                                    s[d],
-                                );
+                                sss *= C_query(combination_relationship[d].len(), s[d]);
                                 // println!("comb_relp_s=={:?}", comb_relp_s);
                                 // println!("s=={:?}", s);
                             } else {
-                                sss *= C_usize(
-                                    (combination_relationship[d].len() - 1).try_into().unwrap(),
-                                    s[d] - 1,
-                                );
+                                sss *= C_query((combination_relationship[d].len() - 1), s[d] - 1);
                             }
                         }
                         table_cell_minenum[fs.unwrap()][c] += sss as usize;

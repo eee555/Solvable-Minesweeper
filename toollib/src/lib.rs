@@ -7,7 +7,7 @@ use std::cmp::{max, min};
 
 mod utils;
 use utils::{
-    cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard, refreshMatrix,
+    cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard, refresh_matrix,
     refresh_matrixs, unsolvableStructure,
 };
 mod algorithms;
@@ -24,7 +24,7 @@ mod OBR;
 fn py_refreshMatrix(
     BoardofGame: Vec<Vec<i32>>,
 ) -> PyResult<(Vec<Vec<i32>>, Vec<(usize, usize)>, Vec<i32>)> {
-    Ok(refreshMatrix(&BoardofGame))
+    Ok(refresh_matrix(&BoardofGame))
 }
 
 #[pyfunction]
