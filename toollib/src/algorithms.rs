@@ -176,7 +176,7 @@ pub fn cal_possibility(
     // 分块枚举后，根据雷数限制，删除某些情况
     for i in 0..block_num {
         let (table_minenum_i, table_cell_minenum_i) =
-        match cal_table_minenum_enum(&matrixA_squeeze_s[i], &matrixx_squeeze_s[i], &matrix_b_s[i], &comb_relp_s[i]) {
+        match cal_table_minenum_recursion(&matrixA_squeeze_s[i], &matrixx_squeeze_s[i], &matrix_b_s[i], &comb_relp_s[i]) {
             Ok((table_minenum_i, table_cell_minenum_i)) => (table_minenum_i, table_cell_minenum_i),
             Err(e) => return (vec![], f64::NAN, [0, 0, 0]),
         };
