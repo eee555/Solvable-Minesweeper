@@ -11,12 +11,14 @@ use utils::{
     refresh_matrixs, unsolvableStructure,
 };
 mod algorithms;
-use algorithms::{
+pub use algorithms::{
     cal_possibility, cal_possibility_onboard, isSolvable, layMine, layMineOp, layMineSolvable,
     layMineSolvable_thread, mark_board, sample_3BVs_exp, OBR_board, SolveDirect, SolveEnumerate,
-    SolveMinus,
+    SolveMinus, cal_is_op_possibility_cells,
 };
 mod OBR;
+
+
 
 // 负责rust和python之间的接口，类似文档
 
@@ -492,3 +494,5 @@ fn ms_toollib(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<minesweeperBoard>()?;
     Ok(())
 }
+
+
