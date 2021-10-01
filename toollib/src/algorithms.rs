@@ -331,6 +331,35 @@ pub fn cal_possibility_onboard(
     (p, pp.2)
 }
 
+pub fn cal_is_op_possibility_cells(
+    board_of_game: &Vec<Vec<i32>>,
+    mine_num: f64,
+    cells: &Vec<[usize; 2]>,
+) -> Vec<f64> {
+    // 计算开空概率
+    let mut poss = vec![1.0; cells.len()];
+    let row = board_of_game.len();
+    let column = board_of_game[0].len();
+    for (cell_id, cell) in cells.iter().enumerate() {
+        let mut board_of_game_modified = board_of_game.clone();
+        'outer: for m in max(1, cell[0]) - 1..min(row, cell[0] + 2) {
+            for n in max(1, cell[1]) - 1..min(column, cell[1] + 2) {
+                if board_of_game[m][n] <10 || board_of_game[m][n] == 11 {
+                    poss[cell_id] = 0.0;
+                    break 'outer
+                } else if board_of_game[m][n] == 12 {
+                    continue
+                } else {
+                    let (p, _) = cal_possibility_onboard(board_of_game, mine_num);
+                    poss[cell_id] *= 1.0 - p[m][n];
+                    board_of_game_modified[m][n] = 12;
+                }
+            }
+        }
+    }
+    poss
+}
+
 pub fn layMineOp(
     Row: usize,
     Column: usize,
