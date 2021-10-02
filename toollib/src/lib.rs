@@ -7,7 +7,7 @@ use std::cmp::{max, min};
 
 mod utils;
 use utils::{
-    cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard, refresh_matrix,
+    cal3BV, calOp, enuOneStep, lay_mine_number, layMineOpNumber, refreshBoard, refresh_matrix,
     refresh_matrixs, unsolvableStructure,
 };
 mod algorithms;
@@ -49,15 +49,15 @@ fn py_calOp(mut Board: Vec<Vec<i32>>) -> PyResult<usize> {
 
 #[pyfunction]
 fn py_layMineNumber(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
     X0: usize,
     Y0: usize,
 ) -> PyResult<Vec<Vec<i32>>> {
     // 通用标准埋雷引擎
     // 输出为二维的局面
-    Ok(layMineNumber(Row, Column, MineNum, X0, Y0))
+    Ok(lay_mine_number(row, column, MineNum, X0, Y0))
 }
 
 #[pyfunction]
@@ -99,13 +99,13 @@ fn py_SolveDirect(
 
 #[pyfunction]
 fn py_layMineOpNumber(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
     X0: usize,
     Y0: usize,
 ) -> PyResult<Vec<Vec<i32>>> {
-    Ok(layMineOpNumber(Row, Column, MineNum, X0, Y0))
+    Ok(layMineOpNumber(row, column, MineNum, X0, Y0))
 }
 
 #[pyfunction(enuLimit = 30)]
@@ -147,8 +147,8 @@ fn py_isSolvable(Board: Vec<Vec<i32>>, X0: usize, Y0: usize, enuLimit: usize) ->
 
 #[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
 pub fn py_layMineOp(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
     X0: usize,
     Y0: usize,
@@ -158,14 +158,14 @@ pub fn py_layMineOp(
     method: usize,
 ) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
     Ok(layMineOp(
-        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
+        row, column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
     ))
 }
 
 #[pyfunction(Min3BV = 0, Max3BV = 1000000, MaxTimes = 1000000, enuLimit = 30)]
 pub fn py_layMineSolvable(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
     X0: usize,
     Y0: usize,
@@ -175,14 +175,14 @@ pub fn py_layMineSolvable(
     method: usize,
 ) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
     Ok(layMineSolvable(
-        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
+        row, column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
     ))
 }
 
 #[pyfunction(Min3BV = 0, Max3BV = 1000_000, MaxTimes = 1000_000, method = 0)]
 pub fn py_layMine(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
     X0: usize,
     Y0: usize,
@@ -192,14 +192,14 @@ pub fn py_layMine(
     method: usize,
 ) -> PyResult<(Vec<Vec<i32>>, Vec<usize>)> {
     Ok(layMine(
-        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
+        row, column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, method,
     ))
 }
 
 #[pyfunction(Min3BV = 0, Max3BV = 1000000, MaxTimes = 1000000, enuLimit = 30)]
 pub fn py_layMineSolvable_thread(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
     X0: usize,
     Y0: usize,
@@ -209,7 +209,7 @@ pub fn py_layMineSolvable_thread(
     enuLimit: usize,
 ) -> PyResult<(Vec<Vec<i32>>, [usize; 3])> {
     Ok(layMineSolvable_thread(
-        Row, Column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, enuLimit,
+        row, column, MineNum, X0, Y0, Min3BV, Max3BV, MaxTimes, enuLimit,
     ))
 }
 
@@ -222,7 +222,10 @@ fn py_cal_possibility(
     // 还返回局面中雷数的范围
     let mut board_of_game = board_of_game.clone();
     mark_board(&mut board_of_game);
-    Ok(cal_possibility(&board_of_game, mine_num))
+    match cal_possibility(&board_of_game, mine_num) {
+        Ok(t) => return Ok(t),
+        Err(e) => return Ok((vec![], f64::NAN, [0, 0, 0])),
+    };
 }
 
 #[pyfunction]
@@ -233,7 +236,10 @@ fn py_cal_possibility_onboard(
     // mine_num为局面中雷的总数，不管有没有标
     let mut board_of_game = board_of_game.clone();
     mark_board(&mut board_of_game);
-    Ok(cal_possibility_onboard(&board_of_game, mine_num))
+    match cal_possibility_onboard(&board_of_game, mine_num) {
+        Ok(t) => return Ok(t),
+        Err(e) => return Ok((vec![], [0, 0, 0])),
+    };
 }
 
 #[pyfunction]
@@ -252,7 +258,7 @@ fn py_OBR_board(data_vec: Vec<usize>, height: usize, width: usize) -> PyResult<V
 }
 
 #[pyclass]
-struct minesweeperBoard {
+struct MinesweeperBoard {
     // 局面类，分析操作与局面的交互
     #[pyo3(get)]
     board: Vec<Vec<i32>>,
@@ -264,23 +270,23 @@ struct minesweeperBoard {
     ces: usize,
     flag: usize,
     solved3BV: usize,
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     rightFlag: bool,    // 若rightFlag=True，则如果紧接着再chording就要把right减去1
     chordingFlag: bool, // chordingFlag=True，代表上一个时刻是双击弹起，此时再弹起左键或右键不做任何处理
 }
 
 #[pymethods]
-impl minesweeperBoard {
+impl MinesweeperBoard {
     #[new]
-    pub fn new(board: Vec<Vec<i32>>) -> minesweeperBoard {
-        let Row = board.len();
-        let Column = board[0].len();
-        minesweeperBoard {
+    pub fn new(board: Vec<Vec<i32>>) -> MinesweeperBoard {
+        let row = board.len();
+        let column = board[0].len();
+        MinesweeperBoard {
             board: board,
-            Row: Row,
-            Column: Column,
-            gameBoard: vec![vec![10; Column]; Row],
+            row: row,
+            column: column,
+            gameBoard: vec![vec![10; column]; row],
             left: 0,
             right: 0,
             chording: 0,
@@ -375,8 +381,8 @@ impl minesweeperBoard {
         let mut flagedNum = 0; // 双击点周围的标雷数
         let mut surround3BV = 0; // 周围的3BV
         let mut flag_ch_op = false; // 是否通过双击开空了：一次双击最多打开一个空
-        for i in max(1, x) - 1..min(self.Row, x + 2) {
-            for j in max(1, y) - 1..min(self.Column, y + 2) {
+        for i in max(1, x) - 1..min(self.row, x + 2) {
+            for j in max(1, y) - 1..min(self.column, y + 2) {
                 if i != x || j != y {
                     if self.gameBoard[i][j] == 11 {
                         flagedNum += 1
@@ -408,8 +414,8 @@ impl minesweeperBoard {
         if self.board[x][y] == -1 {
             return false;
         }
-        for i in max(1, x) - 1..min(self.Row, x + 2) {
-            for j in max(1, y) - 1..min(self.Column, y + 2) {
+        for i in max(1, x) - 1..min(self.row, x + 2) {
+            for j in max(1, y) - 1..min(self.column, y + 2) {
                 if self.board[i][j] == 0 {
                     return false;
                 }
@@ -454,7 +460,7 @@ impl minesweeperBoard {
 }
 
 #[pyproto]
-impl PyObjectProtocol for minesweeperBoard {
+impl PyObjectProtocol for MinesweeperBoard {
     fn __getattr__(&self, name: &str) -> PyResult<usize> {
         match name {
             "left" => return Ok(self.left),
@@ -491,7 +497,7 @@ fn ms_toollib(py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(py_sample_3BVs_exp, m)?)?;
     m.add_function(wrap_pyfunction!(py_OBR_board, m)?)?;
     m.add_function(wrap_pyfunction!(py_cal_possibility_onboard, m)?)?;
-    m.add_class::<minesweeperBoard>()?;
+    m.add_class::<MinesweeperBoard>()?;
     Ok(())
 }
 

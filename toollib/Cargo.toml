@@ -24,7 +24,7 @@ ms_toollib = { path = "." }
 
 [lib]
 name = "ms_toollib"
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "lib"]
 
 
 

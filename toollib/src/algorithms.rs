@@ -1,6 +1,6 @@
 use crate::utils::{
-    big_number, cal3BV, cal3BV_exp, cal_table_minenum_enum, cal_table_minenum_recursion, combine,
-    enuOneStep, enum_comb, layMineNumber, layMineOpNumber, legalize_board, refreshBoard,
+    BigNumber, cal3BV, cal3BV_exp, cal_table_minenum_enum, cal_table_minenum_recursion, combine,
+    enuOneStep, enum_comb, lay_mine_number, layMineOpNumber, legalize_board, refreshBoard,
     refresh_matrix, refresh_matrixs, sum, unsolvableStructure, C_query, C,
 };
 use crate::OBR::ImageBoard;
@@ -130,7 +130,7 @@ pub fn SolveDirect(
 pub fn cal_possibility(
     board_of_game: &Vec<Vec<i32>>,
     mut mine_num: f64,
-) -> (Vec<((usize, usize), f64)>, f64, [usize; 3]) {
+) -> Result<(Vec<((usize, usize), f64)>, f64, [usize; 3]), usize> {
     // 输入局面、未被标出的雷数，返回每一个未知的格子是雷的概率
     // 局面中可以标雷，但必须全部标对
     // 未知雷数为总雷数减去已经标出的雷
@@ -174,14 +174,19 @@ pub fn cal_possibility(
     // println!("组合情况：{:?}", comb_relp_s);
     // 分块枚举后，根据雷数限制，删除某些情况
     for i in 0..block_num {
-        let (table_minenum_i, table_cell_minenum_i) = match cal_table_minenum_recursion(
+        let table_minenum_i;
+        let table_cell_minenum_i;
+        match cal_table_minenum_recursion(
             &matrixA_squeeze_s[i],
             &matrixx_squeeze_s[i],
             &matrix_b_s[i],
             &comb_relp_s[i],
         ) {
-            Ok((table_minenum_i, table_cell_minenum_i)) => (table_minenum_i, table_cell_minenum_i),
-            Err(e) => return (vec![], f64::NAN, [0, 0, 0]),
+            Ok((table_minenum_i_, table_cell_minenum_i_)) => {
+                table_minenum_i = table_minenum_i_;
+                table_cell_minenum_i = table_cell_minenum_i_;
+            },
+            Err(e) => return Err(e),
         };
         // min_max_mine_num[0] += table_minenum_i[0][0];
         // min_max_mine_num[1] += table_minenum_i[0][table_minenum_i[0].len() - 1];
@@ -213,6 +218,7 @@ pub fn cal_possibility(
     };
 
     max_mine_num = min(max_mine_num, mine_num);
+    // println!("mine_num = {:?}; min_mine_num = {:?}; max_mine_num = {:?}", mine_num, min_mine_num, max_mine_num);
     let unknow_mine_num: Vec<usize> =
         (mine_num - max_mine_num..min(mine_num - min_mine_num, unknow_block) + 1).collect();
     // 这里的写法存在极小的风险，例如边缘格雷数分布是0，1，3，而我们直接认为了可能有2
@@ -238,16 +244,16 @@ pub fn cal_possibility(
         }
     }
     // 第三步，枚举每块雷数情况索引表：行代表每种情况，列代表每块雷数的索引，最后一列代表未知区域雷数
-    let mut table_minenum_other: Vec<Vec<big_number>> = vec![];
+    let mut table_minenum_other: Vec<Vec<BigNumber>> = vec![];
     for i in 0..block_num + 1 {
         table_minenum_other.push(vec![
-            big_number { a: 0.0, b: 0 };
+            BigNumber { a: 0.0, b: 0 };
             table_minenum_s[i][0].len()
         ]);
     } // 初始化
     for s in mine_in_each_block {
         for i in 0..block_num {
-            let mut s_num = big_number { a: 1.0, b: 0 };
+            let mut s_num = BigNumber { a: 1.0, b: 0 };
             let mut s_mn = mine_num; // 未知区域中的雷数
             for j in 0..block_num {
                 if i != j {
@@ -259,7 +265,7 @@ pub fn cal_possibility(
             s_num.mul_big_number(&unknow_mine_s_num[ps]);
             table_minenum_other[i][s[i]].add_big_number(&s_num);
         }
-        let mut s_num = big_number { a: 1.0, b: 0 };
+        let mut s_num = BigNumber { a: 1.0, b: 0 };
         let mut s_mn = mine_num; // 未知区域中的雷数
         for j in 0..block_num {
             s_num.mul_usize(table_minenum_s[j][1][s[j]]);
@@ -269,7 +275,7 @@ pub fn cal_possibility(
         table_minenum_other[block_num][ps].add_big_number(&s_num);
     }
     // 第四步，计算每块其他雷数情况表
-    let mut T = big_number { a: 0.0, b: 0 };
+    let mut T = BigNumber { a: 0.0, b: 0 };
     for i in 0..unknow_mine_s_num.len() {
         let mut t = table_minenum_other[block_num][i].clone();
         t.mul_big_number(&unknow_mine_s_num[i]);
@@ -281,7 +287,7 @@ pub fn cal_possibility(
         for cells_id in 0..comb_relp_s[i].len() {
             let cells_len = comb_relp_s[i][cells_id].len();
             for cell_id in 0..cells_len {
-                let mut s_cell = big_number { a: 0.0, b: 0 };
+                let mut s_cell = BigNumber { a: 0.0, b: 0 };
                 for s in 0..table_minenum_other[i].len() {
                     let mut o = table_minenum_other[i][s].clone();
                     o.mul_usize(table_cell_minenum_s[i][s][cells_id]);
@@ -298,7 +304,7 @@ pub fn cal_possibility(
         }
     }
     // 第六步，计算边缘每格是雷的概率
-    let mut u_s = big_number { a: 0.0, b: 0 };
+    let mut u_s = BigNumber { a: 0.0, b: 0 };
     for i in 0..unknow_mine_num.len() {
         let mut u = table_minenum_other[block_num][i].clone();
         u.mul_big_number(&unknow_mine_s_num[i]);
@@ -312,7 +318,7 @@ pub fn cal_possibility(
     let p_unknow = u_s.div_big_num(&T) / unknow_block as f64;
     // 第七步，计算内部未知区域是雷的概率
 
-    (
+    Ok((
         p,
         p_unknow,
         [
@@ -320,15 +326,19 @@ pub fn cal_possibility(
             mine_num + is_mine_num,
             max_mine_num + is_mine_num + unknow_block,
         ],
-    )
+    ))
 }
 
 pub fn cal_possibility_onboard(
     board_of_game: &Vec<Vec<i32>>,
     mine_num: f64,
-) -> (Vec<Vec<f64>>, [usize; 3]) {
+) -> Result<(Vec<Vec<f64>>, [usize; 3]), usize> {
     let mut p = vec![vec![-1.0; board_of_game[0].len()]; board_of_game.len()];
-    let pp = cal_possibility(&board_of_game, mine_num);
+    let pp;
+    match cal_possibility(&board_of_game, mine_num) {
+        Ok(ppp) => pp = ppp,
+        Err(e) => return Err(e),
+    }
     for i in pp.0 {
         p[i.0 .0][i.0 .1] = i.1;
     }
@@ -343,7 +353,7 @@ pub fn cal_possibility_onboard(
             }
         }
     }
-    (p, pp.2)
+    Ok((p, pp.2))
 }
 
 pub fn cal_is_op_possibility_cells(
@@ -367,7 +377,17 @@ pub fn cal_is_op_possibility_cells(
                 } else if board_of_game[m][n] == 12 || board_of_game[m][n] < 10 {
                     continue;
                 } else {
-                    let (p, _) = cal_possibility_onboard(board_of_game, mine_num);
+                    // println!("{:?}", board_of_game_modified);
+                    let p;
+                    match cal_possibility_onboard(&board_of_game_modified, mine_num) {
+                        Ok((ppp, _)) => p = ppp,
+                        Err(e) => {
+                            poss[cell_id] = 0.0;
+                            break 'outer;
+                        },
+                    };
+                    // let (p, _) = cal_possibility_onboard(&board_of_game_modified, mine_num);
+                    // println!("{:?}", 1.0-p[m][n]);
                     poss[cell_id] *= 1.0 - p[m][n];
                     board_of_game_modified[m][n] = 12;
                 }
@@ -378,34 +398,34 @@ pub fn cal_is_op_possibility_cells(
 }
 
 pub fn layMineOp(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
-    X0: usize,
-    Y0: usize,
+    x0: usize,
+    y0: usize,
     Min3BV: usize,
     Max3BV: usize,
     MaxTimes: usize,
     method: usize,
 ) -> (Vec<Vec<i32>>, Vec<usize>) {
-    let mut Times = 0;
+    let mut times = 0;
     let mut Parameters = vec![];
     let mut Num3BV = 0;
-    let mut Board = vec![vec![0; Column]; Row];
-    while Times < MaxTimes {
-        Board = layMineOpNumber(Row, Column, MineNum, X0, Y0);
-        Times += 1;
+    let mut Board = vec![vec![0; column]; row];
+    while times < MaxTimes {
+        Board = layMineOpNumber(row, column, MineNum, x0, y0);
+        times += 1;
         let mut Num3BV = cal3BV(&Board);
         if Num3BV >= Min3BV && Num3BV <= Max3BV {
             Parameters.push(1);
             Parameters.push(Num3BV);
-            Parameters.push(Times);
+            Parameters.push(times);
             return (Board, Parameters);
         }
     }
     Parameters.push(0);
     Parameters.push(Num3BV);
-    Parameters.push(Times);
+    Parameters.push(times);
     (Board, Parameters)
 }
 
@@ -441,9 +461,9 @@ fn isVictory(BoardofGame: &Vec<Vec<i32>>, Board: &Vec<Vec<i32>>) -> bool {
     // 判断当前是否获胜
     // 游戏局面中必须没有标错的雷
     // 这个函数不具备普遍意义
-    let Row = BoardofGame.len();
+    let row = BoardofGame.len();
     let Col = BoardofGame[0].len();
-    for i in 0..Row {
+    for i in 0..row {
         for j in 0..Col {
             if BoardofGame[i][j] == 10 && Board[i][j] != -1 {
                 return false;
@@ -453,19 +473,19 @@ fn isVictory(BoardofGame: &Vec<Vec<i32>>, Board: &Vec<Vec<i32>>) -> bool {
     return true;
 }
 
-pub fn isSolvable(Board: &Vec<Vec<i32>>, X0: usize, Y0: usize, enuLimit: usize) -> bool {
+pub fn isSolvable(Board: &Vec<Vec<i32>>, x0: usize, y0: usize, enuLimit: usize) -> bool {
     // 从指定位置开始扫，判断局面是否无猜
     // 周围一圈都是雷，那么中间是雷不算猜，中间不是雷算猜
     if unsolvableStructure(&Board) {
         //若包含不可判雷结构，则不是无猜
         return false;
     }
-    let Row = Board.len();
-    let Column = Board[0].len();
-    let mut BoardofGame = vec![vec![10; Column]; Row];
+    let row = Board.len();
+    let column = Board[0].len();
+    let mut BoardofGame = vec![vec![10; column]; row];
     // 10是未打开，11是标雷
     // 局面大小必须超过6*6
-    refreshBoard(&Board, &mut BoardofGame, vec![(X0, Y0)]);
+    refreshBoard(&Board, &mut BoardofGame, vec![(x0, y0)]);
     if isVictory(&BoardofGame, &Board) {
         return true; // 暂且认为点一下就扫开也是可以的
     }
@@ -505,19 +525,19 @@ pub fn isSolvable(Board: &Vec<Vec<i32>>, X0: usize, Y0: usize, enuLimit: usize) 
 }
 
 pub fn layMineSolvable_thread(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
-    X0: usize,
-    Y0: usize,
+    x0: usize,
+    y0: usize,
     Min3BV: usize,
     Max3BV: usize,
     mut MaxTimes: usize,
     enuLimit: usize,
 ) -> (Vec<Vec<i32>>, [usize; 3]) {
-    // 多线程埋雷无猜
+    // 利用删选法，多线程无猜埋雷
     let mut parameters = [0, 0, 0];
-    let mut game_board = vec![vec![0; Column]; Row];
+    let mut game_board = vec![vec![0; column]; row];
     let mut handles = vec![];
     let flag_exit = Arc::new(Mutex::new(0));
     let (tx, rx) = mpsc::channel(); // mpsc 是多个发送者，一个接收者
@@ -529,7 +549,7 @@ pub fn layMineSolvable_thread(
         let handle = thread::spawn(move || {
             let mut Num3BV;
             let mut counter = 0;
-            let mut Board = vec![vec![0; Column]; Row];
+            let mut Board = vec![vec![0; column]; row];
             let mut para = [0, 0, 0];
             while counter < max_time {
                 {
@@ -538,16 +558,16 @@ pub fn layMineSolvable_thread(
                         break;
                     }
                 } // 这块用花括号控制生命周期
-                let Board_ = layMineOpNumber(Row, Column, MineNum, X0, Y0);
+                let Board_ = layMineOpNumber(row, column, MineNum, x0, y0);
                 counter += 1;
-                if isSolvable(&Board_, X0, Y0, enuLimit) {
+                if isSolvable(&Board_, x0, y0, enuLimit) {
                     Num3BV = cal3BV(&Board_);
                     if Num3BV >= Min3BV && Num3BV <= Max3BV {
                         para[0] = 1;
                         para[1] = Num3BV;
                         para[2] = counter;
-                        for i in 0..Row {
-                            for j in 0..Column {
+                        for i in 0..row {
+                            for j in 0..column {
                                 Board[i][j] = Board_[i][j];
                             }
                         }
@@ -558,7 +578,7 @@ pub fn layMineSolvable_thread(
                     }
                 }
             }
-            let Board_ = layMineOpNumber(Row, Column, MineNum, X0, Y0);
+            let Board_ = layMineOpNumber(row, column, MineNum, x0, y0);
             Num3BV = cal3BV(&Board_);
             para[0] = 0;
             para[1] = Num3BV;
@@ -574,8 +594,8 @@ pub fn layMineSolvable_thread(
     parameters[0] = received.1[0];
     parameters[1] = received.1[1];
     parameters[2] = received.1[2];
-    for i in 0..Row {
-        for j in 0..Column {
+    for i in 0..row {
+        for j in 0..column {
             game_board[i][j] = received.0[i][j];
         }
     }
@@ -583,11 +603,11 @@ pub fn layMineSolvable_thread(
 }
 
 pub fn layMineSolvable(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
-    X0: usize,
-    Y0: usize,
+    x0: usize,
+    y0: usize,
     Min3BV: usize,
     Max3BV: usize,
     MaxTimes: usize,
@@ -596,37 +616,73 @@ pub fn layMineSolvable(
     // 单线程埋雷无猜
     // 3BV下限、上限，最大尝试次数，返回是否成功。
     // 若不成功返回最后生成的局面（不一定无猜），默认尝试十万次
-    let mut Times = 0;
+    let mut times = 0;
     let mut Parameters = vec![];
     let mut Board;
     let mut Num3BV;
-    while Times < MaxTimes {
-        Board = layMineOpNumber(Row, Column, MineNum, X0, Y0);
-        Times += 1;
-        if isSolvable(&Board, X0, Y0, enuLimit) {
+    while times < MaxTimes {
+        Board = layMineOpNumber(row, column, MineNum, x0, y0);
+        times += 1;
+        if isSolvable(&Board, x0, y0, enuLimit) {
             Num3BV = cal3BV(&Board);
             if Num3BV >= Min3BV && Num3BV <= Max3BV {
                 Parameters.push(1);
                 Parameters.push(Num3BV);
-                Parameters.push(Times);
+                Parameters.push(times);
                 return (Board, Parameters);
             }
         }
     }
-    Board = layMineOpNumber(Row, Column, MineNum, X0, Y0);
+    Board = layMineOpNumber(row, column, MineNum, x0, y0);
     Num3BV = cal3BV(&Board);
     Parameters.push(0);
     Parameters.push(Num3BV);
-    Parameters.push(Times);
+    Parameters.push(times);
     (Board, Parameters)
 }
 
+pub fn lay_mine_solvable_adjust(
+    row: usize,
+    column: usize,
+    mine_num: usize,
+    x0: usize,
+    y0: usize,
+    min_3BV: usize,
+    max_3BV: usize,
+    max_times: usize,
+    enu_limit: usize,
+) -> (Vec<Vec<i32>>, [usize; 3]) {
+    // 利用局面调整算法，无猜埋雷
+    let mut area_op = 9;
+    if x0 == 0 || y0 == 0 || x0 == row - 1 || y0 == column - 1 {
+        if x0 == 0 && y0 == 0
+            || x0 == 0 && y0 == column - 1
+            || x0 == row - 1 && y0 == 0
+            || x0 == row - 1 && y0 == column - 1
+        {
+            area_op = 4;
+        } else {
+            area_op = 6;
+        }
+    }
+    if row * column - area_op < mine_num {
+        // 雷数太多以致起手无法开空，此时放弃无猜，返回任意一种局面
+        let t = layMine(row, column, mine_num, x0, y0, min_3BV, max_3BV, max_times, 0);
+        return (t.0, [0, t.1[1], t.1[2]])
+    }
+    let remain_mine_num = mine_num;
+    let remain_inside_cells_num = row * column - area_op;
+    for time in 0..max_times {
+    }
+    (vec![], [0, 0, 0])
+}
+
 pub fn layMine(
-    Row: usize,
-    Column: usize,
+    row: usize,
+    column: usize,
     MineNum: usize,
-    X0: usize,
-    Y0: usize,
+    x0: usize,
+    y0: usize,
     Min3BV: usize,
     Max3BV: usize,
     MaxTimes: usize,
@@ -636,36 +692,36 @@ pub fn layMine(
     // 适用于游戏的埋雷算法。
     // 起手不开空，必不为雷
     // 返回二维列表，0~8代表数字，-1代表雷
-    // method = 0筛选算法；1调整算法
-    let mut Times = 0;
+    // method = 0筛选算法；1调整算法（保留）
+    let mut times = 0;
     let mut Parameters = vec![];
     let mut Num3BV = 0;
-    let mut Board = vec![vec![0; Column]; Row];
-    while Times < MaxTimes {
-        Board = layMineNumber(Row, Column, MineNum, X0, Y0);
-        Times += 1;
+    let mut Board = vec![vec![0; column]; row];
+    while times < MaxTimes {
+        Board = lay_mine_number(row, column, MineNum, x0, y0);
+        times += 1;
         Num3BV = cal3BV(&Board);
         if Num3BV >= Min3BV && Num3BV <= Max3BV {
             Parameters.push(1);
             Parameters.push(Num3BV);
-            Parameters.push(Times);
+            Parameters.push(times);
             return (Board, Parameters);
         }
     }
     Parameters.push(0);
     Parameters.push(Num3BV);
-    Parameters.push(Times);
+    Parameters.push(times);
     (Board, Parameters)
 }
 
-pub fn sample_3BVs_exp(X0: usize, Y0: usize, n: usize) -> [usize; 382] {
+pub fn sample_3BVs_exp(x0: usize, y0: usize, n: usize) -> [usize; 382] {
     // 从标准高级中采样计算3BV
     // 16线程计算
     let n0 = n / 16;
     let mut threads = vec![];
     for i in 0..16 {
         let join_item =
-            thread::spawn(move || -> [usize; 382] { lay_mine_number_study_exp(X0, Y0, n0) });
+            thread::spawn(move || -> [usize; 382] { lay_mine_number_study_exp(x0, y0, n0) });
         threads.push(join_item);
     }
     let mut aa = [0; 382];
@@ -677,11 +733,11 @@ pub fn sample_3BVs_exp(X0: usize, Y0: usize, n: usize) -> [usize; 382] {
     aa
 }
 
-fn lay_mine_number_study_exp(X0: usize, Y0: usize, n: usize) -> [usize; 382] {
+fn lay_mine_number_study_exp(x0: usize, y0: usize, n: usize) -> [usize; 382] {
     // 专用埋雷并计算3BV引擎，用于研究
     let mut rng = thread_rng();
     // let area: usize = 16 * 30 - 1;
-    let pointer = X0 + Y0 * 16;
+    let pointer = x0 + y0 * 16;
     let mut bv_record = [0; 382];
     for id in 0..n {
         let mut Board1Dim = [0; 479];
@@ -767,12 +823,12 @@ pub fn OBR_board(
     // 输入列向量形式的三通道的像素数据，图像的高度、宽度；
     // 为什么输入形式这么奇怪呢？是为了适配python截图出来的原始数据
     // 输出是不一定合法的局面
-    if (height <= 24 || width <= 24) {
+    if height <= 24 || width <= 24 {
         return Err("one input size of the board is smaller than 3".to_string());
     }
     let mut image_board = ImageBoard::new(data_vec, height, width);
     image_board.get_pos_pixel();
-    if (image_board.r <= 3 || image_board.c <= 3) {
+    if image_board.r <= 3 || image_board.c <= 3 {
         return Err("one size of the board seems to be smaller than 3".to_string());
     }
     let mut board = vec![vec![0i32; image_board.c]; image_board.r];
