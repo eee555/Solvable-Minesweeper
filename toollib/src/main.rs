@@ -1,7 +1,7 @@
 // 测试概率计算
 mod utils;
 use utils::{
-    cal3BV, calOp, enuOneStep, layMineNumber, layMineOpNumber, refreshBoard,
+    cal3BV, calOp, enuOneStep, lay_mine_number, layMineOpNumber, refreshBoard,
     unsolvableStructure
 };
 mod algorithms;

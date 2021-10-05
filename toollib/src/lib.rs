@@ -6,7 +6,7 @@ use std::cmp::{max, min};
 // use rayon::prelude::*;
 
 mod utils;
-use utils::{
+pub use utils::{
     cal3BV, calOp, enuOneStep, lay_mine_number, layMineOpNumber, refreshBoard, refresh_matrix,
     refresh_matrixs, unsolvableStructure,
 };

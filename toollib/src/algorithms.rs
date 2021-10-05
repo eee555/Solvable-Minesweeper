@@ -157,17 +157,7 @@ pub fn cal_possibility(
     for i in 0..block_num {
         let (matrixA_squeeze, matrixx_squeeze, combination_relationship) =
             combine(matrix_a_s[i].clone(), matrix_x_s[i].clone());
-        // let enum_comb_table = enum_comb(&matrixA_squeeze, &matrixx_squeeze, &matrix_bs[i]);
-        // if matrixx_squeeze.len() > 60 {
-        //     // 这里就是考虑格子等同地位后的枚举极限
-        //     return (vec![], f64::NAN, [0, 0]);
-        // }
-        // println!("压缩后的combination_relationship：{:?}", combination_relationship);
         comb_relp_s.push(combination_relationship);
-        // println!("所有情况数：{:?}", &enum_comb_table.len());
-        // println!("压缩后的matrixA_squeeze：{:?}", matrixA_squeeze);
-        // println!("压缩后的matrixx_squeeze：{:?}", matrixx_squeeze);
-        // enum_comb_table_s.push(enum_comb_table);
         matrixA_squeeze_s.push(matrixA_squeeze);
         matrixx_squeeze_s.push(matrixx_squeeze);
     }
@@ -194,19 +184,20 @@ pub fn cal_possibility(
         table_cell_minenum_s.push(table_cell_minenum_i);
         table_minenum_s.push(table_minenum_i);
     } // 第一步，整理出每块每格雷数情况表、每块雷数分布表、每块雷分布情况总数表
-      // println!("table_minenum: {:?}", table_minenum);
-      // println!("table_cell_minenum:{:?}", table_cell_minenum);
+    
     let mut min_mine_num = 0;
     let mut max_mine_num = 0;
     for i in 0..block_num {
         min_mine_num += table_minenum_s[i][0].iter().min().unwrap();
         max_mine_num += table_minenum_s[i][0].iter().max().unwrap();
     }
+    // println!("table_minenum: {:?}", table_minenum_s);
+    // println!("table_cell_minenum:{:?}", table_cell_minenum_s);
+    // println!("min_mine_num: {:?}", min_mine_num);
+    // println!("max_mine_num:{:?}", max_mine_num);
     let mine_num = if mine_num <= 1.0 {
         let mn = ((board_of_game.len() * board_of_game[0].len()) as f64 * mine_num) as usize;
         // println!("mn:{:?}", mn);
-        // println!("min_mine_num:{:?}", min_mine_num);
-        // println!("max_mine_num:{:?}", max_mine_num);
         // println!("unknow_block:{:?}", unknow_block);
         // println!("is_mine_num:{:?}", is_mine_num);
         min(
@@ -234,6 +225,8 @@ pub fn cal_possibility(
         .map(|i| 0..table_minenum_s[i][0].len())
         .multi_cartesian_product()
         .collect::<Vec<_>>();
+    // println!("mine_in_each_block: {:?}", mine_in_each_block);
+    // println!("table_minenum_s: {:?}", table_minenum_s);
     for i in (0..mine_in_each_block.len()).rev() {
         let mut total_num = 0;
         for j in 0..block_num + 1 {
@@ -243,6 +236,7 @@ pub fn cal_possibility(
             mine_in_each_block.remove(i);
         }
     }
+    // println!("mine_in_each_block: {:?}", mine_in_each_block);
     // 第三步，枚举每块雷数情况索引表：行代表每种情况，列代表每块雷数的索引，最后一列代表未知区域雷数
     let mut table_minenum_other: Vec<Vec<BigNumber>> = vec![];
     for i in 0..block_num + 1 {
@@ -274,6 +268,9 @@ pub fn cal_possibility(
         let ps = unknow_mine_num.iter().position(|x| *x == s_mn).unwrap();
         table_minenum_other[block_num][ps].add_big_number(&s_num);
     }
+    // println!("table_minenum_s: {:?}", table_minenum_s);
+    // println!("table_cell_minenum_s: {:?}", table_cell_minenum_s);
+    // println!("table_minenum_other: {:?}", table_minenum_other);
     // 第四步，计算每块其他雷数情况表
     let mut T = BigNumber { a: 0.0, b: 0 };
     for i in 0..unknow_mine_s_num.len() {
@@ -311,10 +308,8 @@ pub fn cal_possibility(
         u.mul_usize(unknow_mine_num[i]);
         u_s.add_big_number(&u);
     }
-    // println!("{:?}", table_minenum);
-    // println!("table_cell_minenum----{:?}", table_cell_minenum);
-    // println!("{:?}", unknow_mine_num);
-    // println!("{:?}", unknow_mine_s_num);
+    // println!("unknow_mine_num: {:?}", unknow_mine_num);
+    // println!("unknow_mine_s_num: {:?}", unknow_mine_s_num);
     let p_unknow = u_s.div_big_num(&T) / unknow_block as f64;
     // 第七步，计算内部未知区域是雷的概率
 
@@ -433,27 +428,48 @@ pub fn SolveEnumerate(
     matrix_as: &Vec<Vec<Vec<i32>>>,
     matrix_xs: &Vec<Vec<(usize, usize)>>,
     matrix_bs: &Vec<Vec<i32>>,
-    BoardofGame: &mut Vec<Vec<i32>>,
+    board_of_game: &Vec<Vec<i32>>,
     enuLimit: usize,
 ) -> (Vec<(usize, usize)>, bool) {
-    // 第二代枚举法判雷引擎
+    // 枚举法判雷引擎
     // 输入的矩阵都是分块好的
-    // 只判断哪些不是雷，不判断哪些是雷，不修改输入进来的局面
+    // 只判断哪些不是雷，不判断哪些是雷，不修改输入进来的局面（不帮助标雷）
     let mut flag = false;
     let mut NotMine = vec![];
     let block_num = matrix_xs.len();
+    if block_num > enuLimit {
+        return (vec![], false)
+    }
+
+    let mut comb_relp_s = vec![];
+    let mut matrixA_squeeze_s: Vec<Vec<Vec<i32>>> = vec![];
+    let mut matrixx_squeeze_s: Vec<Vec<(usize, usize)>> = vec![];
     for i in 0..block_num {
-        let a = enum_comb(&matrix_as[i], &matrix_xs[i], &matrix_bs[i]); // a记录了当前块的所有情况
-        let cell_num = matrix_xs[i].len();
-        'outer: for j in (0..cell_num).rev() {
-            for k in 0..a.len() {
-                if a[k][j] == 1 {
+        let (matrixA_squeeze, matrixx_squeeze, combination_relationship) =
+            combine(matrix_as[i].clone(), matrix_xs[i].clone());
+        comb_relp_s.push(combination_relationship);
+        matrixA_squeeze_s.push(matrixA_squeeze);
+        matrixx_squeeze_s.push(matrixx_squeeze);
+    }
+    for i in 0..block_num {
+        let (table_minenum_i, table_cell_minenum_i) = cal_table_minenum_recursion(
+            &matrixA_squeeze_s[i],
+            &matrixx_squeeze_s[i],
+            &matrix_bs[i],
+            &comb_relp_s[i],
+        ).unwrap();
+        'outer: for jj in 0..table_cell_minenum_i[0].len() {
+            for ii in 0..table_cell_minenum_i.len() {
+                if table_cell_minenum_i[ii][jj] > 0 {
                     continue 'outer;
                 }
             }
-            NotMine.push(matrix_xs[i][j]);
+            for kk in comb_relp_s[i][jj].clone() {
+                NotMine.push(matrixx_squeeze_s[i][kk]);
+            }
         }
     }
+    
     (NotMine, flag)
 }
 
@@ -871,3 +887,35 @@ pub fn mark_board(board: &mut Vec<Vec<i32>>) {
         board[i.0][i.1] = 12;
     }
 }
+
+pub fn solve_all_notmine(board_: &Vec<Vec<i32>>, enuLimit: usize) ->Vec<(usize, usize)> {
+    // 求出所有非雷的位置
+    let mut board = board_.clone();
+    let (mut matrix_a, mut matrix_x, mut matrix_b) = refresh_matrix(&board);
+    let ans = SolveDirect(&mut matrix_a, &mut matrix_x, &mut matrix_b, &mut board);
+    let mut not_mine = vec![];
+    for i in ans.0 {
+        board[i.0][i.1] = 12;
+        not_mine.push(i);
+    }
+    let (matrix_a, matrix_x, matrix_b) = refresh_matrix(&board);
+    let ans = SolveMinus(&matrix_a, &matrix_x, &matrix_b, &mut board);
+    for i in ans.0 {
+        board[i.0][i.1] = 12;
+        not_mine.push(i);
+    }
+    let (matrix_as, matrix_xs, matrix_bs, _, _) = refresh_matrixs(&board);
+    let ans = SolveEnumerate(&matrix_as, &matrix_xs, &matrix_bs, &mut board, enuLimit);
+    for i in ans.0 {
+        board[i.0][i.1] = 12;
+        not_mine.push(i);
+    }
+    not_mine
+}
+
+
+
+
+
+
+

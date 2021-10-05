@@ -539,6 +539,7 @@ pub fn enum_comb(
     matrixx_squeeze: &Vec<(usize, usize)>,
     Matrixb: &Vec<i32>,
 ) -> Vec<Vec<u8>> {
+    // 拟弃用，或暂时用不到
     // 返回一个包含所有情况的表
     let column = matrixx_squeeze.len();
     let row = matrixA_squeeze.len();
@@ -712,40 +713,37 @@ fn cal_table_minenum_recursion_step(
     cell_to_equation_map: &Vec<Vec<usize>>,
     equation_to_cell_map: &Vec<Vec<usize>>,
     mine_vec: &mut Vec<usize>,
-) {
+) -> bool {
     // mine_vec: 是雷位置都记录下来，只记录一个索引，可能有重复
     let cells_num = matrixA_squeeze[0].len();
-    
     if idx == cells_num {
         //终止条件
-        let total_mines_num: usize = mine_vec.len();
-        // println!("：：total_mines_num = {:?}", total_mines_num);
-        // println!("：：mine_vec = {:?}", mine_vec);
+        let total_mines_num: usize = mine_vec.iter().sum();
         table_minenum[1][total_mines_num] += current_amount;
-        for n in mine_vec {
-            table_cell_minenum[total_mines_num][*n] += current_amount / combination_relationship[*n].len();
+        for (idn, n) in mine_vec.iter().enumerate() {
+            table_cell_minenum[total_mines_num][idn] +=
+                current_amount * n / combination_relationship[idn].len();
         }
-        return
+        return true;
     }
-    // upper_limit = min(upper_limit, combination_relationship[idx].len());
 
     let mut upper_limit = combination_relationship[idx].len();
     let mut lower_limit = 0usize;
     for cell_i in &cell_to_equation_map[idx] {
         // println!("idx = {:?}; matrix_b_remain = {:?}", idx, matrix_b_remain);
         if matrixA_squeeze[*cell_i][idx] == 0 {
-            continue
+            continue;
         }
-        let upper_limit_i = min(matrix_b_remain[*cell_i], combination_relationship[idx].len() as i32);
-        
+        let upper_limit_i = min(
+            matrix_b_remain[*cell_i],
+            combination_relationship[idx].len() as i32,
+        );
         let mut lower_limit_i = matrix_b_remain[*cell_i];
         for j in &equation_to_cell_map[*cell_i] {
             if j > &idx {
                 lower_limit_i -= combination_relationship[*j].len() as i32;
             }
         }
-        // lower_limit_i = lower_limit_i - (idx + mine_vec.len()) as i32;
-        // upper_limit_i -= (idx + mine_vec.len()) as i32;
         if upper_limit_i < upper_limit as i32 {
             upper_limit = upper_limit_i as usize;
         }
@@ -754,52 +752,34 @@ fn cal_table_minenum_recursion_step(
         }
     }
 
-    
-    // println!("upper_limit = {:?}", upper_limit);
-    // println!("lower_limit = {:?}", lower_limit);
-    // println!("idx = {:?}", idx);
-    
-    
     for u in lower_limit..upper_limit + 1 {
-        // println!("u = {:?}, lower_limit = {:?}, upper_limit = {:?}", u, lower_limit, upper_limit);
-        for uu in 0..u {
-            mine_vec.push(idx);
-        }
-        // println!("mine_vec = {:?}", mine_vec);
-        // println!("**matrix_b_remain = {:?}; u = {:?}", matrix_b_remain, u);
+        mine_vec[idx] = u;
         if u > 0 {
             for tt in &cell_to_equation_map[idx] {
                 matrix_b_remain[*tt] -= u as i32;
             }
         }
-        // println!("!!matrix_b_remain = {:?}", matrix_b_remain);
-        
-        cal_table_minenum_recursion_step(
+        let is_end = cal_table_minenum_recursion_step(
             idx + 1,
             current_amount * C_query(combination_relationship[idx].len(), u),
             table_minenum,
             table_cell_minenum,
-            // upper_limit - u,
-            // lower_limit + upper_limit - u,
             &matrixA_squeeze,
             &matrix_b,
             matrix_b_remain,
             &combination_relationship,
             &cell_to_equation_map,
             &equation_to_cell_map,
-            mine_vec
+            mine_vec,
         );
-        // println!("+ idx = {:?}; u = {:?}; matrix_b_remain = {:?}", idx, u, matrix_b_remain);
-        for tt in &cell_to_equation_map[idx]{
-            matrix_b_remain[*tt] += u as i32;
-        }
-        // println!("++ matrix_b_remain = {:?}", matrix_b_remain);
-        for uu in 0..u {
-            mine_vec.pop();
+        if !is_end {
+            for tt in &cell_to_equation_map[idx] {
+                matrix_b_remain[*tt] += u as i32;
+            }
+            mine_vec[idx] = 0;
         }
     }
-
-    
+    false
 }
 
 pub fn cal_table_minenum_recursion(
@@ -819,11 +799,12 @@ pub fn cal_table_minenum_recursion(
         // 超出枚举极限长度异常
         return Err(0);
     }
-    let cells_num_total = combination_relationship.iter().fold(0, |item, x| item + x.len());
+    let cells_num_total = combination_relationship
+        .iter()
+        .fold(0, |item, x| item + x.len());
     // cells_num_total指合并前的格子数
 
     let mut flag_legal_board = true;
-    
     let mut table_minenum: [Vec<usize>; 2] = [
         (0..cells_num_total + 1).collect::<Vec<usize>>(),
         vec![0; cells_num_total + 1],
@@ -838,27 +819,23 @@ pub fn cal_table_minenum_recursion(
         1,
         &mut table_minenum,
         &mut table_cell_minenum,
-        // upper_limit,
-        // lower_limit,
         &matrixA_squeeze,
         &matrix_b,
         &mut matrix_b.clone(),
         &combination_relationship,
         &cell_to_equation_map,
         &equation_to_cell_map,
-        &mut (vec![])
+        &mut (vec![0; cells_num]),
     );
-    println!("{:?}", table_minenum);
-    println!("{:?}", table_cell_minenum);
+    // println!("{:?}", table_minenum);
+    // println!("{:?}", table_cell_minenum);
     while table_minenum[1][0] == 0 {
         table_minenum[0].remove(0);
         table_minenum[1].remove(0);
         table_cell_minenum.remove(0);
-        // println!("{:?}", table_minenum);
-        // println!("{:?}", table_cell_minenum);
         if table_cell_minenum.is_empty() {
             flag_legal_board = false;
-            break
+            break;
         }
     }
     if flag_legal_board {
@@ -883,6 +860,7 @@ pub fn cal_table_minenum_enum(
     matrix_b: &Vec<i32>,
     combination_relationship: &Vec<Vec<usize>>,
 ) -> Result<([Vec<usize>; 2], Vec<Vec<usize>>), usize> {
+    // 拟弃用，用cal_table_minenum_recursion代替
     // 枚举并统计，得到雷数分布表和每格是雷情况数表
     let mut table_minenum: [Vec<usize>; 2] = [vec![], vec![]];
     // 雷数分布表表：记录了每块（不包括内部块）每种总雷数下的是雷总情况数
