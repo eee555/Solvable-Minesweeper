@@ -8,7 +8,7 @@ use std::cmp::{max, min};
 mod utils;
 pub use utils::{
     cal3BV, calOp, enuOneStep, lay_mine_number, layMineOpNumber, refreshBoard, refresh_matrix,
-    refresh_matrixs, unsolvableStructure,
+    refresh_matrixs, unsolvableStructure, combine, cal_table_minenum_recursion,
 };
 mod algorithms;
 pub use algorithms::{

@@ -156,7 +156,7 @@ pub fn cal_possibility(
     // let mut min_max_mine_num = [0, 0];
     for i in 0..block_num {
         let (matrixA_squeeze, matrixx_squeeze, combination_relationship) =
-            combine(matrix_a_s[i].clone(), matrix_x_s[i].clone());
+            combine(&matrix_a_s[i], &matrix_x_s[i]);
         comb_relp_s.push(combination_relationship);
         matrixA_squeeze_s.push(matrixA_squeeze);
         matrixx_squeeze_s.push(matrixx_squeeze);
@@ -372,7 +372,6 @@ pub fn cal_is_op_possibility_cells(
                 } else if board_of_game[m][n] == 12 || board_of_game[m][n] < 10 {
                     continue;
                 } else {
-                    // println!("{:?}", board_of_game_modified);
                     let p;
                     match cal_possibility_onboard(&board_of_game_modified, mine_num) {
                         Ok((ppp, _)) => p = ppp,
@@ -381,8 +380,6 @@ pub fn cal_is_op_possibility_cells(
                             break 'outer;
                         },
                     };
-                    // let (p, _) = cal_possibility_onboard(&board_of_game_modified, mine_num);
-                    // println!("{:?}", 1.0-p[m][n]);
                     poss[cell_id] *= 1.0 - p[m][n];
                     board_of_game_modified[m][n] = 12;
                 }
@@ -434,6 +431,9 @@ pub fn SolveEnumerate(
     // 枚举法判雷引擎
     // 输入的矩阵都是分块好的
     // 只判断哪些不是雷，不判断哪些是雷，不修改输入进来的局面（不帮助标雷）
+    // print!("matrix_xs: {:?}", matrix_xs);
+    // print!("matrix_as: {:?}", matrix_as);
+    // print!("matrix_bs: {:?}", matrix_bs);
     let mut flag = false;
     let mut NotMine = vec![];
     let block_num = matrix_xs.len();
@@ -446,11 +446,15 @@ pub fn SolveEnumerate(
     let mut matrixx_squeeze_s: Vec<Vec<(usize, usize)>> = vec![];
     for i in 0..block_num {
         let (matrixA_squeeze, matrixx_squeeze, combination_relationship) =
-            combine(matrix_as[i].clone(), matrix_xs[i].clone());
+            combine(&matrix_as[i], &matrix_xs[i]);
+        // print!("**matrixA_squeeze: {:?}", matrixA_squeeze);
+        // print!("**matrixx_squeeze: {:?}", matrixx_squeeze);
         comb_relp_s.push(combination_relationship);
         matrixA_squeeze_s.push(matrixA_squeeze);
         matrixx_squeeze_s.push(matrixx_squeeze);
     }
+    // print!("77matrixx_squeeze_s: {:?}", matrixx_squeeze_s);
+    // print!("77matrixA_squeeze_s: {:?}", matrixA_squeeze_s);
     for i in 0..block_num {
         let (table_minenum_i, table_cell_minenum_i) = cal_table_minenum_recursion(
             &matrixA_squeeze_s[i],
@@ -464,8 +468,10 @@ pub fn SolveEnumerate(
                     continue 'outer;
                 }
             }
-            for kk in comb_relp_s[i][jj].clone() {
-                NotMine.push(matrixx_squeeze_s[i][kk]);
+            // println!("comb_relp_s: {:?}", comb_relp_s);
+            // println!("matrixx_squeeze_s: {:?}", matrixx_squeeze_s);
+            for kk in &comb_relp_s[i][jj] {
+                NotMine.push(matrix_xs[i][*kk]);
             }
         }
     }
@@ -496,6 +502,7 @@ pub fn isSolvable(Board: &Vec<Vec<i32>>, x0: usize, y0: usize, enuLimit: usize) 
         //若包含不可判雷结构，则不是无猜
         return false;
     }
+    // println!("Board: {:?}", Board);
     let row = Board.len();
     let column = Board[0].len();
     let mut BoardofGame = vec![vec![10; column]; row];
@@ -519,6 +526,7 @@ pub fn isSolvable(Board: &Vec<Vec<i32>>, x0: usize, y0: usize, enuLimit: usize) 
             if !flag {
                 let (mut Matrix_as, mut Matrix_xs, mut Matrix_bs, _, _) =
                     refresh_matrixs(&BoardofGame);
+                // print!("BoardofGame: {:?}", BoardofGame);
                 let ans = SolveEnumerate(
                     &Matrix_as,
                     &Matrix_xs,
@@ -888,8 +896,9 @@ pub fn mark_board(board: &mut Vec<Vec<i32>>) {
     }
 }
 
-pub fn solve_all_notmine(board_: &Vec<Vec<i32>>, enuLimit: usize) ->Vec<(usize, usize)> {
+pub fn solve_all_notmine_on_board(board_: &Vec<Vec<i32>>, enuLimit: usize) ->Vec<(usize, usize)> {
     // 求出所有非雷的位置
+    // 此api在本项目中未用到但写都写了
     let mut board = board_.clone();
     let (mut matrix_a, mut matrix_x, mut matrix_b) = refresh_matrix(&board);
     let ans = SolveDirect(&mut matrix_a, &mut matrix_x, &mut matrix_b, &mut board);
@@ -913,7 +922,28 @@ pub fn solve_all_notmine(board_: &Vec<Vec<i32>>, enuLimit: usize) ->Vec<(usize, 
     not_mine
 }
 
-
+// pub fn solve_all_notmine(matrix_a: Vec<Vec<i32>>, matrix_x: Vec<(usize, usize)>, matrix_b: Vec<i32>, enuLimit: usize) ->Vec<(usize, usize)> {
+    // 依据方程求出所有是雷和非雷的位置
+//     let ans = SolveDirect(&mut matrix_a, &mut matrix_x, &mut matrix_b, &mut board);
+//     let mut not_mine = vec![];
+//     for i in ans.0 {
+//         board[i.0][i.1] = 12;
+//         not_mine.push(i);
+//     }
+//     let (matrix_a, matrix_x, matrix_b) = refresh_matrix(&board);
+//     let ans = SolveMinus(&matrix_a, &matrix_x, &matrix_b, &mut board);
+//     for i in ans.0 {
+//         board[i.0][i.1] = 12;
+//         not_mine.push(i);
+//     }
+//     let (matrix_as, matrix_xs, matrix_bs, _, _) = refresh_matrixs(&board);
+//     let ans = SolveEnumerate(&matrix_as, &matrix_xs, &matrix_bs, &mut board, enuLimit);
+//     for i in ans.0 {
+//         board[i.0][i.1] = 12;
+//         not_mine.push(i);
+//     }
+//     not_mine
+// }
 
 
 

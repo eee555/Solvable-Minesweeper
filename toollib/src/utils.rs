@@ -496,25 +496,30 @@ where
 }
 
 pub fn combine(
-    MatrixA: Vec<Vec<i32>>,
-    Matrixx: Vec<(usize, usize)>,
+    MatrixA: &Vec<Vec<i32>>,
+    Matrixx: &Vec<(usize, usize)>,
 ) -> (Vec<Vec<i32>>, Vec<(usize, usize)>, Vec<Vec<usize>>) {
     // 检查地位完全相同的格子，全部返回。例如[[3,1,2],[0,5],[4],[6]]
     // MatrixA不能为空
     // 并在内部更改矩阵，合并重复的列
-    let mut matrixA_squeeze = MatrixA;
-    let mut matrixx_squeeze = Matrixx;
+    let mut matrixA_squeeze = MatrixA.clone();
+    let mut matrixx_squeeze = Matrixx.clone();
+    let cells_num = matrixx_squeeze.len();
+    // println!("matrixA_squeeze: {:?}", matrixA_squeeze);
+    // println!("matrixx_squeeze: {:?}", matrixx_squeeze);
     let mut pair_cells = vec![];
     let mut del_cells = vec![]; // 由于重复需要最后被删除的列
-    for i in 0..matrixx_squeeze.len() {
+    for i in 0..cells_num {
         pair_cells.push(vec![i]);
-        for j in i + 1..matrixA_squeeze[0].len() {
+        for j in i + 1..cells_num {
             if !matrixA_squeeze.iter().any(|x| x[i] != x[j]) {
                 pair_cells[i].push(j);
                 del_cells.push(j);
             }
         }
     }
+    // println!("del_cells: {:?}", del_cells);
+    // println!("pair_cells: {:?}", pair_cells);
     del_cells.sort_by(|a, b| b.cmp(&a));
     del_cells.dedup();
     for i in del_cells {
@@ -531,6 +536,8 @@ pub fn combine(
             matrixA_squeeze[r][i] *= k;
         }
     }
+    // println!("**matrixA_squeeze: {:?}", matrixA_squeeze);
+    // println!("**matrixx_squeeze: {:?}", matrixx_squeeze);
     (matrixA_squeeze, matrixx_squeeze, pair_cells)
 }
 
@@ -738,6 +745,7 @@ fn cal_table_minenum_recursion_step(
             matrix_b_remain[*cell_i],
             combination_relationship[idx].len() as i32,
         );
+        // println!("combination_relationship = {:?}", combination_relationship);
         let mut lower_limit_i = matrix_b_remain[*cell_i];
         for j in &equation_to_cell_map[*cell_i] {
             if j > &idx {
@@ -751,8 +759,15 @@ fn cal_table_minenum_recursion_step(
             lower_limit = lower_limit_i as usize;
         }
     }
+    // println!("^^^^^lower_limit = {:?}; upper_limit = {:?}", lower_limit, upper_limit);
+    // println!("matrix_b_remain = {:?}", matrix_b_remain);
+    // println!("equation_to_cell_map = {:?}", equation_to_cell_map);
+    // println!("cell_to_equation_map = {:?}", cell_to_equation_map);
+    // println!("mine_vec = {:?}", mine_vec);
+    // println!("idx = {:?}", idx);
 
     for u in lower_limit..upper_limit + 1 {
+        // let b = mine_vec[idx];
         mine_vec[idx] = u;
         if u > 0 {
             for tt in &cell_to_equation_map[idx] {
@@ -772,12 +787,13 @@ fn cal_table_minenum_recursion_step(
             &equation_to_cell_map,
             mine_vec,
         );
-        if !is_end {
-            for tt in &cell_to_equation_map[idx] {
-                matrix_b_remain[*tt] += u as i32;
-            }
-            mine_vec[idx] = 0;
+        for tt in &cell_to_equation_map[idx] {
+            matrix_b_remain[*tt] += u as i32;
         }
+        mine_vec[idx] = 0;
+        // println!("回退idx = {:?}", idx);
+        // println!("回退mine_vec = {:?}", mine_vec);
+        // println!("回退matrix_b_remain = {:?}", matrix_b_remain);
     }
     false
 }
@@ -793,6 +809,7 @@ pub fn cal_table_minenum_recursion(
     // 行数和列数至少为1
     // println!("combination_relationship = {:?}", combination_relationship);
     // println!("matrixx_squeeze = {:?}", matrixx_squeeze);
+    // println!("matrix_b = {:?}", matrix_b);
     // println!("matrixA_squeeze = {:?}", matrixA_squeeze);
     let cells_num = matrixx_squeeze.len();
     if cells_num > 60 {

@@ -453,7 +453,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     scores = {}
     indexes = calBoardIndex(Board)
     BBBV = indexes['3BV']
-    msBoard = ms_toollib.minesweeperBoard(Board)
+    msBoard = ms_toollib.MinesweeperBoard(Board)
     msBoard.step(operationStream)
     scores['RTime'] = '{:.3f}'.format(time)
     scores['3BV'] = str(msBoard.solved3BV) + '/' + str(BBBV)
