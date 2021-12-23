@@ -7,7 +7,7 @@ use ms_toollib::{layMineSolvable_thread, layMineSolvable};
 fn layMineSolvable_thread_works() {
     // 测试多线程筛选法无猜埋雷
     let game_board = layMineSolvable_thread(16, 30, 99, 0, 0, 0, 1000, 100000, 40);
-    print!("{:?}", game_board.0);
+    game_board.0.iter().for_each(|i| println!("{:?}", i));
     print!("{:?}", game_board.1);
 }
 
@@ -15,7 +15,7 @@ fn layMineSolvable_thread_works() {
 fn layMineSolvable_works() {
     // 测试筛选法无猜埋雷
     let game_board = layMineSolvable(8, 8, 20, 0, 0, 0, 1000, 100000, 40);
-    print!("{:?}", game_board.0);
+    game_board.0.iter().for_each(|i| println!("{:?}", i));
     print!("{:?}", game_board.1);
 }
 
