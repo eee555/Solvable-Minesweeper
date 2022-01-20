@@ -38,6 +38,8 @@ Black Cat Minesweeper v2.4.1 is a minesweeper game developed by players who love
 + 使用教程：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
 
 + 其他文档（施工中）：[https://eee555.github.io](https://eee555.github.io)
++ 算法工具箱地址：[https://github.com/eee555/ms_toollib](https://github.com/eee555/ms_toollib)
++ 算法工具箱文档：[https://docs.rs/ms_toollib](https://docs.rs/ms_toollib)
 
 ## 安装
 建议在`Windows 10`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
