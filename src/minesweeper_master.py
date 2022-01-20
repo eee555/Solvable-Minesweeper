@@ -423,7 +423,7 @@ def xyisJudgeable(BoardofGame, x, y, EnuLimit=30):
         MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
         BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
         if (x,y) not in NotMine:
-            Matrix_as, Matrix_xs, Matrix_bs, _ = refresh_matrixs(BoardofGame)
+            Matrix_as, Matrix_xs, Matrix_bs, _, _ = refresh_matrixs(BoardofGame)  # result of refresh_matrixs has len of 5
             BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
             if (x,y) not in NotMine:
                 return False
