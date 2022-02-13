@@ -6,6 +6,8 @@ pyuic5 -o ui_defined_parameter.py ui_defined_parameter.ui
 pyuic5 -o ui_mine_num_bar.py ui_mine_num_bar.ui
 for %%i in (*.py) do ( move %%i ../src/ui/%%i )
 
-cd src
+cd ..
+cd assets
 pyrcc5 src_help_pic.qrc -o src_help_pic_rc.py
 cd ..
+move assets\src_help_pic_rc.py src\src_help_pic_rc.py

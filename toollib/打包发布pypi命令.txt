@@ -1,6 +1,0 @@
-pip install maturin
-
-maturin publish
-
-
-姓main的.rs都是测试文件

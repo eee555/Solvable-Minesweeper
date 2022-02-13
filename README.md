@@ -68,32 +68,10 @@ Black Cat Minesweeper v2.4.1 is a minesweeper game developed by players who love
     pip3 install -r requirements.txt # *nix
 ```
 
-*   编译如下四个.ui文件，并将生成的.py文件移动到src/ui/
+*   执行作者给出的init.bat
 ```sh
-    cd uiFiles
-    pyuic5 -o ui_gameSettings.py ui_gs.ui
-    pyuic5 -o ui_gameSettingShortcuts.py ui_gs_shortcuts.ui
-    pyuic5 -o ui_defined_parameter.py ui_defined_parameter.ui
-    pyuic5 -o ui_mine_num_bar.py ui_mine_num_bar.ui
-    cd ..
+    ./init.bat # Windows
 ```
-
-*   编译一个.qrc资源文件，并将生成的.py文件移动到src/
-```sh
-    cd src
-    pyrcc5 src_help_pic.qrc -o src_help_pic_rc.py
-    cd ..
-```
-
-*   用Rust编译扫雷算法工具箱
-```sh
-    cd toollib
-    cargo build --release
-    cd ..
-    cp toollib/target/release/ms_toollib.dll src/ms_toollib.pyd
-```
-
-*   将以往发行版本中的神经网络模型参数文件params.onnx复制、粘贴到main.py同一级目录，即src/
 
 *   运行程序，大功告成了~
 ```sh
