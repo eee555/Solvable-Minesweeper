@@ -5,7 +5,8 @@ from PyQt5.QtGui import QPixmap
 import gameDefinedParameter
 import superGUI, gameAbout, gameSettings, gameHelp, gameTerms, gameScores,\
     gameSettingShortcuts, captureScreen, mine_num_bar
-import minesweeper_master
+import minesweeper_master as mm
+import ms_toollib as ms
 import configparser
 import time
 # import sys
@@ -100,14 +101,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         if self.gameMode == 2 or self.gameMode == 3 or self.gameMode == 6:
             # 根据模式生成局面
-            Board, Parameters = minesweeper_master.layMineSolvable(xx, yy, num, i, j, self.min3BV, self.max3BV,
-                                                                   self.timesLimit, self.enuLimit)
+            Board, Parameters = mm.laymine_solvable(self.min3BV, self.max3BV,
+                                                    self.timesLimit, (xx, yy, num, i, j))
         elif self.gameMode == 0 or self.gameMode == 4 or self.gameMode == 5 or self.gameMode == 7:
-            Board, Parameters = minesweeper_master.layMine(xx, yy, num, i, j, self.min3BV, self.max3BV, self.timesLimit)
+            Board, Parameters = mm.laymine(self.min3BV, self.max3BV,
+                                           self.timesLimit, (xx, yy, num, i, j))
         elif self.gameMode == 1:
-            Board, Parameters = minesweeper_master.layMineOp(xx, yy, num, i, j, self.min3BV, self.max3BV,
-                                                             self.timesLimit)
-        if Parameters[0]:
+            Board, Parameters = mm.laymine_op(self.min3BV, self.max3BV,
+                                              self.timesLimit, (xx, yy, num, i, j))
+        if Parameters:
             # text4 = 'Sucess! 3BV=%d\n尝试次数为%d'%(Parameters[1],Parameters[2])
             # text4 = 'ttt'
             text4 = 'Success!'
@@ -158,25 +160,25 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             if self.gameMode <= 3:
                 return True
             elif self.gameMode == 4 or self.gameMode == 5:
-                self.boardofGame, flagJ = minesweeper_master.isJudgeable(self.boardofGame)
+                self.boardofGame, flagJ = mm.isJudgeable(self.boardofGame)
                 if flagJ:
                     return True
                 else:
-                    self.board, flag = minesweeper_master.enumerateChangeBoard(self.board, self.boardofGame, i, j)
+                    self.board, flag = mm.enumerateChangeBoard(self.board, self.boardofGame, i, j)
                     #上面这个函数，返回True是改图成功，False是改图失败（由于没有多余的空位等）
                     return not flag
             else:
-                self.board, flag = minesweeper_master.enumerateChangeBoard(self.board, self.boardofGame, i, j)
+                self.board, flag = mm.enumerateChangeBoard(self.board, self.boardofGame, i, j)
                 return not flag
         else:
             if self.gameMode <= 2 or self.gameMode >= 5:
                 return False
             else:
-                if minesweeper_master.xyisJudgeable(self.boardofGame, i, j):
+                if mm.xyisJudgeable(self.boardofGame, i, j):
                     return False
                 else:
                     if self.gameMode == 4:
-                        self.boardofGame, flagJ = minesweeper_master.isJudgeable(self.boardofGame)
+                        self.boardofGame, flagJ = mm.isJudgeable(self.boardofGame)
                         if not flagJ:
                             return False
                         else:
@@ -203,7 +205,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                         # 生成的图要保证点一下不能直接获胜，所以在这里埋雷
                         self.layMine(i, j)
                         self.gamestart = True
-                        self.boardofGame = minesweeper_master.refreshBoard(self.board, self.boardofGame, [(i, j)])
+                        self.boardofGame = ms.refresh_board(self.board, self.boardofGame, [(i, j)])
                         # self.DFS(i, j)
                         self.startTime = time.time()
                         self.DFS(i, j)
@@ -469,9 +471,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             Difficulty = 3
         else:
             Difficulty = 4
-        self.scores, self.scoresValue, msBoard = minesweeper_master.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
+        self.scores, self.scoresValue, msBoard = mm.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
                                                       self.operationStream, self.board, Difficulty)
-        if msBoard.solved3BV / minesweeper_master.cal3BV(self.board) * 100 >= self.auto_show_score:
+        if msBoard.solved3BV / mm.cal3BV(self.board) * 100 >= self.auto_show_score:
             self.gameFinished()
             self.showScores()
         else:
@@ -490,12 +492,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             Difficulty = 3
         else:
             Difficulty = 4
-        self.scores, self.scoresValue, msBoard = minesweeper_master.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
+        self.scores, self.scoresValue, msBoard = mm.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
                                                       self.operationStream, self.board, Difficulty)
-        if msBoard.solved3BV / minesweeper_master.cal3BV(self.board) * 100 >= self.auto_show_score:
+        if msBoard.solved3BV / mm.cal3BV(self.board) * 100 >= self.auto_show_score:
             self.gameFinished()
             self.showScores()
-        elif msBoard.solved3BV / minesweeper_master.cal3BV(self.board) * 100 <= self.auto_replay:
+        elif msBoard.solved3BV / mm.cal3BV(self.board) * 100 <= self.auto_replay:
             self.gameRestart()
         else:
             self.gameFinished()
@@ -524,7 +526,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             return
         
     def showMineNumCalPoss(self):
-        ans = minesweeper_master.calPossibility_onboard(self.label.board, self.mineNumShow)
+        ans = ms.cal_possibility_onboard(self.label.board, self.mineNumShow)
         self.label.boardPossibility = ans[0]
         self.label.update()
         
@@ -709,8 +711,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             return
         
         
-        ans = minesweeper_master.calPossibility_onboard(ui.board, 
-                                                      0.20625 if len(ui.board[0]) >= 24 else 0.15625)
+        ans = ms.cal_possibility_onboard(ui.board, 0.20625 if len(ui.board[0]) >= 24 else 0.15625)
         
         
         self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * len(ui.board))
@@ -726,7 +727,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.mineNumShow = ans[1][1]
         
         self.label.board = ui.board
-        ans = minesweeper_master.calPossibility_onboard(ui.board, self.mineNumShow)
+        ans = ms.cal_possibility_onboard(ui.board, self.mineNumShow)
         self.label.boardPossibility = ans[0]
         self.label.paintPossibility = True
         self.showShot = True
@@ -755,7 +756,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.paintPossibility = True
                 self.label.setMouseTracking(True)
                 mineNum = self.mineNum
-                ans = minesweeper_master.calPossibility_onboard(self.boardofGame, mineNum)
+                ans = ms.cal_possibility_onboard(self.boardofGame, mineNum)
                 self.label.boardPossibility = ans[0]
                 # print(self.label.boardPossibility)
                 self.label.update()

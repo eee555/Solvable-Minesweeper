@@ -3,47 +3,69 @@ from random import randint, seed, choice, shuffle, sample
 from itertools import combinations
 import time
 
-import ms_toollib
+import ms_toollib as ms
 import math
 
 OutputEnable = 0
 # seedNum = 60223
+EnuLimit = 40
 
+def choose_3BV(min_3BV, max_3BV, time_limit, params):
+    def choose_3BV_laymine(laymine):
+        t = 0
+        while t < time_limit:
+            ans = laymine(params)
+            if not isinstance(ans, tuple):
+                ans = (ans, True)
+            if min_3BV <= ms.cal3BV(ans[0]) <= max_3BV:
+                return (ans[0], True and ans[1])
+        return (ans[0], False)
+    return choose_3BV_laymine
+    
+# 此处的board，看似是函数，实际由于装饰器的缘故是一个局面的列表
+def laymine_solvable_thread(min_3BV, max_3BV, time_limit, params):
+    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+    def board(pp):
+        return ms.laymine_solvable_thread(*pp)
+    return board
 
-# EnuLimit = 30    #枚举极限
-# 算法方面的工具箱
+def laymine(min_3BV, max_3BV, time_limit, params):
+    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+    def board(pp):
+        return ms.laymine(*pp)
+    return board
 
+def laymine_op(min_3BV, max_3BV, time_limit, params):
+    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+    def board(pp):
+        return ms.laymine_op(*pp)
+    return board
 
-layMineNumber = ms_toollib.py_layMineNumber
-# layMineNumber(Row, Column, MineNum, X0, Y0)
-# 通用标准埋雷引擎
-# 输出为二维的列表
+def laymine_solvable_adjust(min_3BV, max_3BV, time_limit, params):
+    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+    def board(pp):
+        return ms.laymine_solvable_adjust(*pp)
+    return board
 
-layMine = ms_toollib.py_layMine
-# layMine(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6, MaxTimes = 1e6, method = 'filter')
-# 布雷，参数依次是行、列、雷数、起手位置的第几行-1、第几列-1
-# 适用于游戏的埋雷算法。
-# 起手不开空，必不为雷
-# 返回二维列表，0~8代表数字，-1代表雷
-# method = 0筛选算法；1调整算法
+def laymine_solvable_auto(row, column, mine_num, x, y):
+    # 自动选择方式的无猜埋雷
+    ans = ms.laymine_solvable_thread(row, column, mine_num, x, y, int(6400000 / row / column))
+    if ans[1]:
+        return ans
+    else:
+        return ms.laymine_solvable_adjust(row, column, mine_num, x, y)
+    
+def laymine_solvable(min_3BV, max_3BV, time_limit, params):
+    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+    def board(pp):
+        return laymine_solvable_auto(*pp)
+    return board
 
-layMineOpNumber = ms_toollib.py_layMineOpNumber
-# layMineOpNumber(Row, Column, MineNum, X0, Y0)
-# 通用win7埋雷引擎，起手必开空
-# 这个函数用于给刚埋好雷的局面写数字
-# 输出为二维列表
-
-layMineOp = ms_toollib.py_layMineOp
-# layMineOp(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6, MaxTimes = 1e6)
-# 用于游戏埋雷，参数依次是行、列、雷数、起手位置的第几行-1、第几列-1
-# 起手必开空，不校验雷数是否超过空格数
-# 返回二维列表，0~8代表数字，-1代表雷
-
-refreshBoard = ms_toollib.py_refreshBoard # 调用rust比python原生慢一些，也可以用
 def refreshBoard2(Board , BoardofGame, ClickedPoses):
     # 给出点击位置，刷新局面
     # 参数：局面，游戏局面，点击位置，可以同时点多个位置
     # ClickedPoses一定不能是雷，是列表格式
+    # 拟弃用，工具箱里也有
     Row=len(Board)
     Column=len(Board[0])
     while ClickedPoses:
@@ -58,59 +80,44 @@ def refreshBoard2(Board , BoardofGame, ClickedPoses):
                         ClickedPoses.append((m,n))
     return BoardofGame
 
-refreshMatrix = ms_toollib.py_refreshMatrix
-refresh_matrixs = ms_toollib.py_refresh_matrixs
-# refreshMatrix(BoardofGame)
-# BoardofGame必须且肯定是正确标雷的游戏局面，但不需要标全
-# 根据游戏局面生成矩阵
-# 调用基于Rust的工具箱
+# def SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame):
+#     # 考虑只一个方程判雷，比如3个方格，雷数也是正好是3，等等
+#     # 返回MatrixA, Matrixx, Matrixb, BoardofGame, NotMine, flag
+#     # flag=1表明有所动作，比如标雷或发现NotMine
+#     # NotMine存储非雷的位置
+#     # 注意：处理结束后的矩阵可能有重复的行(?)
+#     flag = 0
+#     NotMine = []
+#     MatrixColumn = len(Matrixx)
+#     MatrixRow = len(Matrixb)
+#     for i in range(MatrixRow-1, -1, -1):#第一轮循环，找是雷的位置
+#         if sum(MatrixA[i][:]) == Matrixb[i]:
+#             flag = 1
+#             for k in range(MatrixColumn-1, -1, -1):
+#                 if MatrixA[i][k] == 1:
+#                     m,n = Matrixx[k]
+#                     BoardofGame[m][n] = 11#在游戏局面中标雷
+#                     Matrixx.pop(k)
+#                     for t in range(0,MatrixRow):
+#                         if MatrixA[t][k] == 0:
+#                             MatrixA[t].pop(k)
+#                         else:
+#                             MatrixA[t].pop(k)
+#                             Matrixb[t] -= 1
+#                     MatrixColumn -= 1
+#             MatrixA.pop(i)
+#             Matrixb.pop(i)
+#             MatrixRow -= 1
+#     for i in range(MatrixRow-1, -1, -1):# 第二轮循环，找不是雷的位置
+#         if Matrixb[i]==0:
+#             flag = 1
+#             for k in range(MatrixColumn-1, -1, -1):
+#                 if MatrixA[i][k] == 1 and Matrixx[k] not in NotMine:
+#                     NotMine.append(Matrixx[k])
 
-# SolveDirect = ms_toollib.py_SolveDirect
-# SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
-# 考虑只一个方程判雷，比如3个方格，雷数也是正好是3，等等
-# 返回MatrixA, Matrixx, Matrixb, BoardofGame, NotMine, flag
-# flag=1表明有所动作，比如标雷或发现NotMine
-# NotMine存储非雷的位置
-# 注意：处理结束后的矩阵可能有重复的行(?)
+#     return BoardofGame, NotMine, flag
 
-def SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame):
-    # 考虑只一个方程判雷，比如3个方格，雷数也是正好是3，等等
-    # 返回MatrixA, Matrixx, Matrixb, BoardofGame, NotMine, flag
-    # flag=1表明有所动作，比如标雷或发现NotMine
-    # NotMine存储非雷的位置
-    # 注意：处理结束后的矩阵可能有重复的行(?)
-    flag = 0
-    NotMine = []
-    MatrixColumn = len(Matrixx)
-    MatrixRow = len(Matrixb)
-    for i in range(MatrixRow-1, -1, -1):#第一轮循环，找是雷的位置
-        if sum(MatrixA[i][:]) == Matrixb[i]:
-            flag = 1
-            for k in range(MatrixColumn-1, -1, -1):
-                if MatrixA[i][k] == 1:
-                    m,n = Matrixx[k]
-                    BoardofGame[m][n] = 11#在游戏局面中标雷
-                    Matrixx.pop(k)
-                    for t in range(0,MatrixRow):
-                        if MatrixA[t][k] == 0:
-                            MatrixA[t].pop(k)
-                        else:
-                            MatrixA[t].pop(k)
-                            Matrixb[t] -= 1
-                    MatrixColumn -= 1
-            MatrixA.pop(i)
-            Matrixb.pop(i)
-            MatrixRow -= 1
-    for i in range(MatrixRow-1, -1, -1):# 第二轮循环，找不是雷的位置
-        if Matrixb[i]==0:
-            flag = 1
-            for k in range(MatrixColumn-1, -1, -1):
-                if MatrixA[i][k] == 1 and Matrixx[k] not in NotMine:
-                    NotMine.append(Matrixx[k])
-
-    return BoardofGame, NotMine, flag
-
-SolveMinus = ms_toollib.py_SolveMinus
+# SolveMinus = ms_toollib.py_SolveMinus
 # SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
 # 用减法和集合的包含关系判雷
 # 返回BoardofGame, NotMine, flag
@@ -119,16 +126,17 @@ SolveMinus = ms_toollib.py_SolveMinus
 # 若方法2发现NotMine，则方法1还可能发现NotMine
 # 注意：处理结束后的矩阵可能有重复的行
 
-SolveEnumerate = ms_toollib.py_SolveEnumerate
+# SolveEnumerate = ms_toollib.py_SolveEnumerate
 # SolveEnumerate(MatrixA, Matrixx, Matrixb, BoardofGame, enuLimit=30)
 #枚举法判雷
 
-calPossibility = ms_toollib.py_cal_possibility
+# calPossibility = ms_toollib.py_cal_possibility
 
-calPossibility_onboard = ms_toollib.py_cal_possibility_onboard
+# calPossibility_onboard = ms_toollib.py_cal_possibility_onboard
 
 def refreshMatrixWithNotMine(MatrixA,Matrixx,Matrixb,NotMine):
     # 用非雷刷新三个矩阵，同时删掉全为0的行
+    # 拟弃用。不合理。
     # MatrixA,Matrixx,Matrixb = refreshMatrixWithNotMine(MatrixA,Matrixx,Matrixb,NotMine)
     MatrixRow = len(Matrixb)
     # MatrixColumn = len(Matrixx)
@@ -149,9 +157,9 @@ def refreshMatrixWithNotMine(MatrixA,Matrixx,Matrixb,NotMine):
     return MatrixA, Matrixx, Matrixb
 
 def Victory(BoardofGame,Board):
-    #判断当前是否获胜
-    #游戏局面中必须没有标错的雷
-    #这个函数不具备普遍意义
+    # 判断当前是否获胜
+    # 游戏局面中必须没有标错的雷
+    # 工具箱里也有，但没暴露
     Row = len(BoardofGame)
     Col = len(BoardofGame[0])
     for i in range(0,Row):
@@ -160,9 +168,8 @@ def Victory(BoardofGame,Board):
                 return 0
     return 1
 
-enuOneStep = ms_toollib.py_enuOneStep
 
-def enumerateChangeBoard(board, BoardofGame, xx, yy, enuLimit=30):
+def enumerateChangeBoard(board, BoardofGame, xx, yy):
     # 等可能给出全部可能情况中(i,j)不为雷的随机一种情况,此时(i,j)一定是未打开状态；
     # 但若超过最大枚举长度，
     # 将返回非随机的某一种可能的情况（暂未实现），若剩余位置数少于雷数，则返回原图
@@ -171,19 +178,22 @@ def enumerateChangeBoard(board, BoardofGame, xx, yy, enuLimit=30):
     # 局限：有时候，重排需要用更多的雷，但内部方格里没有这么多雷，本算法不能从
     #       边缘方格中抽取雷
 
-    MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-    # mineLabel0 = board.copy() # 备份，重排失败后启用
+    # MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
+    # # mineLabel0 = board.copy() # 备份，重排失败后启用
 
-    #先判定是否是必然的雷，即有没有枚举的必要
-    BoardofGame,NotMine,flag= SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
-    if BoardofGame[xx][yy] == 11:
+    # #先判定是否是必然的雷，即有没有枚举的必要
+    # BoardofGame,NotMine,flag= SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
+    # if BoardofGame[xx][yy] == 11:
+    #     return board, False
+    # else:
+    #     MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
+    #     BoardofGame, NotMine,flag= SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
+    #     if BoardofGame[xx][yy] == 11:
+    #         return board, False
+    if ms.is_guess_while_needless(BoardofGame, (xx, yy)) == 4:
         return board, False
-    else:
-        MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-        BoardofGame, NotMine,flag= SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
-        if BoardofGame[xx][yy] == 11:
-            return board, False
-    MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
+    
+    MatrixA, Matrixx, Matrixb, _, _ = ms.refresh_matrix(BoardofGame)
     MatrixColumn = len(Matrixx)
     MatrixRow = len(Matrixb)
 
@@ -237,7 +247,7 @@ def enumerateChangeBoard(board, BoardofGame, xx, yy, enuLimit=30):
             GroupRow.append(temp)
             Groupb.append(Matrixb[temp])
 
-    if len(GroupCol) >= enuLimit:#枚举法的极限
+    if len(GroupCol) >= EnuLimit:#枚举法的极限
         #超过枚举极限时，暂时不能给出可能的解，有待升级
         return board, False
         # newTable, flag = boardFastSol(MatrixA,Matrixx,Matrixb,GroupCol,GroupRow,Id)
@@ -251,7 +261,7 @@ def enumerateChangeBoard(board, BoardofGame, xx, yy, enuLimit=30):
                 TableId.append(GroupCol.index(j))
         # if not AllTable:
         #     return mineLabel0, 0
-        AllTable = enuOneStep(AllTable, TableId, b)
+        AllTable = ms.enuOneStep(AllTable, TableId, b)
 
     for index, item in enumerate(AllTable[:]):
         # 删除重排后原位置还是雷的情况
@@ -333,13 +343,13 @@ def refreshMineLable(board, MineNum0, BoardofGame):
     return board
 
 
-isSolvable = ms_toollib.py_isSolvable
+# isSolvable = ms_toollib.py_isSolvable
 # isSolvable2(Board, X0, Y0, enuLimit)
 # 从指定位置开始扫，判断局面是否无猜
 # 周围一圈都是雷，那么中间是雷不算猜，中间不是雷算猜
 
 
-unsolvableStructure = ms_toollib.py_unsolvableStructure
+# unsolvableStructure = ms_toollib.py_unsolvableStructure
 # unsolvableStructure2(BoardCheck)
 # 用几种模板，检测局面中是否有明显的死猜的结构
 # 不考虑起手位置，因为起手必开空
@@ -377,7 +387,7 @@ def debug_laymine(*args):
 
 
 # layMineSolvable = ms_toollib.layMineSolvable
-layMineSolvable = ms_toollib.py_layMineSolvable_thread
+# layMineSolvable = ms_toollib.py_layMineSolvable_thread
 # layMineSolvable(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6,
 #                 MaxTimes = 1e6, enuLimit = 30)
 # 3BV下限、上限，最大尝试次数，返回是否成功。
@@ -388,46 +398,46 @@ layMineSolvable = ms_toollib.py_layMineSolvable_thread
 # layMineSolvable = debug_laymine
 
 
-calOp = ms_toollib.py_calOp # 输入列表的局面，计算空，0的8连通域数
+# calOp = ms_toollib.py_calOp # 输入列表的局面，计算空，0的8连通域数
 # calOp(Board)
 
-cal3BV = ms_toollib.py_cal3BV
+# cal3BV = ms_toollib.py_cal3BV
 # 计算3BV，接受列表
 # def cal3BV(Board):
 
-def isJudgeable(BoardofGame, EnuLimit=30):
-    # 返回此时是否存在可判的格子，如果还能判返回True
-    # 这个过程中，如果AI见到的游戏局面中有未标的雷，会标雷，但仍然可能有漏标的
-    # flag = 0
-    MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-    BoardofGame, NotMine, flag = SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
-    if not NotMine:
-        MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-        BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
-        if not NotMine:
-            Matrix_as, Matrix_xs, Matrix_bs, _ = refresh_matrixs(BoardofGame)
-            BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
-            if not NotMine:
-                return BoardofGame, False
-    return BoardofGame, True
+# def isJudgeable(BoardofGame, EnuLimit=30):
+#     # 返回此时是否存在可判的格子，如果还能判返回True
+#     # 这个过程中，如果AI见到的游戏局面中有未标的雷，会标雷，但仍然可能有漏标的
+#     # flag = 0
+#     MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
+#     BoardofGame, NotMine, flag = SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
+#     if not NotMine:
+#         MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
+#         BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
+#         if not NotMine:
+#             Matrix_as, Matrix_xs, Matrix_bs, _ = refresh_matrixs(BoardofGame)
+#             BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
+#             if not NotMine:
+#                 return BoardofGame, False
+#     return BoardofGame, True
 
-def xyisJudgeable(BoardofGame, x, y, EnuLimit=30):
-    # (x,y)是否必然安全，如果必然安全，返回True
-    MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
+# def xyisJudgeable(BoardofGame, x, y, EnuLimit=30):
+#     # (x,y)是否必然安全，如果必然安全，返回True
+#     MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
 
-    if (x,y) not in Matrixx:  # 内部的非雷按理无法判出
-        return False
+#     if (x,y) not in Matrixx:  # 内部的非雷按理无法判出
+#         return False
 
-    BoardofGame, NotMine, flag = SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
-    if (x,y) not in NotMine:
-        MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-        BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
-        if (x,y) not in NotMine:
-            Matrix_as, Matrix_xs, Matrix_bs, _, _ = refresh_matrixs(BoardofGame)  # result of refresh_matrixs has len of 5
-            BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
-            if (x,y) not in NotMine:
-                return False
-    return True
+#     BoardofGame, NotMine, flag = SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
+#     if (x,y) not in NotMine:
+#         MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
+#         BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
+#         if (x,y) not in NotMine:
+#             Matrix_as, Matrix_xs, Matrix_bs, _, _ = refresh_matrixs(BoardofGame)  # result of refresh_matrixs has len of 5
+#             BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
+#             if (x,y) not in NotMine:
+#                 return False
+#     return True
 
 def calBoardIndex(Board):
     # 原则上计算局面中所有指标，包括以后新发明的指标
@@ -437,8 +447,8 @@ def calBoardIndex(Board):
     indexes = {}
     # Row = len(Board)
     # Column = len(Board[0])
-    indexes['Ops'] = calOp(Board)
-    indexes['3BV'] = cal3BV(Board)
+    indexes['Ops'] = ms.cal_op(Board)
+    indexes['3BV'] = ms.cal3BV(Board)
     indexes['Isls'] = '还在写'
     return indexes
 
@@ -453,7 +463,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     scores = {}
     indexes = calBoardIndex(Board)
     BBBV = indexes['3BV']
-    msBoard = ms_toollib.MinesweeperBoard(Board)
+    msBoard = ms.MinesweeperBoard(Board)
     msBoard.step(operationStream)
     scores['RTime'] = '{:.3f}'.format(time)
     scores['3BV'] = str(msBoard.solved3BV) + '/' + str(BBBV)
@@ -579,16 +589,15 @@ def main():
     # print(time2 - time1)
 
     # 测试生成无猜局面速度算例
-    num = 0
-    T = 500
-    time1 = time.time()
-    for i in range(T):
-        (bb, Parameters) = layMineSolvable(16, 30, 99, 10, 10, Min3BV=0, Max3BV=1000000, MaxTimes=1000000,
-                             enuLimit=30)
-        num += Parameters[2]
-    time2 = time.time()
-    print(time2 - time1)
-    print(num/T)
+    # num = 0
+    # T = 500
+    # time1 = time.time()
+    # for i in range(T):
+    #     (bb, Parameters) = ms.laymine_solvable_thread(16, 30, 99, 10, 10, 1000000)
+    #     num += Parameters[2]
+    # time2 = time.time()
+    # print(time2 - time1)
+    # print(num/T)
 
 
 
@@ -607,7 +616,9 @@ def main():
     #     mine = minepy.MINE(alpha=0.6, c=15, est="mic_approx")
     #     mine.compute_score(x, y)
     #     print(mine.mic())
-
+    
+    a = laymine_solvable(0, 10, 100000, (8, 8, 10, 0, 0, 100000))
+    print(a)
 
 
 if __name__ == '__main__':
