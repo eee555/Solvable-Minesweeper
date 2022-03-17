@@ -86,6 +86,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.frameShortcut9.activated.connect(self.screenShot)
 
         self.game_state = 'ready'
+        # 用状态机控制局面状态。
+        # 约定：'ready'：预备状态。表示局面完全没有左键点过，可能被右键标雷；刚打开或点脸时进入这种状态。
+        #               此时可以改雷数、改格子大小（ctrl+滚轮）、行数、列数（拖拉边框）。
+        #      'study':研究状态。截图后进入。应该设计第二种方式进入研究状态，没想好。
+        #      'modify':调整状态。'ready'下，拖拉边框时进入，拖拉结束后自动转为'ready'。
+        #      'playing':正在游戏状态、标准模式、不筛选3BV、且没有看概率计算结果，游戏结果是official的。
+        #      'joking':正在游戏状态，游戏中看过概率计算结果，游戏结果不是official的。
+        #      'fail':游戏失败，踩雷了。
+        #      'win':游戏成功。
 
     def outOfBorder(self, i, j):
         if i < 0 or i >= self.row or j < 0 or j >= self.column:
@@ -191,7 +200,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if not self.finish and not self.spaceHold:
             self.label_2.setPixmap(QPixmap(self.pixmapNum[14]))
             self.label_2.setScaledContents(True)
-            self.operationStream.append(('l2', (i, j)))  # 记录鼠标动作
+            self.operationStream.append(('lr', (i, j)))  # 记录鼠标动作
         if self.leftHeld and not self.finish and not self.spaceHold:
             self.leftHeld = False  # 防止双击中的左键弹起被误认为真正的左键弹起
             if not self.outOfBorder(i, j) and not self.finish:
@@ -223,13 +232,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaRightRelease(self, i, j):
         if not self.finish and not self.spaceHold:
-            self.operationStream.append(('r2', (i, j)))  # 记录鼠标动作
+            self.operationStream.append(('rr', (i, j)))  # 记录鼠标动作
             self.label_2.setPixmap(QPixmap(self.pixmapNum[14]))
             self.label_2.setScaledContents(True)
 
     def mineAreaRightPressed(self, i, j):
         if not self.finish and not self.spaceHold:
-            self.operationStream.append(('r1', (i, j)))  # 记录鼠标动作
+            self.operationStream.append(('rc', (i, j)))  # 记录鼠标动作
             self.label_2.setPixmap(QPixmap(self.pixmapNum[15]))
             self.label_2.setScaledContents(True)
             if self.label.board[i][j] == 10:  # 标雷
@@ -246,7 +255,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.leftHeld = True
         self.oldCell = (i, j)
         if not self.finish and not self.spaceHold:
-            self.operationStream.append(('l1', (i, j)))  # 记录鼠标动作
+            self.operationStream.append(('lc', (i, j)))  # 记录鼠标动作
             self.label_2.setPixmap(QPixmap(self.pixmapNum[15]))
             self.label_2.setScaledContents(True)
             if self.label.board[i][j] == 10:
@@ -413,7 +422,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # self.label_2.setScaledContents(True)
         self.finish = False
         self.timer.stop()
-        self.label.board = [[10] * self.column for _ in range(self.row)]
+        # self.label.board = [[10] * self.column for _ in range(self.row)]
+        self.label.ms_board = ms.MinesweeperBoard([[0] * self.column for _ in range(self.row)])
         self.label.update()
         self.gamestart = False
         self.label.paintPossibility = False
@@ -494,10 +504,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             Difficulty = 4
         self.scores, self.scoresValue, msBoard = mm.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
                                                       self.operationStream, self.board, Difficulty)
-        if msBoard.solved3BV / mm.cal3BV(self.board) * 100 >= self.auto_show_score:
+        if msBoard.solved3BV / ms.cal3BV(self.board) * 100 >= self.auto_show_score:
             self.gameFinished()
             self.showScores()
-        elif msBoard.solved3BV / mm.cal3BV(self.board) * 100 <= self.auto_replay:
+        elif msBoard.solved3BV / ms.cal3BV(self.board) * 100 <= self.auto_replay:
             self.gameRestart()
         else:
             self.gameFinished()

@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPainter, QColor, QPixmap, QFont
 from PyQt5.QtWidgets import QWidget
+import ms_toollib as ms
 
 class mineLabel(QWidget):
     # 一整个局面的控件，而不是一个格子
@@ -12,48 +13,53 @@ class mineLabel(QWidget):
     leftAndRightRelease = QtCore.pyqtSignal (int, int)
     mouseMove = QtCore.pyqtSignal (int, int)
 
-
-
     def __init__(self, row, column, pixSize):
-        super (mineLabel, self).__init__ ()
+        super (mineLabel, self).__init__()
+        self.ms_board = ms.MinesweeperBoard([[0] * column for _ in range(row)])
         self.leftAndRightClicked = False
         self.paintPossibility = False  # 是否打印概率
-        # self.status = 0  # 0、1、2、3代表没挖开、挖开、标雷、踩到雷的红雷
         self.pixSize = pixSize
-        self.row = row
-        self.column = column
-        self.board = [[10] * column for _ in range(row)]
+        # self.board = [[10] * column for _ in range(row)]
         # 0~8，10代表未打开，11代表标雷，12代表红雷，13代表叉雷，14代表雷，-2代表被按下的阴影
-        self.boardPossibility = [[0.0] * column for _ in range(row)]
+        self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
         self.importCellPic(pixSize)
 
     def mousePressEvent(self, e):  # 重载一下鼠标点击事件
-        xx = e.localPos().x()
-        yy = e.localPos().y()
-        # print('点下位置{}, {}'.format(xx, yy))
-        if e.buttons () == QtCore.Qt.LeftButton | QtCore.Qt.RightButton:
-            self.leftAndRightPressed.emit (yy//self.pixSize, xx//self.pixSize)
+        xx = e.localPos().x() // self.pixSize
+        yy = e.localPos().y() // self.pixSize
+        # xx和yy是反的，列、行
+        if e.buttons() == QtCore.Qt.LeftButton | QtCore.Qt.RightButton:
+            self.ms_board.step(('cc', (yy, xx)))
+            self.leftAndRightPressed.emit (yy, xx)
             self.leftAndRightClicked = True
         else:
             if e.buttons () == QtCore.Qt.LeftButton:
-                self.leftPressed.emit(yy//self.pixSize, xx//self.pixSize)
+                self.ms_board.step(('lc', (yy, xx)))
+                self.leftPressed.emit(yy, xx)
             elif e.buttons () == QtCore.Qt.RightButton:
-                self.rightPressed.emit(yy//self.pixSize, xx//self.pixSize)
+                self.ms_board.step(('rc', (yy, xx)))
+                self.rightPressed.emit(yy, xx)
 
     def mouseReleaseEvent(self, e):
         #每个标签的鼠标事件发射给槽的都是自身的坐标
         #所以获取释放点相对本标签的偏移量，矫正发射的信号
-        xx = e.localPos().x()
-        yy = e.localPos().y()
+        xx = e.localPos().x() // self.pixSize
+        yy = e.localPos().y() // self.pixSize
         # print('抬起位置{}, {}'.format(xx, yy))
         if self.leftAndRightClicked:
-            self.leftAndRightRelease.emit(yy//self.pixSize, xx//self.pixSize)
+            if e.button () == QtCore.Qt.LeftButton:
+                self.ms_board.step(('lr', (yy, xx)))
+            elif e.button () == QtCore.Qt.RightButton:
+                self.ms_board.step(('rr', (yy, xx)))
+            self.leftAndRightRelease.emit(yy, xx)
             self.leftAndRightClicked=False
         else:
             if e.button () == QtCore.Qt.LeftButton:
-                self.leftRelease.emit(yy//self.pixSize, xx//self.pixSize)
+                self.ms_board.step(('lr', (yy, xx)))
+                self.leftRelease.emit(yy, xx)
             elif e.button () == QtCore.Qt.RightButton:
-                self.rightRelease.emit(yy//self.pixSize, xx//self.pixSize)
+                self.ms_board.step(('rr', (yy, xx)))
+                self.rightRelease.emit(yy, xx)
     
     def mouseMoveEvent(self, e):
 
@@ -67,39 +73,40 @@ class mineLabel(QWidget):
         painter = QPainter()
         painter.begin(self)
         painter.setFont(QFont('Roman times',8))
+        game_board = self.ms_board.game_board
         for i in range(0, self.row):
             for j in range(0, self.column):
-                if self.board[i][j] == 10:
+                if game_board[i][j] == 10:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[9]))
                     if self.paintPossibility:
                         painter.setOpacity(self.boardPossibility[i][j])
                         painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[14]))
                         painter.setOpacity(1.0)
-                elif self.board[i][j] <= 0:
+                elif game_board[i][j] <= 0:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[0]))
-                elif self.board[i][j] == 1:
+                elif game_board[i][j] == 1:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[1]))
-                elif self.board[i][j] == 2:
+                elif game_board[i][j] == 2:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[2]))
-                elif self.board[i][j] == 3:
+                elif game_board[i][j] == 3:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[3]))
-                elif self.board[i][j] == 4:
+                elif game_board[i][j] == 4:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[4]))
-                elif self.board[i][j] == 5:
+                elif game_board[i][j] == 5:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[5]))
-                elif self.board[i][j] == 6:
+                elif game_board[i][j] == 6:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[6]))
-                elif self.board[i][j] == 7:
+                elif game_board[i][j] == 7:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[7]))
-                elif self.board[i][j] == 8:
+                elif game_board[i][j] == 8:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[8]))
-                elif self.board[i][j] == 11:
+                elif game_board[i][j] == 11:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[10]))
-                elif self.board[i][j] == 12:
+                elif game_board[i][j] == 12:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[11]))
-                elif self.board[i][j] == 13:
+                elif game_board[i][j] == 13:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[13]))
-                elif self.board[i][j] == 14:
+                elif game_board[i][j] == 14:
                     painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[12]))
         painter.end()
 

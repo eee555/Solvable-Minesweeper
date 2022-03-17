@@ -42,6 +42,7 @@ def laymine_op(min_3BV, max_3BV, time_limit, params):
     return board
 
 def laymine_solvable_adjust(min_3BV, max_3BV, time_limit, params):
+    # 暂时用不了
     @choose_3BV(min_3BV, max_3BV, time_limit, params)
     def board(pp):
         return ms.laymine_solvable_adjust(*pp)
@@ -53,7 +54,9 @@ def laymine_solvable_auto(row, column, mine_num, x, y):
     if ans[1]:
         return ans
     else:
-        return ms.laymine_solvable_adjust(row, column, mine_num, x, y)
+        # return ms.laymine_solvable_adjust(row, column, mine_num, x, y)
+        # 调整法还有bug
+        return ms.laymine_op(row, column, mine_num, x, y)
     
 def laymine_solvable(min_3BV, max_3BV, time_limit, params):
     @choose_3BV(min_3BV, max_3BV, time_limit, params)
@@ -464,7 +467,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     indexes = calBoardIndex(Board)
     BBBV = indexes['3BV']
     msBoard = ms.MinesweeperBoard(Board)
-    msBoard.step(operationStream)
+    msBoard.step_flow(operationStream)
     scores['RTime'] = '{:.3f}'.format(time)
     scores['3BV'] = str(msBoard.solved3BV) + '/' + str(BBBV)
     scores['EstTime'] = '{:.3f}'.format(time) if winflag else '{:.3f}'.format(min(999, time*BBBV/max(msBoard.solved3BV, 0.001)))
