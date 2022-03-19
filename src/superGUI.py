@@ -1,9 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QSize
-import mineLabel as mineLabel
+from mineLabel import mineLabel#, mineLabel_new
 from uiComponents import StatusLabel
 import configparser
 from PyQt5.QtGui import QPalette, QPixmap, QFont, QIcon
+from PyQt5.QtWidgets import QScrollArea
+from PyQt5.QtSvg import QSvgWidget
 
 class Ui_MainWindow(object):
     def __init__(self, MainWindow):
@@ -123,7 +125,7 @@ class Ui_MainWindow(object):
         self.initMineArea()
         self.label_2.leftRelease.connect(self.gameRestart)
         self.MinenumTimeWigdet.mouseReleaseEvent = self.gameRestart
-        
+
         self.label_2.setPixmap(self.pixmapNum[14])
         self.label_2.setScaledContents(True)
         pe = QPalette()
@@ -143,8 +145,8 @@ class Ui_MainWindow(object):
         self.label_info.setPalette(pe)         # 最下面的框
         self.label_info.setFont(QFont("Arial", 20, QFont.Bold))
         self.label_info.setText(str(self.mineNum))
-        
-        
+
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(973, 217)
@@ -479,7 +481,7 @@ class Ui_MainWindow(object):
             w = self.gridLayout.itemAt(i).widget()
             w.setParent(None)
 
-        self.label = mineLabel.mineLabel(self.row, self.column, self.pixSize)
+        self.label = mineLabel(self.row, self.column, self.pixSize)
         self.label.setMinimumSize(QSize(self.pixSize*self.column, self.pixSize*self.row))
         self.label.leftPressed.connect(self.mineAreaLeftPressed)
         self.label.leftRelease.connect(self.mineAreaLeftRelease)
@@ -488,12 +490,28 @@ class Ui_MainWindow(object):
         self.label.rightPressed.connect(self.mineAreaRightPressed)
         self.label.rightRelease.connect(self.mineAreaRightRelease)
         self.label.mouseMove.connect(self.mineMouseMove)
-        
+
         self.mainWindow.keyRelease.connect(self.mineKeyReleaseEvent)
-        
+
         self.label.setObjectName("label")
         self.label.resize(QSize(self.pixSize*self.column, self.pixSize*self.row))
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+
+
+        # self.label = mineLabel_new(self.row, self.column, self.pixSize)
+        # self.label.setObjectName("label")
+        # self.label.resize(QSize(20, 20))
+        # self.svgView = QScrollArea()
+        # # self.svgView.setObjectName("svgView")
+        # # self.svgView.setBackgroundRole(QPalette.Dark)
+        # self.svgView.setWidget(self.label)
+        # self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        # self.label = QSvgWidget(r"F:\GitHub\Solvable-Minesweeper\src\media\github.svg")
+        # # self.label.resize(QSize(200, 20))
+        # self.label.setGeometry(0,0,100,150)
+        # self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+
+
 
     def importLEDPic(self, pixSize):
         # 导入资源，并缩放到希望的尺寸、比例

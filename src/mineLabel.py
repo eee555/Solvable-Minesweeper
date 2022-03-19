@@ -1,7 +1,9 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtSvg
 from PyQt5.QtGui import QPainter, QColor, QPixmap, QFont
 from PyQt5.QtWidgets import QWidget
 import ms_toollib as ms
+from PyQt5.QtSvg import QSvgWidget
+
 
 class mineLabel(QWidget):
     # 一整个局面的控件，而不是一个格子
@@ -15,143 +17,152 @@ class mineLabel(QWidget):
 
     def __init__(self, row, column, pixSize):
         super (mineLabel, self).__init__()
+        self.row = row
+        self.column = column
         self.ms_board = ms.MinesweeperBoard([[0] * column for _ in range(row)])
-        self.leftAndRightClicked = False
         self.paintPossibility = False  # 是否打印概率
         self.pixSize = pixSize
-        # self.board = [[10] * column for _ in range(row)]
-        # 0~8，10代表未打开，11代表标雷，12代表红雷，13代表叉雷，14代表雷，-2代表被按下的阴影
         self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
         self.importCellPic(pixSize)
+        self.resize(QtCore.QSize(pixSize * column, pixSize * row))
+        
+        self.current_x = 0 # 鼠标坐标，和高亮的展示有关
+        self.current_y = 0
 
     def mousePressEvent(self, e):  # 重载一下鼠标点击事件
-        xx = e.localPos().x() // self.pixSize
-        yy = e.localPos().y() // self.pixSize
+        xx = int(e.localPos().x() // self.pixSize)
+        yy = int(e.localPos().y() // self.pixSize)
+        self.current_x = yy
+        self.current_y = xx
+        if yy < 0 or xx < 0 or yy > self.row or xx > self.column:
+            return
         # xx和yy是反的，列、行
         if e.buttons() == QtCore.Qt.LeftButton | QtCore.Qt.RightButton:
-            self.ms_board.step(('cc', (yy, xx)))
+            # self.ms_board.step(('cc', (yy, xx)))
             self.leftAndRightPressed.emit (yy, xx)
-            self.leftAndRightClicked = True
+            # self.leftAndRightClicked = True
         else:
             if e.buttons () == QtCore.Qt.LeftButton:
-                self.ms_board.step(('lc', (yy, xx)))
+                # self.ms_board.step('lc', (yy, xx))
                 self.leftPressed.emit(yy, xx)
             elif e.buttons () == QtCore.Qt.RightButton:
-                self.ms_board.step(('rc', (yy, xx)))
+                # self.ms_board.step('rc', (yy, xx))
                 self.rightPressed.emit(yy, xx)
 
     def mouseReleaseEvent(self, e):
         #每个标签的鼠标事件发射给槽的都是自身的坐标
         #所以获取释放点相对本标签的偏移量，矫正发射的信号
-        xx = e.localPos().x() // self.pixSize
-        yy = e.localPos().y() // self.pixSize
+        xx = int(e.localPos().x() // self.pixSize)
+        yy = int(e.localPos().y() // self.pixSize)
         # print('抬起位置{}, {}'.format(xx, yy))
-        if self.leftAndRightClicked:
-            if e.button () == QtCore.Qt.LeftButton:
-                self.ms_board.step(('lr', (yy, xx)))
-            elif e.button () == QtCore.Qt.RightButton:
-                self.ms_board.step(('rr', (yy, xx)))
-            self.leftAndRightRelease.emit(yy, xx)
-            self.leftAndRightClicked=False
-        else:
-            if e.button () == QtCore.Qt.LeftButton:
-                self.ms_board.step(('lr', (yy, xx)))
-                self.leftRelease.emit(yy, xx)
-            elif e.button () == QtCore.Qt.RightButton:
-                self.ms_board.step(('rr', (yy, xx)))
-                self.rightRelease.emit(yy, xx)
-    
-    def mouseMoveEvent(self, e):
+        if yy < 0 or xx < 0 or yy > self.row or xx > self.column:
+            return
+        if e.button() == QtCore.Qt.LeftButton:
+            # self.ms_board.step('lr', (yy, xx))
+            self.leftRelease.emit(yy, xx)
+        elif e.button () == QtCore.Qt.RightButton:
+            # self.ms_board.step('rr', (yy, xx))
+            self.rightRelease.emit(yy, xx)
+        # if self.leftAndRightClicked:
+        #     if e.button () == QtCore.Qt.LeftButton:
+        #         self.ms_board.step('lr', (yy, xx))
+        #     elif e.button () == QtCore.Qt.RightButton:
+        #         self.ms_board.step('rr', (yy, xx))
+        #     self.leftAndRightRelease.emit(yy, xx)
+        #     self.leftAndRightClicked=False
+        # else:
+        #     if e.button() == QtCore.Qt.LeftButton:
+        #         self.ms_board.step('lr', (yy, xx))
+        #         self.leftRelease.emit(yy, xx)
+        #     elif e.button () == QtCore.Qt.RightButton:
+        #         self.ms_board.step('rr', (yy, xx))
+        #         self.rightRelease.emit(yy, xx)
 
-        xx = e.localPos().x()
-        yy = e.localPos().y()
+    def mouseMoveEvent(self, e):
+        xx = int(e.localPos().x() // self.pixSize)
+        yy = int(e.localPos().y() // self.pixSize)
+        self.current_x = yy
+        self.current_y = xx
+        if yy < 0 or xx < 0 or yy > self.row or xx > self.column:
+            return
         # print('移动位置{}, {}'.format(xx, yy))
-        self.mouseMove.emit (yy//self.pixSize, xx//self.pixSize)
+        self.mouseMove.emit(yy, xx)
 
     def paintEvent(self, event):
         super().paintEvent(event)
+        pix_size = self.pixSize
         painter = QPainter()
         painter.begin(self)
-        painter.setFont(QFont('Roman times',8))
+        # 画游戏局面
         game_board = self.ms_board.game_board
-        for i in range(0, self.row):
-            for j in range(0, self.column):
+        for i in range(self.row):
+            for j in range(self.column):
                 if game_board[i][j] == 10:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[9]))
+                    painter.drawPixmap(j * pix_size, i * pix_size, QPixmap(self.pixmapNum[10]))
                     if self.paintPossibility:
                         painter.setOpacity(self.boardPossibility[i][j])
-                        painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[14]))
+                        painter.drawPixmap(j * pix_size, i * pix_size, QPixmap(self.pixmapNum[14]))
                         painter.setOpacity(1.0)
-                elif game_board[i][j] <= 0:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[0]))
-                elif game_board[i][j] == 1:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[1]))
-                elif game_board[i][j] == 2:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[2]))
-                elif game_board[i][j] == 3:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[3]))
-                elif game_board[i][j] == 4:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[4]))
-                elif game_board[i][j] == 5:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[5]))
-                elif game_board[i][j] == 6:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[6]))
-                elif game_board[i][j] == 7:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[7]))
-                elif game_board[i][j] == 8:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[8]))
-                elif game_board[i][j] == 11:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[10]))
-                elif game_board[i][j] == 12:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[11]))
-                elif game_board[i][j] == 13:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[13]))
-                elif game_board[i][j] == 14:
-                    painter.drawPixmap(j*self.pixSize, i*self.pixSize, QPixmap(self.pixmapNum[12]))
+                else:
+                    painter.drawPixmap(j * pix_size, i * pix_size, QPixmap(self.pixmapNum[game_board[i][j]]))
+        # 画高亮
+        if (self.ms_board.game_board_state == 2 or self.ms_board.game_board_state == 1) and not self.paintPossibility:
+            if self.ms_board.mouse_state == 5 or self.ms_board.mouse_state == 6:
+                for r in range(self.current_x - 1, self.current_x + 2):
+                    for c in range(self.current_y - 1, self.current_y + 2):
+                        if game_board[i][j] == 10:
+                            painter.drawPixmap(c * pix_size, r * pix_size, QPixmap(self.pixmapNum[0]))
+            elif self.ms_board.mouse_state == 4 and game_board[self.current_x][self.current_y] == 10:
+                painter.drawPixmap(self.current_y * pix_size, self.current_x * pix_size, QPixmap(self.pixmapNum[0]))
         painter.end()
 
     def importCellPic(self, pixSize):
         # 导入资源，并缩放到希望的尺寸、比例
-        pixmap0 = QPixmap("media/10.png")
-        pixmap1 = QPixmap("media/11.png")
-        pixmap2 = QPixmap("media/12.png")
-        pixmap3 = QPixmap("media/13.png")
-        pixmap4 = QPixmap("media/14.png")
-        pixmap5 = QPixmap("media/15.png")
-        pixmap6 = QPixmap("media/16.png")
-        pixmap7 = QPixmap("media/17.png")
-        pixmap8 = QPixmap("media/18.png")
-        pixmap9 = QPixmap("media/00.png")
-        pixmap_mine = QPixmap("media/01.png")
-        pixmap10 = QPixmap("media/03.png")
-        pixmap11 = QPixmap("media/02.png")
-        pixmap12 = QPixmap("media/01.png")
-        pixmap13 = QPixmap("media/04.png")
-        pixmap0 = pixmap0.scaled(pixSize, pixSize)
-        pixmap1 = pixmap1.scaled(pixSize, pixSize)
-        pixmap2 = pixmap2.scaled(pixSize, pixSize)
-        pixmap3 = pixmap3.scaled(pixSize, pixSize)
-        pixmap4 = pixmap4.scaled(pixSize, pixSize)
-        pixmap5 = pixmap5.scaled(pixSize, pixSize)
-        pixmap6 = pixmap6.scaled(pixSize, pixSize)
-        pixmap7 = pixmap7.scaled(pixSize, pixSize)
-        pixmap8 = pixmap8.scaled(pixSize, pixSize)
-        pixmap9 = pixmap9.scaled(pixSize, pixSize)
-        pixmap_mine = pixmap_mine.scaled(pixSize, pixSize)
-        pixmap10 = pixmap10.scaled(pixSize, pixSize)
-        pixmap11 = pixmap11.scaled(pixSize, pixSize)
-        pixmap12 = pixmap12.scaled(pixSize, pixSize)
-        pixmap13 = pixmap13.scaled(pixSize, pixSize)
-        self.pixmapNum = {0: pixmap0, 1: pixmap1, 2: pixmap2, 3: pixmap3, 4: pixmap4,
-                     5: pixmap5, 6: pixmap6, 7: pixmap7, 8: pixmap8, 9: pixmap9,
-                     10: pixmap10, 11: pixmap11, 12: pixmap12, 13: pixmap13, 14:pixmap_mine}
-
-
-
-
-    
-            
-
-            
-            
+        celldown = QPixmap("media/celldown.svg").scaled(pixSize, pixSize)
+        cell1 = QPixmap("media/cell1.svg").scaled(pixSize, pixSize)
+        cell2 = QPixmap("media/cell2.svg").scaled(pixSize, pixSize)
+        cell3 = QPixmap("media/cell3.svg").scaled(pixSize, pixSize)
+        cell4 = QPixmap("media/cell4.svg").scaled(pixSize, pixSize)
+        cell5 = QPixmap("media/cell5.svg").scaled(pixSize, pixSize)
+        cell6 = QPixmap("media/cell6.svg").scaled(pixSize, pixSize)
+        cell7 = QPixmap("media/cell7.svg").scaled(pixSize, pixSize)
+        cell8 = QPixmap("media/cell8.svg").scaled(pixSize, pixSize)
+        cellup = QPixmap("media/cellup.svg").scaled(pixSize, pixSize)
+        cellmine = QPixmap("media/cellmine.svg").scaled(pixSize, pixSize) # 白雷
+        cellflag = QPixmap("media/cellflag.svg").scaled(pixSize, pixSize) # 标雷
+        blast = QPixmap("media/blast.svg").scaled(pixSize, pixSize) # 红雷
+        falsemine = QPixmap("media/falsemine.svg").scaled(pixSize, pixSize) # 叉雷
+        self.pixmapNum = {0: celldown, 1: cell1, 2: cell2, 3: cell3, 4: cell4,
+                     5: cell5, 6: cell6, 7: cell7, 8: cell8, 9: None,
+                     10: cellup, 11: cellflag, 12: None, 13: None, 14: falsemine,
+                     15: blast, 16: cellmine}
         
+        
+
+
+# class mineLabel_new(QSvgWidget):
+#     def __init__(self, row, column, pixSize):
+#         super (mineLabel_new, self).__init__()
+#         self.layer = r"F:\GitHub\Solvable-Minesweeper\src\media\github.svg"
+#         imageFile = QtCore.QFile(self.layer)
+#         imageFile.open(QtCore.QIODevice.ReadOnly)
+#         self.imageData = imageFile.readAll()
+#         imageFile.close()
+#         self.renderer().load(self.imageData)
+
+#     def paintEvent(self, event):
+#         super().paintEvent(event)
+#         pixmap0 = QPixmap("media/10.png")
+#         painter = QPainter()
+#         painter.begin(self)
+#         painter.drawPixmap(16,16, pixmap0)
+#         # s = self.renderer()
+#         # s.render(painter, self.layer)
+
+#         painter.end()
+#         # painter.drawPixmap(0, 0, QPixmap(self.pixmapNum[9]))
+
+
+
+
+

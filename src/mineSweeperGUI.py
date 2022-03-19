@@ -24,19 +24,22 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.operationStream = []
         self.gameWinFlag = False
         self.showShot = False # 展示OBR功能的状态
-        self.leftHeld = False
-        self.leftAndRightHeld = False  # 鼠标是否被按下的标志位
-        self.spaceHold = False # 空格是否按下的标志位
-        self.oldCell = (0, 0)  # 鼠标的上个停留位置，用于绘制按下去时的阴影
-        self.boardofGame = [[10] * self.column for _ in range(self.row)]
-        # boardofGame保存了判雷AI所看到（心目中）的局面, 不需要维护，只需要维持传递
-        # 包括0~8，10代表未打开，11代表标雷
-        # 比如，玩家没有标出来的雷，AI会在这上面标出来，但不一定标全
-        self.notMine = []  # 保存AI判出来的雷
+        # self.leftHeld = False
+        # self.leftAndRightHeld = False  # 鼠标是否被按下的标志位
+        # self.spaceHold = False # 空格是否按下的标志位
+        
+        
+        
+        # self.old_cell = (0, 0)  # 鼠标的上个停留位置，用于绘制按下去时的阴影
+        # self.boardofGame = [[10] * self.column for _ in range(self.row)]
+        #### boardofGame保存了判雷AI所看到（心目中）的局面, 不需要维护，只需要维持传递
+        #### 包括0~8，10代表未打开，11代表标雷
+        #### 比如，玩家没有标出来的雷，AI会在这上面标出来，但不一定标全
+        # self.notMine = []  # 保存AI判出来的雷
 
-        self.matrixA = []
-        self.matrixx = []
-        self.matrixb = []
+        # self.matrixA = []
+        # self.matrixx = []
+        # self.matrixb = []
         self.enuLimitAI = 30  # AI采用的最大枚举长度限制
         self.board = [[0] * self.column for _ in range(self.row)]
 
@@ -129,33 +132,30 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             text4 = 'Failure!'
             self.label_info.setText(text4)
 
-        for r in range(0, xx):
-            for c in range(0, yy):
-                # self.mineLabel[r][c].num = Board[r][c]
-                self.board[r][c] = Board[r][c]
+        self.label.ms_board.board = Board
 
     def timeCount(self):  # 定时器改时间
         self.time += 1
         self.showTime(self.time)
 
-    def DFS(self, i, j):
-        # 改label.board 和 boardofGame
-        # board[i][j]一定要没有打开的状态，一定不能是雷
-        cellToOpen = [(i, j)]
-        while cellToOpen:
-            x, y = cellToOpen.pop()
-            if self.label.board[x][y] == 10 or self.label.board[x][y] == -2:
-                self.label.board[x][y] = self.board[x][y]
-                self.boardofGame[x][y] = self.board[x][y]
-                if not self.timer.isActive():
-                    self.timer.start()
-                if self.board[x][y] == 0:
-                    for r in range(x - 1, x + 2):
-                        for c in range(y - 1, y + 2):
-                            if not self.outOfBorder(r, c) and (self.label.board[x][y] == 10 or self.label.board[x][y] == -2) == 0:
-                                cellToOpen.append((r, c))
-        if self.isGameFinished():
-            self.gameWin()
+    # def DFS(self, i, j):
+    #     # 改label.board 和 boardofGame
+    #     # board[i][j]一定要没有打开的状态，一定不能是雷
+    #     cellToOpen = [(i, j)]
+    #     while cellToOpen:
+    #         x, y = cellToOpen.pop()
+    #         if self.label.board[x][y] == 10 or self.label.board[x][y] == -2:
+    #             self.label.board[x][y] = self.board[x][y]
+    #             self.boardofGame[x][y] = self.board[x][y]
+    #             if not self.timer.isActive():
+    #                 self.timer.start()
+    #             if self.board[x][y] == 0:
+    #                 for r in range(x - 1, x + 2):
+    #                     for c in range(y - 1, y + 2):
+    #                         if not self.outOfBorder(r, c) and (self.label.board[x][y] == 10 or self.label.board[x][y] == -2) == 0:
+    #                             cellToOpen.append((r, c))
+    #     if self.isGameFinished():
+    #         self.gameWin()
 
     def ai(self, i, j):
         # 0，1，2，3，4，5，6，7代表：标准、win7、
@@ -197,38 +197,53 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # print(self.boardofGame)
 
     def mineAreaLeftRelease(self, i, j):
-        if not self.finish and not self.spaceHold:
-            self.label_2.setPixmap(QPixmap(self.pixmapNum[14]))
-            self.label_2.setScaledContents(True)
-            self.operationStream.append(('lr', (i, j)))  # 记录鼠标动作
-        if self.leftHeld and not self.finish and not self.spaceHold:
-            self.leftHeld = False  # 防止双击中的左键弹起被误认为真正的左键弹起
-            if not self.outOfBorder(i, j) and not self.finish:
-                # 鼠标按住并移出局面时，索引会越界
-                if self.label.board[i][j] == -2 or self.label.board[i][j] == 10:
-                    self.label.board[i][j] == 10
-                    # self.mineLabel[i][j].setPixmap(self.pixmapNum[9]) # 把格子恢复成没打开的样子
+        if self.game_state == 'ready':
+            self.layMine(i, j)
+            self.game_state = 'playing'
+            self.operationStream.append(('lr', (i, j)))
+            self.label.ms_board.step('lr', (i, j))
+            self.label.update()
+        elif self.game_state == 'playing' or self.game_state == 'joking':
+            self.operationStream.append(('lr', (i, j)))
+            self.label.ms_board.step('lr', (i, j))
+            self.label.update()
+        # print(222)
+        # mm.print2(self.label.ms_board.game_board)
+        # print(333)
+        # mm.print2(self.label.ms_board.board)
+        
+        # if not self.finish and not self.spaceHold:
+        #     self.label_2.setPixmap(QPixmap(self.pixmapNum[14]))
+        #     self.label_2.setScaledContents(True)
+        #     self.operationStream.append(('lr', (i, j)))  # 记录鼠标动作
+        # if self.leftHeld and not self.finish and not self.spaceHold:
+        #     self.leftHeld = False  # 防止双击中的左键弹起被误认为真正的左键弹起
+        #     if not self.outOfBorder(i, j) and not self.finish:
+        #         # 鼠标按住并移出局面时，索引会越界
+        #         if self.label.board[i][j] == -2 or self.label.board[i][j] == 10:
+        #             self.label.board[i][j] == 10
+        #             # self.mineLabel[i][j].setPixmap(self.pixmapNum[9]) # 把格子恢复成没打开的样子
 
-                    if not self.gamestart:
-                        self.operationStream = self.operationStream[-2:] # 初始化并记录鼠标动作
-                        # 生成的图要保证点一下不能直接获胜，所以在这里埋雷
-                        self.layMine(i, j)
-                        self.gamestart = True
-                        self.boardofGame = ms.refresh_board(self.board, self.boardofGame, [(i, j)])
-                        # self.DFS(i, j)
-                        self.startTime = time.time()
-                        self.DFS(i, j)
+        #             if not self.gamestart:
+        #                 self.operationStream = self.operationStream[-2:] # 初始化并记录鼠标动作
+        #                 # 生成的图要保证点一下不能直接获胜，所以在这里埋雷
+        #                 self.layMine(i, j)
+        #                 self.gamestart = True
+        #                 self.boardofGame = ms.refresh_board(self.board, self.boardofGame, [(i, j)])
+        #                 # self.DFS(i, j)
+        #                 self.startTime = time.time()
+        #                 self.DFS(i, j)
 
-                    else:
-                        failflag = self.ai(i, j)
-                        if not failflag:
-                            self.DFS(i, j)
-                        else:
-                            self.label.board[i][j] = 12
-                            self.gameFailed()
-                    if self.isGameFinished():
-                        self.gameWin()
-                self.label.update()
+        #             else:
+        #                 failflag = self.ai(i, j)
+        #                 if not failflag:
+        #                     self.DFS(i, j)
+        #                 else:
+        #                     self.label.board[i][j] = 12
+        #                     self.gameFailed()
+        #             if self.isGameFinished():
+        #                 self.gameWin()
+        #         self.label.update()
 
     def mineAreaRightRelease(self, i, j):
         if not self.finish and not self.spaceHold:
@@ -252,15 +267,16 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.update()
 
     def mineAreaLeftPressed(self, i, j):
-        self.leftHeld = True
-        self.oldCell = (i, j)
-        if not self.finish and not self.spaceHold:
+        # self.leftHeld = True
+        # self.oldCell = (i, j)
+        if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
             self.operationStream.append(('lc', (i, j)))  # 记录鼠标动作
-            self.label_2.setPixmap(QPixmap(self.pixmapNum[15]))
-            self.label_2.setScaledContents(True)
-            if self.label.board[i][j] == 10:
-                self.label.board[i][j] = -2  # -2是指，局面中，由于双击的高亮，导致看起来像0的格子
-                self.label.update()
+            self.label.ms_board.step('lc', (i, j))
+            # self.label_2.setPixmap(QPixmap(self.pixmapNum[15]))
+            # self.label_2.setScaledContents(True)
+            # if self.label.board[i][j] == 10:
+            #     self.label.board[i][j] = -2  # -2是指，局面中，由于双击的高亮，导致看起来像0的格子
+            self.label.update()
 
     def mineAreaLeftAndRightPressed(self, i, j):
         self.leftAndRightHeld = True
@@ -340,46 +356,46 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineMouseMove(self, i, j):
         # 按住空格后的鼠标移动事件，与概率的显示有关
-        if self.spaceHold:
+        if self.game_state == 'show':
             text4 = '{:.3f}'.format(max(0, self.label.boardPossibility[i][j]))
             self.label_info.setText(text4)
             return
         # 正常情况的鼠标移动事件，与高亮的显示有关
-        if not self.finish:
-            if not self.outOfBorder(i, j):
-                if (i, j) != self.oldCell and (self.leftAndRightHeld or self.leftHeld):
-                    ii, jj = self.oldCell
-                    self.oldCell = (i, j)
-                    if self.leftAndRightHeld:
-                        for r in range(ii - 1, ii + 2):
-                            for c in range(jj - 1, jj + 2):
-                                if not self.outOfBorder(r, c):
-                                    if self.label.board[r][c] == -2:
-                                        # self.mineLabel[r][c].setPixmap(self.pixmapNum[9])
-                                        self.label.board[r][c] = 10
-                        for r in range(i - 1, i + 2):
-                            for c in range(j - 1, j + 2):
-                                if not self.outOfBorder(r, c):
-                                    if self.label.board[r][c] == 10:
-                                        # self.mineLabel[r][c].setPixmap(self.pixmapNum[0])
-                                        self.label.board[r][c] = -2
+        elif self.game_state == 'playing' or self.game_state == 'joking' or self.game_state == 'ready':
+            # if not self.outOfBorder(i, j):
+            #     if (i, j) != self.oldCell and (self.leftAndRightHeld or self.leftHeld):
+            #         ii, jj = self.oldCell
+            #         self.oldCell = (i, j)
+            #         if self.leftAndRightHeld:
+            #             for r in range(ii - 1, ii + 2):
+            #                 for c in range(jj - 1, jj + 2):
+            #                     if not self.outOfBorder(r, c):
+            #                         if self.label.board[r][c] == -2:
+            #                             # self.mineLabel[r][c].setPixmap(self.pixmapNum[9])
+            #                             self.label.board[r][c] = 10
+            #             for r in range(i - 1, i + 2):
+            #                 for c in range(j - 1, j + 2):
+            #                     if not self.outOfBorder(r, c):
+            #                         if self.label.board[r][c] == 10:
+            #                             # self.mineLabel[r][c].setPixmap(self.pixmapNum[0])
+            #                             self.label.board[r][c] = -2
 
-                    elif self.leftHeld:
-                        if self.label.board[i][j] == 10:
-                            self.label.board[i][j] = -2
-                        if self.label.board[ii][jj] == -2:
-                            self.label.board[ii][jj] = 10
-            elif self.leftAndRightHeld or self.leftHeld:
-                ii, jj = self.oldCell
-                if self.leftAndRightHeld:
-                    for r in range(ii - 1, ii + 2):
-                        for c in range(jj - 1, jj + 2):
-                            if not self.outOfBorder(r, c):
-                                if self.label.board[r][c] == -2:
-                                    self.label.board[r][c] = 10
-                elif self.leftHeld:
-                    if self.label.board[ii][jj] == -2:
-                        self.label.board[ii][jj] = 10
+            #         elif self.leftHeld:
+            #             if self.label.board[i][j] == 10:
+            #                 self.label.board[i][j] = -2
+            #             if self.label.board[ii][jj] == -2:
+            #                 self.label.board[ii][jj] = 10
+            # elif self.leftAndRightHeld or self.leftHeld:
+            #     ii, jj = self.oldCell
+            #     if self.leftAndRightHeld:
+            #         for r in range(ii - 1, ii + 2):
+            #             for c in range(jj - 1, jj + 2):
+            #                 if not self.outOfBorder(r, c):
+            #                     if self.label.board[r][c] == -2:
+            #                         self.label.board[r][c] = 10
+            #     elif self.leftHeld:
+            #         if self.label.board[ii][jj] == -2:
+            #             self.label.board[ii][jj] = 10
             self.label.update()
 
     def gameStart(self):  # 画界面，但是不埋雷
@@ -397,9 +413,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.showShot = False
         self.mainWindow.setMinimumSize(0, 0)
         self.mainWindow.resize(0, 0)
-        self.board = [[0] * self.column for _ in range(self.row)]
+        # self.board = [[0] * self.column for _ in range(self.row)]
         self.operationStream = []  # 记录整局的鼠标操作流，格式为[('l1',(x,y)),('r1',(x,y)),('c2',(x,y))]
-        self.boardofGame = [[10] * self.column for _ in range(self.row)]
+        # self.boardofGame = [[10] * self.column for _ in range(self.row)]
+       
         self.label.paintPossibility = False
         self.label.setMouseTracking(False)
         
