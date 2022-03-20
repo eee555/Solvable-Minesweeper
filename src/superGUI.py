@@ -439,6 +439,7 @@ class Ui_MainWindow(object):
         self.frameShortcut7 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_6), MainWindow)
         self.frameShortcut4 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F2), MainWindow)
         self.frameShortcut8 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Space), MainWindow)
+        self.frameShortcut8.setAutoRepeat(False)
         self.frameShortcut9 = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Space"), MainWindow)
 
         self.retranslateUi(MainWindow)
@@ -515,11 +516,11 @@ class Ui_MainWindow(object):
 
     def importLEDPic(self, pixSize):
         # 导入资源，并缩放到希望的尺寸、比例
-        pixmap14 = QPixmap("media/f0.png")
-        pixmap15 = QPixmap("media/f1.png")
-        pixmap16 = QPixmap("media/f2.png")
-        pixmap17 = QPixmap("media/f3.png")
-        pixmap18 = QPixmap("media/f4.png")
+        pixmap14 = QPixmap("media/smileface.svg")
+        pixmap15 = QPixmap("media/clickface.svg")
+        pixmap16 = QPixmap("media/lostface.svg")
+        pixmap17 = QPixmap("media/winface.svg")
+        pixmap18 = QPixmap("media/smilefacedown.svg")
         pixmap14 = pixmap14.scaled(pixSize * 1.5, pixSize * 1.5)
         pixmap15 = pixmap15.scaled(pixSize * 1.5, pixSize * 1.5)
         pixmap16 = pixmap16.scaled(pixSize * 1.5, pixSize * 1.5)

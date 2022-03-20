@@ -152,8 +152,8 @@ class StatusLabel (QtWidgets.QLabel):
         self.setFrameShadow (QtWidgets.QFrame.Raised)
         self.setLineWidth(1)
         self.setAlignment (QtCore.Qt.AlignCenter)
-        self.pixmap1 = QPixmap("media/f4.png")
-        self.pixmap2 = QPixmap("media/f0.png")
+        self.pixmap1 = QPixmap("media/smilefacedown.svg")
+        self.pixmap2 = QPixmap("media/smileface.svg")
         self.reloadFace(self.pixSize)
 
     def reloadFace(self, pixSize):

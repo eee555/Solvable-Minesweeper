@@ -149,7 +149,7 @@ class Ui_Form(QtWidgets.QDialog):
         points = []
         for i in range(n):
             angle_s = angle_0 + i * 6.2831853 / n
-            angle_t = angle_0 + (i + 1) * 6.2831853 / n
+            # angle_t = angle_0 + (i + 1) * 6.2831853 / n
 
             x_s = int(x + r * math.cos(angle_s))
             y_s = int(y - r * math.sin(angle_s))
