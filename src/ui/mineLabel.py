@@ -5,7 +5,7 @@ import ms_toollib as ms
 # from PyQt5.QtSvg import QSvgWidget
 
 
-class mineLabel(QWidget):
+class mineLabel(QtWidgets.QLabel):
     # 一整个局面的控件，而不是一个格子
     leftRelease = QtCore.pyqtSignal (int, int)  # 定义信号
     rightRelease = QtCore.pyqtSignal (int, int)
@@ -14,20 +14,29 @@ class mineLabel(QWidget):
     leftAndRightPressed = QtCore.pyqtSignal (int, int)
     leftAndRightRelease = QtCore.pyqtSignal (int, int)
     mouseMove = QtCore.pyqtSignal (int, int)
+    mousewheelEvent = QtCore.pyqtSignal (int)
+    row = 0
+    column = 0
 
-    def __init__(self, row, column, pixSize):
-        super (mineLabel, self).__init__()
-        self.row = row
-        self.column = column
-        self.ms_board = ms.MinesweeperBoard([[0] * column for _ in range(row)])
-        self.paintPossibility = False  # 是否打印概率
-        self.pixSize = pixSize
-        self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
-        self.importCellPic(pixSize)
-        self.resize(QtCore.QSize(pixSize * column, pixSize * row))
+    def __init__(self, parent):
+        super (mineLabel, self).__init__ (parent)
+        self.resize(QtCore.QSize(50, 50))
+        # self.setFrameShape(QtWidgets.QFrame.Panel)
+        # self.setFrameShadow(QtWidgets.QFrame.Sunken)
+        # self.setLineWidth(4)
         
-        self.current_x = row # 鼠标坐标，和高亮的展示有关
-        self.current_y = column
+    def set_rcp(self, row, column, pixSize):
+        self.pixSize = pixSize
+        self.paintPossibility = False  # 是否打印概率
+        if (self.row, self.column) != (row, column):
+            self.row = row
+            self.column = column
+            self.ms_board = ms.MinesweeperBoard([[0] * self.column for _ in range(self.row)])
+            self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
+        self.importCellPic(self.pixSize)
+        self.resize(QtCore.QSize(self.pixSize * self.column + 8, self.pixSize * self.row + 8))
+        self.current_x = self.row # 鼠标坐标，和高亮的展示有关
+        self.current_y = self.column
 
     def mousePressEvent(self, e):  # 重载一下鼠标点击事件
         xx = int(e.localPos().x() // self.pixSize)
@@ -76,6 +85,12 @@ class mineLabel(QWidget):
             self.current_x = yy
             self.current_y = xx
         self.mouseMove.emit(yy, xx)
+        
+    def wheelEvent(self, event):
+        # 滚轮事件
+        angle=event.angleDelta()
+        angleY=angle.y()
+        self.mousewheelEvent.emit(angleY)
 
     def paintEvent(self, event):
         super().paintEvent(event)
@@ -87,13 +102,13 @@ class mineLabel(QWidget):
         for i in range(self.row):
             for j in range(self.column):
                 if game_board[i][j] == 10:
-                    painter.drawPixmap(j * pix_size, i * pix_size, QPixmap(self.pixmapNum[10]))
+                    painter.drawPixmap(j * pix_size + 4, i * pix_size + 4, QPixmap(self.pixmapNum[10]))
                     if self.paintPossibility:
                         painter.setOpacity(self.boardPossibility[i][j])
-                        painter.drawPixmap(j * pix_size, i * pix_size, QPixmap(self.pixmapNum[100]))
+                        painter.drawPixmap(j * pix_size + 4, i * pix_size + 4, QPixmap(self.pixmapNum[100]))
                         painter.setOpacity(1.0)
                 else:
-                    painter.drawPixmap(j * pix_size, i * pix_size, QPixmap(self.pixmapNum[game_board[i][j]]))
+                    painter.drawPixmap(j * pix_size + 4, i * pix_size + 4, QPixmap(self.pixmapNum[game_board[i][j]]))
         # 画高亮
         if (self.ms_board.game_board_state == 2 or self.ms_board.game_board_state == 1) and\
             not self.paintPossibility and self.current_x < self.row and self.current_y < self.column:
@@ -101,9 +116,9 @@ class mineLabel(QWidget):
                 for r in range(max(self.current_x - 1, 0), min(self.current_x + 2, self.row)):
                     for c in range(max(self.current_y - 1, 0), min(self.current_y + 2, self.column)):
                         if game_board[r][c] == 10:
-                            painter.drawPixmap(c * pix_size, r * pix_size, QPixmap(self.pixmapNum[0]))
+                            painter.drawPixmap(c * pix_size + 4, r * pix_size + 4, QPixmap(self.pixmapNum[0]))
             elif self.ms_board.mouse_state == 4 and game_board[self.current_x][self.current_y] == 10:
-                painter.drawPixmap(self.current_y * pix_size, self.current_x * pix_size, QPixmap(self.pixmapNum[0]))
+                painter.drawPixmap(self.current_y * pix_size + 4, self.current_x * pix_size + 4, QPixmap(self.pixmapNum[0]))
         painter.end()
 
     def importCellPic(self, pixSize):

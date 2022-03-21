@@ -152,14 +152,19 @@ class StatusLabel (QtWidgets.QLabel):
         self.setFrameShadow (QtWidgets.QFrame.Raised)
         self.setLineWidth(1)
         self.setAlignment (QtCore.Qt.AlignCenter)
-        self.pixmap1 = QPixmap("media/smilefacedown.svg")
-        self.pixmap2 = QPixmap("media/smileface.svg")
+        self.pixmap1_svg = QPixmap("media/smilefacedown.svg")
+        self.pixmap2_svg = QPixmap("media/smileface.svg")
         self.reloadFace(self.pixSize)
+        self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
 
     def reloadFace(self, pixSize):
+        # 重新修改脸的大小，叫rescale_face更妥
         self.pixSize = pixSize
-        self.pixmap1 = self.pixmap1.scaled(self.pixSize * 1.5, self.pixSize * 1.5)
-        self.pixmap2 = self.pixmap2.scaled(self.pixSize * 1.5, self.pixSize * 1.5)
+        self.pixmap1 = QPixmap("media/smilefacedown.svg").scaled(self.pixSize * 1.5, self.pixSize * 1.5)
+        self.pixmap2 = QPixmap("media/smileface.svg").scaled(self.pixSize * 1.5, self.pixSize * 1.5)
+        # self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+        self.setMinimumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+        self.setMaximumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
 
     def mousePressEvent(self, e):  ##重载一下鼠标点击事件
         if e.button () == QtCore.Qt.LeftButton:

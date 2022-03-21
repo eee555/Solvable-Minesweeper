@@ -14,7 +14,7 @@ Created on Sat Aug 14 00:34:24 2021
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore
-from uiComponents import RoundQWidget
+from ui.uiComponents import RoundQWidget
 from ui.ui_mine_num_bar import Ui_Form
 
 class ui_Form(Ui_Form):

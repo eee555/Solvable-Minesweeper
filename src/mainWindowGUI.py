@@ -17,7 +17,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def keyReleaseEvent(self, event):
         if event.key() == Qt.Key_Space and not event.isAutoRepeat():
             self.keyRelease.emit('Space')
-            # print(event.isAutoRepeat())
+            
 
 
 

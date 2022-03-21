@@ -150,7 +150,6 @@ gameSetting.ini
 src/picture.png
 src/params.onnx
 toollib/frame.csv
-src/ui/
 src/src_help_pic_rc.py
 
 

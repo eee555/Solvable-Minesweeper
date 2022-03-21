@@ -8,7 +8,7 @@
 
 from PyQt5 import QtGui
 from ui.ui_defined_parameter import Ui_Form
-from uiComponents import RoundQDialog
+from ui.uiComponents import RoundQDialog
 
 class ui_Form(Ui_Form):
     def __init__(self, row, column, num):

@@ -1,7 +1,8 @@
-# from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QCoreApplication
-from PyQt5.QtGui import QPixmap
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QTimer, QCoreApplication, Qt
+from PyQt5.QtGui import QPixmap, QKeySequence
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
+from PyQt5.QtWidgets import QApplication
 import gameDefinedParameter
 import superGUI, gameAbout, gameSettings, gameHelp, gameTerms, gameScores,\
     gameSettingShortcuts, captureScreen, mine_num_bar
@@ -17,6 +18,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.mainWindow = MainWindow
         super(MineSweeperGUI, self).__init__(MainWindow)
         # MineSweeperGUI父类的init中读.ini、读图片、设置字体、局面初始化等
+        
+        
         
         self.finish = False
         self.gamestart = False
@@ -213,6 +216,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label_2.setScaledContents(True)
 
     def mineAreaLeftPressed(self, i, j):
+        # self.adjust()
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
             self.operationStream.append(('lc', (i, j)))  # 记录鼠标动作
             self.label.ms_board.step('lc', (i, j))
@@ -221,6 +225,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             pixmap = QPixmap(self.pixmapNum[15])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
+    # def adjust(self):
+    #     size = self.mainWindow.sizeHint()
+    #     while self.mainWindow.size() != size:
+    #         size = self.mainWindow.sizeHint()
+    #         self.mainWindow.resize(size)
 
     def mineAreaLeftAndRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
@@ -267,7 +276,55 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 正常情况的鼠标移动事件，与高亮的显示有关
         elif self.game_state == 'playing' or self.game_state == 'joking' or self.game_state == 'ready':
             self.label.update()
-
+            
+    def resizeWheel(self, i):
+        # modifiers = QCoreApplication.keyboardModifiers()
+        # print(self.pixSize)
+        if QApplication.keyboardModifiers() == Qt.ControlModifier and self.game_state == 'ready': # 检测是否按ctrl
+            if i > 0:
+                self.pixSize += 1
+                self.label.set_rcp(self.row, self.column, self.pixSize)
+                self.label.importCellPic(self.pixSize)
+                self.reimportLEDPic(self.pixSize)
+                self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+                self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+                self.label_2.reloadFace(self.pixSize)
+                pixmap = QPixmap(self.pixmapNum[14])
+                self.label_2.setPixmap(pixmap)
+                self.label_2.setScaledContents(True)
+                self.showMineNum(self.mineUnFlagedNum)
+                self.showTime(0)
+                # self.label.resize(QtCore.QSize(self.pixSize * self.column + 8, self.pixSize * self.row + 8))
+            elif i < 0:
+                self.pixSize -= 1
+                self.pixSize = max(5, self.pixSize)
+                self.label.set_rcp(self.row, self.column, self.pixSize)
+                self.label.importCellPic(self.pixSize)
+                self.reimportLEDPic(self.pixSize)
+                self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+                self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+                self.label_2.reloadFace(self.pixSize)
+                pixmap = QPixmap(self.pixmapNum[14])
+                self.label_2.setPixmap(pixmap)
+                self.label_2.setScaledContents(True)
+                self.showMineNum(self.mineUnFlagedNum)
+                self.showTime(0)
+                
+                self.timer_ = QTimer()
+                self.timer_.timeout.connect(lambda:self.mainWindow.resize(self.mainWindow.sizeHint()))
+                self.timer_.start(1)
+            
+    def mineNumWheel(self, i):
+        if self.game_state == 'ready':
+            if i > 0:
+                self.mineNum += 1
+                self.mineUnFlagedNum += 1
+                self.showMineNum(self.mineUnFlagedNum)
+            elif i < 0:
+                self.mineNum -= 1
+                self.mineUnFlagedNum -= 1
+                self.showMineNum(self.mineUnFlagedNum)
+                
     def gameStart(self):  # 画界面，但是不埋雷
         self.mineUnFlagedNum = self.mineNum  # 没有标出的雷，显示在左上角
         self.showMineNum(self.mineUnFlagedNum)    # 在左上角画雷数
@@ -277,20 +334,35 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.time = 0
         self.showTime(self.time)
         self.timer.stop()
-        self.initMineArea()
-        self.showShot = False
-        self.mainWindow.setMinimumSize(0, 0)
-        self.mainWindow.resize(0, 0)
         self.operationStream = []  # 记录整局的鼠标操作流，格式例如[('l1',(x,y)),('r1',(x,y)),('c2',(x,y))]
        
         self.label.paintPossibility = False
-        self.label.setMouseTracking(False)
+        # self.label.setMouseTracking(False)
         
         if self.game_state == 'study':
-            self.game_state = 'ready'
             self.num_bar_ui.QWidget.close()
-        else:
-            self.game_state = 'ready'
+            self.label.setMouseTracking(False)
+        elif self.game_state == 'show':
+            self.label.setMouseTracking(False)
+        self.game_state = 'ready'
+        self.label.set_rcp(self.row, self.column, self.pixSize)
+        self.label.importCellPic(self.pixSize)
+        self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        # self.showShot = False
+        # self.label.update()
+        # self.mainWindow.adjustSize()
+        # self.mainWindow.resize(0, 0)
+        # self.label.resize(QtCore.QSize(0, 0))
+        self.label.set_rcp(self.row, self.column, self.pixSize)
+        self.label.importCellPic(self.pixSize)
+        self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        self.label_2.reloadFace(self.pixSize)
+        
+        self.timer_ = QTimer()
+        self.timer_.timeout.connect(lambda:self.mainWindow.resize(self.mainWindow.sizeHint()))
+        self.timer_.start(1)
 
     def gameRestart(self, e = None):  # 画界面，但是不埋雷，改数据而不是重新生成label
         if e:
@@ -499,10 +571,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def setBoard_and_start(self, row, column, mineNum):
         # 把局面设置成(row, column, mineNum)，把3BV的限制设置成min3BV, max3BV
         if (self.row, self.column, self.mineNum) != (row, column, mineNum):
-            for i in range(self.row):
-                self.gridLayout.setRowMinimumHeight(i, 0)
-            for i in range(self.column):
-                self.gridLayout.setColumnMinimumWidth(i, 0)
+            # self.gridLayout.setRowMinimumHeight(0, 0)
+            # self.gridLayout.setColumnMinimumWidth(0, 0)
+            # for i in range(self.row):
+            #     self.gridLayout.setRowMinimumHeight(i, 0)
+            # for i in range(self.column):
+            #     self.gridLayout.setColumnMinimumWidth(i, 0)
             self.row = row
             self.column = column
             self.mineNum = mineNum
@@ -643,8 +717,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.boardPossibility = ans[0]
             # print(self.label.boardPossibility)
             self.label.update()
-
-
 
     def refreshSettingsDefault(self):
         # 刷新游戏设置.ini里默认部分的设置，与当前游戏里一致，
