@@ -364,17 +364,17 @@ def print2(arr, mode = 0):
     if mode == 0:
         for i in arr:
             for j in i:
-                print('%3.d'%j, end='')
+                print('%3.d'%j, end=', ')
             print()
     elif mode == 1:
         for i in arr:
             for j in i:
-                print('%3.d'%j.num, end='')
+                print('%3.d'%j.num, end=', ')
             print()
     elif mode == 2:
         for i in arr:
             for j in i:
-                print('%3.d'%j.status, end='')
+                print('%3.d'%j.status, end=', ')
             print()
 
 def debug_laymine(*args):
@@ -458,7 +458,9 @@ def calBoardIndex(Board):
 def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     # 计算游戏得分，展示用，返回一个字典，都是字符串
     # gameBoard是带数字的
-    # print(operationStream)
+    print('----------------')
+    print(operationStream)
+    print2(Board)
     time = max(time, 1e-4)
     Row = len(Board)
     Column = len(Board[0])
