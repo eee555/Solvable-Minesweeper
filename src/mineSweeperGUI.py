@@ -28,10 +28,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.gameWinFlag = False
         self.showShot = False # 展示OBR功能的状态
         
-        self.enuLimitAI = 30  # AI采用的最大枚举长度限制
-        self.board = [[0] * self.column for _ in range(self.row)]
-
-
+        # self.enuLimitAI = 30  # AI采用的最大枚举长度限制
         self.time = 0
         self.showTime(self.time)
         self.timer = QTimer()
@@ -453,9 +450,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             Difficulty = 3
         else:
             Difficulty = 4
-        self.scores, self.scoresValue, msBoard = mm.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
-                                                      self.operationStream, self.board, Difficulty)
-        if msBoard.solved3BV / ms.cal3BV(self.board) * 100 >= self.auto_show_score:
+        self.scores, self.scoresValue, msBoard = \
+            mm.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
+                         self.operationStream, self.label.ms_board.board, Difficulty)
+        if msBoard.solved3BV / ms.cal3BV(self.label.ms_board.board) * 100 >= self.auto_show_score:
             self.gameFinished()
             self.showScores()
         else:
@@ -480,12 +478,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             Difficulty = 3
         else:
             Difficulty = 4
-        self.scores, self.scoresValue, msBoard = mm.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
-                                                      self.operationStream, self.board, Difficulty)
-        if msBoard.solved3BV / ms.cal3BV(self.board) * 100 >= self.auto_show_score:
+        self.scores, self.scoresValue, msBoard = \
+            mm.calScores(self.gameMode, self.gameWinFlag, time.time() - self.startTime,
+                         self.operationStream, self.label.ms_board.board, Difficulty)
+        if msBoard.solved3BV / ms.cal3BV(self.label.ms_board.board) * 100 >= self.auto_show_score:
             self.gameFinished()
             self.showScores()
-        elif msBoard.solved3BV / ms.cal3BV(self.board) * 100 <= self.auto_replay:
+        elif msBoard.solved3BV / ms.cal3BV(self.label.ms_board.board) * 100 <= self.auto_replay:
             self.gameRestart()
         else:
             self.gameFinished()
