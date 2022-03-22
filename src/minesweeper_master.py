@@ -458,9 +458,9 @@ def calBoardIndex(Board):
 def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     # 计算游戏得分，展示用，返回一个字典，都是字符串
     # gameBoard是带数字的
-    print('----------------')
-    print(operationStream)
-    print2(Board)
+    # print('----------------')
+    # print(operationStream)
+    # print2(Board)
     time = max(time, 1e-4)
     Row = len(Board)
     Column = len(Board[0])

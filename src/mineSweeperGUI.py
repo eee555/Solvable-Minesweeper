@@ -306,8 +306,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.update()
             
     def resizeWheel(self, i):
-        # modifiers = QCoreApplication.keyboardModifiers()
-        # print(self.pixSize)
+        # 按住ctrl滚轮，调整局面大小
         if QApplication.keyboardModifiers() == Qt.ControlModifier and self.game_state == 'ready': # 检测是否按ctrl
             if i > 0:
                 self.pixSize += 1
@@ -341,8 +340,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.timer_ = QTimer()
                 self.timer_.timeout.connect(lambda:self.mainWindow.resize(self.mainWindow.sizeHint()))
                 self.timer_.start(1)
+            self.timer_save_size = QTimer()
+            self.timer_save_size.timeout.connect(self.refreshSettingsDefault)
+            self.timer_save_size.start(3000)
             
     def mineNumWheel(self, i):
+        # 在雷上滚轮，调雷数
         if self.game_state == 'ready':
             if i > 0:
                 self.mineNum += 1
@@ -352,6 +355,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.mineNum -= 1
                 self.mineUnFlagedNum -= 1
                 self.showMineNum(self.mineUnFlagedNum)
+            self.timer_mine_num = QTimer()
+            self.timer_mine_num.timeout.connect(self.refreshSettingsDefault)
+            self.timer_mine_num.start(3000)
                 
     def gameStart(self):  # 画界面，但是不埋雷
         self.mineUnFlagedNum = self.mineNum  # 没有标出的雷，显示在左上角
