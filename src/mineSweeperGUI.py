@@ -130,39 +130,46 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 返回的最后一个值是一个flag，无论是不是雷，都代表是否失败，True为失败
         # 该函数维护boardofGame，具体为标雷
         # （i，j）一定是未打开状态
-        if self.board[i][j] == -1:
-            # MatrixA, Matrixx, Matrixb = refreshMatrix(boardofGame)
-            if self.gameMode <= 3:
-                return True
-            elif self.gameMode == 4 or self.gameMode == 5:
-                self.boardofGame, flagJ = mm.isJudgeable(self.boardofGame)
-                if flagJ:
-                    return True
-                else:
-                    self.board, flag = mm.enumerateChangeBoard(self.board, self.boardofGame, i, j)
-                    #上面这个函数，返回True是改图成功，False是改图失败（由于没有多余的空位等）
-                    return not flag
-            else:
-                self.board, flag = mm.enumerateChangeBoard(self.board, self.boardofGame, i, j)
-                return not flag
-        else:
-            if self.gameMode <= 2 or self.gameMode >= 5:
-                return False
-            else:
-                if mm.xyisJudgeable(self.boardofGame, i, j):
-                    return False
-                else:
-                    if self.gameMode == 4:
-                        self.boardofGame, flagJ = mm.isJudgeable(self.boardofGame)
-                        if not flagJ:
-                            return False
-                        else:
-                            return True
-                    else:
-                        return True
-        # print(self.boardofGame)
+        if self.gameMode == 0 or self.gameMode == 1 or self.gameMode == 2:
+            return
+        elif self.gameMode == 3:
+            if self.label.ms_board.board[i][j] >= 0 and \
+                not ms.is_able_to_solve(self.label.ms_board.game_board, (i, j)):
+                board = self.label.ms_board.board
+                board[i][j] = -1
+                self.label.ms_board.board = board
+            return
+        elif self.gameMode == 4:
+            code = ms.is_guess_while_needless(self.label.ms_board.game_board, (i, j))
+            # mm.print2(self.label.ms_board.game_board)
+            # print(code)
+            if code == 3:
+                board = self.label.ms_board.board
+                board[i][j] = -1
+                self.label.ms_board.board = board
+            elif code == 2:
+                board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
+                                                      self.label.ms_board.game_board, i, j)
+                self.label.ms_board.board = board
+            return
+        elif self.gameMode == 5:
+            code = ms.is_guess_while_needless(self.label.ms_board.game_board, (i, j))
+            if code == 2:
+                board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
+                                                      self.label.ms_board.game_board, i, j)
+                self.label.ms_board.board = board
+            return
+        elif self.gameMode == 6 or self.gameMode == 7:
+            if self.label.ms_board.board[i][j] == -1:
+                board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
+                                                      self.label.ms_board.game_board, i, j)
+                self.label.ms_board.board = board
+            return
+        
 
     def mineAreaLeftRelease(self, i, j):
+        if self.game_state == 'playing' or self.game_state == 'joking':
+            self.ai(i, j)
         if self.game_state == 'ready':
             if i >= self.row or j >= self.column:
                 self.operationStream.append(('lr', (self.row, self.column)))
@@ -182,11 +189,20 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
+            
             if self.label.ms_board.game_board_state == 3:
                 self.gameWin()
             elif self.label.ms_board.game_board_state == 4:
                 self.gameFailed()
             self.label.update()
+            
+        elif self.game_state == 'show':
+            self.operationStream.append(('lr', (self.row, self.column)))
+            self.label.ms_board.step('lr', (self.row, self.column))
+            
+            pixmap = QPixmap(self.pixmapNum[14])
+            self.label_2.setPixmap(pixmap)
+            self.label_2.setScaledContents(True)
             
             
     def mineAreaRightRelease(self, i, j):
@@ -195,6 +211,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board.step('rr', (i, j))
             self.label.update()
                 
+            pixmap = QPixmap(self.pixmapNum[14])
+            self.label_2.setPixmap(pixmap)
+            self.label_2.setScaledContents(True)
+        elif self.game_state == 'show':
+            self.operationStream.append(('rr', (self.row, self.column)))
+            self.label.ms_board.step('rr', (self.row, self.column))
+            
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
@@ -225,11 +248,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             pixmap = QPixmap(self.pixmapNum[15])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
-    # def adjust(self):
-    #     size = self.mainWindow.sizeHint()
-    #     while self.mainWindow.size() != size:
-    #         size = self.mainWindow.sizeHint()
-    #         self.mainWindow.resize(size)
+            
+        elif self.game_state == 'show':
+            self.operationStream.append(('lc', (self.row, self.column)))
+            self.label.ms_board.step('lc', (self.row, self.column))
+            
+            pixmap = QPixmap(self.pixmapNum[15])
+            self.label_2.setPixmap(pixmap)
+            self.label_2.setScaledContents(True)
+            
 
     def mineAreaLeftAndRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
@@ -270,9 +297,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def mineMouseMove(self, i, j):
         # 按住空格后的鼠标移动事件，与概率的显示有关
         if self.game_state == 'show':
-            text4 = '{:.3f}'.format(max(0, self.label.boardPossibility[i][j]))
-            self.label_info.setText(text4)
-            return
+            if i < 0 or j < 0 or i >= self.row or j >= self.column:
+                self.label_info.setText('(是雷的概率)')
+                return
+            else:
+                text4 = '{:.3f}'.format(max(0, self.label.boardPossibility[i][j]))
+                self.label_info.setText(text4)
+                return
         # 正常情况的鼠标移动事件，与高亮的显示有关
         elif self.game_state == 'playing' or self.game_state == 'joking' or self.game_state == 'ready':
             self.label.update()
@@ -349,11 +380,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.importCellPic(self.pixSize)
         self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
         self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-        # self.showShot = False
-        # self.label.update()
-        # self.mainWindow.adjustSize()
-        # self.mainWindow.resize(0, 0)
-        # self.label.resize(QtCore.QSize(0, 0))
+        
         self.label.set_rcp(self.row, self.column, self.pixSize)
         self.label.importCellPic(self.pixSize)
         self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))

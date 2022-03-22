@@ -196,7 +196,7 @@ def enumerateChangeBoard(board, BoardofGame, xx, yy):
     if ms.is_guess_while_needless(BoardofGame, (xx, yy)) == 4:
         return board, False
     
-    MatrixA, Matrixx, Matrixb, _, _ = ms.refresh_matrix(BoardofGame)
+    MatrixA, Matrixx, Matrixb = ms.refresh_matrix(BoardofGame)
     MatrixColumn = len(Matrixx)
     MatrixRow = len(Matrixb)
 
