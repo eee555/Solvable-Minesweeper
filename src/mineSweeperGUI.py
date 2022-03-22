@@ -293,7 +293,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineMouseMove(self, i, j):
         # 按住空格后的鼠标移动事件，与概率的显示有关
-        if self.game_state == 'show':
+        if self.game_state == 'show' or self.game_state == 'study':
             if i < 0 or j < 0 or i >= self.row or j >= self.column:
                 self.label_info.setText('(是雷的概率)')
                 return
@@ -501,7 +501,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         #     ans = minesweeper_master.calPossibility_onboard(self.label.ms_board.game_board, self.mineNum)
         #     self.label.boardPossibility = ans[0]
         #     self.label.update()
-        # self.mineNumShow = n
+        self.mineNumShow = n
         if n >= 0 and n <= 999:
             self.label_11.setPixmap(self.pixmapLEDNum[n//100])
             self.label_12.setPixmap(self.pixmapLEDNum[n//10%10])
@@ -706,7 +706,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
         ans = ms.cal_possibility_onboard(ui.board, 0.20625 if len(ui.board[0]) >= 24 else 0.15625)
         
-        
+        if self.game_state == 'study':
+            self.num_bar_ui.QWidget.close()
         self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * len(ui.board))
         self.num_bar_ui.QWidget.barSetMineNum.connect(self.showMineNum)
         self.num_bar_ui.QWidget.barSetMineNumCalPoss.connect(self.showMineNumCalPoss)
@@ -714,7 +715,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
         self.mainWindow.closeEvent_.connect(self.num_bar_ui.QWidget.close)
         
-        self.num_bar_ui.QWidget.show()
+        self.timer_close_bar = QTimer()
+        self.timer_close_bar.timeout.connect(lambda:self.num_bar_ui.QWidget.show())
+        self.timer_close_bar.start(1)
+        # self.num_bar_ui.QWidget.show()
         
         self.setBoard_and_start(len(ui.board), len(ui.board[0]), ans[1][1])
         self.mineNumShow = ans[1][1]
@@ -723,10 +727,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ans = ms.cal_possibility_onboard(ui.board, self.mineNumShow)
         self.label.boardPossibility = ans[0]
         self.label.paintPossibility = True
-        # self.showShot = True
         self.label.update()
-        # self.finish = True
-        # self.spaceHold = True
         self.label.setMouseTracking(True)
         self.game_state = 'study'    # 局面进入研究模式
         

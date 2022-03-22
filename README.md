@@ -1,14 +1,14 @@
-# Solvable-Minesweeper-v2.4.1
+# Solvable-Minesweeper-v2.4.2
 
-# 黑猫扫雷v2.4.1——包含8种模式的扫雷项目及高性能算法工具箱
+# 黑猫扫雷v2.4.2——包含8种模式的扫雷项目及高性能算法工具箱
 
 [![SolvableMinesweeper](https://img.shields.io/badge/SolvableMinesweeper-v2.2.5-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
 
 ## 简介(Introduction)
 
-黑猫扫雷v2.4.1是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。内部集成了三大判雷引擎+概率计算引擎+光学局面识别（Optical Board Recognition，OBR）引擎，具有全部6种无猜扫雷模式+标准+win7。采用Python/PyQt5及Rust编写，兼顾内存安全与执行速度。不同于Arbiter的专业、Minesweeper X的小巧，黑猫扫雷的开发人员希望制作出一款高度智能的扫雷。外观上它只是一款普通的标准扫雷，但它能任意调大小，能调整窗口的透明度，能够计算局面中每一格是雷的概率，设置能截屏识别计算其他扫雷中每一格是雷的概率。在游戏性方面，弱可猜、强可猜的模式都是独一无二的，也是唯一自带新手教程的扫雷。对于高玩来说，它又是专业的，能够计算3BV/s、STNB、RQP指标并展示。此外，它不会打扰玩家，当玩家不去主动打开时，就不会弹出任何窗口，且任何窗口都可以按下空格键快速关闭。
+黑猫扫雷v2.4.2是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。内部集成了三大判雷引擎+概率计算引擎+光学局面识别（Optical Board Recognition，OBR）引擎，具有全部6种无猜扫雷模式+标准+win7。采用Python/PyQt5及Rust编写，兼顾内存安全与执行速度。不同于Arbiter的专业、Minesweeper X的小巧，黑猫扫雷的开发人员希望制作出一款高度智能的扫雷。外观上它只是一款普通的标准扫雷，但它能通过按住ctrl并滚动滚轮任意调整大小，能调整窗口的透明度，能够计算局面中每一格是雷的概率，设置能截屏识别计算其他扫雷中每一格是雷的概率。在游戏性方面，弱可猜、强可猜的模式都是独一无二的，也是唯一自带新手教程的扫雷。对于高玩来说，它又是专业的，能够计算3BV/s、STNB、RQP指标并展示。此外，它不会打扰玩家，当玩家不去主动打开时，就不会弹出任何窗口，且任何窗口都可以按下空格键快速关闭。
 
-项目架构方面，游戏界面与算法高度分离，自研的工具箱同样开源，通过pip install ms_toollib命令即可安装。
+项目架构方面，游戏界面与算法高度分离，自研的工具箱同样开源，且遵循更为宽松的MIT协议，通过pip install ms_toollib命令即可安装。
 
 目前属于漫长的开发阶段中，约1~3月更新一个版本，欢迎提意见。
 
@@ -52,8 +52,7 @@ Black Cat Minesweeper v2.4.1 is a minesweeper game developed by players who love
 
 ### 从源码安装(不推荐)
 在编译之前，请确保自己拥有：
-*   Python 3.7/Python 3.8（**Python 3.9和3.10会找不到ms_toollib.pyd**，原因不明）
-*   Rust
+*   Python 3.7/Python 3.8
 *   会用Powershell或者其它命令行工具的能力
 
 以下为安装步骤：
@@ -66,11 +65,6 @@ Black Cat Minesweeper v2.4.1 is a minesweeper game developed by players who love
 ```sh
     pip install -r requirements.txt # Windows
     pip3 install -r requirements.txt # *nix
-```
-
-*   执行作者给出的init.bat
-```sh
-    ./init.bat # Windows
 ```
 
 *   运行程序，大功告成了~
@@ -120,3 +114,9 @@ Black Cat Minesweeper v2.4.1 is a minesweeper game developed by players who love
 修复了若干bug。部分优化的ui界面。光学局面识别引擎开始支持自定义局面。
 
 链接：[https://wwe.lanzoui.com/i5Sswsq0uva](https://wwe.lanzoui.com/i5Sswsq0uva)
+
+### 正式版v2.4.2：
+
+软件整体重构。修复了若干bug。ui界面开始采用矢量贴图。游戏开始前，按住ctrl并滚动滚轮可以缩放界面；对雷数滚动滚轮可以调整雷数。预告：即将升级到3.0，从3.0开始，黑猫扫雷将更名为元扫雷（Meta Sweeper）。
+
+链接：[https://wwb.lanzouw.com/i3Bpc01vfsab](https://wwb.lanzouw.com/i3Bpc01vfsab)

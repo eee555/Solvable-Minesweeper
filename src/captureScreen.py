@@ -98,7 +98,7 @@ class CaptureScreen(QDialog):
         s = Struct(str(byteCount) + 'B')
         self.data = s.unpack(bits[0:])
         
-        self.board = ms_toollib.py_OBR_board(self.data, self.height, self.width)
+        self.board = ms_toollib.OBR_board(self.data, self.height, self.width)
         
 
         # print(ms_toollib.py_OBR_board(self.data, self.height, self.width))
