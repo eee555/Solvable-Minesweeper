@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QTimer
 # from mineLabel import mineLabel#, mineLabel_new
 # from uiComponents import StatusLabel
 import configparser
@@ -9,10 +9,12 @@ from PyQt5.QtSvg import QSvgWidget
 from ui.ui_main_board import Ui_MainWindow
 
 class Ui_MainWindow(Ui_MainWindow):
+    minimum_counter = 0 # 最小化展示窗口有关
+    # windowSizeState = 'loose'  # loose or tight
     def __init__(self, MainWindow):
         self.mainWindow = MainWindow
         self.mainWindow.setWindowIcon(QIcon("media/cat.ico"))
-        self.mainWindow.setFixedSize(self.mainWindow.minimumSize())
+        
 
         config = configparser.ConfigParser()
         # gameMode = 0，1，2，3，4，5，6，7代表：
@@ -124,8 +126,8 @@ class Ui_MainWindow(Ui_MainWindow):
         
         self.importLEDPic(self.pixSize) # 导入图片
 
-        # self.mineLabel = []  # 局面
         self.initMineArea()
+        
         
         # self.label_2 = StatusLabel(self.frame_face)
         self.label_2.leftRelease.connect(self.gameRestart)
@@ -153,7 +155,7 @@ class Ui_MainWindow(Ui_MainWindow):
         
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
+        self.minimumWindow()
 
     def initMineArea(self):
 
@@ -263,9 +265,65 @@ class Ui_MainWindow(Ui_MainWindow):
             config.getint('CUSTOM_PRESET_6','timesLimit'),
             config.getint('CUSTOM_PRESET_6','enuLimit'),
             config.getint('CUSTOM_PRESET_6','mineNum')]
+        
+    def minimumWindow(self):
+        # 最小化展示窗口，并固定尺寸
+        # if self.windowSizeState == 'loose':
+        self.label.setFixedSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+            # self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        self.windowSizeState = 'tight'
+        self.timer_ = QTimer()
+        self.timer_.timeout.connect(self.__minimumWindow)
+        self.timer_.start(1)
 
-
-
-
+    def __minimumWindow(self):
+        self.mainWindow.setFixedSize(self.mainWindow.minimumSize())
+        self.minimum_counter += 1
+        if self.minimum_counter >= 100:
+            self.minimum_counter = 0
+            self.timer_.stop()
+            
+    # def minimumWindowLoose(self):
+    #     # 最小化窗口，并放松，使其可以手动拖动放大缩小
+    #     self.minimumWindow()
+    #     self.timer_2 = QTimer()
+    #     self.timer_2.timeout.connect(self.setWindowSizeLoose)
+    #     self.timer_2.setSingleShot(True)
+    #     self.timer_2.start(3000)
+        
+    # # def minimumWindowTight(self):
+    # #     # 最小化窗口，并固定尺寸，不用
+    # #     self.minimumWindow()
+        
+    # def setWindowSizeLoose(self):
+    #     # if self.windowSizeState == 'loose':
+    #     #     return
+    #     self.mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
+    #     self.mainWindow.setMinimumSize(QtCore.QSize(10, 10))
+    #     self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+    #     self.label.setMinimumSize(QtCore.QSize(0, 0))
+    #     self.label.resize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+    #     self.windowSizeState = 'loose'
+        
+    # def setWindowSizeTight(self):
+    #     if self.windowSizeState == 'tight':
+    #         return
+    #     self.label.setFixedSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+    #     # self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+    #     # self.minimumWindow()
+    #     self.windowSizeState = 'tight'
+        # self.timer_2 = QTimer()
+        # self.timer_2.timeout.connect()
+        # self.timer_2.setSingleShot(True)
+        # self.timer_2.start(200)
+        
+    # def loosenWindow(self):
+    #     self.mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
+    #     self.mainWindow.setMinimumSize(QtCore.QSize(10, 10))
+    #     self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+    #     self.label.setMinimumSize(QtCore.QSize(8, 8))
+        
+        
+        
 
 

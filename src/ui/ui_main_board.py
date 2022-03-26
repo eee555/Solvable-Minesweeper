@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(946, 191)
+        MainWindow.resize(946, 205)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -277,6 +277,14 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.action_kuaijiejian.setFont(font)
         self.action_kuaijiejian.setObjectName("action_kuaijiejian")
+        self.actionopen = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.actionopen.setFont(font)
+        self.actionopen.setObjectName("actionopen")
+        self.menu.addAction(self.actionopen)
+        self.menu.addSeparator()
         self.menu.addAction(self.actionnew_game)
         self.menu.addSeparator()
         self.menu.addAction(self.actionchu_ji)
@@ -326,6 +334,8 @@ class Ui_MainWindow(object):
         self.actionrumjc.setShortcut(_translate("MainWindow", "R"))
         self.action_kuaijiejian.setText(_translate("MainWindow", "其它设置"))
         self.action_kuaijiejian.setShortcut(_translate("MainWindow", "Z"))
+        self.actionopen.setText(_translate("MainWindow", "打开"))
+        self.actionopen.setShortcut(_translate("MainWindow", "O"))
 from ui.mineLabel import mineLabel
 from ui.mineNumLabel import mineNumLabel
 from ui.uiComponents import StatusLabel

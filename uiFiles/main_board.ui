@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>946</width>
-    <height>191</height>
+    <height>205</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -531,6 +531,8 @@
     <property name="title">
      <string>游戏</string>
     </property>
+    <addaction name="actionopen"/>
+    <addaction name="separator"/>
     <addaction name="actionnew_game"/>
     <addaction name="separator"/>
     <addaction name="actionchu_ji"/>
@@ -715,6 +717,20 @@
    </property>
    <property name="shortcut">
     <string>Z</string>
+   </property>
+  </action>
+  <action name="actionopen">
+   <property name="text">
+    <string>打开</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>O</string>
    </property>
   </action>
  </widget>

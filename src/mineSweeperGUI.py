@@ -2,10 +2,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer, QCoreApplication, Qt
 from PyQt5.QtGui import QPixmap, QKeySequence
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QFileDialog
 import gameDefinedParameter
 import superGUI, gameAbout, gameSettings, gameHelp, gameTerms, gameScores,\
-    gameSettingShortcuts, captureScreen, mine_num_bar
+    gameSettingShortcuts, captureScreen, mine_num_bar, videoControl
 import minesweeper_master as mm
 import ms_toollib as ms
 import configparser
@@ -21,12 +21,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
         
         
-        self.finish = False
-        self.gamestart = False
+        # self.finish = False
+        # self.gamestart = False
 
         self.operationStream = []
         self.gameWinFlag = False
         self.showShot = False # 展示OBR功能的状态
+        
+        # self.video_time = 0.0 # 录像当前时间
+        # self.video_stop_time = 0.0 # 录像停止时间
+        # self.video_time_step = 0.01 # 录像时间的步长，定时器始终是10毫秒
+        # self.video_playing = False # 录像正在播放
         
         # self.enuLimitAI = 30  # AI采用的最大枚举长度限制
         self.time = 0
@@ -51,6 +56,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actionxis.triggered.connect(self.action_HEvent)
         self.actiongaun_yv.triggered.connect(self.action_AEvent)
         self.actionrumjc.triggered.connect(self.action_JEvent)
+        self.actionopen.triggered.connect(self.action_OpenFile)
 
         config = configparser.ConfigParser()
         config.read('gameSetting.ini')
@@ -176,7 +182,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label_2.setScaledContents(True)
             else:
                 self.layMine(i, j)
-                self.game_state = 'playing'
+                if self.isOfficial():
+                    self.game_state = 'playing'
+                else:
+                    self.game_state = 'joking'
                 self.timer.start()
                 self.startTime = time.time()
             
@@ -337,11 +346,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.showMineNum(self.mineUnFlagedNum)
                 self.showTime(0)
                 
-                self.timer_ = QTimer()
-                self.timer_.timeout.connect(lambda:self.mainWindow.resize(self.mainWindow.sizeHint()))
-                self.timer_.start(1)
+                self.minimumWindow()
             self.timer_save_size = QTimer()
             self.timer_save_size.timeout.connect(self.refreshSettingsDefault)
+            self.timer_save_size.setSingleShot(True)
             self.timer_save_size.start(3000)
             
     def mineNumWheel(self, i):
@@ -357,6 +365,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.showMineNum(self.mineUnFlagedNum)
             self.timer_mine_num = QTimer()
             self.timer_mine_num.timeout.connect(self.refreshSettingsDefault)
+            self.timer_mine_num.setSingleShot(True)
             self.timer_mine_num.start(3000)
                 
     def gameStart(self):  # 画界面，但是不埋雷
@@ -379,20 +388,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         elif self.game_state == 'show':
             self.label.setMouseTracking(False)
         self.game_state = 'ready'
-        self.label.set_rcp(self.row, self.column, self.pixSize)
-        self.label.importCellPic(self.pixSize)
-        self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-        self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        # self.label.set_rcp(self.row, self.column, self.pixSize)
+        # self.label.importCellPic(self.pixSize)
+        # self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        # self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
         
         self.label.set_rcp(self.row, self.column, self.pixSize)
         self.label.importCellPic(self.pixSize)
         self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
         self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        # self.label.setMinimumSize(QtCore.QSize(8, 8))
         self.label_2.reloadFace(self.pixSize)
         
-        self.timer_ = QTimer()
-        self.timer_.timeout.connect(lambda:self.mainWindow.resize(self.mainWindow.sizeHint()))
-        self.timer_.start(1)
+        # self.mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        # self.mainWindow.setMinimumSize(QtCore.QSize(10, 10))
+        self.minimumWindow()
 
     def gameRestart(self, e = None):  # 画界面，但是不埋雷，改数据而不是重新生成label
         if e:
@@ -416,6 +426,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
         self.game_state = 'ready'
+        
+        # self.mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
 
     def gameFinished(self):  # 游戏结束画残局，改状态
         
@@ -603,12 +615,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def setBoard_and_start(self, row, column, mineNum):
         # 把局面设置成(row, column, mineNum)，把3BV的限制设置成min3BV, max3BV
         if (self.row, self.column, self.mineNum) != (row, column, mineNum):
-            # self.gridLayout.setRowMinimumHeight(0, 0)
-            # self.gridLayout.setColumnMinimumWidth(0, 0)
-            # for i in range(self.row):
-            #     self.gridLayout.setRowMinimumHeight(i, 0)
-            # for i in range(self.column):
-            #     self.gridLayout.setColumnMinimumWidth(i, 0)
             self.row = row
             self.column = column
             self.mineNum = mineNum
@@ -717,6 +723,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
         self.timer_close_bar = QTimer()
         self.timer_close_bar.timeout.connect(lambda:self.num_bar_ui.QWidget.show())
+        self.timer_close_bar.setSingleShot(True)
         self.timer_close_bar.start(1)
         # self.num_bar_ui.QWidget.show()
         
@@ -730,6 +737,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.update()
         self.label.setMouseTracking(True)
         self.game_state = 'study'    # 局面进入研究模式
+        
+        self.minimumWindow()
         
 
     def showScores(self):
@@ -765,8 +774,77 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         conf.set("DEFAULT", "minenum", str(self.mineNum))
         conf.write(open('gameSetting.ini', "w"))
 
+    def action_OpenFile(self):
+        if self.game_state == 'display':
+            self.ui_video_control.close()
+        self.game_state = 'display'
+        openfile_name = QFileDialog.\
+            getOpenFileName(self.mainWindow, '打开文件','','All(*.avf *.ms);;Arbiter video(*.avf);;Metasweeper video(*.ms)')
+        video = ms.AvfVideo(openfile_name[0])
+        video.parse_video()
+        video.analyse()
+        video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",
+                                    "mouse_trace", "vision_transfer", "survive_poss"])
+        event_len = video.events_len
+        comments = []
+        for event_id in range(event_len):
+            time = video.events_time(event_id)
+            comment = video.events_comments(event_id)
+            if comment:
+                comments.append((time, [i.split(': ') for i in comment.split('; ')]))
+        self.ui_video_control = videoControl.ui_Form(video.r_time, comments)
+        self.mainWindow.closeEvent_.connect(self.ui_video_control.QWidget.close)
+        self.ui_video_control.pushButton_play.clicked.connect(self.video_play)
+        self.ui_video_control.pushButton_replay.clicked.connect(self.video_replay)
+        self.ui_video_control.label_speed.wEvent.connect(self.video_set_speed)
+        self.ui_video_control.QWidget.show()
+        
+        self.video_time = 0.0 # 录像当前时间
+        self.video_stop_time = video.r_time # 录像停止时间
+        self.video_time_step = 0.01 # 录像时间的步长，定时器始终是10毫秒
+        self.label.paint_cursor = True
+        self.video_playing = True # 录像正在播放
+        self.timer_video = QTimer()
+        self.timer_video.timeout.connect(self.video_playing_step)
+        self.timer_video.start(10)
+        
+        self.label.ms_board = video
+        # self.video_playing
 
+    def video_playing_step(self):
+        self.label.ms_board.time = self.video_time
+        if self.video_time >= self.video_stop_time:
+            self.timer_video.stop()
+            self.video_playing = False
+        self.label.update()
+        self.video_time += self.video_time_step
+        
+    def video_play(self):
+        if self.video_playing:
+            self.video_playing = False
+            self.timer_video.stop()
+        else:
+            self.video_playing = True
+            self.timer_video.start(10)
+            self.video_stop_time = self.label.ms_board.r_time
+        
+    def video_replay(self):
+        self.video_time = 0.0
+        self.timer_video.start(10)
+        self.video_stop_time = self.label.ms_board.r_time
+        
+    def video_set_speed(self, speed):
+        self.video_time_step = speed * 0.01
 
+    def isOfficial(self):
+        # 局面开始时，判断一下局面是设置是否正式。
+        # 极端小的3BV依然是合法的，而网站是否认同不管软件的事。
+        if self.gameMode != 0:
+            return False
+        if self.max3BV < self.row * self.column - self.mineNum:
+            return False
+        return True
+    
 
 
 

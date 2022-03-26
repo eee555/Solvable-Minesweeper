@@ -177,10 +177,46 @@ class StatusLabel (QtWidgets.QLabel):
                 self.leftRelease.emit()
                 
 
-
-# class xxx (QtWidgets.QLabel):
-#     ...
-    
+# 录像播放控制版上的调节速度的标签
+class SpeedLabel(QtWidgets.QLabel):
+    speed_gear_id = 7
+    speed_gear = ['0.01', '0.02', '0.05', '0.1', '0.2', '0.5', '0.8', '1', '1.2',
+                  '1.5', '2', '3', '5', '8', '10', '15', '20']
+    wEvent = QtCore.pyqtSignal(float)
+    def wheelEvent(self, event):
+        angle = event.angleDelta()
+        v = angle.y()
+        if v > 0:
+            self.speed_gear_id += 1
+            if self.speed_gear_id > 16:
+                self.speed_gear_id = 16
+        elif v < 0:
+            self.speed_gear_id -= 1
+            if self.speed_gear_id < 0:
+                self.speed_gear_id = 0
+        text = self.speed_gear[self.speed_gear_id]
+        self.setText(text)
+        self.wEvent.emit(float(text))
+        
+# 录像播放控制版上的调节速度的标签
+class CommentLabel(QtWidgets.QLabel):
+    Release = QtCore.pyqtSignal(int)
+    def __init__(self, parent, text, time_100, middle = True):
+        super(CommentLabel, self).__init__(parent)
+        if not isinstance(text, str):
+            text = "%.2f"%text
+        self.setText(text)
+        self.time_100 = time_100
+        
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.setFont(font)
+        # self.setMinimumSize(QtCore.QSize(height, width))
+        if middle:
+            self.setAlignment(QtCore.Qt.AlignCenter)
+    def mouseReleaseEvent(self, e):
+        self.Release.emit(self.time_100)
     
     
     
