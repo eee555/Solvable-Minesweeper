@@ -1,1 +1,1 @@
-pyinstaller -i cat.ico -w -y --clean --add-data "./media/*;./media" -p src src/main.py
+pyinstaller -i cat.ico -w -y --clean --add-data "./media/*;./media" -p src src/main.py --onefile

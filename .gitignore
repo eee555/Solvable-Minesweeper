@@ -142,7 +142,6 @@ dmypy.json
 
 # -------- Project --------
 *.zip
-*.avf
 gameSetting.ini
 /src/gameSetting.ini
 /src/test*.py
@@ -155,4 +154,4 @@ src/src_help_pic_rc.py
 /uiFiles/media/
 
 *.avf
-src/HI-SCORE Exp_74.71_3BV=227_3BVs=3.03_Wang Jianing.avf
+media/
