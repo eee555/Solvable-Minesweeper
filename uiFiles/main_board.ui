@@ -504,6 +504,9 @@
       <property name="text">
        <string>预留、备用</string>
       </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
      </widget>
     </item>
    </layout>

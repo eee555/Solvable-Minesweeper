@@ -25,7 +25,7 @@ class mineLabel(QtWidgets.QLabel):
         mouse_ = QPolygonF(points)
         self.mouse = QPainterPath()
         self.mouse.addPolygon(mouse_)
-        self.paint_cursor = False
+        self.paint_cursor = False # 是否画光标。不仅控制画光标，还代表了是游戏还是播放录像。
         
     def set_rcp(self, row, column, pixSize): # 重设一下宽、高、大小
         self.pixSize = pixSize
@@ -111,23 +111,28 @@ class mineLabel(QtWidgets.QLabel):
         painter = QPainter()
         game_board = self.ms_board.game_board
         mouse_state = self.ms_board.mouse_state
-        if self.paint_cursor:
+        if self.paint_cursor: # 播放录像
             game_board_state = 1
             (x, y) = self.ms_board.x_y
             current_x = y // 16
             current_y = x // 16
-        else:
+            # poss = self.ms_board.game_board_poss
+        else: # 游戏
             game_board_state = self.ms_board.game_board_state
             current_x = self.current_x
             current_y = self.current_y
+            # poss = self.boardPossibility
         painter.begin(self)
         # 画游戏局面
         for i in range(self.row):
             for j in range(self.column):
                 if game_board[i][j] == 10:
                     painter.drawPixmap(j * pix_size + 4, i * pix_size + 4, QPixmap(self.pixmapNum[10]))
-                    if self.paintPossibility:
-                        painter.setOpacity(self.boardPossibility[i][j])
+                    if self.paintPossibility: # 画概率
+                        if self.paint_cursor:
+                            painter.setOpacity(self.ms_board.game_board_poss[i][j])
+                        else:
+                            painter.setOpacity(self.boardPossibility[i][j])
                         painter.drawPixmap(j * pix_size + 4, i * pix_size + 4, QPixmap(self.pixmapNum[100]))
                         painter.setOpacity(1.0)
                 else:
@@ -144,37 +149,57 @@ class mineLabel(QtWidgets.QLabel):
                             painter.drawPixmap(c * pix_size + 4, r * pix_size + 4, QPixmap(self.pixmapNum[0]))
             elif mouse_state == 4 and game_board[current_x][current_y] == 10:
                 painter.drawPixmap(current_y * pix_size + 4, current_x * pix_size + 4, QPixmap(self.pixmapNum[0]))
-        
+        # 画光标
         if self.paint_cursor:
             painter.translate(x * pix_size / 16, y * pix_size / 16)
             painter.drawPath(self.mouse)
             painter.fillPath(self.mouse,Qt.white)
-        
-        
-        
         painter.end()
 
     def importCellPic(self, pixSize):
-        # 导入资源，并缩放到希望的尺寸、比例
-        celldown = QPixmap("media/celldown.svg").scaled(pixSize, pixSize)
-        cell1 = QPixmap("media/cell1.svg").scaled(pixSize, pixSize)
-        cell2 = QPixmap("media/cell2.svg").scaled(pixSize, pixSize)
-        cell3 = QPixmap("media/cell3.svg").scaled(pixSize, pixSize)
-        cell4 = QPixmap("media/cell4.svg").scaled(pixSize, pixSize)
-        cell5 = QPixmap("media/cell5.svg").scaled(pixSize, pixSize)
-        cell6 = QPixmap("media/cell6.svg").scaled(pixSize, pixSize)
-        cell7 = QPixmap("media/cell7.svg").scaled(pixSize, pixSize)
-        cell8 = QPixmap("media/cell8.svg").scaled(pixSize, pixSize)
-        cellup = QPixmap("media/cellup.svg").scaled(pixSize, pixSize)
-        cellmine = QPixmap("media/cellmine.svg").scaled(pixSize, pixSize) # 白雷
-        cellflag = QPixmap("media/cellflag.svg").scaled(pixSize, pixSize) # 标雷
-        blast = QPixmap("media/blast.svg").scaled(pixSize, pixSize) # 红雷
-        falsemine = QPixmap("media/falsemine.svg").scaled(pixSize, pixSize) # 叉雷
-        mine = QPixmap("media/mine.svg").scaled(pixSize, pixSize)
-        self.pixmapNum = {0: celldown, 1: cell1, 2: cell2, 3: cell3, 4: cell4,
-                     5: cell5, 6: cell6, 7: cell7, 8: cell8, 9: None,
-                     10: cellup, 11: cellflag, 12: None, 13: None, 14: falsemine,
+        # 从磁盘导入资源，并缩放到希望的尺寸、比例
+        celldown = QPixmap("media/celldown.svg")
+        cell1 = QPixmap("media/cell1.svg")
+        cell2 = QPixmap("media/cell2.svg")
+        cell3 = QPixmap("media/cell3.svg")
+        cell4 = QPixmap("media/cell4.svg")
+        cell5 = QPixmap("media/cell5.svg")
+        cell6 = QPixmap("media/cell6.svg")
+        cell7 = QPixmap("media/cell7.svg")
+        cell8 = QPixmap("media/cell8.svg")
+        cellup = QPixmap("media/cellup.svg")
+        cellmine = QPixmap("media/cellmine.svg") # 白雷
+        cellflag = QPixmap("media/cellflag.svg") # 标雷
+        blast = QPixmap("media/blast.svg") # 红雷
+        falsemine = QPixmap("media/falsemine.svg") # 叉雷
+        mine = QPixmap("media/mine.svg") # 透明雷
+        self.pixmapNumBack = {0: celldown, 1: cell1, 2: cell2, 3: cell3, 4: cell4,
+                     5: cell5, 6: cell6, 7: cell7, 8: cell8,
+                     10: cellup, 11: cellflag, 14: falsemine,
                      15: blast, 16: cellmine, 100: mine}
+        celldown_ = celldown.copy().scaled(pixSize, pixSize)
+        cell1_ = cell1.copy().scaled(pixSize, pixSize)
+        cell2_ = cell2.copy().scaled(pixSize, pixSize)
+        cell3_ = cell3.copy().scaled(pixSize, pixSize)
+        cell4_ = cell4.copy().scaled(pixSize, pixSize)
+        cell5_ = cell5.copy().scaled(pixSize, pixSize)
+        cell6_ = cell6.copy().scaled(pixSize, pixSize)
+        cell7_ = cell7.copy().scaled(pixSize, pixSize)
+        cell8_ = cell8.copy().scaled(pixSize, pixSize)
+        cellup_ = cellup.copy().scaled(pixSize, pixSize)
+        cellmine_ = cellmine.copy().scaled(pixSize, pixSize)
+        cellflag_ = cellflag.copy().scaled(pixSize, pixSize)
+        blast_ = blast.copy().scaled(pixSize, pixSize)
+        falsemine_ = falsemine.copy().scaled(pixSize, pixSize)
+        mine_ = mine.copy().scaled(pixSize, pixSize)
+        self.pixmapNum = {0: celldown_, 1: cell1_, 2: cell2_, 3: cell3_, 4: cell4_,
+                     5: cell5_, 6: cell6_, 7: cell7_, 8: cell8_,
+                     10: cellup_, 11: cellflag_, 14: falsemine_,
+                     15: blast_, 16: cellmine_, 100: mine_}
+    
+    def reloadCellPic(self, pixSize):
+        # 从内存导入资源，并缩放到希望的尺寸、比例。
+        self.pixmapNum = {key:value.copy().scaled(pixSize, pixSize) for key,value in self.pixmapNumBack.items()}
         
 
 

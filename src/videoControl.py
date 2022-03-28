@@ -29,8 +29,8 @@ class ui_Form(Ui_Form):
             c1 = CommentLabel(self.scrollAreaWidgetContents, comment[0], int(comment[0] * 100))
             c1.setGeometry(QtCore.QRect(0, 42 * comment_row, 68, 42))
             for list_ in comment[1]:
-                if len(list_) == 1:
-                    list_ = ['luck'] + list_
+                # if len(list_) == 1:
+                #     list_ = ['luck'] + list_
                 c2 = CommentLabel(self.scrollAreaWidgetContents, list_[0], int(comment[0] * 100))
                 c2.setGeometry(QtCore.QRect(68, 42 * comment_row, 90, 42))
                 c3 = CommentLabel(self.scrollAreaWidgetContents, list_[1], int(comment[0] * 100))

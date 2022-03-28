@@ -188,6 +188,7 @@ class Ui_MainWindow(object):
         self.label_info.setFont(font)
         self.label_info.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.label_info.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.label_info.setAlignment(QtCore.Qt.AlignCenter)
         self.label_info.setObjectName("label_info")
         self.verticalLayout_2.addWidget(self.label_info)
         MainWindow.setCentralWidget(self.centralwidget)

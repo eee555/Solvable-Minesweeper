@@ -177,7 +177,7 @@ class StatusLabel (QtWidgets.QLabel):
                 self.leftRelease.emit()
                 
 
-# 录像播放控制版上的调节速度的标签
+# 录像播放控制面板上的调节速度的标签
 class SpeedLabel(QtWidgets.QLabel):
     speed_gear_id = 7
     speed_gear = ['0.01', '0.02', '0.05', '0.1', '0.2', '0.5', '0.8', '1', '1.2',
@@ -198,7 +198,7 @@ class SpeedLabel(QtWidgets.QLabel):
         self.setText(text)
         self.wEvent.emit(float(text))
         
-# 录像播放控制版上的调节速度的标签
+# 录像播放控制面板上的事件标签
 class CommentLabel(QtWidgets.QLabel):
     Release = QtCore.pyqtSignal(int)
     def __init__(self, parent, text, time_100, middle = True):
@@ -217,6 +217,7 @@ class CommentLabel(QtWidgets.QLabel):
             self.setAlignment(QtCore.Qt.AlignCenter)
     def mouseReleaseEvent(self, e):
         self.Release.emit(self.time_100)
+    
     
     
     

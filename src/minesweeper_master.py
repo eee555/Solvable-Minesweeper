@@ -1,7 +1,8 @@
 # author : Wang Jianing(18201)
-from random import randint, seed, choice, shuffle, sample
-from itertools import combinations
-import time
+from random import shuffle, choice
+# from random import randint, seed, sample
+# from itertools import combinations
+# import time
 
 import ms_toollib as ms
 import math
@@ -455,13 +456,15 @@ def calBoardIndex(Board):
     indexes['Isls'] = '还在写'
     return indexes
 
-def calScores(mode, winflag, time, operationStream, Board, Difficulty):
+def calScores(mode, rtime, operationStream, MinesweeperBoard, Difficulty):
     # 计算游戏得分，展示用，返回一个字典，都是字符串
-    # gameBoard是带数字的
+    # MinesweeperBoard是整局游戏的包装类，属性比较多
     # print('----------------')
     # print(operationStream)
     # print2(Board)
-    time = max(time, 1e-4)
+    winflag = True if MinesweeperBoard.game_board_state == 3 else False
+    Board = MinesweeperBoard.board
+    rtime = max(rtime, 1e-4)
     Row = len(Board)
     Column = len(Board[0])
     s = Row * Column
@@ -470,36 +473,36 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
     BBBV = indexes['3BV']
     msBoard = ms.MinesweeperBoard(Board)
     msBoard.step_flow(operationStream)
-    scores['RTime'] = '{:.3f}'.format(time)
+    scores['RTime'] = '{:.3f}'.format(rtime)
     scores['3BV'] = str(msBoard.solved3BV) + '/' + str(BBBV)
-    scores['EstTime'] = '{:.3f}'.format(time) if winflag else '{:.3f}'.format(min(999, time*BBBV/max(msBoard.solved3BV, 0.001)))
+    scores['EstTime'] = '{:.3f}'.format(rtime) if winflag else '{:.3f}'.format(min(999, rtime*BBBV/max(msBoard.solved3BV, 0.001)))
     scores['Ops'] = str(indexes['Ops'])
     scores['Isls'] = str(indexes['Isls'])
-    scores['Left'] = str(msBoard.left) + '@' + ('--' if time < 1e-3 else '{:.3f}'.format(msBoard.left/(time)))
-    scores['Right'] = str(msBoard.right) + '@' + ('--' if time < 1e-3 else '{:.3f}'.format(msBoard.right/time))
+    scores['Left'] = str(msBoard.left) + '@' + ('--' if rtime < 1e-3 else '{:.3f}'.format(msBoard.left/(rtime)))
+    scores['Right'] = str(msBoard.right) + '@' + ('--' if rtime < 1e-3 else '{:.3f}'.format(msBoard.right/rtime))
     scores['Double'] = str(msBoard.chording)
     clNum = msBoard.left + msBoard.right + msBoard.chording
-    scores['Cl'] = str(clNum) + '@' + ('--' if time < 1e-3 else '{:.3f}'.format(clNum/time))
+    scores['Cl'] = str(clNum) + '@' + ('--' if rtime < 1e-3 else '{:.3f}'.format(clNum/rtime))
     IOE = msBoard.solved3BV/clNum
     scores['IOE'] = '{:.3f}'.format(IOE)
     scores['Thrp'] = '{:.3f}'.format(msBoard.solved3BV/msBoard.ces)
     scores['Corr'] = '{:.3f}'.format(msBoard.ces/(msBoard.left + msBoard.right + msBoard.chording))
-    BBBV_s = min(100, msBoard.solved3BV/time)
+    BBBV_s = min(100, msBoard.solved3BV/rtime)
     scores['3BV/s'] = '{:.3f}'.format(BBBV_s)
-    RQP = time**2/BBBV
+    RQP = rtime**2/BBBV
     scores['RQP'] = '{:.3f}'.format(RQP) if winflag else '--'
     if Difficulty == 1:
-        STNB = 47.22/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)
+        STNB = 47.22/(rtime**1.7/BBBV)*(msBoard.solved3BV/BBBV)
     elif Difficulty == 2:
-        STNB = 153.73/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)
+        STNB = 153.73/(rtime**1.7/BBBV)*(msBoard.solved3BV/BBBV)
     elif Difficulty == 3:
-        STNB = 435.001/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)
+        STNB = 435.001/(rtime**1.7/BBBV)*(msBoard.solved3BV/BBBV)
     else:
         STNB = 0
     STNB = min(STNB, 1000)
     scores['STNB'] = '{:.3f}'.format(STNB)
-    scores['STNB'] = '{:.3f}'.format((0.0016*s*s+0.1020*s+24.8904)/(time**1.7/BBBV)*(msBoard.solved3BV/BBBV)**1.7)
-    Ce_s = min(20, msBoard.ces/time)
+    scores['STNB'] = '{:.3f}'.format((0.0016*s*s+0.1020*s+24.8904)/(rtime**1.7/BBBV)*(msBoard.solved3BV/BBBV)**1.7)
+    Ce_s = min(20, msBoard.ces/rtime)
     scores['Ce/s'] = '{:.3f}'.format(Ce_s)
     scores['Ces'] = str(msBoard.ces) + '@' + '{:.3f}'.format(Ce_s)
     if mode == 0:
@@ -523,7 +526,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
         scoresValue = []
         scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*0.7)*0.63661977)
-        Time = time if winflag else 999
+        Time = rtime if winflag else 999
         scoresValue.append(math.atan(10/Time)*0.63661977)
         scoresValue.append(math.atan(STNB/50)*0.63661977)
         scoresValue.append(0.0209*IOE**3-0.2311*IOE*IOE+0.8374*IOE-0.0049)
@@ -533,7 +536,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
         scoresValue = []
         scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*1.1)*0.63661977)
-        Time = time if winflag else 999
+        Time = rtime if winflag else 999
         scoresValue.append(math.atan(150/Time)*0.63661977)
         scoresValue.append(math.atan(STNB/25)*0.63661977)
         scoresValue.append((0.1097*IOE**3+0.3169*IOE*IOE-0.01307*IOE+0.0005845)/(IOE*IOE-1.342*IOE+0.899))
@@ -543,7 +546,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
         scoresValue = []
         scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*1.2)*0.63661977)
-        Time = time if winflag else 999
+        Time = rtime if winflag else 999
         scoresValue.append(math.atan(300/Time)*0.63661977)
         scoresValue.append(math.atan(STNB/20)*0.63661977)
         scoresValue.append((0.1097*IOE**3+0.3169*IOE*IOE-0.01307*IOE+0.0005845)/(IOE*IOE-1.342*IOE+0.899))
@@ -553,7 +556,7 @@ def calScores(mode, winflag, time, operationStream, Board, Difficulty):
         scoresValue = []
         scoresValue.append(1 if Ce_s > 7.1 else -0.0005*Ce_s**3-0.0061*Ce_s*Ce_s+0.2065*Ce_s)
         scoresValue.append(math.atan(BBBV_s*1.2)*0.63661977)
-        Time = time if winflag else 999
+        Time = rtime if winflag else 999
         scoresValue.append(math.atan(300/Time)*0.63661977)
         scoresValue.append(math.atan(STNB/20)*0.63661977)
         scoresValue.append((0.1097*IOE**3+0.3169*IOE*IOE-0.01307*IOE+0.0005845)/(IOE*IOE-1.342*IOE+0.899))
