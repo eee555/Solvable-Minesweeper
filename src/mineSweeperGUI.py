@@ -14,12 +14,10 @@ import time
 # from PyQt5.QtWidgets import QApplication
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
-    def __init__(self, MainWindow):
+    def __init__(self, MainWindow, args):
         self.mainWindow = MainWindow
         super(MineSweeperGUI, self).__init__(MainWindow)
         # MineSweeperGUI父类的init中读.ini、读图片、设置字体、局面初始化等
-
-
 
         # self.finish = False
         # self.gamestart = False
@@ -83,6 +81,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         #      'joking':正在游戏状态，游戏中看过概率计算结果，游戏结果不是official的。
         #      'fail':游戏失败，踩雷了。
         #      'win':游戏成功。
+        
+        if len(args) == 2:
+            self.action_OpenFile(args[1])
+            
 
     def layMine(self, i, j):
         xx = self.row
@@ -802,14 +804,16 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         conf.set("DEFAULT", "minenum", str(self.mineNum))
         conf.write(open('gameSetting.ini', "w"))
 
-    def action_OpenFile(self):
+    def action_OpenFile(self, openfile_name = None):
         if self.game_state == 'display':
             self.ui_video_control.QWidget.close()
         self.game_state = 'display'
-        openfile_name = QFileDialog.\
-            getOpenFileName(self.mainWindow, '打开文件','','All(*.avf *.ms);;Arbiter video(*.avf);;Metasweeper video(*.ms)')
+        if not openfile_name:
+            openfile_name = QFileDialog.\
+                getOpenFileName(self.mainWindow, '打开文件','','All(*.avf *.ms);;Arbiter video(*.avf);;Metasweeper video(*.ms)')
+            openfile_name = openfile_name[0]
         # 实例化
-        video = ms.AvfVideo(openfile_name[0])
+        video = ms.AvfVideo(openfile_name)
         video.parse_video()
         video.analyse()
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",

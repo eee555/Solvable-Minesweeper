@@ -12,7 +12,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication (sys.argv)
     # app.aboutToQuit.connect(app.deleteLater)
     mainWindow = mainWindowGUI.MainWindow()
-    ui = mineSweeperGUI.MineSweeperGUI(mainWindow)
+    ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
     mainWindow.show()
     # exit_code = appctxt.app.exec_()  # 2. Invoke appctxt.app.exec_()
     sys.exit(app.exec_())
