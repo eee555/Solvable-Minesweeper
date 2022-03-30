@@ -159,9 +159,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaLeftRelease(self, i, j):
         if self.game_state == 'playing' or self.game_state == 'joking':
-            # 如果是游戏中，且是左键抬起（不是双击），且是在10上，则用ai截取处理下
-            if self.label.ms_board.game_board[i][j] == 10 and self.label.ms_board.mouse_state == 4:
-                self.ai(i, j)
+            # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai截取处理下
+            if i >= 0 and i < self.row and j >= 0 and j < self.column:
+                if self.label.ms_board.game_board[i][j] == 10 and self.label.ms_board.mouse_state == 4:
+                    self.ai(i, j)
         if self.game_state == 'ready':
             if i >= self.row or j >= self.column:
                 self.operationStream.append(('lr', (self.row, self.column)))
@@ -735,6 +736,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         # self.setBoard_and_start(len(ui.board), len(ui.board[0]), ans[1][1])
         self.setBoard(len(ui.board), len(ui.board[0]), ans[1][1])
+        self.label.set_rcp(len(ui.board), len(ui.board[0]), self.pixSize)
         self.mineNumShow = ans[1][1]
 
         self.label.ms_board.game_board = ui.board
@@ -846,6 +848,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.ui_video_control.pushButton_replay.clicked.connect(self.video_replay)
         self.ui_video_control.horizontalSlider_time.sliderMoved.connect(self.video_set_time)
         self.ui_video_control.label_speed.wEvent.connect(self.video_set_speed)
+        for labels in self.ui_video_control.comments_labels:
+            labels[0].Release.connect(self.video_set_a_time)
+            labels[1].Release.connect(self.video_set_a_time)
+            labels[2].Release.connect(self.video_set_a_time)
         self.ui_video_control.QWidget.show()
 
         self.video_time = 0.0 # 录像当前时间
@@ -886,7 +892,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.video_time_step = speed * 0.01
 
     def video_set_time(self, time):
+        # 把录像定位到某一个时刻。是拖动进度条的回调
         self.video_time = time / 100
+        
+    def video_set_a_time(self, time):
+        # 把录像定位到某一段时间，默认前后一秒，自动播放。是点录像事件的回调
+        self.video_time = max(0, (time - 100) / 100)
+        self.video_stop_time = (time + 100) / 100  # 大了也没关系，工具箱自动处理
+        self.timer_video.start()
 
     def isOfficial(self):
         # 局面开始时，判断一下局面是设置是否正式。

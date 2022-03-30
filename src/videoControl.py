@@ -23,6 +23,7 @@ class ui_Form(Ui_Form):
         self.horizontalSlider_time.valueChanged[int].connect(self.set_double_spin_box_time)
         self.doubleSpinBox_time.valueChanged[float].connect(self.set_horizontal_slider_time)
         
+        self.comments_labels = []
         comment_row = 1
         for comment in comments:
             # print(comment)
@@ -36,10 +37,9 @@ class ui_Form(Ui_Form):
                 c3 = CommentLabel(self.scrollAreaWidgetContents, list_[1], int(comment[0] * 100))
                 c3.setGeometry(QtCore.QRect(158, 42 * comment_row, 300, 42))
                 c3.setWordWrap(True)
+                self.comments_labels.append([c1, c2, c3])
                 comment_row += 1
         self.scrollAreaWidgetContents.setFixedHeight(42 * (comment_row + 1))
-        
-        
         
     def set_double_spin_box_time(self, int_time):
         self.doubleSpinBox_time.setValue(int_time / 100)

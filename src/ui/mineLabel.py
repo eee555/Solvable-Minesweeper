@@ -27,6 +27,24 @@ class mineLabel(QtWidgets.QLabel):
         self.mouse.addPolygon(mouse_)
         self.paint_cursor = False # 是否画光标。不仅控制画光标，还代表了是游戏还是播放录像。
         
+    def setPath(self, r_path):
+        # 告诉局面控件，相对路径
+        self.celldown_path = str(r_path.with_name('media').joinpath('celldown.svg'))
+        self.cell1_path = str(r_path.with_name('media').joinpath('cell1.svg'))
+        self.cell2_path = str(r_path.with_name('media').joinpath('cell2.svg'))
+        self.cell3_path = str(r_path.with_name('media').joinpath('cell3.svg'))
+        self.cell4_path = str(r_path.with_name('media').joinpath('cell4.svg'))
+        self.cell5_path = str(r_path.with_name('media').joinpath('cell5.svg'))
+        self.cell6_path = str(r_path.with_name('media').joinpath('cell6.svg'))
+        self.cell7_path = str(r_path.with_name('media').joinpath('cell7.svg'))
+        self.cell8_path = str(r_path.with_name('media').joinpath('cell8.svg'))
+        self.cellup_path = str(r_path.with_name('media').joinpath('cellup.svg'))
+        self.cellmine_path = str(r_path.with_name('media').joinpath('cellmine.svg'))
+        self.cellflag_path = str(r_path.with_name('media').joinpath('cellflag.svg'))
+        self.blast_path = str(r_path.with_name('media').joinpath('blast.svg'))
+        self.falsemine_path = str(r_path.with_name('media').joinpath('falsemine.svg'))
+        self.mine_path = str(r_path.with_name('media').joinpath('mine.svg'))
+        
     def set_rcp(self, row, column, pixSize): # 重设一下宽、高、大小
         self.pixSize = pixSize
         self.paintPossibility = False  # 是否打印概率
@@ -40,7 +58,7 @@ class mineLabel(QtWidgets.QLabel):
         self.current_x = self.row # 鼠标坐标，和高亮的展示有关
         self.current_y = self.column
         
-        points = [ QPoint(0, 0),
+        points = [ QPoint(0, 0),   # 你猜这个多边形是什么，它就是鼠标
                   QPoint(0, pixSize),
                 QPoint(0.227 * pixSize, 0.773 * pixSize),
                 QPoint(0.359 * pixSize, 1.125 * pixSize),
@@ -158,21 +176,21 @@ class mineLabel(QtWidgets.QLabel):
 
     def importCellPic(self, pixSize):
         # 从磁盘导入资源，并缩放到希望的尺寸、比例
-        celldown = QPixmap("media/celldown.svg")
-        cell1 = QPixmap("media/cell1.svg")
-        cell2 = QPixmap("media/cell2.svg")
-        cell3 = QPixmap("media/cell3.svg")
-        cell4 = QPixmap("media/cell4.svg")
-        cell5 = QPixmap("media/cell5.svg")
-        cell6 = QPixmap("media/cell6.svg")
-        cell7 = QPixmap("media/cell7.svg")
-        cell8 = QPixmap("media/cell8.svg")
-        cellup = QPixmap("media/cellup.svg")
-        cellmine = QPixmap("media/cellmine.svg") # 白雷
-        cellflag = QPixmap("media/cellflag.svg") # 标雷
-        blast = QPixmap("media/blast.svg") # 红雷
-        falsemine = QPixmap("media/falsemine.svg") # 叉雷
-        mine = QPixmap("media/mine.svg") # 透明雷
+        celldown = QPixmap(self.celldown_path)
+        cell1 = QPixmap(self.cell1_path)
+        cell2 = QPixmap(self.cell2_path)
+        cell3 = QPixmap(self.cell3_path)
+        cell4 = QPixmap(self.cell4_path)
+        cell5 = QPixmap(self.cell5_path)
+        cell6 = QPixmap(self.cell6_path)
+        cell7 = QPixmap(self.cell7_path)
+        cell8 = QPixmap(self.cell8_path)
+        cellup = QPixmap(self.cellup_path)
+        cellmine = QPixmap(self.cellmine_path) # 白雷
+        cellflag = QPixmap(self.cellflag_path) # 标雷
+        blast = QPixmap(self.blast_path) # 红雷
+        falsemine = QPixmap(self.falsemine_path) # 叉雷
+        mine = QPixmap(self.mine_path) # 透明雷
         self.pixmapNumBack = {0: celldown, 1: cell1, 2: cell2, 3: cell3, 4: cell4,
                      5: cell5, 6: cell6, 7: cell7, 8: cell8,
                      10: cellup, 11: cellflag, 14: falsemine,

@@ -146,8 +146,9 @@ class Ui_MainWindow(Ui_MainWindow):
         self.retranslateUi(MainWindow)
         
         self.importLEDPic(self.pixSize) # 导入图片
-
+        self.label.setPath(r_path)
         self.initMineArea()
+        
         
         self.label_2.setPath(r_path)
         self.label_2.leftRelease.connect(self.gameRestart)
