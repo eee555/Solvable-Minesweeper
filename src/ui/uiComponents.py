@@ -144,27 +144,35 @@ class StatusLabel (QtWidgets.QLabel):
 
     def __init__(self, parent=None):
         super (StatusLabel, self).__init__ (parent)
-        config = configparser.ConfigParser()
-        config.read('gameSetting.ini')
-        self.pixSize = config.getint('DEFAULT','pixSize')
-
+        
         self.setFrameShape (QtWidgets.QFrame.Panel)
         self.setFrameShadow (QtWidgets.QFrame.Raised)
         self.setLineWidth(1)
         self.setAlignment (QtCore.Qt.AlignCenter)
-        self.pixmap1_svg = QPixmap("media/smilefacedown.svg")
-        self.pixmap2_svg = QPixmap("media/smileface.svg")
-        self.reloadFace(self.pixSize)
-        self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+        
 
     def reloadFace(self, pixSize):
         # 重新修改脸的大小，叫rescale_face更妥
         self.pixSize = pixSize
-        self.pixmap1 = QPixmap("media/smilefacedown.svg").scaled(self.pixSize * 1.5, self.pixSize * 1.5)
-        self.pixmap2 = QPixmap("media/smileface.svg").scaled(self.pixSize * 1.5, self.pixSize * 1.5)
+        self.pixmap1 = QPixmap(self.smilefacedown_path).scaled(self.pixSize * 1.5, self.pixSize * 1.5)
+        self.pixmap2 = QPixmap(self.smileface_path).scaled(self.pixSize * 1.5, self.pixSize * 1.5)
         # self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
         self.setMinimumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
         self.setMaximumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+
+    def setPath(self, r_path):
+        # 告诉脸，相对路径
+        game_setting_path = str(r_path.with_name('gameSetting.ini'))
+        self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
+        self.smilefacedown_path = str(r_path.with_name('media').joinpath('smilefacedown.svg'))
+        
+        config = configparser.ConfigParser()
+        config.read(game_setting_path)
+        self.pixSize = config.getint('DEFAULT','pixSize')
+        self.pixmap1_svg = QPixmap(self.smilefacedown_path)
+        self.pixmap2_svg = QPixmap(self.smileface_path)
+        self.reloadFace(self.pixSize)
+        self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
 
     def mousePressEvent(self, e):  ##重载一下鼠标点击事件
         if e.button () == QtCore.Qt.LeftButton:

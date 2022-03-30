@@ -15,23 +15,24 @@ class Ui_MainWindow(Ui_MainWindow):
     def __init__(self, MainWindow, args):
         self.mainWindow = MainWindow
         # 设置全局路径
-        self.game_setting_path = str(Path(args[0]).with_name('gameSetting.ini'))
-        self.ico_path = str(Path(args[0]).with_name('media').joinpath('cat.ico'))
-        self.smileface_path = str(Path(args[0]).with_name('media').joinpath('smileface.svg'))
-        self.clickface_path = str(Path(args[0]).with_name('media').joinpath('clickface.svg'))
-        self.lostface_path = str(Path(args[0]).with_name('media').joinpath('lostface.svg'))
-        self.winface_path = str(Path(args[0]).with_name('media').joinpath('winface.svg'))
-        self.smilefacedown_path = str(Path(args[0]).with_name('media').joinpath('smilefacedown.svg'))
-        self.LED0_path = str(Path(args[0]).with_name('media').joinpath('LED0.png'))
-        self.LED1_path = str(Path(args[0]).with_name('media').joinpath('LED1.png'))
-        self.LED2_path = str(Path(args[0]).with_name('media').joinpath('LED2.png'))
-        self.LED3_path = str(Path(args[0]).with_name('media').joinpath('LED3.png'))
-        self.LED4_path = str(Path(args[0]).with_name('media').joinpath('LED4.png'))
-        self.LED5_path = str(Path(args[0]).with_name('media').joinpath('LED5.png'))
-        self.LED6_path = str(Path(args[0]).with_name('media').joinpath('LED6.png'))
-        self.LED7_path = str(Path(args[0]).with_name('media').joinpath('LED7.png'))
-        self.LED8_path = str(Path(args[0]).with_name('media').joinpath('LED8.png'))
-        self.LED9_path = str(Path(args[0]).with_name('media').joinpath('LED9.png'))
+        r_path = Path(args[0])
+        self.game_setting_path = str(r_path.with_name('gameSetting.ini'))
+        self.ico_path = str(r_path.with_name('media').joinpath('cat.ico'))
+        self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
+        self.clickface_path = str(r_path.with_name('media').joinpath('clickface.svg'))
+        self.lostface_path = str(r_path.with_name('media').joinpath('lostface.svg'))
+        self.winface_path = str(r_path.with_name('media').joinpath('winface.svg'))
+        self.smilefacedown_path = str(r_path.with_name('media').joinpath('smilefacedown.svg'))
+        self.LED0_path = str(r_path.with_name('media').joinpath('LED0.png'))
+        self.LED1_path = str(r_path.with_name('media').joinpath('LED1.png'))
+        self.LED2_path = str(r_path.with_name('media').joinpath('LED2.png'))
+        self.LED3_path = str(r_path.with_name('media').joinpath('LED3.png'))
+        self.LED4_path = str(r_path.with_name('media').joinpath('LED4.png'))
+        self.LED5_path = str(r_path.with_name('media').joinpath('LED5.png'))
+        self.LED6_path = str(r_path.with_name('media').joinpath('LED6.png'))
+        self.LED7_path = str(r_path.with_name('media').joinpath('LED7.png'))
+        self.LED8_path = str(r_path.with_name('media').joinpath('LED8.png'))
+        self.LED9_path = str(r_path.with_name('media').joinpath('LED9.png'))
         
         
         self.mainWindow.setWindowIcon(QIcon(self.ico_path))
@@ -148,8 +149,7 @@ class Ui_MainWindow(Ui_MainWindow):
 
         self.initMineArea()
         
-        
-        # self.label_2 = StatusLabel(self.frame_face)
+        self.label_2.setPath(r_path)
         self.label_2.leftRelease.connect(self.gameRestart)
         self.MinenumTimeWigdet.mouseReleaseEvent = self.gameRestart
 
@@ -251,7 +251,7 @@ class Ui_MainWindow(Ui_MainWindow):
         # modTable = [0,1,2,3,4,5,6,7]
         self.predefinedBoardPara = {}
         config = configparser.ConfigParser()
-        config.read('gameSetting.ini')
+        config.read(self.game_setting_path)
         self.predefinedBoardPara[4] = [
             config.getint('CUSTOM_PRESET_4','gameMode'),
             config.getint('CUSTOM_PRESET_4','max3BV'),
