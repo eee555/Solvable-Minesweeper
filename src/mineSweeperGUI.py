@@ -900,6 +900,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.video_time = max(0, (time - 100) / 100)
         self.video_stop_time = (time + 100) / 100  # 大了也没关系，工具箱自动处理
         self.timer_video.start()
+        self.video_playing = True
 
     def isOfficial(self):
         # 局面开始时，判断一下局面是设置是否正式。
