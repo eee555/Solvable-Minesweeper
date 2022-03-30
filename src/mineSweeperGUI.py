@@ -9,6 +9,7 @@ import superGUI, gameAbout, gameSettings, gameHelp, gameTerms, gameScores,\
 import minesweeper_master as mm
 import ms_toollib as ms
 import configparser
+from pathlib import Path
 import time
 # import sys
 # from PyQt5.QtWidgets import QApplication
@@ -16,15 +17,10 @@ import time
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow, args):
         self.mainWindow = MainWindow
-        super(MineSweeperGUI, self).__init__(MainWindow)
+        super(MineSweeperGUI, self).__init__(MainWindow, args)
         # MineSweeperGUI父类的init中读.ini、读图片、设置字体、局面初始化等
 
-        # self.finish = False
-        # self.gamestart = False
-
         self.operationStream = []
-        # self.gameWinFlag = False
-        # self.showShot = False # 展示OBR功能的状态
 
         self.time = 0
         self.showTime(self.time)
@@ -51,7 +47,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actionopen.triggered.connect(self.action_OpenFile)
 
         config = configparser.ConfigParser()
-        config.read('gameSetting.ini')
+        config.read(self.game_setting_path)
+        
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             self.actionChecked('B')
         elif (self.row, self.column, self.mineNum) == (16, 16, 40):
@@ -81,10 +78,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         #      'joking':正在游戏状态，游戏中看过概率计算结果，游戏结果不是official的。
         #      'fail':游戏失败，踩雷了。
         #      'win':游戏成功。
-        
+        self.relative_path = args[0]
         if len(args) == 2:
             self.action_OpenFile(args[1])
-            
 
     def layMine(self, i, j):
         xx = self.row
@@ -620,7 +616,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.column = column
         self.mineNum = mineNum
         conf = configparser.ConfigParser()
-        conf.read("gameSetting.ini")
+        conf.read(self.game_setting_path)
         conf.set("DEFAULT", "row", str(row))
         conf.set("DEFAULT", "column", str(column))
         conf.set("DEFAULT", "mineNum", str(mineNum))
@@ -636,7 +632,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         else:
             self.min3BV = conf.getint('CUSTOM', 'min3BV')
             self.max3BV = conf.getint('CUSTOM', 'max3BV')
-        conf.write(open('gameSetting.ini', "w"))
+        conf.write(open(self.game_setting_path, "w"))
 
     def setBoard_and_start(self, row, column, mineNum):
         # 把局面设置成(row, column, mineNum)，把3BV的限制设置成min3BV, max3BV
@@ -794,7 +790,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 刷新游戏设置.ini里默认部分的设置，与当前游戏里一致，
         # 除了transparency、mainwintop和mainwinleft
         conf = configparser.ConfigParser()
-        conf.read("gameSetting.ini")
+        conf.read(self.game_setting_path)
         conf.set("DEFAULT", "timeslimit", str(self.timesLimit))
         conf.set("DEFAULT", "enulimit", str(self.enuLimit))
         conf.set("DEFAULT", "gamemode", str(self.gameMode))
@@ -802,17 +798,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         conf.set("DEFAULT", "row", str(self.row))
         conf.set("DEFAULT", "column", str(self.column))
         conf.set("DEFAULT", "minenum", str(self.mineNum))
-        conf.write(open('gameSetting.ini', "w"))
+        conf.write(open(self.game_setting_path, "w"))
 
     def action_OpenFile(self, openfile_name = None):
-        if self.game_state == 'display':
-            self.ui_video_control.QWidget.close()
-        self.game_state = 'display'
         if not openfile_name:
             openfile_name = QFileDialog.\
                 getOpenFileName(self.mainWindow, '打开文件','','All(*.avf *.ms);;Arbiter video(*.avf);;Metasweeper video(*.ms)')
             openfile_name = openfile_name[0]
         # 实例化
+        if not openfile_name:
+            return
+        
+        if self.game_state == 'display':
+            self.ui_video_control.QWidget.close()
+        self.game_state = 'display'
+        
         video = ms.AvfVideo(openfile_name)
         video.parse_video()
         video.analyse()

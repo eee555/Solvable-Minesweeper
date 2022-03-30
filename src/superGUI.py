@@ -7,19 +7,39 @@ from PyQt5.QtGui import QPalette, QPixmap, QFont, QIcon
 from PyQt5.QtWidgets import QScrollArea
 from PyQt5.QtSvg import QSvgWidget
 from ui.ui_main_board import Ui_MainWindow
+from pathlib import Path
 
 class Ui_MainWindow(Ui_MainWindow):
     minimum_counter = 0 # 最小化展示窗口有关
     # windowSizeState = 'loose'  # loose or tight
-    def __init__(self, MainWindow):
+    def __init__(self, MainWindow, args):
         self.mainWindow = MainWindow
-        self.mainWindow.setWindowIcon(QIcon("media/cat.ico"))
+        # 设置全局路径
+        self.game_setting_path = str(Path(args[0]).with_name('gameSetting.ini'))
+        self.ico_path = str(Path(args[0]).with_name('media').joinpath('cat.ico'))
+        self.smileface_path = str(Path(args[0]).with_name('media').joinpath('smileface.svg'))
+        self.clickface_path = str(Path(args[0]).with_name('media').joinpath('clickface.svg'))
+        self.lostface_path = str(Path(args[0]).with_name('media').joinpath('lostface.svg'))
+        self.winface_path = str(Path(args[0]).with_name('media').joinpath('winface.svg'))
+        self.smilefacedown_path = str(Path(args[0]).with_name('media').joinpath('smilefacedown.svg'))
+        self.LED0_path = str(Path(args[0]).with_name('media').joinpath('LED0.png'))
+        self.LED1_path = str(Path(args[0]).with_name('media').joinpath('LED1.png'))
+        self.LED2_path = str(Path(args[0]).with_name('media').joinpath('LED2.png'))
+        self.LED3_path = str(Path(args[0]).with_name('media').joinpath('LED3.png'))
+        self.LED4_path = str(Path(args[0]).with_name('media').joinpath('LED4.png'))
+        self.LED5_path = str(Path(args[0]).with_name('media').joinpath('LED5.png'))
+        self.LED6_path = str(Path(args[0]).with_name('media').joinpath('LED6.png'))
+        self.LED7_path = str(Path(args[0]).with_name('media').joinpath('LED7.png'))
+        self.LED8_path = str(Path(args[0]).with_name('media').joinpath('LED8.png'))
+        self.LED9_path = str(Path(args[0]).with_name('media').joinpath('LED9.png'))
         
-
+        
+        self.mainWindow.setWindowIcon(QIcon(self.ico_path))
+        
         config = configparser.ConfigParser()
         # gameMode = 0，1，2，3，4，5，6，7代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
-        if config.read('gameSetting.ini'):
+        if config.read(self.game_setting_path):
             self.timesLimit = config.getint('DEFAULT', 'timesLimit')
             self.enuLimit = config.getint('DEFAULT', 'enuLimit')
             self.gameMode = config.getint('DEFAULT', 'gameMode')
@@ -117,7 +137,7 @@ class Ui_MainWindow(Ui_MainWindow):
                                          'min3BV': 0,
                                          'max3BV': 9999,
                                          }
-            with open('gameSetting.ini', 'w') as configfile:
+            with open(self.game_setting_path, 'w') as configfile:
                 config.write(configfile)  # 将对象写入文件
 
 
@@ -181,11 +201,11 @@ class Ui_MainWindow(Ui_MainWindow):
 
     def importLEDPic(self, pixSize):
         # 导入资源，并缩放到希望的尺寸、比例
-        pixmap14 = QPixmap("media/smileface.svg")
-        pixmap15 = QPixmap("media/clickface.svg")
-        pixmap16 = QPixmap("media/lostface.svg")
-        pixmap17 = QPixmap("media/winface.svg")
-        pixmap18 = QPixmap("media/smilefacedown.svg")
+        pixmap14 = QPixmap(self.smileface_path)
+        pixmap15 = QPixmap(self.clickface_path)
+        pixmap16 = QPixmap(self.lostface_path)
+        pixmap17 = QPixmap(self.winface_path)
+        pixmap18 = QPixmap(self.smilefacedown_path)
         self.pixmapNumPix = {14: pixmap14, 15: pixmap15, 16: pixmap16, 17: pixmap17, 18: pixmap18}
         pixmap14_ = pixmap14.scaled(pixSize * 1.5, pixSize * 1.5)
         pixmap15_ = pixmap15.scaled(pixSize * 1.5, pixSize * 1.5)
@@ -194,16 +214,16 @@ class Ui_MainWindow(Ui_MainWindow):
         pixmap18_ = pixmap18.scaled(pixSize * 1.5, pixSize * 1.5)
         self.pixmapNum = {14: pixmap14_, 15: pixmap15_, 16: pixmap16_, 17: pixmap17_, 18: pixmap18_}
         # 以上是读取数字的图片，局面中的数字；一下是上方LED数字的图片
-        pixLEDmap0 = QPixmap("media/LED0.png")
-        pixLEDmap1 = QPixmap("media/LED1.png")
-        pixLEDmap2 = QPixmap("media/LED2.png")
-        pixLEDmap3 = QPixmap("media/LED3.png")
-        pixLEDmap4 = QPixmap("media/LED4.png")
-        pixLEDmap5 = QPixmap("media/LED5.png")
-        pixLEDmap6 = QPixmap("media/LED6.png")
-        pixLEDmap7 = QPixmap("media/LED7.png")
-        pixLEDmap8 = QPixmap("media/LED8.png")
-        pixLEDmap9 = QPixmap("media/LED9.png")
+        pixLEDmap0 = QPixmap(self.LED0_path)
+        pixLEDmap1 = QPixmap(self.LED1_path)
+        pixLEDmap2 = QPixmap(self.LED2_path)
+        pixLEDmap3 = QPixmap(self.LED3_path)
+        pixLEDmap4 = QPixmap(self.LED4_path)
+        pixLEDmap5 = QPixmap(self.LED5_path)
+        pixLEDmap6 = QPixmap(self.LED6_path)
+        pixLEDmap7 = QPixmap(self.LED7_path)
+        pixLEDmap8 = QPixmap(self.LED8_path)
+        pixLEDmap9 = QPixmap(self.LED9_path)
         self.pixmapLEDNumPix = {0: pixLEDmap0, 1: pixLEDmap1, 2: pixLEDmap2, 3: pixLEDmap3,
                         4: pixLEDmap4, 5: pixLEDmap5, 6: pixLEDmap6, 7: pixLEDmap7,
                         8: pixLEDmap8, 9: pixLEDmap9}
@@ -283,45 +303,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.minimum_counter = 0
             self.timer_.stop()
             
-    # def minimumWindowLoose(self):
-    #     # 最小化窗口，并放松，使其可以手动拖动放大缩小
-    #     self.minimumWindow()
-    #     self.timer_2 = QTimer()
-    #     self.timer_2.timeout.connect(self.setWindowSizeLoose)
-    #     self.timer_2.setSingleShot(True)
-    #     self.timer_2.start(3000)
-        
-    # # def minimumWindowTight(self):
-    # #     # 最小化窗口，并固定尺寸，不用
-    # #     self.minimumWindow()
-        
-    # def setWindowSizeLoose(self):
-    #     # if self.windowSizeState == 'loose':
-    #     #     return
-    #     self.mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
-    #     self.mainWindow.setMinimumSize(QtCore.QSize(10, 10))
-    #     self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-    #     self.label.setMinimumSize(QtCore.QSize(0, 0))
-    #     self.label.resize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-    #     self.windowSizeState = 'loose'
-        
-    # def setWindowSizeTight(self):
-    #     if self.windowSizeState == 'tight':
-    #         return
-    #     self.label.setFixedSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-    #     # self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-    #     # self.minimumWindow()
-    #     self.windowSizeState = 'tight'
-        # self.timer_2 = QTimer()
-        # self.timer_2.timeout.connect()
-        # self.timer_2.setSingleShot(True)
-        # self.timer_2.start(200)
-        
-    # def loosenWindow(self):
-    #     self.mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
-    #     self.mainWindow.setMinimumSize(QtCore.QSize(10, 10))
-    #     self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-    #     self.label.setMinimumSize(QtCore.QSize(8, 8))
+
         
         
         
