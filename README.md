@@ -126,3 +126,9 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
 修复了一些bug。黑猫扫雷更名为元扫雷（MetaSweeper）。首次装载第三代录像播放器，能够播放avf录像。分析出并报告抽象的录像事件。录像播放时，按下空格键可以实时地展示每格是雷的概率。
 
 链接：[https://wwb.lanzouw.com/i8ypL026p1za](https://wwb.lanzouw.com/i8ypL026p1za)
+
+### 正式版v3.0.1：
+
+修复了两个bug。现在可以将元扫雷设置为arbiter的avf文件的默认打开方式。
+
+链接：[https://wwb.lanzouw.com/iHaNm02ane7c](https://wwb.lanzouw.com/iHaNm02ane7c)
