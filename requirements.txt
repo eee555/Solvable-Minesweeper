@@ -1,2 +1,2 @@
 pyQt5==5.9.2
-ms_toollib==1.3.11
+ms-toollib==1.3.11
