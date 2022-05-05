@@ -79,6 +79,10 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
 
 ## 下载链接
 
+### 正式版v3.0.2：
+修复了3个特别影响游戏体验的bug。  
+链接：[https://wwb.lanzouw.com/iuhs904cfj0b](https://wwb.lanzouw.com/iuhs904cfj0b)
+
 ### 正式版v3.0.1：
 修复了两个bug。现在可以将元扫雷设置为arbiter的avf文件的默认打开方式。  
 链接：[https://wwb.lanzouw.com/iHaNm02ane7c](https://wwb.lanzouw.com/iHaNm02ane7c)
