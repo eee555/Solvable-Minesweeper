@@ -45,7 +45,8 @@ class mineLabel(QtWidgets.QLabel):
         self.falsemine_path = str(r_path.with_name('media').joinpath('falsemine.svg'))
         self.mine_path = str(r_path.with_name('media').joinpath('mine.svg'))
         
-    def set_rcp(self, row, column, pixSize): # 重设一下宽、高、大小
+    def set_rcp(self, row, column, pixSize): 
+        # 重设一下宽、高、大小
         self.pixSize = pixSize
         self.paintPossibility = False  # 是否打印概率
         if (self.row, self.column) != (row, column): # 如果不相等，重新实例化
@@ -69,9 +70,10 @@ class mineLabel(QtWidgets.QLabel):
         self.mouse = QPainterPath()
         self.mouse.addPolygon(mouse_)
 
-    def mousePressEvent(self, e):  # 重载一下鼠标点击事件
-        xx = int(e.localPos().x() // self.pixSize)
-        yy = int(e.localPos().y() // self.pixSize)
+    def mousePressEvent(self, e):  
+        # 重载一下鼠标点击事件
+        xx = int((e.localPos().x() - 4) // self.pixSize)
+        yy = int((e.localPos().y() - 4) // self.pixSize)
         if yy < 0 or xx < 0 or yy >= self.row or xx >= self.column:
             self.current_x = self.row
             self.current_y = self.column
@@ -90,8 +92,8 @@ class mineLabel(QtWidgets.QLabel):
     def mouseReleaseEvent(self, e):
         #每个标签的鼠标事件发射给槽的都是自身的坐标
         #所以获取释放点相对本标签的偏移量，矫正发射的信号
-        xx = int(e.localPos().x() // self.pixSize)
-        yy = int(e.localPos().y() // self.pixSize)
+        xx = int((e.localPos().x() - 4) // self.pixSize)
+        yy = int((e.localPos().y() - 4) // self.pixSize)
         # print('抬起位置{}, {}'.format(xx, yy))
         # print(e.button ())
         if yy < 0 or xx < 0 or yy >= self.row or xx >= self.column:
@@ -106,8 +108,8 @@ class mineLabel(QtWidgets.QLabel):
             self.rightRelease.emit(self.current_x, self.current_y)
 
     def mouseMoveEvent(self, e):
-        xx = int(e.localPos().x() // self.pixSize)
-        yy = int(e.localPos().y() // self.pixSize)
+        xx = int((e.localPos().x() - 4) // self.pixSize)
+        yy = int((e.localPos().y() - 4) // self.pixSize)
         # print('移动位置{}, {}'.format(xx, yy))
         if yy < 0 or xx < 0 or yy >= self.row or xx >= self.column:
             self.current_x = self.row

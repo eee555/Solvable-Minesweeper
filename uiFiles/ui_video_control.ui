@@ -59,7 +59,7 @@ QSlider::groove:horizontal {
     height: 16px;
 }
 QSlider::groove:vertical {
-    width: 16px;
+    width: 0px;
 }
 QSlider::handle:horizontal {
     background: #ffffff;

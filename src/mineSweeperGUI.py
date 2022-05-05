@@ -159,14 +159,16 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaLeftRelease(self, i, j):
         if self.game_state == 'playing' or self.game_state == 'joking':
-            # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai截取处理下
+            # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai劫持、处理下
             if i >= 0 and i < self.row and j >= 0 and j < self.column:
                 if self.label.ms_board.game_board[i][j] == 10 and self.label.ms_board.mouse_state == 4:
                     self.ai(i, j)
         if self.game_state == 'ready':
             if i >= self.row or j >= self.column:
-                self.operationStream.append(('lr', (self.row, self.column)))
-                self.label.ms_board.step('lr', (self.row, self.column))
+                if self.operationStream:
+                    # 如果操作流是空的，首先添加的要么是rc，要么是lc
+                    self.operationStream.append(('lr', (self.row, self.column)))
+                    self.label.ms_board.step('lr', (self.row, self.column))
                 pixmap = QPixmap(self.pixmapNum[14])
                 self.label_2.setPixmap(pixmap)
                 self.label_2.setScaledContents(True)
@@ -180,8 +182,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.startTime = time.time()
 
         if self.game_state == 'playing' or self.game_state == 'joking':
-            self.operationStream.append(('lr', (i, j)))
-            self.label.ms_board.step('lr', (i, j))
+            if self.operationStream:
+                # 如果操作流是空的，首先添加的要么是rc，要么是lc
+                self.operationStream.append(('lr', (i, j)))
+                self.label.ms_board.step('lr', (i, j))
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
@@ -193,8 +197,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.update()
 
         elif self.game_state == 'show':
-            self.operationStream.append(('lr', (self.row, self.column)))
-            self.label.ms_board.step('lr', (self.row, self.column))
+            if self.operationStream:
+                # 如果操作流是空的，首先添加的要么是rc，要么是lc
+                self.operationStream.append(('lr', (self.row, self.column)))
+                self.label.ms_board.step('lr', (self.row, self.column))
 
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
@@ -203,16 +209,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaRightRelease(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
-            self.operationStream.append(('rr', (i, j)))
-            self.label.ms_board.step('rr', (i, j))
+            if self.operationStream:
+                # 如果操作流是空的，首先添加的要么是rc，要么是lc
+                self.operationStream.append(('rr', (i, j)))
+                self.label.ms_board.step('rr', (i, j))
             self.label.update()
 
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
         elif self.game_state == 'show':
-            self.operationStream.append(('rr', (self.row, self.column)))
-            self.label.ms_board.step('rr', (self.row, self.column))
+            # 这个分支是干嘛的，忘了
+            if self.operationStream:
+                # 如果操作流是空的，首先添加的要么是rc，要么是lc
+                self.operationStream.append(('rr', (self.row, self.column)))
+                self.label.ms_board.step('rr', (self.row, self.column))
 
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
@@ -256,8 +267,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaLeftAndRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
-            self.operationStream.append(('cc', (i, j)))
-            self.label.ms_board.step('cc', (i, j))
+            if self.operationStream:
+                # 如果操作流是空的，首先添加的要么是rc，要么是lc
+                self.operationStream.append(('cc', (i, j)))
+                self.label.ms_board.step('cc', (i, j))
             self.label.update()
 
             pixmap = QPixmap(self.pixmapNum[15])
@@ -267,12 +280,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaLeftAndRightRelease(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
-            if self.label.ms_board.mouse_state == 2:
-                self.operationStream.append(('lr', (i, j)))
-                self.label.ms_board.step('lr', (i, j))
-            elif self.label.ms_board.mouse_state == 7:
-                self.operationStream.append(('rr', (i, j)))
-                self.label.ms_board.step('rr', (i, j))
+            if self.operationStream:
+                # 如果操作流是空的，首先添加的要么是rc，要么是lc
+                if self.label.ms_board.mouse_state == 2:
+                    self.operationStream.append(('lr', (i, j)))
+                    self.label.ms_board.step('lr', (i, j))
+                elif self.label.ms_board.mouse_state == 7:
+                    self.operationStream.append(('rr', (i, j)))
+                    self.label.ms_board.step('rr', (i, j))
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
@@ -894,6 +909,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def video_set_time(self, time):
         # 把录像定位到某一个时刻。是拖动进度条的回调
         self.video_time = time / 100
+        self.label.ms_board.time = self.video_time
+        self.label.update()
         
     def video_set_a_time(self, time):
         # 把录像定位到某一段时间，默认前后一秒，自动播放。是点录像事件的回调
