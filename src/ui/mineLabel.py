@@ -61,11 +61,11 @@ class mineLabel(QtWidgets.QLabel):
         
         points = [ QPoint(0, 0),   # 你猜这个多边形是什么，它就是鼠标
                   QPoint(0, pixSize),
-                QPoint(0.227 * pixSize, 0.773 * pixSize),
-                QPoint(0.359 * pixSize, 1.125 * pixSize),
-                QPoint(0.493 * pixSize, 1.066 * pixSize),
-                QPoint(0.357 * pixSize, 0.72 * pixSize),
-                QPoint(0.666 * pixSize, 0.72 * pixSize) ]
+                QPoint(int(0.227 * pixSize), int(0.773 * pixSize)),
+                QPoint(int(0.359 * pixSize), int(1.125 * pixSize)),
+                QPoint(int(0.493 * pixSize), int(1.066 * pixSize)),
+                QPoint(int(0.357 * pixSize), int(0.72 * pixSize)),
+                QPoint(int(0.666 * pixSize), int(0.72 * pixSize)) ]
         mouse_ = QPolygonF(points)
         self.mouse = QPainterPath()
         self.mouse.addPolygon(mouse_)

@@ -18,7 +18,7 @@ class ui_Form(Ui_Form):
     def __init__(self, time, comments):
         self.QWidget = RoundQWidget()
         self.setupUi(self.QWidget)
-        self.horizontalSlider_time.setMaximum(time * 100)
+        self.horizontalSlider_time.setMaximum(int(time * 100))
         
         self.horizontalSlider_time.valueChanged[int].connect(self.set_double_spin_box_time)
         self.doubleSpinBox_time.valueChanged[float].connect(self.set_horizontal_slider_time)
