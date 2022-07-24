@@ -56,7 +56,7 @@ jobs:
 
     - name: Package with PyInstaller
       run: |
-        pyinstaller -i cat.ico -w -y --clean --add-data "./src/media/*;./src/media" -p src src/main.py
+        pyinstaller -i cat.ico -w -y --clean --add-data "./src/media/*;./media" -p src src/main.py
 
     # upload the result package as an artifact
     - name: Upload artifacts
