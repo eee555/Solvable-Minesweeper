@@ -208,11 +208,11 @@ class Ui_MainWindow(Ui_MainWindow):
         pixmap17 = QPixmap(self.winface_path)
         pixmap18 = QPixmap(self.smilefacedown_path)
         self.pixmapNumPix = {14: pixmap14, 15: pixmap15, 16: pixmap16, 17: pixmap17, 18: pixmap18}
-        pixmap14_ = pixmap14.scaled(pixSize * 1.5, pixSize * 1.5)
-        pixmap15_ = pixmap15.scaled(pixSize * 1.5, pixSize * 1.5)
-        pixmap16_ = pixmap16.scaled(pixSize * 1.5, pixSize * 1.5)
-        pixmap17_ = pixmap17.scaled(pixSize * 1.5, pixSize * 1.5)
-        pixmap18_ = pixmap18.scaled(pixSize * 1.5, pixSize * 1.5)
+        pixmap14_ = pixmap14.scaled(int(pixSize * 1.5), int(pixSize * 1.5))
+        pixmap15_ = pixmap15.scaled(int(pixSize * 1.5), int(pixSize * 1.5))
+        pixmap16_ = pixmap16.scaled(int(pixSize * 1.5), int(pixSize * 1.5))
+        pixmap17_ = pixmap17.scaled(int(pixSize * 1.5), int(pixSize * 1.5))
+        pixmap18_ = pixmap18.scaled(int(pixSize * 1.5), int(pixSize * 1.5))
         self.pixmapNum = {14: pixmap14_, 15: pixmap15_, 16: pixmap16_, 17: pixmap17_, 18: pixmap18_}
         # 以上是读取数字的图片，局面中的数字；一下是上方LED数字的图片
         pixLEDmap0 = QPixmap(self.LED0_path)
@@ -228,23 +228,23 @@ class Ui_MainWindow(Ui_MainWindow):
         self.pixmapLEDNumPix = {0: pixLEDmap0, 1: pixLEDmap1, 2: pixLEDmap2, 3: pixLEDmap3,
                         4: pixLEDmap4, 5: pixLEDmap5, 6: pixLEDmap6, 7: pixLEDmap7,
                         8: pixLEDmap8, 9: pixLEDmap9}
-        pixLEDmap0_ = pixLEDmap0.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap1_ = pixLEDmap1.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap2_ = pixLEDmap2.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap3_ = pixLEDmap3.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap4_ = pixLEDmap4.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap5_ = pixLEDmap5.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap6_ = pixLEDmap6.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap7_ = pixLEDmap7.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap8_ = pixLEDmap8.copy().scaled(pixSize, pixSize * 1.75)
-        pixLEDmap9_ = pixLEDmap9.copy().scaled(pixSize, pixSize * 1.75)
+        pixLEDmap0_ = pixLEDmap0.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap1_ = pixLEDmap1.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap2_ = pixLEDmap2.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap3_ = pixLEDmap3.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap4_ = pixLEDmap4.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap5_ = pixLEDmap5.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap6_ = pixLEDmap6.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap7_ = pixLEDmap7.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap8_ = pixLEDmap8.copy().scaled(pixSize, int(pixSize * 1.75))
+        pixLEDmap9_ = pixLEDmap9.copy().scaled(pixSize, int(pixSize * 1.75))
         self.pixmapLEDNum = {0: pixLEDmap0_, 1: pixLEDmap1_, 2: pixLEDmap2_, 3: pixLEDmap3_,
                         4: pixLEDmap4_, 5: pixLEDmap5_, 6: pixLEDmap6_, 7: pixLEDmap7_,
                         8: pixLEDmap8_, 9: pixLEDmap9_}
 
     def reimportLEDPic(self, pixSize):
         # 导重新入资源，并缩放到希望的尺寸、比例
-        self.pixmapNum = {key:value.copy().scaled(pixSize * 1.5, pixSize * 1.5) for key,value in self.pixmapNumPix.items()}
+        self.pixmapNum = {key:value.copy().scaled(int(pixSize * 1.5), int(pixSize * 1.5)) for key,value in self.pixmapNumPix.items()}
         self.pixmapLEDNum = {key:value.copy().scaled(pixSize, pixSize * 1.75) for key,value in self.pixmapLEDNumPix.items()}
 
 

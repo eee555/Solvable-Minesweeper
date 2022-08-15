@@ -41,7 +41,7 @@ class RoundQDialog(QDialog):
             ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
             # i_path.addRect(ref)
             i_path.addRoundedRect(ref, self.border_width, self.border_width)
-            color.setAlpha(150 - i**0.5*50)
+            color.setAlpha(int(150 - i**0.5*50))
             pat.setPen(color)
             pat.drawPath(i_path)
 
@@ -103,7 +103,7 @@ class RoundQWidget(QWidget):
             ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
             # i_path.addRect(ref)
             i_path.addRoundedRect(ref, self.border_width, self.border_width)
-            color.setAlpha(150 - i**0.5*50)
+            color.setAlpha(int(150 - i**0.5*50))
             pat.setPen(color)
             pat.drawPath(i_path)
 
@@ -154,11 +154,11 @@ class StatusLabel (QtWidgets.QLabel):
     def reloadFace(self, pixSize):
         # 重新修改脸的大小，叫rescale_face更妥
         self.pixSize = pixSize
-        self.pixmap1 = QPixmap(self.smilefacedown_path).scaled(self.pixSize * 1.5, self.pixSize * 1.5)
-        self.pixmap2 = QPixmap(self.smileface_path).scaled(self.pixSize * 1.5, self.pixSize * 1.5)
-        # self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
-        self.setMinimumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
-        self.setMaximumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+        self.pixmap1 = QPixmap(self.smilefacedown_path).scaled(int(self.pixSize * 1.5), int(self.pixSize * 1.5))
+        self.pixmap2 = QPixmap(self.smileface_path).scaled(int(self.pixSize * 1.5), int(self.pixSize * 1.5))
+        # self.resize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
+        self.setMinimumSize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
+        self.setMaximumSize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
 
     def setPath(self, r_path):
         # 告诉脸，相对路径
@@ -172,7 +172,7 @@ class StatusLabel (QtWidgets.QLabel):
         self.pixmap1_svg = QPixmap(self.smilefacedown_path)
         self.pixmap2_svg = QPixmap(self.smileface_path)
         self.reloadFace(self.pixSize)
-        self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+        self.resize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
 
     def mousePressEvent(self, e):  ##重载一下鼠标点击事件
         if e.button () == QtCore.Qt.LeftButton:
