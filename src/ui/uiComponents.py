@@ -103,7 +103,7 @@ class RoundQWidget(QWidget):
             ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
             # i_path.addRect(ref)
             i_path.addRoundedRect(ref, self.border_width, self.border_width)
-            color.setAlpha(150 - i**0.5*50)
+            color.setAlpha(int(150 - i**0.5*50))
             pat.setPen(color)
             pat.drawPath(i_path)
 
