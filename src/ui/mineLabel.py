@@ -26,7 +26,7 @@ class mineLabel(QtWidgets.QLabel):
         self.mouse = QPainterPath()
         self.mouse.addPolygon(mouse_)
         self.paint_cursor = False # 是否画光标。不仅控制画光标，还代表了是游戏还是播放录像。
-        
+
     def setPath(self, r_path):
         # 告诉局面控件，相对路径
         self.celldown_path = str(r_path.with_name('media').joinpath('celldown.svg'))
@@ -44,8 +44,8 @@ class mineLabel(QtWidgets.QLabel):
         self.blast_path = str(r_path.with_name('media').joinpath('blast.svg'))
         self.falsemine_path = str(r_path.with_name('media').joinpath('falsemine.svg'))
         self.mine_path = str(r_path.with_name('media').joinpath('mine.svg'))
-        
-    def set_rcp(self, row, column, pixSize): 
+
+    def set_rcp(self, row, column, pixSize):
         # 重设一下宽、高、大小
         self.pixSize = pixSize
         self.paintPossibility = False  # 是否打印概率
@@ -58,19 +58,19 @@ class mineLabel(QtWidgets.QLabel):
         self.resize(QtCore.QSize(self.pixSize * self.column + 8, self.pixSize * self.row + 8))
         self.current_x = self.row # 鼠标坐标，和高亮的展示有关
         self.current_y = self.column
-        
+
         points = [ QPoint(0, 0),   # 你猜这个多边形是什么，它就是鼠标
                   QPoint(0, pixSize),
-                QPoint(0.227 * pixSize, 0.773 * pixSize),
-                QPoint(0.359 * pixSize, 1.125 * pixSize),
-                QPoint(0.493 * pixSize, 1.066 * pixSize),
-                QPoint(0.357 * pixSize, 0.72 * pixSize),
-                QPoint(0.666 * pixSize, 0.72 * pixSize) ]
+                QPoint(int(0.227 * pixSize), int(0.773 * pixSize)),
+                QPoint(int(0.359 * pixSize), int(1.125 * pixSize)),
+                QPoint(int(0.493 * pixSize), int(1.066 * pixSize)),
+                QPoint(int(0.357 * pixSize), int(0.72 * pixSize)),
+                QPoint(int(0.666 * pixSize), int(0.72 * pixSize)) ]
         mouse_ = QPolygonF(points)
         self.mouse = QPainterPath()
         self.mouse.addPolygon(mouse_)
 
-    def mousePressEvent(self, e):  
+    def mousePressEvent(self, e):
         # 重载一下鼠标点击事件
         xx = int((e.localPos().x() - 4) // self.pixSize)
         yy = int((e.localPos().y() - 4) // self.pixSize)
@@ -118,7 +118,7 @@ class mineLabel(QtWidgets.QLabel):
             self.current_x = yy
             self.current_y = xx
         self.mouseMove.emit(yy, xx)
-        
+
     def wheelEvent(self, event):
         # 滚轮事件
         angle=event.angleDelta()
@@ -157,8 +157,8 @@ class mineLabel(QtWidgets.QLabel):
                         painter.setOpacity(1.0)
                 else:
                     painter.drawPixmap(j * pix_size + 4, i * pix_size + 4, QPixmap(self.pixmapNum[game_board[i][j]]))
-        
-        
+
+
         # 画高亮
         if (game_board_state == 2 or game_board_state == 1) and\
             not self.paintPossibility and current_x < self.row and current_y < self.column:
@@ -216,10 +216,10 @@ class mineLabel(QtWidgets.QLabel):
                      5: cell5_, 6: cell6_, 7: cell7_, 8: cell8_,
                      10: cellup_, 11: cellflag_, 14: falsemine_,
                      15: blast_, 16: cellmine_, 100: mine_}
-    
+
     def reloadCellPic(self, pixSize):
         # 从内存导入资源，并缩放到希望的尺寸、比例。
         self.pixmapNum = {key:value.copy().scaled(pixSize, pixSize) for key,value in self.pixmapNumBack.items()}
-        
+
 
 

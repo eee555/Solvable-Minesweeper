@@ -48,7 +48,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         config = configparser.ConfigParser()
         config.read(self.game_setting_path)
-        
+
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             self.actionChecked('B')
         elif (self.row, self.column, self.mineNum) == (16, 16, 40):
@@ -423,17 +423,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # pixmap = QPixmap(self.pixmapNum[14])
         # self.label_2.setPixmap(pixmap)
         # self.label_2.setScaledContents(True)
-        
+
         self.timer.stop()
         self.label.ms_board = ms.MinesweeperBoard([[0] * self.column for _ in range(self.row)])
         self.label.update()
 
         self.operationStream = []
-        
+
         self.label.paintPossibility = False
         self.label.paint_cursor = False
         self.label.setMouseTracking(False) # 鼠标未按下时，组织移动事件回调
-        
+
         if self.game_state == 'display':
             self.timer_video.stop()
             self.ui_video_control.QWidget.close()
@@ -666,7 +666,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_NEvent(self):
         # 游戏设置
         self.actionChecked('N')
-        ui = gameSettings.ui_Form()
+        ui = gameSettings.ui_Form(self.game_setting_path)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -825,11 +825,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 实例化
         if not openfile_name:
             return
-        
+
         if self.game_state == 'display':
             self.ui_video_control.QWidget.close()
         self.game_state = 'display'
-        
+
         video = ms.AvfVideo(openfile_name)
         video.parse_video()
         video.analyse()
@@ -911,7 +911,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.video_time = time / 100
         self.label.ms_board.time = self.video_time
         self.label.update()
-        
+
     def video_set_a_time(self, time):
         # 把录像定位到某一段时间，默认前后一秒，自动播放。是点录像事件的回调
         self.video_time = max(0, (time - 100) / 100)

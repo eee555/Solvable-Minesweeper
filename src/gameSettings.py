@@ -13,20 +13,31 @@ from ui.uiComponents import RoundQDialog
 # from PyQt5.QtWidgets import  QWidget, QDialog
 
 class ui_Form(Ui_Form):
-    def __init__(self):
+    def __init__(self, game_setting_path):
+        self.game_setting_path = game_setting_path
         config = configparser.ConfigParser()
-        config.read('gameSetting.ini')
-        self.timesLimit = config.getint('DEFAULT','timesLimit')
-        self.enuLimit = config.getint('DEFAULT','enuLimit')
+        config.read(game_setting_path)
         self.gameMode = config.getint('DEFAULT','gameMode')
         self.transparency = config.getint('DEFAULT','transparency')
         self.pixSize = config.getint('DEFAULT','pixSize')
         self.row = config.getint("DEFAULT", "row")
         self.column = config.getint("DEFAULT", "column")
         self.mineNum = config.getint("DEFAULT", "mineNum")
-        self.auto_replay = config.getint("DEFAULT", "auto_replay") # 完成度低于该百分比炸雷自动重开
-        self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
-        self.gameover_flag = config.getint("DEFAULT", "gameover_flag") # 游戏结束后自动标雷
+        
+        self.auto_replay = config.getint("DEFAULT", "auto_replay")
+        self.allow_auto_replay = config.getboolean("DEFAULT", "allow_auto_replay")
+        self.auto_notification = config.getboolean("DEFAULT", "auto_notification")
+        self.allow_min3BV = config.getboolean("DEFAULT", "allow_min3BV")
+        self.allow_max3BV = config.getboolean("DEFAULT", "allow_max3BV")
+        
+        self.label = config["DEFAULT"]["label"]
+        self.race_label = config["DEFAULT"]["race_label"]
+        self.country = config["DEFAULT"]["country"]
+        self.autosave_video = config.getboolean("DEFAULT", "autosave_video")
+        self.filter_forever = config.getboolean("DEFAULT", "filter_forever")
+        # self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
+        self.end_then_flag = config.getboolean("DEFAULT", "end_then_flag") # 游戏结束后自动标雷
+        
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             self.min3BV = config.getint('BEGINNER', 'min3BV')
             self.max3BV = config.getint('BEGINNER', 'max3BV')
@@ -45,83 +56,87 @@ class ui_Form(Ui_Form):
         self.setupUi (self.Dialog)
         self.setParameter ()
         self.Dialog.setWindowIcon (QtGui.QIcon ("media/cat.ico"))
-        self.pushButton.clicked.connect (self.processParameter)
-        self.pushButton_2.clicked.connect (self.Dialog.close)
+        self.pushButton_yes.clicked.connect (self.processParameter)
+        self.pushButton_no.clicked.connect (self.Dialog.close)
 
     def setParameter(self):
-        self.spinBox_6.setValue (self.min3BV)
-        self.spinBox_7.setValue (self.max3BV)
-        self.spinBox_8.setValue (self.timesLimit)
-        self.spinBox_9.setValue (self.enuLimit)
-        self.spinBox_10.setValue (self.pixSize)
-        self.spinBox_11.setValue (self.auto_replay)
-        self.spinBox_12.setValue (self.auto_show_score)
-        self.checkBox.setChecked(True if self.gameover_flag else False)
-        self.horizontalSlider.setValue (self.transparency)
-        self.label_7.setText(str(self.transparency))
+        self.spinBox_min_bbbv.setValue (self.min3BV)
+        self.spinBox_max_bbbv.setValue (self.max3BV)
+        self.spinBox_pixsize.setValue (self.pixSize)
+        self.spinBox_auto_replay.setValue (self.auto_replay)
+        self.checkBox_auto_replay.setChecked(self.allow_auto_replay)
+        self.checkBox_auto_notification.setChecked(self.auto_notification)
+        self.checkBox_allow_min3BV.setChecked(self.allow_min3BV)
+        self.checkBox_allow_max3BV.setChecked(self.allow_max3BV)
+        self.checkBox_autosave_video.setChecked(self.autosave_video)
+        self.checkBox_filter_forever.setChecked(self.filter_forever)
+        self.lineEdit_label.setText(self.label)
+        self.lineEdit_race_label.setText(self.race_label)
+        self.lineEdit_country.setText(self.country)
+        self.checkBox_end_then_flag.setChecked(self.end_then_flag)
+        self.horizontalSlider_transparency.setValue (self.transparency)
+        self.label_transparency_percent_value.setText(str(self.transparency))
         # gameMode = 0，1，2，3，4，5，6，7代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
-        if self.gameMode == 0:
-            self.radioButton.setChecked(True)
-        elif self.gameMode == 1:
-            self.radioButton_2.setChecked(True)
-        elif self.gameMode == 2:
-            self.radioButton_5.setChecked(True)
-        elif self.gameMode == 3:
-            self.radioButton_3.setChecked(True)
-        elif self.gameMode == 4:
-            self.radioButton_4.setChecked(True)
-        elif self.gameMode == 5:
-            self.radioButton_6.setChecked(True)
-        elif self.gameMode == 6:
-            self.radioButton_7.setChecked(True)
-        else:
-            self.radioButton_8.setChecked(True)
-
-
+        self.comboBox_gamemode.setCurrentIndex([0, 1, 4, 3, 2, 5, 6, 7][self.gameMode])
+        
     def processParameter(self):
         #只有点确定才能进来
 
         self.alter = True
-        self.min3BV = self.spinBox_6.value()
-        self.max3BV = self.spinBox_7.value()
-        self.timesLimit = self.spinBox_8.value()
-        self.enuLimit = self.spinBox_9.value()
-        self.transparency = self.horizontalSlider.value()
-        self.pixSize = self.spinBox_10.value()
-        self.auto_replay = self.spinBox_11.value()
-        self.auto_show_score = self.spinBox_12.value()
-        self.gameover_flag = 1 if self.checkBox.isChecked() else 0
-        # gameMode = 0，1，2，3，4，5，6，7代表：
+        self.min3BV = self.spinBox_min_bbbv.value()
+        self.max3BV = self.spinBox_max_bbbv.value()
+        self.transparency = self.horizontalSlider_transparency.value()
+        self.pixSize = self.spinBox_pixsize.value()
+        
+        self.auto_replay = self.spinBox_auto_replay.value()
+        self.allow_auto_replay = self.checkBox_auto_replay.isChecked()
+        self.auto_notification = self.checkBox_auto_notification.isChecked()
+        self.allow_min3BV = self.checkBox_allow_min3BV.isChecked()
+        self.allow_max3BV = self.checkBox_allow_max3BV.isChecked()
+        
+        self.label = self.lineEdit_label.text()
+        self.race_label = self.lineEdit_race_label.text()
+        self.country = self.lineEdit_country.text()
+        self.autosave_video = self.checkBox_autosave_video.isChecked()
+        self.filter_forever = self.checkBox_filter_forever.isChecked()
+        # self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
+        self.end_then_flag = self.checkBox_end_then_flag.isChecked() # 游戏结束后自动标雷
+        self.gameMode = [0, 1, 4, 3, 2, 5, 6, 7][self.comboBox_gamemode.currentIndex()]
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
-        if self.radioButton.isChecked() == True:
-            self.gameMode = 0
-        elif self.radioButton_2.isChecked() == True:
-            self.gameMode = 1
-        elif self.radioButton_3.isChecked() == True:
-            self.gameMode = 3
-        elif self.radioButton_4.isChecked() == True:
-            self.gameMode = 4
-        elif self.radioButton_5.isChecked() == True:
-            self.gameMode = 2
-        elif self.radioButton_6.isChecked() == True:
-            self.gameMode = 5
-        elif self.radioButton_7.isChecked() == True:
-            self.gameMode = 6
-        elif self.radioButton_8.isChecked() == True:
-            self.gameMode = 7
-
+        
         conf = configparser.ConfigParser()
-        conf.read("gameSetting.ini")
+        conf.read(self.game_setting_path)
         # conf.set("DEFAULT", "min3BV", str(self.min3BV))
         # conf.set("DEFAULT", "max3BV", str(self.max3BV))
-        conf.set("DEFAULT", "timesLimit", str(self.timesLimit))
-        conf.set("DEFAULT", "enuLimit", str(self.enuLimit))
+        # conf.set("DEFAULT", "timesLimit", str(self.timesLimit))
+        # conf.set("DEFAULT", "enuLimit", str(self.enuLimit))
         conf.set("DEFAULT", "gameMode", str(self.gameMode))
         conf.set("DEFAULT", "transparency", str(self.transparency))
         conf.set("DEFAULT", "pixSize", str(self.pixSize))
+        
+        
+        
+        
+        
         conf.set("DEFAULT", "auto_replay", str(self.auto_replay))
+        conf.set("DEFAULT", "allow_auto_replay", str(self.allow_auto_replay))
         conf.set("DEFAULT", "auto_show_score", str(self.auto_show_score))
+        conf.set("DEFAULT", "auto_notification", str(self.auto_notification))
+        conf.set("DEFAULT", "allow_min3BV", str(self.allow_min3BV))
+        conf.set("DEFAULT", "allow_max3BV", str(self.allow_max3BV))
+        
+        self.label = self.lineEdit_label.text()
+        self.race_label = self.lineEdit_race_label.text()
+        self.country = self.lineEdit_country.text()
+        self.autosave_video = self.checkBox_autosave_video.isChecked()
+        self.filter_forever = self.checkBox_filter_forever.isChecked()
+        # self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
+        self.end_then_flag = self.checkBox_end_then_flag.isChecked()
+        
+        
+        
+        
         conf.set("DEFAULT", "gameover_flag", str(self.gameover_flag))
         conf.write(open('gameSetting.ini', "w"))
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
@@ -136,7 +151,7 @@ class ui_Form(Ui_Form):
         else:
             conf.set("CUSTOM", "min3BV", str(self.min3BV))
             conf.set("CUSTOM", "max3BV", str(self.max3BV))
-        conf.write(open('gameSetting.ini', "w"))
+        conf.write(open(self.game_setting_path, "w"))
 
         self.Dialog.close ()
 

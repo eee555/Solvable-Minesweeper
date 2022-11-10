@@ -41,7 +41,7 @@ class RoundQDialog(QDialog):
             ref = QRectF(10-i, 10-i, self.width()-(10-i)*2, self.height()-(10-i)*2)
             # i_path.addRect(ref)
             i_path.addRoundedRect(ref, self.border_width, self.border_width)
-            color.setAlpha(150 - i**0.5*50)
+            color.setAlpha(150 - int(i**0.5*50)) # 为什么这个公式？
             pat.setPen(color)
             pat.drawPath(i_path)
 
@@ -57,7 +57,7 @@ class RoundQDialog(QDialog):
         rect.setWidth(rect.width()-9)
         rect.setHeight(rect.height()-9)
         pat2.drawRoundedRect(rect, 10, 10)
-        
+
     def mousePressEvent(self, e):
         if e.button() == Qt.LeftButton:
             self.m_drag = True
@@ -74,7 +74,7 @@ class RoundQDialog(QDialog):
         if Qt.LeftButton and self.m_drag:
             self.move(e.globalPos() - self.m_DragPosition)
             e.accept()
-            
+
 class RoundQWidget(QWidget):
     barSetMineNum = QtCore.pyqtSignal(int)
     barSetMineNumCalPoss = QtCore.pyqtSignal()
@@ -119,7 +119,7 @@ class RoundQWidget(QWidget):
         rect.setWidth(rect.width()-9)
         rect.setHeight(rect.height()-9)
         pat2.drawRoundedRect(rect, 10, 10)
-        
+
     def mousePressEvent(self, e):
         if e.button() == Qt.LeftButton:
             self.m_drag = True
@@ -136,43 +136,43 @@ class RoundQWidget(QWidget):
         if Qt.LeftButton and self.m_drag:
             self.move(e.globalPos() - self.m_DragPosition)
             e.accept()
-            
-            
+
+
 class StatusLabel (QtWidgets.QLabel):
     # 最上面的脸的控件，在这里重写一些方法
     leftRelease = QtCore.pyqtSignal ()  # 定义信号
 
     def __init__(self, parent=None):
         super (StatusLabel, self).__init__ (parent)
-        
+
         self.setFrameShape (QtWidgets.QFrame.Panel)
         self.setFrameShadow (QtWidgets.QFrame.Raised)
         self.setLineWidth(1)
         self.setAlignment (QtCore.Qt.AlignCenter)
-        
+
 
     def reloadFace(self, pixSize):
         # 重新修改脸的大小，叫rescale_face更妥
         self.pixSize = pixSize
-        self.pixmap1 = QPixmap(self.smilefacedown_path).scaled(self.pixSize * 1.5, self.pixSize * 1.5)
-        self.pixmap2 = QPixmap(self.smileface_path).scaled(self.pixSize * 1.5, self.pixSize * 1.5)
-        # self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
-        self.setMinimumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
-        self.setMaximumSize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+        self.pixmap1 = QPixmap(self.smilefacedown_path).scaled(int(self.pixSize * 1.5), int(self.pixSize * 1.5))
+        self.pixmap2 = QPixmap(self.smileface_path).scaled(int(self.pixSize * 1.5), int(self.pixSize * 1.5))
+        # self.resize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
+        self.setMinimumSize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
+        self.setMaximumSize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
 
     def setPath(self, r_path):
         # 告诉脸，相对路径
         game_setting_path = str(r_path.with_name('gameSetting.ini'))
         self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
         self.smilefacedown_path = str(r_path.with_name('media').joinpath('smilefacedown.svg'))
-        
+
         config = configparser.ConfigParser()
         config.read(game_setting_path)
         self.pixSize = config.getint('DEFAULT','pixSize')
         self.pixmap1_svg = QPixmap(self.smilefacedown_path)
         self.pixmap2_svg = QPixmap(self.smileface_path)
         self.reloadFace(self.pixSize)
-        self.resize(QtCore.QSize(self.pixSize * 1.5, self.pixSize * 1.5))
+        self.resize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
 
     def mousePressEvent(self, e):  ##重载一下鼠标点击事件
         if e.button () == QtCore.Qt.LeftButton:
@@ -183,7 +183,7 @@ class StatusLabel (QtWidgets.QLabel):
             self.setPixmap(self.pixmap2)
             if self.pixSize * 1.5 >= e.localPos().x() >= 0 and 0 <= e.localPos().y() <= self.pixSize*1.5:
                 self.leftRelease.emit()
-                
+
 
 # 录像播放控制面板上的调节速度的标签
 class SpeedLabel(QtWidgets.QLabel):
@@ -205,7 +205,7 @@ class SpeedLabel(QtWidgets.QLabel):
         text = self.speed_gear[self.speed_gear_id]
         self.setText(text)
         self.wEvent.emit(float(text))
-        
+
 # 录像播放控制面板上的事件标签
 class CommentLabel(QtWidgets.QLabel):
     Release = QtCore.pyqtSignal(int)
@@ -215,7 +215,7 @@ class CommentLabel(QtWidgets.QLabel):
             text = "%.2f"%text
         self.setText(text)
         self.time_100 = time_100
-        
+
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
         font.setPointSize(12)
@@ -225,11 +225,11 @@ class CommentLabel(QtWidgets.QLabel):
             self.setAlignment(QtCore.Qt.AlignCenter)
     def mouseReleaseEvent(self, e):
         self.Release.emit(self.time_100)
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
 
