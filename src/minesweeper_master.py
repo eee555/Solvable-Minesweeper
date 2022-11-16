@@ -3,6 +3,7 @@ from random import shuffle, choice
 # from random import randint, seed, sample
 # from itertools import combinations
 # import time
+from safe_eval import safe_eval
 
 import ms_toollib as ms
 import math
@@ -11,56 +12,125 @@ OutputEnable = 0
 # seedNum = 60223
 EnuLimit = 40
 
-def choose_3BV(min_3BV, max_3BV, time_limit, params):
+def choose_3BV(board_constraint, attempt_times_limit, params):
+    # def choose_3BV_laymine(laymine):
+    #     t = 0
+    #     while t < attempt_times_limit:
+    #         ans = laymine(params)
+    #         if not isinstance(ans, tuple):
+    #             ans = (ans, True)
+            
+    #         if min_3BV <= ms.cal3BV(ans[0]) <= max_3BV:
+    #             return (ans[0], True and ans[1])
+    #     return (ans[0], False)
+    # return choose_3BV_laymine
     def choose_3BV_laymine(laymine):
+        if not board_constraint:
+            b = laymine(params)
+            if isinstance(b, tuple):
+                b, success_flag = b
+            else:
+                success_flag = True
         t = 0
-        while t < time_limit:
-            ans = laymine(params)
-            if not isinstance(ans, tuple):
-                ans = (ans, True)
-            if min_3BV <= ms.cal3BV(ans[0]) <= max_3BV:
-                return (ans[0], True and ans[1])
-        return (ans[0], False)
+        while t < attempt_times_limit:
+            b = laymine(params)
+            if isinstance(b, tuple):
+                return b
+            else:
+                return (b, True)
+                
+            constraints = {
+                "sin": math.sin,
+                "tan": math.tan,
+                "cos": math.cos,
+                }
+            if "bbbv" in board_constraint:
+                constraints.update({"bbbv": ms.cal3BV(b)})
+            if "op" in board_constraint:
+                constraints.update({"op": ms.cal_op(b)})
+            if "isl" in board_constraint:
+                constraints.update({"isl": ms.cal_isl(b)})
+            if "cell7" in board_constraint:
+                constraints.update({"cell7": ms.cal_cell7(b)})
+            if "cell8" in board_constraint:
+                constraints.update({"cell7": ms.cal_cell8(b)})
+            
+            if safe_eval(board_constraint, globals=constraints):
+                return (b, success_flag)
+        return (b, success_flag)
     return choose_3BV_laymine
     
 # 此处的board，看似是函数，实际由于装饰器的缘故是一个局面的列表
-def laymine_solvable_thread(min_3BV, max_3BV, time_limit, params):
-    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+def laymine_solvable_thread(board_constraint, attempt_times_limit, params):
+    @choose_3BV(board_constraint, attempt_times_limit, params)
     def board(pp):
         return ms.laymine_solvable_thread(*pp)
     return board
 
-def laymine(min_3BV, max_3BV, time_limit, params):
-    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+def laymine(board_constraint, attempt_times_limit, params):
+    @choose_3BV(board_constraint, attempt_times_limit, params)
     def board(pp):
         return ms.laymine(*pp)
     return board
 
-def laymine_op(min_3BV, max_3BV, time_limit, params):
-    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+def laymine_op(board_constraint, attempt_times_limit, params):
+    @choose_3BV(board_constraint, attempt_times_limit, params)
     def board(pp):
         return ms.laymine_op(*pp)
     return board
 
-def laymine_solvable_adjust(min_3BV, max_3BV, time_limit, params):
+def laymine_solvable_adjust(board_constraint, attempt_times_limit, params):
     # 暂时用不了
-    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+    @choose_3BV(board_constraint, attempt_times_limit, params)
     def board(pp):
         return ms.laymine_solvable_adjust(*pp)
     return board
 
+def get_mine_times_limit(row: int, column: int):
+    '''
+    计算局面的雷数上限和尝试次数上限。当雷数小于等于雷数上限时，才可以用筛选法。
+    
+    Parameters
+    ----------
+    row : int
+        >= 1, 行数/高。
+    column : int
+        >= 1, 列数/宽。
+
+    Returns
+    -------
+    int
+        雷数上限。
+    int
+        尝试次数上限。
+
+    '''
+    area = row * column
+    if area <= 64:
+        return (int(area * 0.375) + 1, 100000)
+    elif area <= 256:
+        return (int(area * (-area * 0.00048828125 + 0.40625)) + 2, 100000)
+    elif area <= 480:
+        return (int(area * (-area * 0.00013950892857 + 0.3169642857136)) + 2, 100000)
+    elif area <= 864:
+        return (int(area * (-area * 4.8225308641979135e-05 + 0.27314814814814997)) + 2, 50000)
+    elif area <= 6400:
+        return (int(area * (-area * 5.686683793619943e-06 + 0.23639477627916763)) + 2, 20000)
+    else:
+        return (int(area * 0.2) + 2, 10000)
+
 def laymine_solvable_auto(row, column, mine_num, x, y):
     # 自动选择方式的无猜埋雷
-    ans = ms.laymine_solvable_thread(row, column, mine_num, x, y, int(6400000 / row / column))
-    if ans[1]:
-        return ans
-    else:
-        # return ms.laymine_solvable_adjust(row, column, mine_num, x, y)
-        # 调整法还有bug
-        return ms.laymine_op(row, column, mine_num, x, y)
+    (max_mine_num, max_times) = get_mine_times_limit(row, column)
+    if mine_num <= max_mine_num:
+        ans = ms.laymine_solvable_thread(row, column, mine_num, x, y, max_times)
+        if ans[1]:
+            return ans
+    return ms.laymine_solvable_adjust(row, column, mine_num, x, y)
     
-def laymine_solvable(min_3BV, max_3BV, time_limit, params):
-    @choose_3BV(min_3BV, max_3BV, time_limit, params)
+    
+def laymine_solvable(board_constraint, attempt_times_limit, params):
+    @choose_3BV(board_constraint, attempt_times_limit, params)
     def board(pp):
         return laymine_solvable_auto(*pp)
     return board

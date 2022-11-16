@@ -46,7 +46,7 @@ class mineLabel(QtWidgets.QLabel):
         self.mine_path = str(r_path.with_name('media').joinpath('mine.svg'))
 
     def set_rcp(self, row, column, pixSize):
-        # 重设一下宽、高、大小
+        # ui层面，重设一下宽、高、大小
         self.pixSize = pixSize
         self.paintPossibility = False  # 是否打印概率
         if (self.row, self.column) != (row, column): # 如果不相等，重新实例化

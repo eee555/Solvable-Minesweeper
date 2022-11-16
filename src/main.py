@@ -47,10 +47,13 @@ if __name__ == "__main__":
 # 'display':正在播放录像。
 # 'showdisplay':正在一边播放录像、一边看概率。播放录像时按空格进入。
 
-
-
-
-
+# 指标命名：
+# 实时更新类：rtime, left, right, double，cl，left_s，right_s, double_s, path, 
+#           flag, flag_s
+# 录像动态类：etime, stnb, rqp, qg, ioe, thrp, corr, ce, ce_s, bbbv_solved, 
+#           bbbv_s
+# 录像静态类：bbbv，op, isl, cell0, cell1, cell2, cell3, cell4, cell5, cell6,
+#           cell7, cell8, fps
 
 
 

@@ -16,7 +16,10 @@ class Ui_MainWindow(Ui_MainWindow):
         self.mainWindow = MainWindow
         # 设置全局路径
         r_path = Path(args[0])
+        # 记录了全局游戏设置
         self.game_setting_path = str(r_path.with_name('gameSetting.ini'))
+        # 记录了计数器的配置，显示哪些指标等等
+        self.score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
         self.ico_path = str(r_path.with_name('media').joinpath('cat.ico'))
         self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
         self.clickface_path = str(r_path.with_name('media').joinpath('clickface.svg'))
@@ -37,6 +40,8 @@ class Ui_MainWindow(Ui_MainWindow):
 
         self.mainWindow.setWindowIcon(QIcon(self.ico_path))
 
+        self.predefinedBoardPara = [{}] * 7
+        # 缓存了6套游戏模式的配置，以减少快捷键切换模式时的io
         config = configparser.ConfigParser()
         # gameMode = 0，1，2，3，4，5，6，7代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
@@ -49,33 +54,32 @@ class Ui_MainWindow(Ui_MainWindow):
             self.column = config.getint("DEFAULT", "column")
             self.mineNum = config.getint("DEFAULT", "mineNum")
             # 完成度低于该百分比炸雷自动重开
-            self.auto_replay = config.getint("DEFAULT", "auto_replay")
-            self.allow_auto_replay = config.getboolean("DEFAULT", "allow_auto_replay")
+            if config.getboolean("DEFAULT", "allow_auto_replay"):
+                self.auto_replay = config.getint("DEFAULT", "auto_replay")
+            else:
+                self.auto_replay = -1
             self.auto_notification = config.getboolean("DEFAULT", "auto_notification")
-            self.allow_min3BV = config.getboolean("DEFAULT", "allow_min3BV")
-            self.allow_max3BV = config.getboolean("DEFAULT", "allow_max3BV")
             
-            self.label = config["DEFAULT"]["label"]
-            self.race_label = config["DEFAULT"]["race_label"]
+            self.player_label = config["DEFAULT"]["player_label"]
+            self.race_player_label = config["DEFAULT"]["race_player_label"]
             self.country = config["DEFAULT"]["country"]
-            self.autosave_video = self.allow_max3BV = config.getboolean("DEFAULT", "autosave_video")
-            self.filter_forever = self.allow_max3BV = config.getboolean("DEFAULT", "filter_forever")
+            self.autosave_video = config.getboolean("DEFAULT", "autosave_video")
+            self.filter_forever = config.getboolean("DEFAULT", "filter_forever")
             # self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
             self.end_then_flag = config.getboolean("DEFAULT", "end_then_flag") # 游戏结束后自动标雷
             
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
-                self.min3BV = config.getint('BEGINNER', 'min3BV')
-                self.max3BV = config.getint('BEGINNER', 'max3BV')
+                self.board_constraint = config["BEGINNER"]["board_constraint"]
+                self.attempt_times_limit = config.getint('BEGINNER', 'attempt_times_limit')
             elif (self.row, self.column, self.mineNum) == (16, 16, 40):
-                self.min3BV = config.getint('INTERMEDIATE', 'min3BV')
-                self.max3BV = config.getint('INTERMEDIATE', 'max3BV')
+                self.board_constraint = config["INTERMEDIATE"]["board_constraint"]
+                self.attempt_times_limit = config.getint('INTERMEDIATE', 'attempt_times_limit')
             elif (self.row, self.column, self.mineNum) == (16, 30, 99):
-                self.min3BV = config.getint('EXPERT', 'min3BV')
-                self.max3BV = config.getint('EXPERT', 'max3BV')
+                self.board_constraint = config["EXPERT"]["board_constraint"]
+                self.attempt_times_limit = config.getint('EXPERT', 'attempt_times_limit')
             else:
-                self.min3BV = config.getint('CUSTOM', 'min3BV')
-                self.max3BV = config.getint('CUSTOM', 'max3BV')
-            self.readPredefinedBoard()
+                self.board_constraint = config["CUSTOM"]["board_constraint"]
+                self.attempt_times_limit = config.getint('CUSTOM', 'attempt_times_limit')
         else:
             # 找不到配置文件就初始化
             self.min3BV = 100
@@ -92,8 +96,8 @@ class Ui_MainWindow(Ui_MainWindow):
             self.auto_notification = True
             self.allow_min3BV = False
             self.allow_max3BV = False
-            self.label = "匿名玩家(anonymous player)"
-            self.race_label = ""
+            self.player_label = "匿名玩家(anonymous player)"
+            self.race_player_label = ""
             self.country = "未知(unknow)"
             self.autosave_video = True
             self.filter_forever = False
@@ -109,60 +113,70 @@ class Ui_MainWindow(Ui_MainWindow):
                                  "auto_replay": 30,
                                  "allow_auto_replay": False,
                                  "auto_notification": True,
-                                 "allow_min3BV": False,
-                                 "allow_max3BV": False,
-                                 "label": "匿名玩家(anonymous player)",
-                                 "race_label": "",
+                                 # "board_constraint": "",
+                                 # "attempt_times_limit": 0,
+                                 "player_label": "匿名玩家(anonymous player)",
+                                 "race_player_label": "",
                                  "country": "未知(unknow)",
                                  "autosave_video": True,
                                  "filter_forever": False,
                                  "end_then_flag": True,
                                  }
-            config["BEGINNER"] = {'min3BV': 2,
-                                  'max3BV': 54,
+            config["BEGINNER"] = {"board_constraint": "",
+                                  "attempt_times_limit": 0,
                                   }
-            config["INTERMEDIATE"] = {'min3BV': 30,
-                                      'max3BV': 216,
+            config["INTERMEDIATE"] = {"board_constraint": "",
+                                      "attempt_times_limit": 0,
                                       }
-            config["EXPERT"] = {'min3BV': 100,
-                                 'max3BV': 381,
-                                 }
-            config["CUSTOM"] = {'min3BV': 1,
-                                'max3BV': 9999,
+            config["EXPERT"] = {"board_constraint": "",
+                                "attempt_times_limit": 0,
+                                }
+            config["CUSTOM"] = {"board_constraint": "",
+                                "attempt_times_limit": 0,
                                  }
             config["CUSTOM_PRESET_4"] = {'row': 16,
                                          'column': 16,
-                                         'mineNum': 72,
+                                         'minenum': 72,
                                          'gameMode': 2,
                                          'pixSize': 20,
-                                         'timesLimit': 100000,
-                                         'enuLimit': 30,
-                                         'min3BV': 0,
-                                         'max3BV': 9999,
+                                         "board_constraint": "",
+                                         "attempt_times_limit": 0,
                                          }
             config["CUSTOM_PRESET_5"] = {'row': 16,
                                          'column': 30,
-                                         'mineNum': 120,
-                                         'gameMode': 2,
-                                         'pixSize': 20,
-                                         'timesLimit': 100000,
-                                         'enuLimit': 30,
-                                         'min3BV': 0,
-                                         'max3BV': 9999,
+                                         'minenum': 120,
+                                         'gamemode': 2,
+                                         'pixsize': 20,
+                                         "board_constraint": "",
+                                         "attempt_times_limit": 0,
                                          }
             config["CUSTOM_PRESET_6"] = {'row': 24,
                                          'column': 36,
-                                         'mineNum': 200,
-                                         'gameMode': 2,
-                                         'pixSize': 20,
-                                         'timesLimit': 100000,
-                                         'enuLimit': 30,
-                                         'min3BV': 0,
-                                         'max3BV': 9999,
+                                         'minenum': 200,
+                                         'gamemode': 2,
+                                         'pixsize': 20,
+                                         "board_constraint": "",
+                                         "attempt_times_limit": 0,
                                          }
             with open(self.game_setting_path, 'w') as configfile:
                 config.write(configfile)  # 将对象写入文件
 
+        self.readPredefinedBoardPara()
+        
+        # 计时器配置
+        config_score_board = configparser.ConfigParser()
+        if config_score_board.read(self.score_board_path):
+            score_board_indexes = {
+                
+                }
+        else:
+            config["DEFAULT"] = {
+                "RTime": "rtime",
+                "Est RTime": "rtime / solved_bbbv * bbbv",
+                "3BV": "bbbv",
+                "3BV/s": "solved_bbbv / rtime",
+                
+                }
 
         self.setupUi(self.mainWindow)
         self.retranslateUi(MainWindow)
@@ -181,8 +195,10 @@ class Ui_MainWindow(Ui_MainWindow):
         pe = QPalette()
         pe.setColor(QPalette.WindowText, Qt.black)  # 设置字体颜色
         self.label_info.setPalette(pe)         # 最下面的框
-        self.label_info.setFont(QFont("Arial", 20, QFont.Bold))
-        self.label_info.setText(str(self.mineNum))
+        # self.label_info.setFont(QFont("Arial", 20, QFont.Bold))
+        # self.label_info.setText(str(self.mineNum))
+        
+        self.label_info.setText(self.player_label)
 
         self.frameShortcut1 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_1), MainWindow)
         self.frameShortcut2 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_2), MainWindow)
@@ -270,44 +286,75 @@ class Ui_MainWindow(Ui_MainWindow):
         self.pixmapLEDNum = {key:value.copy().scaled(pixSize, int(pixSize * 1.75)) for key,value in self.pixmapLEDNumPix.items()}
 
 
-    def readPredefinedBoard(self):
-        # modTable = [0,1,2,3,4,5,6,7]
-        self.predefinedBoardPara = {}
+    def readPredefinedBoardPara(self):
+        # 从配置中更新出快捷键1, 2, 3, 4、5、6的定义(0是自定义)
         config = configparser.ConfigParser()
         config.read(self.game_setting_path)
-        self.predefinedBoardPara[4] = [
-            config.getint('CUSTOM_PRESET_4','gameMode'),
-            config.getint('CUSTOM_PRESET_4','max3BV'),
-            config.getint('CUSTOM_PRESET_4','min3BV'),
-            config.getint('CUSTOM_PRESET_4','row'),
-            config.getint('CUSTOM_PRESET_4','column'),
-            config.getint('CUSTOM_PRESET_4','pixSize'),
-            config.getint('CUSTOM_PRESET_4','timesLimit'),
-            config.getint('CUSTOM_PRESET_4','enuLimit'),
-            config.getint('CUSTOM_PRESET_4','mineNum'),
-            ]
+        self.predefinedBoardPara[0] = {
+            "game_mode": config.getint('DEFAULT','gamemode'),
+            "row": 8,
+            "column": 8,
+            "pix_size": config.getint('DEFAULT','pixsize'),
+            "mine_num": 10,
+            "board_constraint": config["CUSTOM"]["board_constraint"],
+            "attempt_times_limit": config.getint('CUSTOM','attempt_times_limit'),
+            }
+        self.predefinedBoardPara[1] = {
+            "game_mode": config.getint('DEFAULT','gamemode'),
+            "row": 8,
+            "column": 8,
+            "pix_size": config.getint('DEFAULT','pixsize'),
+            "mine_num": 10,
+            "board_constraint": config["BEGINNER"]["board_constraint"],
+            "attempt_times_limit": config.getint('BEGINNER','attempt_times_limit'),
+            }
+        self.predefinedBoardPara[2] = {
+            "game_mode": config.getint('DEFAULT','gamemode'),
+            "row": 16,
+            "column": 16,
+            "pix_size": config.getint('DEFAULT','pixsize'),
+            "mine_num": 40,
+            "board_constraint": config["INTERMEDIATE"]["board_constraint"],
+            "attempt_times_limit": config.getint('INTERMEDIATE','attempt_times_limit'),
+            }
+        self.predefinedBoardPara[3] = {
+            "game_mode": config.getint('DEFAULT','gamemode'),
+            "row": 16,
+            "column": 30,
+            "pix_size": config.getint('DEFAULT','pixsize'),
+            "mine_num": 99,
+            "board_constraint": config["EXPERT"]["board_constraint"],
+            "attempt_times_limit": config.getint('EXPERT','attempt_times_limit'),
+            }
+        self.predefinedBoardPara[4] = {
+            "game_mode": config.getint('CUSTOM_PRESET_4','gameMode'),
+            "row": config.getint('CUSTOM_PRESET_4','row'),
+            "column": config.getint('CUSTOM_PRESET_4','column'),
+            "pix_size": config.getint('CUSTOM_PRESET_4','pixSize'),
+            "mine_num": config.getint('CUSTOM_PRESET_4','mineNum'),
+            "board_constraint": config["CUSTOM_PRESET_4"]["board_constraint"],
+            "attempt_times_limit": config.getint('CUSTOM_PRESET_4','attempt_times_limit'),
+            }
 
-        self.predefinedBoardPara[5] = [
-            config.getint('CUSTOM_PRESET_5','gameMode'),
-            config.getint('CUSTOM_PRESET_5','max3BV'),
-            config.getint('CUSTOM_PRESET_5','min3BV'),
-            config.getint('CUSTOM_PRESET_5','row'),
-            config.getint('CUSTOM_PRESET_5','column'),
-            config.getint('CUSTOM_PRESET_5','pixSize'),
-            config.getint('CUSTOM_PRESET_5','timesLimit'),
-            config.getint('CUSTOM_PRESET_5','enuLimit'),
-            config.getint('CUSTOM_PRESET_5','mineNum')]
-
-        self.predefinedBoardPara[6] = [
-            config.getint('CUSTOM_PRESET_6','gameMode'),
-            config.getint('CUSTOM_PRESET_6','max3BV'),
-            config.getint('CUSTOM_PRESET_6','min3BV'),
-            config.getint('CUSTOM_PRESET_6','row'),
-            config.getint('CUSTOM_PRESET_6','column'),
-            config.getint('CUSTOM_PRESET_6','pixSize'),
-            config.getint('CUSTOM_PRESET_6','timesLimit'),
-            config.getint('CUSTOM_PRESET_6','enuLimit'),
-            config.getint('CUSTOM_PRESET_6','mineNum')]
+        self.predefinedBoardPara[5] = {
+            "game_mode": config.getint('CUSTOM_PRESET_5','gameMode'),
+            "row": config.getint('CUSTOM_PRESET_5','row'),
+            "column": config.getint('CUSTOM_PRESET_5','column'),
+            "pix_size": config.getint('CUSTOM_PRESET_5','pixSize'),
+            "mine_num": config.getint('CUSTOM_PRESET_5','mineNum'),
+            "board_constraint": config["CUSTOM_PRESET_5"]["board_constraint"],
+            "attempt_times_limit": config.getint('CUSTOM_PRESET_5','attempt_times_limit'),
+            }
+        
+        self.predefinedBoardPara[6] = {
+            "game_mode": config.getint('CUSTOM_PRESET_6','gameMode'),
+            "row": config.getint('CUSTOM_PRESET_6','row'),
+            "column": config.getint('CUSTOM_PRESET_6','column'),
+            "pix_size": config.getint('CUSTOM_PRESET_6','pixSize'),
+            "mine_num": config.getint('CUSTOM_PRESET_6','mineNum'),
+            "board_constraint": config["CUSTOM_PRESET_6"]["board_constraint"],
+            "attempt_times_limit": config.getint('CUSTOM_PRESET_6','attempt_times_limit'),
+            }
 
     def minimumWindow(self):
         # 最小化展示窗口，并固定尺寸
