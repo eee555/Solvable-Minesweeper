@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QScrollArea
 from PyQt5.QtSvg import QSvgWidget
 from ui.ui_main_board import Ui_MainWindow
 from pathlib import Path
+from gameScoreBoard import gameScoreBoardManager
 
 class Ui_MainWindow(Ui_MainWindow):
     minimum_counter = 0 # 最小化展示窗口有关
@@ -19,7 +20,6 @@ class Ui_MainWindow(Ui_MainWindow):
         # 记录了全局游戏设置
         self.game_setting_path = str(r_path.with_name('gameSetting.ini'))
         # 记录了计数器的配置，显示哪些指标等等
-        self.score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
         self.ico_path = str(r_path.with_name('media').joinpath('cat.ico'))
         self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
         self.clickface_path = str(r_path.with_name('media').joinpath('clickface.svg'))
@@ -61,7 +61,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.auto_notification = config.getboolean("DEFAULT", "auto_notification")
             
             self.player_label = config["DEFAULT"]["player_label"]
-            self.race_player_label = config["DEFAULT"]["race_player_label"]
+            self.race_designator = config["DEFAULT"]["race_designator"]
             self.country = config["DEFAULT"]["country"]
             self.autosave_video = config.getboolean("DEFAULT", "autosave_video")
             self.filter_forever = config.getboolean("DEFAULT", "filter_forever")
@@ -97,7 +97,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.allow_min3BV = False
             self.allow_max3BV = False
             self.player_label = "匿名玩家(anonymous player)"
-            self.race_player_label = ""
+            self.race_designator = ""
             self.country = "未知(unknow)"
             self.autosave_video = True
             self.filter_forever = False
@@ -123,16 +123,16 @@ class Ui_MainWindow(Ui_MainWindow):
                                  "end_then_flag": True,
                                  }
             config["BEGINNER"] = {"board_constraint": "",
-                                  "attempt_times_limit": 0,
+                                  "attempt_times_limit": 100000,
                                   }
             config["INTERMEDIATE"] = {"board_constraint": "",
-                                      "attempt_times_limit": 0,
+                                      "attempt_times_limit": 100000,
                                       }
             config["EXPERT"] = {"board_constraint": "",
-                                "attempt_times_limit": 0,
+                                "attempt_times_limit": 100000,
                                 }
             config["CUSTOM"] = {"board_constraint": "",
-                                "attempt_times_limit": 0,
+                                "attempt_times_limit": 100000,
                                  }
             config["CUSTOM_PRESET_4"] = {'row': 16,
                                          'column': 16,
@@ -140,7 +140,7 @@ class Ui_MainWindow(Ui_MainWindow):
                                          'gameMode': 2,
                                          'pixSize': 20,
                                          "board_constraint": "",
-                                         "attempt_times_limit": 0,
+                                         "attempt_times_limit": 100000,
                                          }
             config["CUSTOM_PRESET_5"] = {'row': 16,
                                          'column': 30,
@@ -148,7 +148,7 @@ class Ui_MainWindow(Ui_MainWindow):
                                          'gamemode': 2,
                                          'pixsize': 20,
                                          "board_constraint": "",
-                                         "attempt_times_limit": 0,
+                                         "attempt_times_limit": 100000,
                                          }
             config["CUSTOM_PRESET_6"] = {'row': 24,
                                          'column': 36,
@@ -156,28 +156,18 @@ class Ui_MainWindow(Ui_MainWindow):
                                          'gamemode': 2,
                                          'pixsize': 20,
                                          "board_constraint": "",
-                                         "attempt_times_limit": 0,
+                                         "attempt_times_limit": 100000,
                                          }
             with open(self.game_setting_path, 'w') as configfile:
                 config.write(configfile)  # 将对象写入文件
+                
+                
+        score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
+        self.score_board_manager = gameScoreBoardManager(score_board_path, self.pixSize)
+        # self.score_board_manager.visible()
 
         self.readPredefinedBoardPara()
         
-        # 计时器配置
-        config_score_board = configparser.ConfigParser()
-        if config_score_board.read(self.score_board_path):
-            score_board_indexes = {
-                
-                }
-        else:
-            config["DEFAULT"] = {
-                "RTime": "rtime",
-                "Est RTime": "rtime / solved_bbbv * bbbv",
-                "3BV": "bbbv",
-                "3BV/s": "solved_bbbv / rtime",
-                
-                }
-
         self.setupUi(self.mainWindow)
         self.retranslateUi(MainWindow)
 

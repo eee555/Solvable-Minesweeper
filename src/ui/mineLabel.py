@@ -52,7 +52,8 @@ class mineLabel(QtWidgets.QLabel):
         if (self.row, self.column) != (row, column): # 如果不相等，重新实例化
             self.row = row
             self.column = column
-            self.ms_board = ms.MinesweeperBoard([[0] * self.column for _ in range(self.row)])
+            self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
+            # self.ms_board = ms.MinesweeperBoard([[0] * self.column for _ in range(self.row)])
             self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
         self.importCellPic(self.pixSize)
         self.resize(QtCore.QSize(self.pixSize * self.column + 8, self.pixSize * self.row + 8))

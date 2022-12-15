@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
+import minesweeper_master as mm
 # import os
 # sys.path.append(os.path.realpath('.'))
 
@@ -13,9 +14,17 @@ if __name__ == "__main__":
     # app.aboutToQuit.connect(app.deleteLater)
     mainWindow = mainWindowGUI.MainWindow()
     ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
-    mainWindow.show()
+    ui.mainWindow.show()
+    ui.score_board_manager.with_namespace({
+        "rtime": ui.time_ms / 1000,
+        "race_designator": ui.race_designator,
+        "mode": mm.trans_game_mode(ui.gameMode),
+        })
+    ui.score_board_manager.reshow(ui.label.ms_board, index_type = 1)
+    ui.mainWindow.closeEvent_.connect(ui.score_board_manager.ui.QWidget.close)
     # exit_code = appctxt.app.exec_()  # 2. Invoke appctxt.app.exec_()
     sys.exit(app.exec_())
+    ...
 
 #    雷密度较大时，生成无猜局面采用自适应的鲁棒“快速模式”
 #    生成极端bv局面时采用鲁棒的“快速模式”，仅对标准模式有效？
@@ -38,7 +47,7 @@ if __name__ == "__main__":
 # 'ready'：预备状态。表示局面完全没有左键点过，可能被右键标雷；刚打开或点脸时进入这种状态。
 #         此时可以改雷数、改格子大小（ctrl+滚轮）、行数、列数（拖拉边框）。
 # 'study': 研究状态。截图后进入。应该设计第二种方式进入研究状态，没想好。
-# 'show': 展示智能分析结果，按住空格进入。
+# 'show': 游戏中，展示智能分析结果，按住空格进入。
 # 'modify': 调整状态。'ready'下，拖拉边框时进入，拖拉结束后自动转为'ready'。
 # 'playing': 正在游戏状态、标准模式、不筛选3BV、且没有看概率计算结果，游戏结果是official的。
 # 'joking': 正在游戏状态，游戏中看过概率计算结果，游戏结果不是official的。
@@ -48,12 +57,13 @@ if __name__ == "__main__":
 # 'showdisplay':正在一边播放录像、一边看概率。播放录像时按空格进入。
 
 # 指标命名：
-# 实时更新类：rtime, left, right, double，cl，left_s，right_s, double_s, path, 
+# 游戏静态类：race_designator, mode
+# 游戏动态类：rtime, left, right, double，cl，left_s，right_s, double_s, cl_s, path, 
 #           flag, flag_s
 # 录像动态类：etime, stnb, rqp, qg, ioe, thrp, corr, ce, ce_s, bbbv_solved, 
-#           bbbv_s
+#           bbbv_s, (op_solved), (isl_solved)
 # 录像静态类：bbbv，op, isl, cell0, cell1, cell2, cell3, cell4, cell5, cell6,
-#           cell7, cell8, fps
+#           cell7, cell8, fps, (hizi)
 
 
 

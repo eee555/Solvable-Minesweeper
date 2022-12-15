@@ -109,6 +109,8 @@ if sys.version_info[0:2] >= (3, 11):
         'POP_JUMP_BACKWARD_IF_NONE',
         'POP_JUMP_BACKWARD_IF_FALSE',
         'POP_JUMP_BACKWARD_IF_TRUE',
+        'FORMAT_VALUE',
+        'BUILD_STRING',
     }
 
 else:
@@ -181,6 +183,8 @@ else:
         'CALL_FUNCTION',
         'CALL_FUNCTION_KW',
         'CALL_FUNCTION_EX',
+        'FORMAT_VALUE',
+        'BUILD_STRING',
     }
 
 # Convert names to index

@@ -8,9 +8,9 @@ from safe_eval import safe_eval
 import ms_toollib as ms
 import math
 
-OutputEnable = 0
+# OutputEnable = 0
 # seedNum = 60223
-EnuLimit = 40
+# EnuLimit = 40
 
 def choose_3BV(board_constraint, attempt_times_limit, params):
     # def choose_3BV_laymine(laymine):
@@ -31,32 +31,52 @@ def choose_3BV(board_constraint, attempt_times_limit, params):
                 b, success_flag = b
             else:
                 success_flag = True
+            return (b, success_flag)
         t = 0
         while t < attempt_times_limit:
             b = laymine(params)
             if isinstance(b, tuple):
-                return b
+                b, success_flag = b
             else:
-                return (b, True)
+                success_flag = True
                 
             constraints = {
                 "sin": math.sin,
                 "tan": math.tan,
                 "cos": math.cos,
-                }
+                } # 也许还要加row, column, mine_num, level, mode
+            wrapper_b = ms.Board(b)
             if "bbbv" in board_constraint:
-                constraints.update({"bbbv": ms.cal3BV(b)})
+                constraints.update({"bbbv": wrapper_b.bbbv})
             if "op" in board_constraint:
-                constraints.update({"op": ms.cal_op(b)})
+                constraints.update({"op": wrapper_b.op})
             if "isl" in board_constraint:
-                constraints.update({"isl": ms.cal_isl(b)})
+                constraints.update({"isl": wrapper_b.isl})
+            if "cell0" in board_constraint:
+                constraints.update({"cell0": wrapper_b.cell0})
+            if "cell1" in board_constraint:
+                constraints.update({"cell1": wrapper_b.cell1})
+            if "cell2" in board_constraint:
+                constraints.update({"cell2": wrapper_b.cell2})
+            if "cell3" in board_constraint:
+                constraints.update({"cell3": wrapper_b.cell3})
+            if "cell4" in board_constraint:
+                constraints.update({"cell4": wrapper_b.cell4})
+            if "cell5" in board_constraint:
+                constraints.update({"cell5": wrapper_b.cell5})
+            if "cell6" in board_constraint:
+                constraints.update({"cell6": wrapper_b.cell6})
             if "cell7" in board_constraint:
-                constraints.update({"cell7": ms.cal_cell7(b)})
+                constraints.update({"cell7": wrapper_b.cell7})
             if "cell8" in board_constraint:
-                constraints.update({"cell7": ms.cal_cell8(b)})
-            
-            if safe_eval(board_constraint, globals=constraints):
+                constraints.update({"cell8": wrapper_b.cell8})
+            try:
+                expression_flag = safe_eval(board_constraint, globals=constraints)
+            except:
                 return (b, success_flag)
+            if expression_flag:
+                return (b, success_flag)
+            t += 1
         return (b, success_flag)
     return choose_3BV_laymine
     
@@ -416,12 +436,45 @@ def refreshMineLable(board, MineNum0, BoardofGame):
                 board[x][y] = boardNum
     return board
 
+def trans_expression(expression: str):
+    expression = expression.lower().strip()
+    expression = expression.replace("3bv", "bbbv")
+    expression = expression.replace("opening", "op")
+    expression = expression.replace("click", "cl")
+    expression = expression.replace("\"", "'")
+    expression = expression.replace("island", "isl")
+    expression = expression.replace("chording", "double")
+    return expression
 
 # isSolvable = ms_toollib.py_isSolvable
 # isSolvable2(Board, X0, Y0, enuLimit)
 # 从指定位置开始扫，判断局面是否无猜
 # 周围一圈都是雷，那么中间是雷不算猜，中间不是雷算猜
 
+def trans_game_mode(mode: int) -> str:
+    if mode == 0:
+        return '标准'
+    elif mode == 1:
+        return 'upk'
+    elif mode == 2:
+        return 'cheat'
+    elif mode == 3:
+        return 'win7'
+    elif mode == 4:
+        return 'Density'
+    elif mode == 5:
+        return '竞速无猜'
+    elif mode == 6:
+        return '强无猜'
+    elif mode == 7:
+        return '弱无猜'
+    elif mode == 8:
+        return '准无猜'
+    elif mode == 9:
+        return '强可猜'
+    elif mode == 10:
+        return '弱可猜'
+    
 
 # unsolvableStructure = ms_toollib.py_unsolvableStructure
 # unsolvableStructure2(BoardCheck)
@@ -514,6 +567,7 @@ def debug_laymine(*args):
 #     return True
 
 def calBoardIndex(Board):
+    # 拟弃用
     # 原则上计算局面中所有指标，包括以后新发明的指标
     # 3BV, Ops, Isls
     # 以后会加各个数字出现次数等等
@@ -527,6 +581,7 @@ def calBoardIndex(Board):
     return indexes
 
 def calScores(mode, rtime, operationStream, MinesweeperBoard, Difficulty):
+    # 拟弃用
     # 计算游戏得分，展示用，返回一个字典，都是字符串
     # MinesweeperBoard是整局游戏的包装类，属性比较多
     # print('----------------')
