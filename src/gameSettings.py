@@ -78,9 +78,9 @@ class ui_Form(Ui_Form):
         self.checkBox_end_then_flag.setChecked(self.end_then_flag)
         self.horizontalSlider_transparency.setValue (self.transparency)
         self.label_transparency_percent_value.setText(str(self.transparency))
-        # gameMode = 0，1，2，3，4，5，6，7代表：
+        # gameMode = 0，4, 5, 6, 7, 8, 9, 10代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
-        self.comboBox_gamemode.setCurrentIndex([0, 4, 7, 6, 5, 8, 9, 10][self.gameMode])
+        self.comboBox_gamemode.setCurrentIndex([0, 999, 999, 999, 1, 4, 2, 3, 5, 6, 7][self.gameMode])
         
     def processParameter(self):
         #只有点确定才能进来
@@ -103,7 +103,8 @@ class ui_Form(Ui_Form):
         self.board_constraint = self.lineEdit_constraint.text()
         self.attempt_times_limit = self.spinBox_attempt_times_limit.value()
         self.end_then_flag = self.checkBox_end_then_flag.isChecked() # 游戏结束后自动标雷
-        self.gameMode = [0, 4, 7, 6, 5, 8, 9, 10][self.comboBox_gamemode.currentIndex()]
+        self.gameMode = [0, 4, 6, 7, 5, 8, 9, 10][self.comboBox_gamemode.currentIndex()]
+        # gameMode = 0，4, 5, 6, 7, 8, 9, 10代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         
         

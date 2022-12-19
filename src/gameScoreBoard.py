@@ -78,11 +78,6 @@ class gameScoreBoardManager():
         # 时间与定时器
         self.total_time = 0.0 # total_time = delta_time + rtime
         self.delta_time = 0.0
-        # self.rtime = 0.0
-        # self.timer_time = QTimer()
-        # self.timer_time.timeout.connect(self.time_step)
-        # self.timer_time.setSingleShot(False)
-        # self.timer_time.start(1)
         
         self.initialized = False
         self.score_board_path = score_board_path

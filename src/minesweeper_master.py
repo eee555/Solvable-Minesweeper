@@ -459,9 +459,9 @@ def trans_game_mode(mode: int) -> str:
     elif mode == 2:
         return 'cheat'
     elif mode == 3:
-        return 'win7'
-    elif mode == 4:
         return 'Density'
+    elif mode == 4:
+        return 'win7'
     elif mode == 5:
         return '竞速无猜'
     elif mode == 6:

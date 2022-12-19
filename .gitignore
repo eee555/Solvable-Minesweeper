@@ -156,3 +156,4 @@ toollib/frame.csv
 media/
 *.rar
 *.ini
+*.autosave

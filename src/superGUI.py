@@ -96,7 +96,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.auto_notification = True
             self.allow_min3BV = False
             self.allow_max3BV = False
-            self.player_label = "匿名玩家(anonymous player)"
+            self.player_designator = "匿名玩家(anonymous player)"
             self.race_designator = ""
             self.country = "未知(unknow)"
             self.autosave_video = True
@@ -137,7 +137,7 @@ class Ui_MainWindow(Ui_MainWindow):
             config["CUSTOM_PRESET_4"] = {'row': 16,
                                          'column': 16,
                                          'minenum': 72,
-                                         'gameMode': 2,
+                                         'gameMode': 5,
                                          'pixSize': 20,
                                          "board_constraint": "",
                                          "attempt_times_limit": 100000,
@@ -145,7 +145,7 @@ class Ui_MainWindow(Ui_MainWindow):
             config["CUSTOM_PRESET_5"] = {'row': 16,
                                          'column': 30,
                                          'minenum': 120,
-                                         'gamemode': 2,
+                                         'gamemode': 5,
                                          'pixsize': 20,
                                          "board_constraint": "",
                                          "attempt_times_limit": 100000,
@@ -153,7 +153,7 @@ class Ui_MainWindow(Ui_MainWindow):
             config["CUSTOM_PRESET_6"] = {'row': 24,
                                          'column': 36,
                                          'minenum': 200,
-                                         'gamemode': 2,
+                                         'gamemode': 5,
                                          'pixsize': 20,
                                          "board_constraint": "",
                                          "attempt_times_limit": 100000,

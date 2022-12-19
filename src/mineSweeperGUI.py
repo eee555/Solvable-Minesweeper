@@ -111,13 +111,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.showTime(self.time_ms // 1000)
         if self.time_ms % 8 == 0:
             # 计数器用125Hz的刷新率
-            self.score_board_manager.with_namespace({
-                "rtime": self.time_ms / 1000,
-                })
+            # self.score_board_manager.with_namespace({
+            #     "rtime": self.time_ms / 1000,
+            #     })
             self.score_board_manager.reshow(self.label.ms_board, index_type = 1)
 
     def ai(self, i, j):
-        # 0，1，2，3，4，5，6，7代表：标准、win7、
+        # 0，4, 5, 6, 7, 8, 9, 10代表：标准、win7、
         # 竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         # 根据模式处理一次点击的全部流程
         # 返回的最后一个值是一个flag，无论是不是雷，都代表是否失败，True为失败
@@ -158,7 +158,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                                                       self.label.ms_board.game_board, i, j)
                 self.label.ms_board.board = board
             return
-
 
     def mineAreaLeftRelease(self, i, j):
         if self.game_state == 'playing' or self.game_state == 'joking':
@@ -315,6 +314,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.set_rcp(self.row, self.column, self.pixSize)
                 self.label.importCellPic(self.pixSize)
                 self.reimportLEDPic(self.pixSize)
+                self.label.ms_board.pix_size = self.pixSize
                 self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
                 self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
                 self.label_2.reloadFace(self.pixSize)
@@ -330,6 +330,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.set_rcp(self.row, self.column, self.pixSize)
                 self.label.importCellPic(self.pixSize)
                 self.reimportLEDPic(self.pixSize)
+                self.label.ms_board.pix_size = self.pixSize
                 self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
                 self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
                 self.label_2.reloadFace(self.pixSize)
@@ -556,6 +557,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.importLEDPic(self.pixSize)
         self.label.importCellPic(self.pixSize)
         self.label_2.reloadFace(self.pixSize)
+        self.label.ms_board.pix_size = self.pixSize
         self.setBoard_and_start(self.predefinedBoardPara[k]['row'],
                                 self.predefinedBoardPara[k]['column'],
                                 self.predefinedBoardPara[k]['mine_num'])
@@ -638,6 +640,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label_2.reloadFace(self.pixSize)
             self.gameStart()
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
+            self.score_board_manager.with_namespace({
+                "race_designator": ui.race_designator,
+                "mode": mm.trans_game_mode(ui.gameMode),
+                })
+            self.score_board_manager.show(self.label.ms_board, index_type=1)
 
     def action_QEvent(self):
         # 快捷键设置的回调
