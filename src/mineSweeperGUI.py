@@ -178,8 +178,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     self.ai(i, j)
         if self.game_state == 'ready':
             if i >= self.row or j >= self.column:
-                self.label.ms_board.step(self.time_ms, 'lr',
-                                         (self.row * self.pixSize, self.column * self.pixSize))
+                self.label.ms_board.step('lr', (self.row * self.pixSize, self.column * self.pixSize))
                 pixmap = QPixmap(self.pixmapNum[14])
                 self.label_2.setPixmap(pixmap)
                 self.label_2.setScaledContents(True)
@@ -193,8 +192,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.startTime = time.time()
 
         if self.game_state == 'playing' or self.game_state == 'joking':
-            self.label.ms_board.step(self.time_ms, 'lr',
-                                     (i * self.pixSize, j * self.pixSize))
+            self.label.ms_board.step('lr', (i * self.pixSize, j * self.pixSize))
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
@@ -206,8 +204,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.update()
 
         elif self.game_state == 'show':
-            self.label.ms_board.step(self.time_ms, 'lr',
-                                     (self.row * self.pixSize, self.column * self.pixSize))
+            self.label.ms_board.step('lr', (self.row * self.pixSize, self.column * self.pixSize))
 
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
@@ -216,8 +213,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaRightRelease(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
-            self.label.ms_board.step(self.time_ms, 'rr',
-                                     (i * self.pixSize, j * self.pixSize))
+            self.label.ms_board.step('rr', (i * self.pixSize, j * self.pixSize))
             self.label.update()
 
             pixmap = QPixmap(self.pixmapNum[14])
@@ -225,8 +221,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label_2.setScaledContents(True)
         elif self.game_state == 'show':
             # 这个分支是干嘛的，忘了
-            self.label.ms_board.step(self.time_ms, 'rr',
-                                     (self.row * self.pixSize, self.column * self.pixSize))
+            self.label.ms_board.step('rr', (self.row * self.pixSize, self.column * self.pixSize))
 
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
@@ -241,8 +236,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.mineUnFlagedNum -= 1
                 self.showMineNum(self.mineUnFlagedNum)
             # self.operationStream.append(('rc', (i, j)))
-            self.label.ms_board.step(self.time_ms, 'rc',
-                                     (i * self.pixSize, j * self.pixSize))
+            self.label.ms_board.step('rc', (i * self.pixSize, j * self.pixSize))
             # self.label.ms_board.step('rc', (i, j))
             self.label.update()
 
@@ -254,8 +248,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # self.adjust()
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
             # self.operationStream.append(('lc', (i, j)))  # 记录鼠标动作
-            self.label.ms_board.step(self.time_ms, 'lc',
-                                     (i * self.pixSize, j * self.pixSize))
+            self.label.ms_board.step('lc', (i * self.pixSize, j * self.pixSize))
             self.label.update()
 
             pixmap = QPixmap(self.pixmapNum[15])
@@ -264,8 +257,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         elif self.game_state == 'show':
             # self.operationStream.append(('lc', (self.row, self.column)))
-            self.label.ms_board.step(self.time_ms, 'lc',
-                                     (self.row * self.pixSize, self.column * self.pixSize))
+            self.label.ms_board.step('lc', (self.row * self.pixSize, self.column * self.pixSize))
 
             pixmap = QPixmap(self.pixmapNum[15])
             self.label_2.setPixmap(pixmap)
@@ -278,8 +270,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             #     # 如果操作流是空的，首先添加的要么是rc，要么是lc(不成立)
             #     self.operationStream.append(('cc', (i, j)))
             #     self.label.ms_board.step('cc', (i, j))
-            self.label.ms_board.step(self.time_ms, 'cc',
-                                     (i * self.pixSize, j * self.pixSize))
+            self.label.ms_board.step('cc', (i * self.pixSize, j * self.pixSize))
             self.label.update()
 
             pixmap = QPixmap(self.pixmapNum[15])
@@ -292,13 +283,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             if self.label.ms_board.mouse_state == 2:
                 # self.operationStream.append(('lr', (i, j)))
                 # self.label.ms_board.step('lr', (i, j))
-                self.label.ms_board.step(self.time_ms, 'lr',
-                                         (i * self.pixSize, j * self.pixSize))
+                self.label.ms_board.step('lr', (i * self.pixSize, j * self.pixSize))
             elif self.label.ms_board.mouse_state == 7:
                 # self.operationStream.append(('rr', (i, j)))
                 # self.label.ms_board.step('rr', (i, j))
-                self.label.ms_board.step(self.time_ms, 'rr',
-                                         (i * self.pixSize, j * self.pixSize))
+                self.label.ms_board.step('rr', (i * self.pixSize, j * self.pixSize))
             pixmap = QPixmap(self.pixmapNum[14])
             self.label_2.setPixmap(pixmap)
             self.label_2.setScaledContents(True)
@@ -325,6 +314,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label_info.setText(text4)
         # 正常情况的鼠标移动事件，与高亮的显示有关
         elif self.game_state == 'playing' or self.game_state == 'joking' or self.game_state == 'ready':
+            self.label.ms_board.step('mv', (i * self.pixSize, j * self.pixSize))
             self.label.update()
 
     def resizeWheel(self, i):
@@ -456,56 +446,24 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # self.mainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
 
     def gameFinished(self):  # 游戏结束画残局，改状态
-
-        if self.label.ms_board.game_board_state == 3 and self.gameover_flag:
-            board = self.label.ms_board.board
-            game_board = self.label.ms_board.game_board
-            for idx, row in enumerate(board):
-                for idy, item in enumerate(row):
-                    if item == -1 and game_board[idx][idy] == 10:
-                        game_board[idx][idy] = 11
-            self.label.ms_board.game_board = game_board
+        if self.label.ms_board.game_board_state == 3 and self.end_then_flag:
+            self.label.ms_board.win_then_flag_all_mine()
         elif self.label.ms_board.game_board_state == 4:
-            board = self.label.ms_board.board
-            game_board = self.label.ms_board.game_board
-            for idx, row in enumerate(board):
-                for idy, item in enumerate(row):
-                    if item == -1 and game_board[idx][idy] == 10:
-                        game_board[idx][idy] = 16 # 白雷
-            self.label.ms_board.game_board = game_board
+            self.label.ms_board.loss_then_open_all_mine()
         self.label.update()
         # print(self.operationStream)
 
     def gameWin(self):  # 成功后改脸和状态变量，停时间
-        self.endTime = time.time()
-        self.gameTime = self.endTime - self.startTime # 精确的游戏时间
         self.timer_1ms.stop()
 
         self.game_state = 'win'
         pixmap = QPixmap(self.pixmapNum[17])
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
-
-        if self.row == 8 and self.column == 8 and self.mineNum == 10:
-            Difficulty = 1
-        elif self.row == 16 and self.column == 16 and self.mineNum == 40:
-            Difficulty = 2
-        elif self.row == 16 and self.column == 30 and self.mineNum == 99:
-            Difficulty = 3
-        else:
-            Difficulty = 4
-        self.scores, self.scoresValue, msBoard = \
-            mm.calScores(self.gameMode, time.time() - self.startTime,
-                         self.operationStream, self.label.ms_board, Difficulty)
-        if msBoard.solved3BV / ms.cal3BV(self.label.ms_board.board) * 100 >= self.auto_show_score:
-            self.gameFinished()
-            self.showScores()
-        else:
-            self.gameFinished()
+        
+        self.gameFinished()
 
     def gameFailed(self): # 失败后改脸和状态变量
-        self.endTime = time.time()
-        self.gameTime = self.endTime - self.startTime # 精确的游戏时间
         self.timer_1ms.stop()
 
         self.game_state = 'fail'
@@ -514,21 +472,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
 
-        if self.row == 8 and self.column == 8 and self.mineNum == 10:
-            Difficulty = 1
-        elif self.row == 16 and self.column == 16 and self.mineNum == 40:
-            Difficulty = 2
-        elif self.row == 16 and self.column == 30 and self.mineNum == 99:
-            Difficulty = 3
-        else:
-            Difficulty = 4
-        self.scores, self.scoresValue, msBoard = \
-            mm.calScores(self.gameMode, time.time() - self.startTime,
-                         self.operationStream, self.label.ms_board, Difficulty)
-        # if msBoard.solved3BV / ms.cal3BV(self.label.ms_board.board) * 100 >= self.auto_show_score:
-        #     self.gameFinished()
-        #     self.showScores()
-        if msBoard.solved3BV / ms.cal3BV(self.label.ms_board.board) * 100 <= self.auto_replay:
+        if self.label.ms_board.bbbv_solved / self.label.ms_board.bbbv * 100 <= self.auto_replay:
             self.gameRestart()
         else:
             self.gameFinished()
@@ -681,8 +625,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.show()
         ui.Dialog.exec_()
         if ui.alter:
-            # self.min3BV = ui.min3BV
-            # self.max3BV = ui.max3BV
             self.gameMode = ui.gameMode
             self.pixSize = ui.pixSize
             if not ui.allow_auto_replay:
@@ -691,10 +633,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.auto_replay = ui.auto_replay
             self.end_then_flag = ui.end_then_flag
             self.auto_notification = ui.auto_notification
-            # if not self.allow_min3BV:
-            #     self.min3BV = 0
-            # if not self.allow_max3BV:
-            #     self.max3BV = 999999
             self.player_label = ui.player_label
             self.label_info.setText(self.player_label)
             self.race_designator = ui.race_designator

@@ -16,7 +16,6 @@ if __name__ == "__main__":
     ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
     ui.mainWindow.show()
     ui.score_board_manager.with_namespace({
-        "rtime": ui.time_ms / 1000,
         "race_designator": ui.race_designator,
         "mode": mm.trans_game_mode(ui.gameMode),
         })

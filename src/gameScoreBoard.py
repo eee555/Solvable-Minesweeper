@@ -93,10 +93,10 @@ class gameScoreBoardManager():
         else:
             config_score_board["DEFAULT"] = {
                 "游戏模式": "mode",
-                "RTime": "f'{rtime:.3f}'",
-                "Est RTime": "rtime / solved_bbbv * bbbv",
+                "RTime": "f'{time:.3f}'",
+                "Est RTime": "f'{etime:.3f}'",
                 "3BV": "bbbv",
-                "3BV/s": "f'{solved_bbbv / rtime:.3f}'",
+                "3BV/s": "f'{solved_bbbv / time:.3f}'",
                 "Ops": "op",
                 "Isls": "isl",
                 "Left": "f'{left}@{left_s:.3f}'",
@@ -172,6 +172,7 @@ class gameScoreBoardManager():
         # 全部更新，以后优化就是部分更新, index_type现在没用
         if index_type == 1:
             self.namespace.update({
+                "time": ms_board.time,
                 "left": ms_board.left,
                 "right": ms_board.right,
                 "double": ms_board.double,
@@ -185,6 +186,8 @@ class gameScoreBoardManager():
                 })
         else:
             self.namespace.update({
+                "rtime": ms_board.rtime,
+                "etime": ms_board.etime,
                 "bbbv": ms_board.bbbv,
                 "op": ms_board.op,
                 })
