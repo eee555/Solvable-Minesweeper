@@ -10,7 +10,7 @@ import math
 
 # OutputEnable = 0
 # seedNum = 60223
-# EnuLimit = 40
+EnuLimit = 40
 
 def choose_3BV(board_constraint, attempt_times_limit, params):
     # def choose_3BV_laymine(laymine):

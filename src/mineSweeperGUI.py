@@ -92,27 +92,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         xx = self.row
         yy = self.column
         num = self.mineNum
-        if self.gameMode == 2 or self.gameMode == 3 or self.gameMode == 6:
+        if self.gameMode == 5 or self.gameMode == 6 or self.gameMode == 9:
             # 根据模式生成局面
             Board, _ = mm.laymine_solvable(self.board_constraint,
                                            self.attempt_times_limit, (xx, yy, num, i, j))
-        elif self.gameMode == 0 or self.gameMode == 4 or self.gameMode == 5 or self.gameMode == 7:
+        elif self.gameMode == 0 or self.gameMode == 7 or self.gameMode == 8 or self.gameMode == 10:
             Board, _ = mm.laymine(self.board_constraint,
                                   self.attempt_times_limit, (xx, yy, num, i, j))
-        elif self.gameMode == 1:
+        elif self.gameMode == 4:
             Board, _ = mm.laymine_op(self.board_constraint,
                                      self.attempt_times_limit, (xx, yy, num, i, j))
-        # if Parameters:
-        #     # text4 = 'Sucess! 3BV=%d\n尝试次数为%d'%(Parameters[1],Parameters[2])
-        #     # text4 = 'ttt'
-        #     text4 = 'Success!'
-        #     self.label_info.setText(text4)
-        # else:
-        #     # text4 = 'Failure! 3BV=%d\n尝试次数为%d'%(Parameters[1],Parameters[2])
-        #     # text4 = 'iii'
-        #     text4 = 'Failure!'
-        #     self.label_info.setText(text4)
-
+        
         self.label.ms_board.board = Board
 
     def timeCount(self):  # 时间步进的回调，改计数器、改右上角时间
@@ -633,8 +623,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.auto_replay = ui.auto_replay
             self.end_then_flag = ui.end_then_flag
             self.auto_notification = ui.auto_notification
-            self.player_label = ui.player_label
-            self.label_info.setText(self.player_label)
+            self.player_designator = ui.player_designator
+            self.label_info.setText(self.player_designator)
             self.race_designator = ui.race_designator
             self.country = ui.country
             self.autosave_video = ui.autosave_video
@@ -650,14 +640,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
 
     def action_QEvent(self):
-        # 词典，即游戏帮助、术语表
+        # 快捷键设置的回调
         self.actionChecked('Q')
         ui = gameSettingShortcuts.myGameSettingShortcuts()
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
         if ui.alter:
-            self.readPredefinedBoard()
+            self.readPredefinedBoardPara()
 
     def action_HEvent(self):
         # 词典，即游戏帮助、术语表

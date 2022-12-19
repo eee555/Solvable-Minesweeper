@@ -60,7 +60,7 @@ class Ui_MainWindow(Ui_MainWindow):
                 self.auto_replay = -1
             self.auto_notification = config.getboolean("DEFAULT", "auto_notification")
             
-            self.player_label = config["DEFAULT"]["player_label"]
+            self.player_designator = config["DEFAULT"]["player_designator"]
             self.race_designator = config["DEFAULT"]["race_designator"]
             self.country = config["DEFAULT"]["country"]
             self.autosave_video = config.getboolean("DEFAULT", "autosave_video")
@@ -115,8 +115,8 @@ class Ui_MainWindow(Ui_MainWindow):
                                  "auto_notification": True,
                                  # "board_constraint": "",
                                  # "attempt_times_limit": 0,
-                                 "player_label": "匿名玩家(anonymous player)",
-                                 "race_player_label": "",
+                                 "player_designator": "匿名玩家(anonymous player)",
+                                 "race_designator": "",
                                  "country": "未知(unknow)",
                                  "autosave_video": True,
                                  "filter_forever": False,
@@ -188,7 +188,7 @@ class Ui_MainWindow(Ui_MainWindow):
         # self.label_info.setFont(QFont("Arial", 20, QFont.Bold))
         # self.label_info.setText(str(self.mineNum))
         
-        self.label_info.setText(self.player_label)
+        self.label_info.setText(self.player_designator)
 
         self.frameShortcut1 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_1), MainWindow)
         self.frameShortcut2 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_2), MainWindow)

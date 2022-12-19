@@ -30,8 +30,8 @@ class ui_Form(Ui_Form):
         # self.board_constraint = config.getboolean("DEFAULT", "board_constraint")
         # self.attempt_times_limit = config.getboolean("DEFAULT", "attempt_times_limit")
         
-        self.player_label = config["DEFAULT"]["player_label"]
-        self.race_player_label = config["DEFAULT"]["race_player_label"]
+        self.player_designator = config["DEFAULT"]["player_designator"]
+        self.race_designator = config["DEFAULT"]["race_designator"]
         self.country = config["DEFAULT"]["country"]
         self.autosave_video = config.getboolean("DEFAULT", "autosave_video")
         self.filter_forever = config.getboolean("DEFAULT", "filter_forever")
@@ -72,8 +72,8 @@ class ui_Form(Ui_Form):
         self.checkBox_filter_forever.setChecked(self.filter_forever)
         self.lineEdit_constraint.setText(self.board_constraint)
         self.spinBox_attempt_times_limit.setValue (self.attempt_times_limit)
-        self.lineEdit_label.setText(self.player_label)
-        self.lineEdit_race_label.setText(self.race_player_label)
+        self.lineEdit_label.setText(self.player_designator)
+        self.lineEdit_race_label.setText(self.race_designator)
         self.lineEdit_country.setText(self.country)
         self.checkBox_end_then_flag.setChecked(self.end_then_flag)
         self.horizontalSlider_transparency.setValue (self.transparency)
@@ -95,8 +95,8 @@ class ui_Form(Ui_Form):
         self.auto_notification = self.checkBox_auto_notification.isChecked()
         # self.allow_min3BV = self.checkBox_allow_min3BV.isChecked()
         # self.allow_max3BV = self.checkBox_allow_max3BV.isChecked()
-        self.player_label = self.lineEdit_label.text()
-        self.race_player_label = self.lineEdit_race_label.text()
+        self.player_designator = self.lineEdit_label.text()
+        self.race_designator = self.lineEdit_race_label.text()
         self.country = self.lineEdit_country.text()
         self.autosave_video = self.checkBox_autosave_video.isChecked()
         self.filter_forever = self.checkBox_filter_forever.isChecked()
@@ -124,8 +124,8 @@ class ui_Form(Ui_Form):
         conf.set("DEFAULT", "filter_forever", str(self.filter_forever))
         # conf.set("DEFAULT", "board_constraint", str(self.board_constraint))
         # conf.set("DEFAULT", "attempt_times_limit", str(self.attempt_times_limit))
-        conf.set("DEFAULT", "player_label", str(self.player_label))
-        conf.set("DEFAULT", "race_player_label", str(self.race_player_label))
+        conf.set("DEFAULT", "player_designator", str(self.player_designator))
+        conf.set("DEFAULT", "race_designator", str(self.race_designator))
         conf.set("DEFAULT", "country", str(self.country))
         conf.write(open('gameSetting.ini', "w"))
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
