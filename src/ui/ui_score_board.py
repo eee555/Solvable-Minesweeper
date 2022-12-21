@@ -29,7 +29,7 @@ class Ui_Form(object):
         self.label_3.setScaledContents(False)
         self.label_3.setWordWrap(False)
         self.label_3.setObjectName("label_3")
-        self.tableWidget = QtWidgets.QTableWidget(Form)
+        self.tableWidget = ScoreTable(Form)
         self.tableWidget.setGeometry(QtCore.QRect(10, 70, 181, 191))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -44,7 +44,7 @@ class Ui_Form(object):
         self.tableWidget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tableWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tableWidget.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustIgnored)
-        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.DoubleClicked)
+        self.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.tableWidget.setProperty("showDropIndicator", False)
         self.tableWidget.setDragEnabled(True)
         self.tableWidget.setDragDropOverwriteMode(True)
@@ -97,3 +97,4 @@ class Ui_Form(object):
         item.setText(_translate("Form", "指标"))
         item = self.tableWidget.horizontalHeaderItem(1)
         item.setText(_translate("Form", "表达式"))
+from ui.uiComponents import ScoreTable

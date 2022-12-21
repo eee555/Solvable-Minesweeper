@@ -12,6 +12,8 @@ from PyQt5.QtCore import QTimer
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)
     # barSetMineNumCalPoss = QtCore.pyqtSignal(int)
+    # doubleClick = QtCore.pyqtSignal (int, int)
+    # leftClick = QtCore.pyqtSignal (int, int)
     def __init__(self, pix_size):
         self.pix_size = pix_size
         self.QWidget = RoundQWidget()
@@ -21,6 +23,9 @@ class ui_Form(Ui_Form):
         self.tableWidget.setColumnWidth(1, 120)
         self.tableWidget.verticalHeader().setDefaultSectionSize(24)
         # self.setParameter ()
+        
+        # self.tableWidget.doubleClicked.connect(self.table_change)
+        # self.tableWidget.clicked.connect(self.table_ok)
     
     def show(self, index_value_list: list[str]):
         # 更新数值,指标数量不变
@@ -39,6 +44,12 @@ class ui_Form(Ui_Form):
         for idx, i in enumerate(index_name_list):
             self.tableWidget.setItem(idx, 0, QTableWidgetItem(i))
         self.show(index_value_list)
+        
+    # def table_change(self, e):
+    #     print(e)
+       
+    # def table_ok(self, e):
+    #     print(e)
         
     def setSignal(self):
         ...
@@ -90,13 +101,13 @@ class gameScoreBoardManager():
                 "游戏模式": "mode",
                 "RTime": "f'{time:.3f}'",
                 "Est RTime": "f'{etime:.3f}'",
-                "3BV": "bbbv",
-                "3BV/s": "f'{solved_bbbv / time:.3f}'",
+                "3BV": "f'{bbbv_solved}/{bbbv}'",
+                "3BV/s": "f'{bbbv_solved / time:.3f}'",
                 "Ops": "op",
                 "Isls": "isl",
                 "Left": "f'{left}@{left_s:.3f}'",
                 "Right": "f'{right}@{right_s:.3f}'",
-                "Double": "f'{chording}@{chording_s:.3f}'",
+                "Double": "f'{double}@{double_s:.3f}'",
                 "IOE": "f'{ioe:.3f}'",
                 "Thrp": "f'{thrp:.3f}'",
                 "Corr": "f'{corr:.3f}'",
@@ -107,6 +118,17 @@ class gameScoreBoardManager():
                 config_score_board.write(configfile)  # 将对象写入文件
         self.score_board_items = [[i[0], mm.trans_expression(i[1])] for\
                                   i in _score_board_items]
+        self.update_score_board_items_type()
+        self.index_num = len(self.score_board_items_type)
+        self.ui = ui_Form(pix_size)
+        self.ui.tableWidget.doubleClicked.connect(self.__table_change)
+        self.ui.tableWidget.clicked.connect(self.__table_ok)
+        self.ui.tableWidget.cellChanged.connect(self.__cell_changed)
+        self.editing_row = -1 # -1不在编辑状态，-2不能编辑（正在游戏）
+        
+        # self.ui.QWidget.closeEvent_.connect(self.close) 
+        
+    def update_score_board_items_type(self):
         self.score_board_items_type = []
         # 整理出计时器上各指标的类型，1表示游戏时更新，2表示录像、游戏时更新
         for i in self.score_board_items:
@@ -117,9 +139,7 @@ class gameScoreBoardManager():
                     break
             else:
                 self.score_board_items_type.append(1)
-        self.ui = ui_Form(pix_size)
-        self.index_num = len(self.score_board_items_type)
-                    
+
     def with_namespace(self, namespace: dict):
         # 埋雷结束后调用，固化参数
         # self.pix_size = pix_size
@@ -140,6 +160,7 @@ class gameScoreBoardManager():
         index_value = []
         for (_, expression), _type in zip(self.score_board_items, self.score_board_items_type):
             if _type <= index_type:
+                # print(expression)
                 index_value.append(str(safe_eval(expression, self.namespace)))
             else:
                 index_value.append('--')
@@ -175,6 +196,7 @@ class gameScoreBoardManager():
                 "left_s": ms_board.left_s,
                 "right_s": ms_board.right_s,
                 "double_s": ms_board.double_s,
+                "cl_s": ms_board.cl_s,
                 "path": ms_board.path,
                 "flag": ms_board.flag,
                 "flag_s": ms_board.flag_s,
@@ -184,7 +206,14 @@ class gameScoreBoardManager():
                 "rtime": ms_board.rtime,
                 "etime": ms_board.etime,
                 "bbbv": ms_board.bbbv,
+                "bbbv_solved": ms_board.bbbv_solved,
                 "op": ms_board.op,
+                "isl": ms_board.isl,
+                "ioe": ms_board.ioe,
+                "thrp": ms_board.thrp,
+                "corr": ms_board.corr,
+                "ce": ms_board.ce,
+                "ce_s": ms_board.ce_s,
                 })
         
         
@@ -197,14 +226,14 @@ class gameScoreBoardManager():
         #                 "cell4", "cell5", "cell6", "cell7", "cell8", "fps"]
         # video_dynamic = ["etime", "stnb", "rqp", "qg", "ioe", "thrp", "corr", "ce",
         #                  "ce_s", "bbbv_solved", "bbbv_s", "op_solved", "isl_solved
-        # self.ms_board = ms_board
+        self.ms_board = ms_board
         index_value_list = self.cal_index_value(ms_board, index_type)
         self.ui.show(index_value_list)
         self.__visible()
         
     def reshow(self, ms_board, index_type):
         # 指标数量有变。增删指标用。游戏开始前。index_type是2
-        # self.ms_board = ms_board
+        self.ms_board = ms_board
         index_value_list = self.cal_index_value(ms_board, index_type)
         self.ui.reshow([i[0] for i in self.score_board_items], index_value_list)
         self.__visible()
@@ -221,8 +250,43 @@ class gameScoreBoardManager():
         # 接受从局面传过来的参数。单位像素。
         ...
         
-        
+    def __table_change(self, e):
+        if e.column() == 1 and self.editing_row == -1:
+            r = e.row()
+            self.editing_row = r
+            self.ui.tableWidget.editItem(self.ui.tableWidget.item(r, 1))
+            self.ui.tableWidget.setItem(r, 1, 
+                                        QTableWidgetItem(self.score_board_items[r][1]))
+        elif e.column() == 0 and self.editing_row == -1:
+            r = e.row()
+            # self.editing_row = r
+            self.ui.tableWidget.editItem(self.ui.tableWidget.item(r, 0))
             
+    def __table_ok(self, e):
+        if self.editing_row >= 0 and (e.column() == 0 or self.editing_row != e.row()):
+            self.score_board_items[self.editing_row][1] = self.ui.tableWidget.item(self.editing_row, 1).text()
+            self.update_score_board_items_type()
+            if self.ms_board.game_board_state == 1\
+                or self.ms_board.game_board_state == 2\
+                    or self.ms_board.game_board_state == 5:
+                self.show(self.ms_board, 1)
+            else:
+                self.show(self.ms_board, 2)
+            self.editing_row = -1
+        # elif self.editing_row >= 0 and (e.column() == 1 or self.editing_row != e.row()):
+        #     self.score_board_items[self.editing_row][0] = self.ui.tableWidget.item(self.editing_row, 0).text()
+        
+    def __cell_changed(self, x, y):
+        if y == 0:
+            t = self.ui.tableWidget.item(x, y).text()
+            if self.score_board_items[x][0] != t:
+                self.score_board_items[x][0] = self.ui.tableWidget.item(x, 0).text()
+                
+    def close(self):
+        config = configparser.ConfigParser()
+        config["DEFAULT"] = dict(self.score_board_items)
+        config.write(open('scoreBoardSetting.ini', "w"))
+        self.ui.QWidget.close()
         
 
 

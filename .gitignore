@@ -147,6 +147,7 @@ gameSetting.ini
 /src/test*.py
 /uiFiles/*.py
 /src/.idea/
+/src/replay/
 src/picture.png
 src/params.onnx
 toollib/frame.csv

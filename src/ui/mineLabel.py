@@ -53,8 +53,13 @@ class mineLabel(QtWidgets.QLabel):
             self.row = row
             self.column = column
             self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
-            # self.ms_board = ms.MinesweeperBoard([[0] * self.column for _ in range(self.row)])
+            if not hasattr(self,'ms_board'):
+                self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
             self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
+        
+        # 这里有问题，尺寸不一样也可以reset吗
+        self.ms_board.reset(self.row, self.column, self.pixSize)
+        
         self.importCellPic(self.pixSize)
         self.resize(QtCore.QSize(self.pixSize * self.column + 8, self.pixSize * self.row + 8))
         self.current_x = self.row # 鼠标坐标，和高亮的展示有关
@@ -73,14 +78,16 @@ class mineLabel(QtWidgets.QLabel):
 
     def mousePressEvent(self, e):
         # 重载一下鼠标点击事件
-        xx = int((e.localPos().x() - 4) // self.pixSize)
-        yy = int((e.localPos().y() - 4) // self.pixSize)
-        if yy < 0 or xx < 0 or yy >= self.row or xx >= self.column:
-            self.current_x = self.row
-            self.current_y = self.column
+        xx = int(e.localPos().x() - 4)
+        yy = int(e.localPos().y() - 4)
+        if yy < 0 or xx < 0 or yy >= self.row * self.pixSize or\
+            xx >= self.column * self.pixSize:
+            self.current_x = self.row * self.pixSize
+            self.current_y = self.column * self.pixSize
         else:
             self.current_x = yy
             self.current_y = xx
+            
         # xx和yy是反的，列、行
         if e.buttons() == QtCore.Qt.LeftButton | QtCore.Qt.RightButton:
             self.leftAndRightPressed.emit(self.current_x, self.current_y)
@@ -93,32 +100,38 @@ class mineLabel(QtWidgets.QLabel):
     def mouseReleaseEvent(self, e):
         #每个标签的鼠标事件发射给槽的都是自身的坐标
         #所以获取释放点相对本标签的偏移量，矫正发射的信号
-        xx = int((e.localPos().x() - 4) // self.pixSize)
-        yy = int((e.localPos().y() - 4) // self.pixSize)
+        xx = int(e.localPos().x() - 4)
+        yy = int(e.localPos().y() - 4)
+        # xx = int((e.localPos().x() - 4) // self.pixSize)
+        # yy = int((e.localPos().y() - 4) // self.pixSize)
         # print('抬起位置{}, {}'.format(xx, yy))
         # print(e.button ())
-        if yy < 0 or xx < 0 or yy >= self.row or xx >= self.column:
-            self.current_x = self.row
-            self.current_y = self.column
+        if yy < 0 or xx < 0 or yy >= self.row * self.pixSize or\
+            xx >= self.column * self.pixSize:
+            self.current_x = self.row * self.pixSize
+            self.current_y = self.column * self.pixSize
         else:
             self.current_x = yy
             self.current_y = xx
+            
         if e.button() == QtCore.Qt.LeftButton:
             self.leftRelease.emit(self.current_x, self.current_y)
         elif e.button () == QtCore.Qt.RightButton:
             self.rightRelease.emit(self.current_x, self.current_y)
 
     def mouseMoveEvent(self, e):
-        xx = int((e.localPos().x() - 4) // self.pixSize)
-        yy = int((e.localPos().y() - 4) // self.pixSize)
+        xx = int(e.localPos().x() - 4)
+        yy = int(e.localPos().y() - 4)
         # print('移动位置{}, {}'.format(xx, yy))
-        if yy < 0 or xx < 0 or yy >= self.row or xx >= self.column:
-            self.current_x = self.row
-            self.current_y = self.column
+        if yy < 0 or xx < 0 or yy >= self.row * self.pixSize or\
+            xx >= self.column * self.pixSize:
+            self.current_x = self.row * self.pixSize
+            self.current_y = self.column * self.pixSize
         else:
             self.current_x = yy
             self.current_y = xx
-        self.mouseMove.emit(yy, xx)
+            
+        self.mouseMove.emit(self.current_x, self.current_y)
 
     def wheelEvent(self, event):
         # 滚轮事件
@@ -135,13 +148,13 @@ class mineLabel(QtWidgets.QLabel):
         if self.paint_cursor: # 播放录像
             game_board_state = 1
             (x, y) = self.ms_board.x_y
-            current_x = y // 16
-            current_y = x // 16
+            current_x = y // self.pixSize
+            current_y = x // self.pixSize
             # poss = self.ms_board.game_board_poss
         else: # 游戏
             game_board_state = self.ms_board.game_board_state
-            current_x = self.current_x
-            current_y = self.current_y
+            current_x = self.current_x // self.pixSize
+            current_y = self.current_y // self.pixSize
             # poss = self.boardPossibility
         painter.begin(self)
         # 画游戏局面

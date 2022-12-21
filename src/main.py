@@ -20,7 +20,7 @@ if __name__ == "__main__":
         "mode": mm.trans_game_mode(ui.gameMode),
         })
     ui.score_board_manager.reshow(ui.label.ms_board, index_type = 1)
-    ui.mainWindow.closeEvent_.connect(ui.score_board_manager.ui.QWidget.close)
+    ui.mainWindow.closeEvent_.connect(ui.score_board_manager.close)
     # exit_code = appctxt.app.exec_()  # 2. Invoke appctxt.app.exec_()
     sys.exit(app.exec_())
     ...

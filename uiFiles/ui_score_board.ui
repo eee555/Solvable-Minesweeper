@@ -62,7 +62,7 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QTableWidget" name="tableWidget">
+  <widget class="ScoreTable" name="tableWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -102,7 +102,7 @@
     <enum>QAbstractScrollArea::AdjustIgnored</enum>
    </property>
    <property name="editTriggers">
-    <set>QAbstractItemView::DoubleClicked</set>
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
    <property name="showDropIndicator" stdset="0">
     <bool>false</bool>
@@ -186,6 +186,13 @@
    </column>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ScoreTable</class>
+   <extends>QTableWidget</extends>
+   <header>ui.uiComponents</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

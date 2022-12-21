@@ -226,9 +226,8 @@ class CommentLabel(QtWidgets.QLabel):
     def mouseReleaseEvent(self, e):
         self.Release.emit(self.time_100)
 
-
-
-
+class ScoreTable(QtWidgets.QTableWidget):
+    ...
 
 
 

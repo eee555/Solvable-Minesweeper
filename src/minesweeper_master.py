@@ -444,6 +444,7 @@ def trans_expression(expression: str):
     expression = expression.replace("\"", "'")
     expression = expression.replace("island", "isl")
     expression = expression.replace("chording", "double")
+    expression = expression.replace("solved_bbbv", "bbbv_solved")
     return expression
 
 # isSolvable = ms_toollib.py_isSolvable

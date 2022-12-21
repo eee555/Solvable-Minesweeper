@@ -17,6 +17,8 @@ class Ui_MainWindow(Ui_MainWindow):
         self.mainWindow = MainWindow
         # 设置全局路径
         r_path = Path(args[0])
+        # 录像保存位置
+        self.replay_path = str(r_path.with_name('replay'))
         # 记录了全局游戏设置
         self.game_setting_path = str(r_path.with_name('gameSetting.ini'))
         # 记录了计数器的配置，显示哪些指标等等
