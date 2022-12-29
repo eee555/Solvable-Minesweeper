@@ -444,8 +444,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 os.mkdir(self.replay_path)
             self.label.ms_board.generate_evf_v0_raw_data()
             # mm.debug_ms_board(self.label.ms_board)
+            if (self.row, self.column, self.mineNum) == (8, 8, 10):
+                filename_level = "b_"
+            elif (self.row, self.column, self.mineNum) == (16, 16, 40):
+                filename_level = "i_"
+            elif (self.row, self.column, self.mineNum) == (16, 30, 99):
+                filename_level = "e_"
+            else:
+                filename_level = "c_"
             self.label.ms_board.\
-                save_to_evf_file(self.replay_path + '\\' + 'test')
+                save_to_evf_file(self.replay_path + '\\' + filename_level +\
+                                 str(self.gameMode) + '_' +\
+                                     f'{self.label.ms_board.rtime:.3f}' +\
+                                         '_3BV=' + f'{self.label.ms_board.bbbv}' +\
+                                             '_3BVs=' + f'{self.label.ms_board.bbbv_s:.3f}' +\
+                                                 '_' + self.player_designator)
         
         self.gameFinished()
 

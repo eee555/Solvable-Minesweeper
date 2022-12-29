@@ -1,6 +1,6 @@
-# MetaSweeper-v3.0 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
+# MetaSweeper-v3.2 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
 
-# 元扫雷v3.0 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
+# 元扫雷v3.2 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
 
 [![SolvableMinesweeper](https://img.shields.io/badge/SolvableMinesweeper-v2.2.5-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
 
