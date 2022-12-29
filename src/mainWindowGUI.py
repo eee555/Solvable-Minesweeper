@@ -10,12 +10,8 @@ class MainWindow(QtWidgets.QMainWindow):
     closeEvent_ = QtCore.pyqtSignal()
     flag_drag_border = False
     minimum_counter = 0
+    game_setting_path = "gameSetting.ini"
     def closeEvent(self, event):
-        conf = configparser.ConfigParser()
-        conf.read("gameSetting.ini")
-        conf.set("DEFAULT", "mainWinTop", str(self.x()))
-        conf.set("DEFAULT", "mainWinLeft", str(self.y()))
-        conf.write(open('gameSetting.ini', "w"))
         self.closeEvent_.emit()
 
     def keyReleaseEvent(self, event):
@@ -27,7 +23,6 @@ class MainWindow(QtWidgets.QMainWindow):
             
     def resizeEvent(self,event):
         # 拖拽边框后resize尺寸
-        # print(666)
         if QApplication.mouseButtons() & Qt.LeftButton:
             self.flag_drag_border = True
             self.timer_ = QTimer()
@@ -35,7 +30,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.timer_.start(100)
 
     def __minimumWindowRelease(self):
-        # print(666)
         if not (QApplication.mouseButtons() & Qt.LeftButton):
             self.flag_drag_border = False
         if not self.flag_drag_border:

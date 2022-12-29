@@ -41,9 +41,9 @@ class ui_Form(Ui_Form):
         self.QWidget.setMinimumSize(QtCore.QSize(138, size))
         self.QWidget.setMaximumSize(QtCore.QSize(138, size))
         self.verticalSlider.setGeometry(QtCore.QRect(32, min(size * 0.2, 44), 22, max(size * 0.6, size - 88)))
-        self.label_4.setGeometry(QtCore.QRect(3, max(size * 0.85, size - 39), 81, 31))
-        self.label_5.setGeometry(QtCore.QRect(3, min(size * 0.1, 8), 81, 31))
-        self.spinBox.setGeometry(QtCore.QRect(60, max(size * 0.5 - 20, 3), 60, 40))
+        self.label_4.setGeometry(QtCore.QRect(3, int(max(size * 0.85, size - 39)), 81, 31))
+        self.label_5.setGeometry(QtCore.QRect(3, int(min(size * 0.1, 8)), 81, 31))
+        self.spinBox.setGeometry(QtCore.QRect(60, int(max(size * 0.5 - 20, 3)), 60, 40))
 
         # self.verticalSlider.valueChanged['int'].connect(self.QWidget.barSetMineNum.emit())
         # self.verticalSlider.sliderReleased['int'].connect(self.QWidget.barSetMineNumCalPoss.emit())

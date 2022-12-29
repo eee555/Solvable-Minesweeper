@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
-import minesweeper_master as mm
+# import minesweeper_master as mm
 # import os
 # sys.path.append(os.path.realpath('.'))
 
@@ -15,12 +15,7 @@ if __name__ == "__main__":
     mainWindow = mainWindowGUI.MainWindow()
     ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
     ui.mainWindow.show()
-    ui.score_board_manager.with_namespace({
-        "race_designator": ui.race_designator,
-        "mode": mm.trans_game_mode(ui.gameMode),
-        })
-    ui.score_board_manager.reshow(ui.label.ms_board, index_type = 1)
-    ui.mainWindow.closeEvent_.connect(ui.score_board_manager.close)
+    ui.mainWindow.game_setting_path = ui.game_setting_path
     # exit_code = appctxt.app.exec_()  # 2. Invoke appctxt.app.exec_()
     sys.exit(app.exec_())
     ...
@@ -44,6 +39,8 @@ if __name__ == "__main__":
 # 'joking': 正在游戏状态，游戏中看过概率计算结果，游戏结果不是official的。
 # 'fail': 游戏失败，踩雷了。
 # 'win': 游戏成功。
+# 'jofail': 游戏失败，游戏结果不是official的。
+# 'jowin': 游戏成功，游戏结果不是official的。
 # 'display':正在播放录像。
 # 'showdisplay':正在一边播放录像、一边看概率。播放录像时按空格进入。
 

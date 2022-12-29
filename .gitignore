@@ -154,6 +154,7 @@ toollib/frame.csv
 /uiFiles/media/
 
 *.avf
+*.rmv
 media/
 *.rar
 *.ini

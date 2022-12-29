@@ -78,9 +78,9 @@ class gameScoreBoardManager():
                     "cell4", "cell5", "cell6", "cell7", "cell8", "fps", "etime",
                     "stnb", "rqp", "qg", "ioe", "thrp", "corr", "ce",
                      "ce_s", "bbbv_solved", "bbbv_s", "op_solved", "isl_solved"]
-    visible = False
+    # is_visible = False
     # 5、错误的表达式，一旦算出报错，永远不再算，显示error
-    def __init__(self, score_board_path, pix_size):
+    def __init__(self, score_board_path, game_setting_path, pix_size):
         # 从文件中读取指标并设置
         # self.ms_board = None
         self.pix_size = pix_size
@@ -91,6 +91,7 @@ class gameScoreBoardManager():
         self.delta_time = 0.0
         
         self.initialized = False
+        self.game_setting_path = game_setting_path
         self.score_board_path = score_board_path
         config_score_board = configparser.ConfigParser()
         if config_score_board.read(self.score_board_path):
@@ -171,17 +172,13 @@ class gameScoreBoardManager():
     #     self.current_time = current_time
     #     self.ms_board.set_current_time(current_time)
     
-    def __visible(self):
+    def visible(self):
         # 仅控制可见性
-        # index_value_list = self.cal_index_value()
-        # self.ui.reshow([i[0] for i in self.score_board_items], index_value_list)
-        if not self.visible:
-            self.ui.QWidget.show()
-            self.visible = True
+        self.ui.QWidget.show()
         
-    def __invisible(self):
+    def invisible(self):
         # 仅控制可见性
-        ...
+        self.ui.QWidget.hide()
         
     
     def update_namespace(self, ms_board, index_type):
@@ -229,14 +226,15 @@ class gameScoreBoardManager():
         self.ms_board = ms_board
         index_value_list = self.cal_index_value(ms_board, index_type)
         self.ui.show(index_value_list)
-        self.__visible()
+        # if self.ui.QWidget.isVisible():
+        #     self.visible()
         
     def reshow(self, ms_board, index_type):
         # 指标数量有变。增删指标用。游戏开始前。index_type是2
         self.ms_board = ms_board
         index_value_list = self.cal_index_value(ms_board, index_type)
         self.ui.reshow([i[0] for i in self.score_board_items], index_value_list)
-        self.__visible()
+        # self.visible()
         ...
         
     def time_step(self):
@@ -245,11 +243,7 @@ class gameScoreBoardManager():
         
         
         self.show()
-        
-    def step(self, time, e, pos: (int, int)):
-        # 接受从局面传过来的参数。单位像素。
-        ...
-        
+
     def __table_change(self, e):
         if e.column() == 1 and self.editing_row == -1:
             r = e.row()
@@ -285,7 +279,12 @@ class gameScoreBoardManager():
     def close(self):
         config = configparser.ConfigParser()
         config["DEFAULT"] = dict(self.score_board_items)
-        config.write(open('scoreBoardSetting.ini', "w"))
+        config.write(open(self.score_board_path, "w"))
+        conf = configparser.ConfigParser()
+        conf.read(self.game_setting_path)
+        conf.set("DEFAULT", "scoreBoardTop", str(self.ui.QWidget.x()))
+        conf.set("DEFAULT", "scoreBoardLeft", str(self.ui.QWidget.y()))
+        conf.write(open(self.game_setting_path, "w"))
         self.ui.QWidget.close()
         
 

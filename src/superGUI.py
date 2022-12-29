@@ -9,6 +9,7 @@ from PyQt5.QtSvg import QSvgWidget
 from ui.ui_main_board import Ui_MainWindow
 from pathlib import Path
 from gameScoreBoard import gameScoreBoardManager
+import minesweeper_master as mm
 
 class Ui_MainWindow(Ui_MainWindow):
     minimum_counter = 0 # 最小化展示窗口有关
@@ -47,11 +48,21 @@ class Ui_MainWindow(Ui_MainWindow):
         config = configparser.ConfigParser()
         # gameMode = 0，1，2，3，4，5，6，7代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        
+    
+        
+        
+        
+        
         if config.read(self.game_setting_path):
             self.gameMode = config.getint('DEFAULT', 'gameMode')
             self.mainWindow.setWindowOpacity((config.getint('DEFAULT', 'transparency') + 1) / 100)
             self.pixSize = config.getint('DEFAULT', 'pixSize')
             self.mainWindow.move(config.getint('DEFAULT', 'mainWinTop'), config.getint('DEFAULT', 'mainWinLeft'))
+            # self.score_board_manager.ui.QWidget.move(config.getint('DEFAULT', 'scoreBoardTop'),
+            #                                          config.getint('DEFAULT', 'scoreBoardLeft'))
+            _scoreBoardTop = config.getint('DEFAULT', 'scoreBoardTop')
+            _scoreBoardLeft = config.getint('DEFAULT', 'scoreBoardLeft')
             self.row = config.getint("DEFAULT", "row")
             self.column = config.getint("DEFAULT", "column")
             self.mineNum = config.getint("DEFAULT", "mineNum")
@@ -109,6 +120,8 @@ class Ui_MainWindow(Ui_MainWindow):
                                  'pixSize': 20,
                                  'mainWinTop': 100,
                                  'mainWinLeft': 200,
+                                 'scoreBoardTop': 100,
+                                 'scoreBoardLeft': 100,
                                  'row': 16,
                                  'column': 30,
                                  'mineNum': 99,
@@ -162,17 +175,24 @@ class Ui_MainWindow(Ui_MainWindow):
                                          }
             with open(self.game_setting_path, 'w') as configfile:
                 config.write(configfile)  # 将对象写入文件
-                
-                
-        score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
-        self.score_board_manager = gameScoreBoardManager(score_board_path, self.pixSize)
-        # self.score_board_manager.visible()
-
-        self.readPredefinedBoardPara()
+              
         
+        self.readPredefinedBoardPara()
         self.setupUi(self.mainWindow)
         self.retranslateUi(MainWindow)
-
+                
+        score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
+        self.score_board_manager = gameScoreBoardManager(score_board_path,
+                                                         self.game_setting_path, 
+                                                         self.pixSize)
+        self.score_board_manager.ui.QWidget.move(_scoreBoardTop, _scoreBoardLeft)
+        
+                
+        self.score_board_manager.with_namespace({
+            "race_designator": self.race_designator,
+            "mode": mm.trans_game_mode(self.gameMode),
+            })
+        
         self.importLEDPic(self.pixSize) # 导入图片
         self.label.setPath(r_path)
         self.initMineArea()
@@ -202,7 +222,8 @@ class Ui_MainWindow(Ui_MainWindow):
         self.frameShortcut8 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Space), MainWindow)
         self.frameShortcut8.setAutoRepeat(False)
         self.frameShortcut9 = QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+Space"), MainWindow)
-
+        self.shortcut_hidden_score_board = QtWidgets.QShortcut(
+            QtGui.QKeySequence(QtCore.Qt.Key_Slash), MainWindow) # /键隐藏计数器
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

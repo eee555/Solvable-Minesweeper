@@ -476,6 +476,9 @@ def trans_game_mode(mode: int) -> str:
     elif mode == 10:
         return '弱可猜'
     
+class abstract_game_board(object):
+    __slots__ = ('game_board', 'mouse_state', 'game_board_state')
+        
 
 # unsolvableStructure = ms_toollib.py_unsolvableStructure
 # unsolvableStructure2(BoardCheck)
@@ -502,16 +505,10 @@ def print2(arr, mode = 0):
                 print('%3.d'%j.status, end=', ')
             print()
 
-def debug_laymine(*args):
-    b=[[ 0,  0,  1,  1,  1,  0,  1, -1],
-       [ 0,  1,  2, -1,  2,  1,  1,  1],
-       [ 0,  2, -1,  4,  3, -1,  1,  0],
-       [ 0,  3, -1, -1,  2,  1,  1,  0],
-       [ 0,  3, -1,  4,  2,  1,  1,  0],
-       [ 0,  3, -1,  3,  2, -1,  2,  0],
-       [ 0,  2, -1,  2,  2, -1,  2,  0],
-       [ 0,  1,  1,  1,  1,  1,  1,  0]]
-    return b, [True]
+def debug_ms_board(ms_board):
+    for i in range(ms_board.events_len):
+        print(f"{ms_board.events_time(i)}: '{ms_board.events_mouse(i)}', ({ms_board.events_y(i)}, {ms_board.events_x(i)})")
+
 
 
 # layMineSolvable = ms_toollib.layMineSolvable

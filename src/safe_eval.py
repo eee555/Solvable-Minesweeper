@@ -111,6 +111,8 @@ if sys.version_info[0:2] >= (3, 11):
         'POP_JUMP_BACKWARD_IF_TRUE',
         'FORMAT_VALUE',
         'BUILD_STRING',
+        'GET_LEN',
+        'ROT_N',
     }
 
 else:
@@ -185,6 +187,8 @@ else:
         'CALL_FUNCTION_EX',
         'FORMAT_VALUE',
         'BUILD_STRING',
+        'GET_LEN',
+        'ROT_N',
     }
 
 # Convert names to index

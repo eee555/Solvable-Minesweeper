@@ -25,6 +25,7 @@ class mineLabel(QtWidgets.QLabel):
         mouse_ = QPolygonF(points)
         self.mouse = QPainterPath()
         self.mouse.addPolygon(mouse_)
+        self.setMouseTracking(True)
         self.paint_cursor = False # 是否画光标。不仅控制画光标，还代表了是游戏还是播放录像。
 
     def setPath(self, r_path):
@@ -53,8 +54,8 @@ class mineLabel(QtWidgets.QLabel):
             self.row = row
             self.column = column
             self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
-            if not hasattr(self,'ms_board'):
-                self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
+            # if not hasattr(self,'ms_board'):
+            #     self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
             self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
         
         # 这里有问题，尺寸不一样也可以reset吗
@@ -130,7 +131,6 @@ class mineLabel(QtWidgets.QLabel):
         else:
             self.current_x = yy
             self.current_y = xx
-            
         self.mouseMove.emit(self.current_x, self.current_y)
 
     def wheelEvent(self, event):
@@ -185,7 +185,7 @@ class mineLabel(QtWidgets.QLabel):
                 painter.drawPixmap(current_y * pix_size + 4, current_x * pix_size + 4, QPixmap(self.pixmapNum[0]))
         # 画光标
         if self.paint_cursor:
-            painter.translate(x * pix_size / 16, y * pix_size / 16)
+            painter.translate(x, y)
             painter.drawPath(self.mouse)
             painter.fillPath(self.mouse,Qt.white)
         painter.end()
