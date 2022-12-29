@@ -363,6 +363,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.ui_video_control.QWidget.close()
         elif self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
+        self.label_info.setText(self.player_designator)
         # elif self.game_state == 'show':
         #     self.label.setMouseTracking(False)
         self.game_state = 'ready'
@@ -391,6 +392,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         elif self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
+        self.label_info.setText(self.player_designator)
         self.game_state = 'ready'
         
         self.time_ms = 0
@@ -432,11 +434,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board.is_fair = self.is_fair()
             self.label.ms_board.is_offical = self.is_official()
             self.label.ms_board.mode = self.gameMode
-            self.label.ms_board.software = "元3.1"
-            self.label.ms_board.player_designator = self.player_designator
-            self.label.ms_board.race_designator = self.race_designator
-            self.label.ms_board.country = self.country
-            self.label.ms_board.uniqueness_designator = "" # 暂时不能填
+            self.label.ms_board.software = "元3.1".encode( "UTF-8" )
+            self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
+            self.label.ms_board.race_designator = self.race_designator.encode( "UTF-8" )
+            self.label.ms_board.country = self.country.encode( "UTF-8" )
+            self.label.ms_board.uniqueness_designator = "".encode( "UTF-8" ) # 暂时不能填
             
             if not os.path.exists(self.replay_path):
                 os.mkdir(self.replay_path)
@@ -813,7 +815,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         self.timer_video = QTimer()
         self.timer_video.timeout.connect(self.video_playing_step)
-        self.ui_video_control = videoControl.ui_Form(video.rtime, comments)
+        self.ui_video_control = videoControl.ui_Form(video.video_time, comments)
         self.mainWindow.closeEvent_.connect(self.ui_video_control.QWidget.close)
         self.ui_video_control.pushButton_play.clicked.connect(self.video_play)
         self.ui_video_control.pushButton_replay.clicked.connect(self.video_replay)
@@ -826,7 +828,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.ui_video_control.QWidget.show()
 
         self.video_time = 0.0 # 录像当前时间
-        self.video_stop_time = video.rtime # 录像停止时间
+        self.video_stop_time = video.video_time # 录像停止时间
         self.video_time_step = 0.01 # 录像时间的步长，定时器始终是10毫秒
         self.label.paint_cursor = True
         self.video_playing = True # 录像正在播放
@@ -834,7 +836,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         video.video_playing_pix_size = self.label.pixSize
         self.label.ms_board = video
-        # self.video_playing
+        self.label_info.setText(bytes(self.label.ms_board.player_designator).decode())
 
     def video_playing_step(self):
         # 定时器的回调
@@ -854,13 +856,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         else:
             self.video_playing = True
             self.timer_video.start(10)
-            self.video_stop_time = self.label.ms_board.rtime
+            self.video_stop_time = self.label.ms_board.video_time
 
     def video_replay(self):
         self.video_playing = True
         self.video_time = 0.0
         self.timer_video.start(10)
-        self.video_stop_time = self.label.ms_board.rtime
+        self.video_stop_time = self.label.ms_board.video_time
 
     def video_set_speed(self, speed):
         self.video_time_step = speed * 0.01
