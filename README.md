@@ -1,6 +1,6 @@
-# MetaSweeper-v3.2 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
+# MetaSweeper-v3.1.0_beta —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
 
-# 元扫雷v3.2 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
+# 元扫雷v3.1.0_beta —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
 
 [![SolvableMinesweeper](https://img.shields.io/badge/SolvableMinesweeper-v2.2.5-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
 
@@ -45,14 +45,14 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
 建议在`Windows 10`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
 
 ### 通过网盘安装(推荐)
-在下面的[下载链接](#下载链接)中找到最新的版本，然后下载，解压，直接运行`main.exe`文件，开箱即用。
+在下面的[下载链接](#下载链接)中找到最新的版本，然后下载，解压，直接运行`main.exe`文件（如果警告请点击“仍然运行”），开箱即用。
 
 ### 通过Github Actions安装(最安全)
 在[Github Actions](https://github.com/eee555/Solvable-Minesweeper/actions)找到构建成功的最近一次提交，点击更新内容，在Artifacts页面可以找到打包好的文件，后面步骤同上。这个方法可以体验最新功能，能保证软件绿色安全无毒，但未发布的版本都不能保证稳定性。
 
 ### 从源码安装(不推荐)
 在编译之前，请确保自己拥有：
-*   Python 3.7/Python 3.8
+*   Python >=3.7
 *   会用Powershell或者其它命令行工具的能力
 
 以下为安装步骤：
@@ -78,6 +78,10 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
 （还没写，计划弄出3.5以后回头来写）
 
 ## 下载链接
+
+### 测试版v3.1.0_beta：
+修复了若干bug。增添了游戏时的计数器，其表达式支持任意python语法。游戏结束后，可以自动保存.evf录像。现在能够播放avf、rmv、evf三种录像。无猜埋雷可以支持任意雷数。  
+链接：[https://wwwl.lanzouw.com/imdWO0joyzra](https://wwwl.lanzouw.com/imdWO0joyzra)
 
 ### 正式版v3.0.2：
 修复了3个特别影响游戏体验的bug。  
