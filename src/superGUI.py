@@ -117,6 +117,8 @@ class Ui_MainWindow(Ui_MainWindow):
             self.autosave_video = True
             self.filter_forever = False
             self.end_then_flag = True
+            self.board_constraint = ""
+            self.attempt_times_limit = 100000
             config["DEFAULT"] = {'gameMode': 0,
                                  'transparency': 100,
                                  'pixSize': 20,
