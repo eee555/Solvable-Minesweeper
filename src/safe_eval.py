@@ -68,7 +68,6 @@ if sys.version_info[0:2] >= (3, 11):
         'UNARY_NOT',
         'UNARY_INVERT',
         'BINARY_SUBSCR',
-        'GET_LEN',
         'RETURN_VALUE',
         'BUILD_TUPLE',
         'BUILD_LIST',
@@ -111,8 +110,6 @@ if sys.version_info[0:2] >= (3, 11):
         'POP_JUMP_BACKWARD_IF_TRUE',
         'FORMAT_VALUE',
         'BUILD_STRING',
-        'GET_LEN',
-        'ROT_N',
     }
 
 else:
@@ -142,7 +139,6 @@ else:
         'BINARY_TRUE_DIVIDE',
         'INPLACE_FLOOR_DIVIDE',
         'INPLACE_TRUE_DIVIDE',
-        'GET_LEN',
         'INPLACE_ADD',
         'INPLACE_SUBTRACT',
         'INPLACE_MULTIPLY',
@@ -159,7 +155,6 @@ else:
         'INPLACE_XOR',
         'INPLACE_OR',
         'RETURN_VALUE',
-        'ROT_N',
         'BUILD_TUPLE',
         'BUILD_LIST',
         'BUILD_SET',
@@ -187,8 +182,6 @@ else:
         'CALL_FUNCTION_EX',
         'FORMAT_VALUE',
         'BUILD_STRING',
-        'GET_LEN',
-        'ROT_N',
     }
 
 # Convert names to index
