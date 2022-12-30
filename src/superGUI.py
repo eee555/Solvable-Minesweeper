@@ -101,6 +101,8 @@ class Ui_MainWindow(Ui_MainWindow):
             self.mainWindow.setWindowOpacity(1)
             self.pixSize = 20
             self.mainWindow.move(100, 200)
+            _scoreBoardTop = 100
+            _scoreBoardLeft = 100
             self.row = 16
             self.column = 30
             self.mineNum = 99
