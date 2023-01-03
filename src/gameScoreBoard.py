@@ -103,12 +103,13 @@ class gameScoreBoardManager():
                 "RTime": "f'{time:.3f}'",
                 "Est RTime": "f'{etime:.3f}'",
                 "3BV": "f'{bbbv_solved}/{bbbv}'",
-                "3BV/s": "f'{bbbv_solved / time:.3f}'",
+                "3BV/s": "f'{bbbv_s:.3f}'",
                 "Ops": "op",
                 "Isls": "isl",
                 "Left": "f'{left}@{left_s:.3f}'",
                 "Right": "f'{right}@{right_s:.3f}'",
                 "Double": "f'{double}@{double_s:.3f}'",
+                "STNB": "f'{stnb:.3f}'",
                 "IOE": "f'{ioe:.3f}'",
                 "Thrp": "f'{thrp:.3f}'",
                 "Corr": "f'{corr:.3f}'",
@@ -163,6 +164,7 @@ class gameScoreBoardManager():
             if _type <= index_type:
                 # print(expression)
                 index_value.append(str(safe_eval(expression, self.namespace)))
+                ...
             else:
                 index_value.append('--')
         return index_value
@@ -182,30 +184,31 @@ class gameScoreBoardManager():
         
     
     def update_namespace(self, ms_board, index_type):
-        # 全部更新，以后优化就是部分更新, index_type现在没用
-        if index_type == 1:
-            self.namespace.update({
-                "time": ms_board.time,
-                "left": ms_board.left,
-                "right": ms_board.right,
-                "double": ms_board.double,
-                "cl": ms_board.cl,
-                "left_s": ms_board.left_s,
-                "right_s": ms_board.right_s,
-                "double_s": ms_board.double_s,
-                "cl_s": ms_board.cl_s,
-                "path": ms_board.path,
-                "flag": ms_board.flag,
-                "flag_s": ms_board.flag_s,
-                })
-        else:
+        # 全部更新，以后优化方向就是部分更新, index_type现在没用
+        self.namespace.update({
+            "time": ms_board.time,
+            "left": ms_board.left,
+            "right": ms_board.right,
+            "double": ms_board.double,
+            "cl": ms_board.cl,
+            "left_s": ms_board.left_s,
+            "right_s": ms_board.right_s,
+            "double_s": ms_board.double_s,
+            "cl_s": ms_board.cl_s,
+            "path": ms_board.path,
+            "flag": ms_board.flag,
+            "flag_s": ms_board.flag_s,
+            })
+        if index_type == 2:
             self.namespace.update({
                 "rtime": ms_board.rtime,
                 "etime": ms_board.etime,
                 "bbbv": ms_board.bbbv,
+                "bbbv_s": ms_board.bbbv_s,
                 "bbbv_solved": ms_board.bbbv_solved,
                 "op": ms_board.op,
                 "isl": ms_board.isl,
+                "stnb": ms_board.stnb,
                 "ioe": ms_board.ioe,
                 "thrp": ms_board.thrp,
                 "corr": ms_board.corr,

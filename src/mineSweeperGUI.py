@@ -858,6 +858,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.timer_video.stop()
             self.video_playing = False
         self.label.update()
+        self.score_board_manager.show(self.label.ms_board, index_type = 2)
         self.video_time += self.video_time_step
         self.ui_video_control.horizontalSlider_time.setValue(int(self.video_time * 100))
 

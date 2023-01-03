@@ -244,4 +244,6 @@ def safe_eval(source, globals=None, locals=None):
 
     raise_if_code_unsafe(code, globals=globals, locals=locals)
 
-    return eval(code, globals, locals)
+    ans = eval(code, globals, locals)
+    globals.pop('__builtins__') # 删去副作用
+    return ans
