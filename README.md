@@ -18,20 +18,19 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
 
 计划开发：
 
-- 各种扫雷相关的算法，性能达到极佳。
-- 智能的录像播放器、智能的局面数据导入导出工具。
-- 能计算是雷概率、开空概率的局面分析工具。
-- 用户体验好的全模式无猜扫雷。
+- 能计算开空概率的局面分析工具。
 - 多种语言的切换。
+- 录像文件的签名认证。
+- 在本地记录个人纪录。
+- 防止在本软件作弊以取得异常成绩。
 
 而不会开发：
 
 - 移动端的扫雷。
-- 在本地记录个人纪录的功能。
+- 在本地统计个人数据的功能。
 - 安装程序和启动界面。
 - 扫雷游戏以外的游戏、无猜模式以外的扫雷模式。
 - 非标准且花哨的ui、任何多余且匪夷所思的选项。
-- 任何防止在本软件作弊以取得异常成绩的设计。
 - 任何用于在其他软件作弊以取得异常短的时间的成绩的设计。
 - 扫码收费以解锁某功能的功能。
 
@@ -61,7 +60,7 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
     git clone https://github.com/eee555/Solvable-Minesweeper.git
 ```
 
-*   方案一：从pypi.org安装Python依赖（安装ms_toollib的历史版本，不推荐。不需要安装rust工具链）
+*   方案一：从pypi.org安装Python依赖（安装ms_toollib的release版本，不推荐，底层api有调整。不需要安装rust工具链）
 ```sh
     pip install -r requirements.txt # Windows
     pip3 install -r requirements.txt # *nix
