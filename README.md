@@ -23,6 +23,7 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
 - 录像文件的签名认证。
 - 在本地记录个人纪录。
 - 防止在本软件作弊以取得异常成绩。
+- 自动更新。
 
 而不会开发：
 
