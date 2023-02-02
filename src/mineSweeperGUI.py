@@ -163,6 +163,19 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.ms_board.board = board
             return
 
+    def mineAreaLeftPressed(self, i, j):
+        if self.game_state == 'ready' or self.game_state == 'playing' or\
+            self.game_state == 'joking':
+            self.label.ms_board.step('lc', (i, j))
+            self.label.update()
+
+            self.set_face(15)
+
+        elif self.game_state == 'show':
+            # 看概率时，所有操作都移出局面外
+            self.label.ms_board.step('lc', (self.row * self.pixSize, self.column * self.pixSize))
+            self.set_face(15)
+
     def mineAreaLeftRelease(self, i, j):
         if self.game_state == 'playing' or self.game_state == 'joking':
             # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai劫持、处理下
@@ -196,19 +209,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
             self.set_face(14)
 
-
-    def mineAreaRightRelease(self, i, j):
-        if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
-            self.label.ms_board.step('rr', (i, j))
-            self.label.update()
-
-            self.set_face(14)
-        elif self.game_state == 'show':
-            # 看概率时，所有操作都移出局面外
-            self.label.ms_board.step('rr', (self.row * self.pixSize, self.column * self.pixSize))
-
-            self.set_face(14)
-
     def mineAreaRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
             if self.label.ms_board.game_board[i//self.pixSize][j//self.pixSize] == 11:
@@ -221,20 +221,18 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.update()
 
             self.set_face(15)
-
-    def mineAreaLeftPressed(self, i, j):
-        if self.game_state == 'ready' or self.game_state == 'playing' or\
-            self.game_state == 'joking':
-            self.label.ms_board.step('lc', (i, j))
+            
+    def mineAreaRightRelease(self, i, j):
+        if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
+            self.label.ms_board.step('rr', (i, j))
             self.label.update()
 
-            self.set_face(15)
-
+            self.set_face(14)
         elif self.game_state == 'show':
             # 看概率时，所有操作都移出局面外
-            self.label.ms_board.step('lc', (self.row * self.pixSize, self.column * self.pixSize))
-            self.set_face(15)
+            self.label.ms_board.step('rr', (self.row * self.pixSize, self.column * self.pixSize))
 
+            self.set_face(14)
 
     def mineAreaLeftAndRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or\
@@ -385,7 +383,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             if not (self.MinenumTimeWigdet.width() >= e.localPos().x() >= 0 and 0 <= e.localPos().y() <= self.MinenumTimeWigdet.height()):
                 return
         # 点击脸时调用
-        if self.game_state == 'display':
+        if self.game_state == 'display' or self.game_state == 'showdisplay':
             self.timer_video.stop()
             self.ui_video_control.QWidget.close()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
