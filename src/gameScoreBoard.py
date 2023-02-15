@@ -160,11 +160,22 @@ class gameScoreBoardManager():
         # 原地修改指标数值         
         self.update_namespace(ms_board, index_type)
         index_value = []
-        for (_, expression), _type in zip(self.score_board_items, self.score_board_items_type):
+        # for (idx, (_, expression), _type) in enumerate(zip(self.score_board_items, self.score_board_items_type)):
+        for idx in range(len(self.score_board_items)):
+            _type = self.score_board_items_type[idx]
+            expression = self.score_board_items[idx][1]
             if _type <= index_type:
                 # print(expression)
-                index_value.append(str(safe_eval(expression, self.namespace)))
+                try:
+                    expression_result = safe_eval(expression, self.namespace)
+                except:
+                    self.score_board_items_type[idx] = 5
+                    index_value.append('error')
+                else:
+                    index_value.append(str(expression_result))
                 ...
+            elif _type == 5:
+                index_value.append('error')
             else:
                 index_value.append('--')
         return index_value
