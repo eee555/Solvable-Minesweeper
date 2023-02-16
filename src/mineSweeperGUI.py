@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer, QCoreApplication, Qt
+from PyQt5.QtCore import QTimer, QCoreApplication, Qt 
 from PyQt5.QtGui import QPixmap, QKeySequence
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
 from PyQt5.QtWidgets import QApplication, QFileDialog
@@ -22,11 +22,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         self.operationStream = []
 
-        self.time_ms: int = 0 # 已毫秒为单位的游戏时间，全局统一的
-        self.showTime(self.time_ms // 1000)
-        self.timer_1ms = QTimer()
-        self.timer_1ms.setInterval(1)  # 一千毫秒回调一次的定时器
-        self.timer_1ms.timeout.connect(self.timeCount)
+        self.time_10ms: int = 0 # 已毫秒为单位的游戏时间，全局统一的
+        self.showTime(self.time_10ms // 100)
+        self.timer_10ms = QTimer()
+        # 开了高精度反而精度降低
+        # self.timer_10ms.setTimerType(Qt.PreciseTimer)
+        self.timer_10ms.setInterval(10)  # 10毫秒回调一次的定时器
+        self.timer_10ms.timeout.connect(self.timeCount)
         # text4 = '1'
         # self.label_info.setText(text4)
         self.mineUnFlagedNum = self.mineNum  # 没有标出的雷，显示在左上角
@@ -111,12 +113,20 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
         self.label.ms_board.board = Board
 
-    def timeCount(self):  # 时间步进的回调，改计数器、改右上角时间
-        self.time_ms += 1
-        if self.time_ms % 1000 == 0:
-            self.showTime(self.time_ms // 1000)
-        if self.time_ms % 8 == 0:
-            # 计数器用125Hz的刷新率
+    def timeCount(self):
+        # 10ms时间步进的回调，改计数器、改右上角时间
+        self.time_10ms += 1
+        if self.time_10ms % 100 == 0:
+            t = self.label.ms_board.time
+            self.time_10ms = int(t * 100)
+            self.showTime(self.time_10ms // 100)
+            since_time_unix_2 = QtCore.QDateTime.currentDateTime().toMSecsSinceEpoch() - self.start_time_unix_2
+            if abs(t * 1000 - since_time_unix_2) > 10:
+                # 防CE作弊
+                self.gameRestart()
+            
+        if self.time_10ms % 1 == 0:
+            # 计数器用100Hz的刷新率
             # self.score_board_manager.with_namespace({
             #     "rtime": self.time_ms / 1000,
             #     })
@@ -190,7 +200,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             else:
                 self.layMine(i // self.pixSize, j // self.pixSize)
                 self.game_state = 'playing'
-                self.timer_1ms.start()
+                # 核实用的时间
+                self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
+                                            toMSecsSinceEpoch()
+                
+                self.timer_10ms.start()
                 self.score_board_manager.editing_row = -2
 
         if self.game_state == 'playing' or self.game_state == 'joking':
@@ -317,6 +331,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.showTime(0)
 
                 self.minimumWindow()
+            # 这个哪里用了？？？
             self.timer_save_size = QTimer()
             # self.timer_save_size.timeout.connect(self.refreshSettingsDefault)
             self.timer_save_size.setSingleShot(True)
@@ -339,16 +354,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.timer_mine_num.setSingleShot(True)
             self.timer_mine_num.start(3000)
 
-    def gameStart(self):  # 画界面，但是不埋雷
+    def gameStart(self):
+        # 画界面，但是不埋雷
         self.mineUnFlagedNum = self.mineNum  # 没有标出的雷，显示在左上角
         self.showMineNum(self.mineUnFlagedNum)    # 在左上角画雷数
         # pixmap = QPixmap(self.pixmapNum[14])
         # self.label_2.setPixmap(self.pixmapNum[14])
         self.set_face(14)
         # self.label_2.setScaledContents(True)
-        self.time_ms = 0
-        self.showTime(self.time_ms)
-        self.timer_1ms.stop()
+        self.time_10ms = 0
+        self.showTime(self.time_10ms)
+        self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
         self.operationStream = []  # 记录整局的鼠标操作流，格式例如[('l1',(x,y)),('r1',(x,y)),('c2',(x,y))]
 
@@ -393,13 +409,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_info.setText(self.player_designator)
         self.game_state = 'ready'
         
-        self.time_ms = 0
-        self.showTime(self.time_ms)
+        self.time_10ms = 0
+        self.showTime(self.time_10ms)
         self.mineUnFlagedNum = self.mineNum
         self.showMineNum(self.mineUnFlagedNum)
         self.set_face(14)
         
-        self.timer_1ms.stop()
+        self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
         self.label.ms_board.reset(self.row, self.column, self.pixSize)
         self.label.update()
@@ -418,7 +434,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
 
     def gameWin(self):  # 成功后改脸和状态变量，停时间
-        self.timer_1ms.stop()
+        self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
 
         if self.game_state == 'joking':
@@ -461,7 +477,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.gameFinished()
 
     def gameFailed(self): # 失败后改脸和状态变量
-        self.timer_1ms.stop()
+        self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
 
         if self.game_state == 'joking':
@@ -605,7 +621,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_NEvent(self):
         # 游戏设置
         self.actionChecked('N')
-        ui = gameSettings.ui_Form(self.game_setting_path)
+        ui = gameSettings.ui_Form(self.game_setting_path, self.pixSize)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -631,7 +647,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.importLEDPic(self.pixSize)
             self.label.importCellPic(self.pixSize)
             self.label_2.reloadFace(self.pixSize)
-            self.gameRestart()
+            self.gameStart()
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
             self.score_board_manager.with_namespace({
                 "race_designator": ui.race_designator,
@@ -690,7 +706,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
         # 主定时器停一下，不停的话需要的修补太多
-        self.timer_1ms.stop()
+        self.timer_10ms.stop()
         self.score_board_manager.invisible()
         
         self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * len(ui.board))

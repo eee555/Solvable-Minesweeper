@@ -13,13 +13,14 @@ from ui.uiComponents import RoundQDialog
 # from PyQt5.QtWidgets import  QWidget, QDialog
 
 class ui_Form(Ui_Form):
-    def __init__(self, game_setting_path):
+    def __init__(self, game_setting_path, pix_size):
+        # 甚至界面的参数，主要从配置文件里来，pix_size除外
         self.game_setting_path = game_setting_path
         config = configparser.ConfigParser()
         config.read(game_setting_path)
         self.gameMode = config.getint('DEFAULT','gameMode')
         self.transparency = config.getint('DEFAULT','transparency')
-        self.pixSize = config.getint('DEFAULT','pixSize')
+        self.pixSize = pix_size
         self.row = config.getint("DEFAULT", "row")
         self.column = config.getint("DEFAULT", "column")
         self.mineNum = config.getint("DEFAULT", "mineNum")
