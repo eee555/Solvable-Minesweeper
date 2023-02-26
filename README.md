@@ -6,38 +6,37 @@
 
 ## 简介(Introduction)
 
-元扫雷v3.1.0_beta是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。内部集成了三大判雷引擎+概率计算引擎+光学局面识别（Optical Board Recognition，OBR）引擎，具有全部6种无猜扫雷模式+标准+win7。采用Python/PyQt5及Rust编写，兼顾开发速度、内存安全与执行速度。不同于Arbiter的强调检查作弊、FreeSweeper的强调统计、Minesweeper X的小巧，元扫雷的开发人员希望制作出一款高度智能的扫雷。外观上它只是一款普通的标准扫雷，但它能通过按住ctrl并滚动滚轮任意调整大小，能调整窗口的透明度，能够计算局面中每一格是雷的概率，设置能截屏识别计算其他扫雷中每一格是雷的概率。其装载的录像播放器可以分析录像的高层抽象特征，并实时展示游戏局面中每一格是雷的概率。在游戏性方面，弱可猜、强可猜的模式都是独一无二的，也是唯一自带新手教程的扫雷。对于高玩来说，它又是专业的，能够计算3BV/s、STNB、RQP指标并展示。此外，它不会打扰玩家，当玩家不去主动打开时，就不会弹出任何窗口，且任何窗口都可以按下空格键快速关闭。
+元扫雷v3.1.0_beta是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
 
-项目架构方面，游戏界面与算法高度分离，自研的工具箱同样开源，且遵循更为宽松的MIT协议，通过pip install ms_toollib命令即可安装。
+优势：
+
++ 内部集成了**三大判雷引擎+集成的局面状态机+概率计算引擎+光学局面识别（Optical Board Recognition，OBR）引擎**，具备性能优势。
+
++ 采用Python/PyQt5及Rust编写，模块间相互配合、融为一体，兼顾**开发效率、内存安全与执行速度**。游戏界面与算法高度分离，自研的工具箱同样开源，且遵循更为宽松的MIT协议，通过pip install ms_toollib命令即可安装。
+
++ 游戏模式方面，具有**全部6种无猜扫雷模式+标准+win7**，弱可猜、强可猜的模式都是绝无仅有的。
+
++ 外观上它只是一款普通的标准扫雷，但它能通过按住ctrl并滚动滚轮任意**调整大小**，能调整窗口的**透明度**。这是罕见的。
+
++ 按下“空格”计算局面中每一格是雷的概率。这是罕见的。
+
++ 按下“ctrl+空格”能**截屏识别**计算其他扫雷中每一格是雷的概率。这是绝无仅有的。
+
++ 其装载的录像播放器可以分析录像的高层抽象特征，并实时展示游戏局面中每一格是雷的概率。这是绝无仅有的。
+
++ 能够计算3BV/s、STNB、RQP等指标并展示。
+
++ 完备的局面筛选功能，按用户配置来筛选。这是罕见的。
+
++ 对变速齿轮的防御能力。
 
 目前属于漫长的开发阶段中，约1~3月更新一个版本，欢迎提issue、star、pull request、fork。
 
-MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper. Rather than simply repeating existing work, the project brought together a collection of modern designs for minesweeper games. Internal integration of three mine-detection engine + probability calculation engine + Optical Board Recognition (OBR) engine, with all six no guess mode + standard + Win7. Written in Python/PyQt5 and Rust, it gives consideration to development speed, memory safety and execution speed. Different from Arbiter's emphasis on checking cheating, FreeSweeper's emphasis on statistics, Minesweeper X's small, MetaSweeper developers hope to produce a highly intelligent Minesweeper. It looks like a normal standard minesweeper, but it can be resized by holding Down CTRL and scrolling through the wheel, it can adjust the transparency of the window, it can calculate the probability of whether each cell being a mine, and it can calculate the probability of whether each cell being a mine for other minesweeper by screen shot. The video player can analyze high-level abstract features of the video and show the probability of whether each cell being a mine in real time. In terms of gameplay, the weak guess and strong guess modes are unique and the only minesweeper with its own tutorial. For high play, it is also professional, able to calculate 3BV/s, STNB, RQP metrics and display. In addition, it doesn't bother the player, no window pops up when the player doesn't open it, and any window can be quickly closed by pressing the space bar.
+MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love minesweeper. Rather than simply repeating existing work, the project brought together a collection of modern designs for minesweeper games. Internal integration of three mine-detection engine + probability calculation engine + Optical Board Recognition (OBR) engine, with all six no guess mode + standard + Win7. Written in Python/PyQt5 and Rust, it gives consideration to development speed, memory safety and execution speed. Different from Arbiter's emphasis on checking cheating, FreeSweeper's emphasis on statistics, Minesweeper X's small, MetaSweeper developers hope to produce a highly intelligent Minesweeper. It looks like a normal standard minesweeper, but it can be resized by holding Down CTRL and scrolling through the wheel, it can adjust the transparency of the window, it can calculate the probability of whether each cell being a mine, and it can calculate the probability of whether each cell being a mine for other minesweeper by screen shot. The video player can analyze high-level abstract features of the video and show the probability of whether each cell being a mine in real time. In terms of gameplay, the weak guess and strong guess modes are unique and the only minesweeper with its own tutorial. For high play, it is also professional, able to calculate 3BV/s, STNB, RQP metrics and display. In addition, it doesn't bother the player, no window pops up when the player doesn't open it, and any window can be quickly closed by pressing the space bar.
 
 ### 开发计划
 
-计划开发：
-
-- 能计算开空概率的局面分析工具。
-- 多种语言的切换。
-- 录像文件的签名认证。
-- 在本地记录个人纪录。
-- 防止在本软件作弊以取得异常成绩。
-- 自动更新。
-- 可能开发双人扫雷。
-
-而不会开发：
-
-- 移动端的扫雷。
-- 在本地统计个人数据的功能。
-- 安装程序和启动界面。
-- 扫雷游戏以外的游戏、无猜模式以外的扫雷模式。
-- 非标准且花哨的ui、任何多余且匪夷所思的选项。
-- 任何用于在其他软件作弊以取得异常短的时间的成绩的设计。
-- 扫码收费以解锁某功能的功能。
-
-+ 使用教程：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
-
++ 使用教程（有些老旧）：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
 + 更全面的文档（施工中）：
 + 算法工具箱地址：[https://github.com/eee555/ms_toollib](https://github.com/eee555/ms_toollib)
 + 算法工具箱文档：[https://docs.rs/ms_toollib](https://docs.rs/ms_toollib)
@@ -87,11 +86,9 @@ MetaSweeper V3.0 is a minesweeper game developed by players who love minesweeper
 
 （还没写，计划弄出3.5以后回头来写）
 
-## 需要的帮助
+## 贡献
 
-1 需要为元扫雷设计一个时尚的图标（icon）。
-2 需要测试员来寻找隐秘的bug。
-3 其余帮助（但即使缺乏也没有严重影响）。
+[CONTRIBUTING.md](https://github.com/eee555/Solvable-Minesweeper/blob/master/CONTRIBUTING.md)
 
 ## 下载链接
 
