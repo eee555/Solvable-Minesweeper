@@ -22,9 +22,9 @@
 
 + 按下“ctrl+空格”能**截屏识别**计算其他扫雷中每一格是雷的概率。这是绝无仅有的。
 
-+ 其装载的录像播放器可以分析录像的高层抽象特征，并实时展示游戏局面中每一格是雷的概率。这是绝无仅有的。
++ 其装载的录像播放器可以分析录像的高层抽象特征，并实时展示游戏局面中每一格是雷的概率。这是绝无仅有的。能够播放avf、rmv、mvf、evf四种主流格式的录像。这是罕见的。
 
-+ 能够计算3BV/s、STNB、RQP等指标并展示。
++ 能够计算3BV/s、STNB、RQP等指标并展示，能够自定义公式。这是罕见的。
 
 + 完备的局面筛选功能，按用户配置来筛选。这是罕见的。
 
@@ -91,6 +91,10 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 [CONTRIBUTING.md](https://github.com/eee555/Solvable-Minesweeper/blob/master/CONTRIBUTING.md)
 
 ## 下载链接
+
+### 正式版v3.1.1：
+修复了8个bug。现在能够播放mvf录像。提高了对变速齿轮的防御能力。
+链接：[https://wwwl.lanzouw.com/itjCR0p24hdc](https://wwwl.lanzouw.com/itjCR0p24hdc)
 
 ### 测试版v3.1.0_beta：
 修复了若干bug。增添了游戏时的计数器，其表达式支持任意python语法。游戏结束后，可以自动保存.evf录像。现在能够播放avf、rmv、evf三种录像。无猜埋雷可以支持任意雷数。  
