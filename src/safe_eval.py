@@ -116,6 +116,7 @@ else:
     # Python 3.10.
     opcode_whitelist = {
         '<0>',
+        '<8>',
         'POP_TOP',
         'ROT_TWO',
         'ROT_THREE',

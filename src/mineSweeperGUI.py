@@ -796,7 +796,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_OpenFile(self, openfile_name = None):
         if not openfile_name:
             openfile_name = QFileDialog.\
-                getOpenFileName(self.mainWindow, '打开文件','','All(*.avf *.evf *.rmv);;Arbiter video(*.avf);;Metasweeper video(*.evf);;Vienna MineSweeper video(*.rmv)')
+                getOpenFileName(self.mainWindow, '打开文件','','All(*.avf *.evf *.rmv *.mvf);;Arbiter video(*.avf);;Metasweeper video(*.evf);;Vienna MineSweeper video(*.rmv);;Minesweeper Clone 0.97(*.mvf)')
             openfile_name = openfile_name[0]
         # 实例化
         if not openfile_name:
@@ -808,6 +808,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             video = ms.RmvVideo(openfile_name)
         elif openfile_name[-3:] == "evf":
             video = ms.EvfVideo(openfile_name)
+        elif openfile_name[-3:] == "mvf":
+            video = ms.MvfVideo(openfile_name)
         else:
             return
         

@@ -108,7 +108,7 @@ def laymine_solvable_adjust(board_constraint, attempt_times_limit, params):
 
 def get_mine_times_limit(row: int, column: int):
     '''
-    计算局面的雷数上限和尝试次数上限。当雷数小于等于雷数上限时，才可以用筛选法。
+    计算局面的雷数上限和尝试次数上限。当雷数小于等于雷数上限时，才可以用筛选法(考虑游戏体验)。
     
     Parameters
     ----------
