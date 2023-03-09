@@ -61,13 +61,13 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
     git clone https://github.com/eee555/Solvable-Minesweeper.git
 ```
 
-*   方案一：从pypi.org安装Python依赖（安装ms_toollib的release版本，不推荐，底层api有调整。不需要安装rust工具链）
+*   方案一：从pypi.org安装Python依赖（安装ms_toollib的release版本，简单但不一定成功，因为底层api可能有调整。如果不成功，需要往前翻到合适的版本，或直接联系作者）
 ```sh
     pip install -r requirements.txt # Windows
     pip3 install -r requirements.txt # *nix
 ```
 
-*   方案二：从github安装Python依赖（安装ms_toollib的nightly版本，推荐。但需要安装rust工具链）
+*   方案二：从github安装Python依赖（安装ms_toollib的nightly版本，复杂但一定成功。复杂之处在于需要安装rust工具链）
 ```sh
     git clone https://github.com/eee555/ms_toollib.git
     cd ms_toollib\python_package
