@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QSize, QTimer
-# from mineLabel import mineLabel#, mineLabel_new
-# from uiComponents import StatusLabel
+from PyQt5.QtCore import QTranslator
+from PyQt5.QtWidgets import QApplication
 import configparser
 from PyQt5.QtGui import QPalette, QPixmap, QFont, QIcon
 from PyQt5.QtWidgets import QScrollArea
@@ -184,6 +184,8 @@ class Ui_MainWindow(Ui_MainWindow):
         self.readPredefinedBoardPara()
         self.setupUi(self.mainWindow)
         self.retranslateUi(MainWindow)
+        
+        self.trans = QTranslator()
                 
         score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
         self.score_board_manager = gameScoreBoardManager(score_board_path,
@@ -389,6 +391,18 @@ class Ui_MainWindow(Ui_MainWindow):
         if self.minimum_counter >= 100:
             self.minimum_counter = 0
             self.timer_.stop()
+            
+    def trans_english(self):
+        self.trans.load(r"ui/en_US.qm")
+        app = QApplication.instance()
+        app.installTranslator(self.trans)
+        self.retranslateUi(self.mainWindow)
+ 
+ 
+    def trans_chinese(self):
+        app = QApplication.instance()
+        app.removeTranslator(self.trans)
+        self.retranslateUi(self.mainWindow)
 
 
 

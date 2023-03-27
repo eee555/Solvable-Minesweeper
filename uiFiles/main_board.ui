@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>946</width>
-    <height>205</height>
+    <height>211</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -92,8 +92,13 @@
     </disabled>
    </palette>
   </property>
+  <property name="font">
+   <font>
+    <family>微软雅黑</family>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>元扫雷</string>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -495,6 +500,15 @@
         <pointsize>9</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string notr="true"/>
+      </property>
+      <property name="statusTip">
+       <string notr="true"/>
+      </property>
+      <property name="whatsThis">
+       <string notr="true"/>
+      </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -502,7 +516,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="text">
-       <string>预留、备用</string>
+       <string notr="true">预留、备用</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -517,18 +531,20 @@
      <x>0</x>
      <y>0</y>
      <width>946</width>
-     <height>32</height>
+     <height>33</height>
     </rect>
    </property>
    <property name="font">
     <font>
+     <family>微软雅黑</family>
      <pointsize>12</pointsize>
     </font>
    </property>
    <widget class="QMenu" name="menu">
     <property name="font">
      <font>
-      <pointsize>9</pointsize>
+      <family>微软雅黑</family>
+      <pointsize>12</pointsize>
      </font>
     </property>
     <property name="title">
@@ -546,18 +562,36 @@
     <addaction name="actiontui_chu"/>
    </widget>
    <widget class="QMenu" name="menu_2">
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="title">
      <string>设置</string>
     </property>
+    <widget class="QMenu" name="language">
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>语言设置</string>
+     </property>
+     <addaction name="chinese_3"/>
+     <addaction name="english_3"/>
+    </widget>
     <addaction name="actionyouxi_she_zhi"/>
     <addaction name="action_kuaijiejian"/>
+    <addaction name="language"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
      <string>帮助</string>
     </property>
-    <addaction name="actionxis"/>
-    <addaction name="actionrumjc"/>
     <addaction name="actiongaun_yv"/>
    </widget>
    <addaction name="menu"/>
@@ -569,6 +603,9 @@
    <property name="text">
     <string>新游戏</string>
    </property>
+   <property name="whatsThis">
+    <string/>
+   </property>
    <property name="font">
     <font>
      <family>微软雅黑</family>
@@ -576,7 +613,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>N</string>
+    <string notr="true">N</string>
    </property>
   </action>
   <action name="actionchu_ji">
@@ -590,7 +627,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>B</string>
+    <string notr="true">B</string>
    </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
@@ -607,7 +644,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>I</string>
+    <string notr="true">I</string>
    </property>
   </action>
   <action name="actiongao_ji">
@@ -621,7 +658,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>E</string>
+    <string notr="true">E</string>
    </property>
   </action>
   <action name="actionzi_ding_yi">
@@ -635,7 +672,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>C</string>
+    <string notr="true">C</string>
    </property>
   </action>
   <action name="actiontui_chu">
@@ -649,7 +686,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>X</string>
+    <string notr="true">Ctrl+X</string>
    </property>
   </action>
   <action name="actionyouxi_she_zhi">
@@ -663,7 +700,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>S</string>
+    <string notr="true">S</string>
    </property>
   </action>
   <action name="actiongaun_yv">
@@ -677,7 +714,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>A</string>
+    <string notr="true">A</string>
    </property>
   </action>
   <action name="actionxis">
@@ -710,7 +747,7 @@
   </action>
   <action name="action_kuaijiejian">
    <property name="text">
-    <string>其它设置</string>
+    <string>快捷键设置</string>
    </property>
    <property name="font">
     <font>
@@ -719,7 +756,7 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>Z</string>
+    <string notr="true">Z</string>
    </property>
   </action>
   <action name="actionopen">
@@ -733,7 +770,88 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>O</string>
+    <string notr="true">O</string>
+   </property>
+  </action>
+  <action name="chinese">
+   <property name="text">
+    <string notr="true">中文</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">中文</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">中文</string>
+   </property>
+   <property name="statusTip">
+    <string notr="true"/>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="english">
+   <property name="text">
+    <string notr="true">English</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">English</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">English</string>
+   </property>
+   <property name="statusTip">
+    <string notr="true"/>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="english_2">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="chinese_2">
+   <property name="text">
+    <string>中文</string>
+   </property>
+  </action>
+  <action name="chinese_3">
+   <property name="text">
+    <string notr="true">中文</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">中文</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">中文</string>
+   </property>
+   <property name="statusTip">
+    <string notr="true"/>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="english_3">
+   <property name="text">
+    <string>English</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
   </action>
  </widget>

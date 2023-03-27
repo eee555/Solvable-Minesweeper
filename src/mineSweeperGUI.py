@@ -1,10 +1,10 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer, QCoreApplication, Qt 
 from PyQt5.QtGui import QPixmap, QKeySequence
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
 from PyQt5.QtWidgets import QApplication, QFileDialog
 import gameDefinedParameter
-import superGUI, gameAbout, gameSettings, gameHelp, gameTerms, gameScores,\
+import superGUI, gameAbout, gameSettings, gameHelp, gameTerms,\
     gameSettingShortcuts, captureScreen, mine_num_bar, videoControl
 import minesweeper_master as mm
 import ms_toollib as ms
@@ -47,6 +47,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actiongaun_yv.triggered.connect(self.action_AEvent)
         self.actionrumjc.triggered.connect(self.action_JEvent)
         self.actionopen.triggered.connect(self.action_OpenFile)
+        self.english_3.triggered.connect(self.trans_english)
+        self.chinese_3.triggered.connect(self.trans_chinese)
 
         config = configparser.ConfigParser()
         config.read(self.game_setting_path)
@@ -187,29 +189,30 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.set_face(15)
 
     def mineAreaLeftRelease(self, i, j):
-        if self.game_state == 'playing' or self.game_state == 'joking':
-            # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai劫持、处理下
-            if i >= 0 and i < self.row and j >= 0 and j < self.column:
-                if self.label.ms_board.game_board[i][j] == 10 and self.label.ms_board.mouse_state == 4:
-                    self.ai(i // self.pixSize, j // self.pixSize)
         if self.game_state == 'ready':
-            if i >= self.row * self.pixSize or j >= self.column * self.pixSize:
-                # 在局面外释放，不开始；这个判断不严谨，但上一层有过滤
+            if not self.pos_is_in_board(i, j):
                 self.label.ms_board.step('lr', (i, j))
-                self.set_face(14)
             else:
-                self.layMine(i // self.pixSize, j // self.pixSize)
-                self.game_state = 'playing'
-                # 核实用的时间
-                self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
-                                            toMSecsSinceEpoch()
-                
-                self.timer_10ms.start()
-                self.score_board_manager.editing_row = -2
+                if self.label.ms_board.mouse_state == 4:
+                    # 正式埋雷开始
+                    self.layMine(i // self.pixSize, j // self.pixSize)
+                    self.game_state = 'playing'
+                    # 核实用的时间，防变速齿轮
+                    self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
+                                                toMSecsSinceEpoch()
+                    self.timer_10ms.start()
+                    self.score_board_manager.editing_row = -2
+                self.label.ms_board.step('lr', (i, j)) # 把这个删了也能开始，不知道为什么
+                self.label.update()
 
-        if self.game_state == 'playing' or self.game_state == 'joking':
+        elif self.game_state == 'playing' or self.game_state == 'joking':
+            # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai劫持、处理下
+            if self.pos_is_in_board(i, j):
+                if self.label.ms_board.game_board[i// self.pixSize][j// self.pixSize] == 10 \
+                    and self.label.ms_board.mouse_state == 4:
+                    self.ai(i // self.pixSize, j // self.pixSize)
+                    
             self.label.ms_board.step('lr', (i, j))
-            self.set_face(14)
 
             if self.label.ms_board.game_board_state == 3:
                 self.gameWin()
@@ -220,8 +223,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         elif self.game_state == 'show':
             # 看概率时，所有操作都移出局面外
             self.label.ms_board.step('lr', (self.row * self.pixSize, self.column * self.pixSize))
-
-            self.set_face(14)
+        self.set_face(14)
 
     def mineAreaRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
@@ -233,19 +235,16 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.showMineNum(self.mineUnFlagedNum)
             self.label.ms_board.step('rc', (i, j))
             self.label.update()
-
             self.set_face(15)
             
     def mineAreaRightRelease(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
             self.label.ms_board.step('rr', (i, j))
             self.label.update()
-
             self.set_face(14)
         elif self.game_state == 'show':
             # 看概率时，所有操作都移出局面外
             self.label.ms_board.step('rr', (self.row * self.pixSize, self.column * self.pixSize))
-
             self.set_face(14)
 
     def mineAreaLeftAndRightPressed(self, i, j):
@@ -258,6 +257,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
 
     def mineAreaLeftAndRightRelease(self, i, j):
+        # 这个弃用了
         if self.game_state == 'ready' or self.game_state == 'playing' or\
             self.game_state == 'joking':
             if self.label.ms_board.mouse_state == 2:
@@ -277,14 +277,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def mineMouseMove(self, i, j):
         # 按住空格后的鼠标移动事件，与概率的显示有关
         if self.game_state == 'show' or self.game_state == 'study':
-            if i < 0 or j < 0 or i >= self.row * self.pixSize or j >= self.column * self.pixSize:
+            if not self.pos_is_in_board(i, j):
                 self.label_info.setText('(是雷的概率)')
             else:
                 text4 = '{:.3f}'.format(max(0, self.label.boardPossibility[i//self.pixSize][j//self.pixSize]))
                 self.label_info.setText(text4)
         # 播放录像时的鼠标移动事件
         elif self.game_state == 'showdisplay':
-            if i < 0 or j < 0 or i >= self.row * self.pixSize or j >= self.column * self.pixSize:
+            if not self.pos_is_in_board(i, j):
                 self.label_info.setText('(是雷的概率)')
             else:
                 text4 = '{:.3f}'.format(max(0, self.label.ms_board.game_board_poss[i//self.pixSize][j//self.pixSize]))
@@ -676,7 +676,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_AEvent(self):
         # 关于
         self.actionChecked('A')
-        ui = gameAbout.Ui_Form()
+        ui = gameAbout.ui_Form()
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -921,6 +921,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if self.board_constraint:
             return False
         return self.game_state == "win" or self.game_state == "fail"
+    
+    # def cell_is_in_board(self, i, j):
+        # 点在局面内，单位是格不是像素
+        # return i >= 0 and i < self.row and j >= 0 and j < self.column
+    
+    def pos_is_in_board(self, i, j):
+        # 点在局面内，单位是像素不是格
+        return i >= 0 and i < self.row * self.pixSize and j >= 0 and j < self.column * self.pixSize
     
     def set_face(self, face_type):
         # 设置脸 14smile；15click

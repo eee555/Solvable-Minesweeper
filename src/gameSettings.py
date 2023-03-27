@@ -79,6 +79,10 @@ class ui_Form(Ui_Form):
         self.checkBox_end_then_flag.setChecked(self.end_then_flag)
         self.horizontalSlider_transparency.setValue (self.transparency)
         self.label_transparency_percent_value.setText(str(self.transparency))
+        
+        if not self.checkBox_auto_replay.isChecked():
+            self.spinBox_auto_replay.setEnabled(False)
+            self.label_auto_replay_percent.setEnabled(False)
         # gameMode = 0，4, 5, 6, 7, 8, 9, 10代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         self.comboBox_gamemode.setCurrentIndex([0, 999, 999, 999, 1, 4, 2, 3, 5, 6, 7][self.gameMode])

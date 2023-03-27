@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>582</width>
+    <width>598</width>
     <height>380</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>582</width>
+    <width>598</width>
     <height>380</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>582</width>
+    <width>598</width>
     <height>380</height>
    </size>
   </property>
@@ -48,9 +48,9 @@
   <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>307</x>
      <y>310</y>
-     <width>245</width>
+     <width>273</width>
      <height>41</height>
     </rect>
    </property>
@@ -78,9 +78,9 @@ color:white;font: bold;</string>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>43</x>
+     <x>20</x>
      <y>310</y>
-     <width>245</width>
+     <width>273</width>
      <height>41</height>
     </rect>
    </property>
@@ -116,7 +116,7 @@ color:white;font: bold;</string>
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>545</width>
+     <width>561</width>
      <height>271</height>
     </rect>
    </property>
@@ -133,7 +133,7 @@ color:white;font: bold;</string>
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideNone</enum>
@@ -154,9 +154,9 @@ color:white;font: bold;</string>
     <widget class="QComboBox" name="comboBox_gamemode4">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>15</y>
-       <width>152</width>
+       <width>180</width>
        <height>36</height>
       </rect>
      </property>
@@ -185,7 +185,7 @@ color: #3d3d3d;
       <number>4</number>
      </property>
      <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToContents</enum>
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
      <item>
       <property name="text">
@@ -231,7 +231,7 @@ color: #3d3d3d;
     <widget class="QSpinBox" name="spinBox_minenum4">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>100</y>
        <width>160</width>
        <height>32</height>
@@ -276,7 +276,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_attempt_times_limit4">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>138</x>
        <y>180</y>
        <width>132</width>
        <height>32</height>
@@ -336,7 +336,7 @@ color: #3d3d3d;</string>
     <widget class="QLineEdit" name="lineEdit_constraint4">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>138</x>
        <y>140</y>
        <width>401</width>
        <height>32</height>
@@ -372,7 +372,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_width4">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>378</x>
        <y>60</y>
        <width>160</width>
        <height>32</height>
@@ -417,7 +417,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_height4">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>60</y>
        <width>160</width>
        <height>32</height>
@@ -462,7 +462,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_pixsize4">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>378</x>
        <y>100</y>
        <width>160</width>
        <height>32</height>
@@ -526,7 +526,7 @@ color: #3d3d3d;</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>15</y>
+       <y>13</y>
        <width>61</width>
        <height>39</height>
       </rect>
@@ -586,7 +586,7 @@ color: #3d3d3d;</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>60</y>
+       <y>59</y>
        <width>61</width>
        <height>32</height>
       </rect>
@@ -627,7 +627,7 @@ color: #3d3d3d;</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>60</y>
+       <y>59</y>
        <width>61</width>
        <height>32</height>
       </rect>
@@ -669,9 +669,9 @@ color: #3d3d3d;</string>
     <widget class="QComboBox" name="comboBox_gamemode5">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>15</y>
-       <width>152</width>
+       <width>180</width>
        <height>36</height>
       </rect>
      </property>
@@ -700,7 +700,7 @@ color: #3d3d3d;
       <number>4</number>
      </property>
      <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToContents</enum>
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
      <item>
       <property name="text">
@@ -746,7 +746,7 @@ color: #3d3d3d;
     <widget class="QSpinBox" name="spinBox_minenum5">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>100</y>
        <width>160</width>
        <height>32</height>
@@ -791,7 +791,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_attempt_times_limit5">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>138</x>
        <y>180</y>
        <width>132</width>
        <height>32</height>
@@ -851,7 +851,7 @@ color: #3d3d3d;</string>
     <widget class="QLineEdit" name="lineEdit_constraint5">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>138</x>
        <y>140</y>
        <width>401</width>
        <height>32</height>
@@ -887,7 +887,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_width5">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>378</x>
        <y>60</y>
        <width>160</width>
        <height>32</height>
@@ -932,7 +932,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_height5">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>60</y>
        <width>160</width>
        <height>32</height>
@@ -977,7 +977,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_pixsize5">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>378</x>
        <y>100</y>
        <width>160</width>
        <height>32</height>
@@ -1041,8 +1041,8 @@ color: #3d3d3d;</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>15</y>
-       <width>61</width>
+       <y>13</y>
+       <width>71</width>
        <height>39</height>
       </rect>
      </property>
@@ -1086,7 +1086,7 @@ color: #3d3d3d;</string>
       <rect>
        <x>20</x>
        <y>100</y>
-       <width>61</width>
+       <width>71</width>
        <height>32</height>
       </rect>
      </property>
@@ -1101,8 +1101,8 @@ color: #3d3d3d;</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>60</y>
-       <width>61</width>
+       <y>59</y>
+       <width>71</width>
        <height>32</height>
       </rect>
      </property>
@@ -1142,8 +1142,8 @@ color: #3d3d3d;</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>60</y>
-       <width>61</width>
+       <y>59</y>
+       <width>71</width>
        <height>32</height>
       </rect>
      </property>
@@ -1159,7 +1159,7 @@ color: #3d3d3d;</string>
       <rect>
        <x>290</x>
        <y>100</y>
-       <width>61</width>
+       <width>71</width>
        <height>32</height>
       </rect>
      </property>
@@ -1184,7 +1184,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_attempt_times_limit6">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>138</x>
        <y>180</y>
        <width>132</width>
        <height>32</height>
@@ -1244,9 +1244,9 @@ color: #3d3d3d;</string>
     <widget class="QComboBox" name="comboBox_gamemode6">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>15</y>
-       <width>152</width>
+       <width>180</width>
        <height>36</height>
       </rect>
      </property>
@@ -1275,7 +1275,7 @@ color: #3d3d3d;
       <number>4</number>
      </property>
      <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToContents</enum>
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
      </property>
      <item>
       <property name="text">
@@ -1322,7 +1322,7 @@ color: #3d3d3d;
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>60</y>
+       <y>59</y>
        <width>61</width>
        <height>32</height>
       </rect>
@@ -1338,7 +1338,7 @@ color: #3d3d3d;
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>60</y>
+       <y>59</y>
        <width>61</width>
        <height>32</height>
       </rect>
@@ -1353,7 +1353,7 @@ color: #3d3d3d;
     <widget class="QSpinBox" name="spinBox_height6">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>60</y>
        <width>160</width>
        <height>32</height>
@@ -1445,7 +1445,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_width6">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>378</x>
        <y>60</y>
        <width>160</width>
        <height>32</height>
@@ -1491,7 +1491,7 @@ color: #3d3d3d;</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>15</y>
+       <y>13</y>
        <width>61</width>
        <height>39</height>
       </rect>
@@ -1509,7 +1509,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_pixsize6">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>378</x>
        <y>100</y>
        <width>160</width>
        <height>32</height>
@@ -1572,7 +1572,7 @@ color: #3d3d3d;</string>
     <widget class="QSpinBox" name="spinBox_minenum6">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>110</x>
        <y>100</y>
        <width>160</width>
        <height>32</height>
@@ -1617,7 +1617,7 @@ color: #3d3d3d;</string>
     <widget class="QLineEdit" name="lineEdit_constraint6">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>138</x>
        <y>140</y>
        <width>401</width>
        <height>32</height>

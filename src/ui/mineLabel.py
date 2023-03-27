@@ -174,7 +174,7 @@ class mineLabel(QtWidgets.QLabel):
 
 
         # 画高亮
-        if (game_board_state == 2 or game_board_state == 1) and\
+        if (game_board_state == 2 or game_board_state == 1 or game_board_state == 5) and\
             not self.paintPossibility and current_x < self.row and current_y < self.column:
             if mouse_state == 5 or mouse_state == 6:
                 for r in range(max(current_x - 1, 0), min(current_x + 2, self.row)):

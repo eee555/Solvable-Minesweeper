@@ -9,19 +9,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>560</width>
+    <width>580</width>
     <height>530</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>560</width>
+    <width>580</width>
     <height>530</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>560</width>
+    <width>580</width>
     <height>530</height>
    </size>
   </property>
@@ -227,7 +227,7 @@ color:white;</string>
     <rect>
      <x>40</x>
      <y>260</y>
-     <width>151</width>
+     <width>511</width>
      <height>31</height>
     </rect>
    </property>
@@ -252,7 +252,7 @@ color:white;</string>
     <rect>
      <x>30</x>
      <y>80</y>
-     <width>61</width>
+     <width>101</width>
      <height>32</height>
     </rect>
    </property>
@@ -277,7 +277,7 @@ color:white;</string>
     <rect>
      <x>30</x>
      <y>120</y>
-     <width>91</width>
+     <width>101</width>
      <height>32</height>
     </rect>
    </property>
@@ -302,7 +302,7 @@ color:white;</string>
     <rect>
      <x>40</x>
      <y>230</y>
-     <width>311</width>
+     <width>511</width>
      <height>31</height>
     </rect>
    </property>
@@ -327,7 +327,7 @@ color:white;</string>
     <rect>
      <x>30</x>
      <y>60</y>
-     <width>501</width>
+     <width>521</width>
      <height>20</height>
     </rect>
    </property>
@@ -335,37 +335,12 @@ color:white;</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="label_auto_replay_percent">
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>292</y>
-     <width>21</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>%</string>
-   </property>
-   <property name="scaledContents">
-    <bool>false</bool>
-   </property>
-   <property name="wordWrap">
-    <bool>false</bool>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="checkBox_autosave_video">
    <property name="geometry">
     <rect>
      <x>40</x>
      <y>200</y>
-     <width>311</width>
+     <width>511</width>
      <height>31</height>
     </rect>
    </property>
@@ -390,7 +365,7 @@ color:white;</string>
     <rect>
      <x>30</x>
      <y>160</y>
-     <width>61</width>
+     <width>101</width>
      <height>32</height>
     </rect>
    </property>
@@ -413,7 +388,7 @@ color:white;</string>
   <widget class="QLabel" name="label_national_flag">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>430</x>
      <y>160</y>
      <width>51</width>
      <height>31</height>
@@ -456,7 +431,7 @@ color:white;</string>
     <rect>
      <x>130</x>
      <y>120</y>
-     <width>401</width>
+     <width>421</width>
      <height>31</height>
     </rect>
    </property>
@@ -492,7 +467,7 @@ color: #3d3d3d;</string>
     <rect>
      <x>130</x>
      <y>80</y>
-     <width>401</width>
+     <width>421</width>
      <height>31</height>
     </rect>
    </property>
@@ -528,7 +503,7 @@ color: #3d3d3d;</string>
     <rect>
      <x>130</x>
      <y>160</y>
-     <width>171</width>
+     <width>291</width>
      <height>31</height>
     </rect>
    </property>
@@ -562,7 +537,7 @@ color: #3d3d3d;</string>
   <widget class="QSpinBox" name="spinBox_pixsize">
    <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>420</x>
      <y>20</y>
      <width>132</width>
      <height>32</height>
@@ -634,7 +609,7 @@ color: #3d3d3d;</string>
   <widget class="QLabel" name="label_pixsize">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>320</x>
      <y>20</y>
      <width>100</width>
      <height>32</height>
@@ -668,72 +643,12 @@ color: #3d3d3d;</string>
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QSpinBox" name="spinBox_auto_replay">
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>292</y>
-     <width>132</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::ClickFocus</enum>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">border-width: 2px;
-border-radius: 8px;
-border-style: solid;
-border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
-border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
-border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
-border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
-background-color: #f4f4f4;
-color: #3d3d3d;</string>
-   </property>
-   <property name="frame">
-    <bool>true</bool>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="buttonSymbols">
-    <enum>QAbstractSpinBox::NoButtons</enum>
-   </property>
-   <property name="keyboardTracking">
-    <bool>true</bool>
-   </property>
-   <property name="showGroupSeparator" stdset="0">
-    <bool>false</bool>
-   </property>
-   <property name="minimum">
-    <number>0</number>
-   </property>
-   <property name="maximum">
-    <number>100</number>
-   </property>
-   <property name="value">
-    <number>30</number>
-   </property>
-  </widget>
   <widget class="QComboBox" name="comboBox_gamemode">
    <property name="geometry">
     <rect>
      <x>130</x>
      <y>20</y>
-     <width>134</width>
+     <width>180</width>
      <height>36</height>
     </rect>
    </property>
@@ -762,10 +677,10 @@ color: #3d3d3d;
 </string>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="sizeAdjustPolicy">
-    <enum>QComboBox::AdjustToContents</enum>
+    <enum>QComboBox::AdjustToMinimumContentsLength</enum>
    </property>
    <item>
     <property name="text">
@@ -808,37 +723,12 @@ color: #3d3d3d;
     </property>
    </item>
   </widget>
-  <widget class="QCheckBox" name="checkBox_auto_replay">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>290</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string/>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string>自动重开：</string>
-   </property>
-  </widget>
   <widget class="QCheckBox" name="checkBox_auto_notification">
    <property name="geometry">
     <rect>
      <x>40</x>
      <y>320</y>
-     <width>231</width>
+     <width>511</width>
      <height>31</height>
     </rect>
    </property>
@@ -863,7 +753,7 @@ color: #3d3d3d;
     <rect>
      <x>30</x>
      <y>190</y>
-     <width>501</width>
+     <width>521</width>
      <height>20</height>
     </rect>
    </property>
@@ -874,7 +764,7 @@ color: #3d3d3d;
   <widget class="QSpinBox" name="spinBox_attempt_times_limit">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>150</x>
      <y>389</y>
      <width>132</width>
      <height>28</height>
@@ -959,9 +849,9 @@ color: #3d3d3d;</string>
   <widget class="QLineEdit" name="lineEdit_constraint">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>150</x>
      <y>352</y>
-     <width>391</width>
+     <width>401</width>
      <height>28</height>
     </rect>
    </property>
@@ -1017,6 +907,132 @@ color: #3d3d3d;</string>
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>285</y>
+     <width>511</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QCheckBox" name="checkBox_auto_replay">
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>自动重开：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QSpinBox" name="spinBox_auto_replay">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>132</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
+      </property>
+      <property name="frame">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="buttonSymbols">
+       <enum>QAbstractSpinBox::NoButtons</enum>
+      </property>
+      <property name="keyboardTracking">
+       <bool>true</bool>
+      </property>
+      <property name="showGroupSeparator" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>30</number>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_auto_replay_percent">
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>%</string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="horizontalSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources/>
  <connections>
@@ -1047,8 +1063,40 @@ color: #3d3d3d;</string>
      <y>540</y>
     </hint>
     <hint type="destinationlabel">
-     <x>599</x>
+     <x>579</x>
      <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_auto_replay</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spinBox_auto_replay</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>138</x>
+     <y>303</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>191</x>
+     <y>298</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_auto_replay</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_auto_replay_percent</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>315</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>326</x>
+     <y>315</y>
     </hint>
    </hints>
   </connection>

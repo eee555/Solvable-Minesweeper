@@ -1,0 +1,1 @@
+pylupdate5 ui_gameSettings.py ui_main_board.py ui_about.py ui_defined_parameter.py ui_gameSettingShortcuts.py -ts en_US.ts
