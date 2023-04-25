@@ -21,7 +21,7 @@
     <message>
         <location filename="ui_gameSettings.py" line="454"/>
         <source>窗口透明度</source>
-        <translation>Transparency</translation>
+        <translation>Window transparency</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="478"/>
@@ -46,17 +46,17 @@
     <message>
         <location filename="ui_gameSettings.py" line="461"/>
         <source>勾选后永远使用筛选法埋雷，否则会智能改用调整法</source>
-        <translation>After checking the check box, always use the screening method to bury mines, otherwise it will be intelligent to use the adjustment method</translation>
+        <translation>When ticked, always use filtering algorithm to generate boards, otherwise the game will decide to use the adjustment algorithm</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="460"/>
         <source>永远使用筛选法埋雷（不推荐）</source>
-        <translation>Always Lay Mine by Filter (not recommended)</translation>
+        <translation>Use filtering algorithm (not recommended)</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="462"/>
         <source>自动保存录像（推荐）</source>
-        <translation>Auto Save Video (recommended)</translation>
+        <translation>Auto save video (recommended)</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="463"/>
@@ -86,42 +86,42 @@
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="776"/>
         <source>强无猜</source>
-        <translation>Strong Solvable</translation>
+        <translation>Strong solvable</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="777"/>
         <source>弱无猜</source>
-        <translation>Weak Solvable</translation>
+        <translation>Weak solvable</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="778"/>
         <source>竞速无猜</source>
-        <translation>Racing Solvable</translation>
+        <translation>Competitive solvable</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="779"/>
         <source>准无猜</source>
-        <translation>To Be Solvable</translation>
+        <translation>To be solvable</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="780"/>
         <source>强可猜</source>
-        <translation>Strong Guessable</translation>
+        <translation>Strong guessable</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="781"/>
         <source>弱可猜</source>
-        <translation>Weak Guessable</translation>
+        <translation>Weak guessable</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="477"/>
         <source>自动重开：</source>
-        <translation>Automatic Replay:</translation>
+        <translation>Auto restart:</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="474"/>
-        <source>允许记录弹窗（推荐）</source>
-        <translation>Allow record popovers (recommended)</translation>
+        <source>允许纪录弹窗（推荐）</source>
+        <translation>Allow popovers for best scores (recommended)</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="784"/>
@@ -185,23 +185,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="ui_defined_parameter.py" line="151"/>
-        <source>行数(row)</source>
-        <translation>Row</translation>
+        <source>高度</source>
+        <translation>Height</translation>
     </message>
     <message>
         <location filename="ui_defined_parameter.py" line="152"/>
-        <source>列数(column)</source>
-        <translation>Column</translation>
+        <source>宽度</source>
+        <translation>Width</translation>
     </message>
     <message>
         <location filename="ui_defined_parameter.py" line="153"/>
-        <source>雷数(number)</source>
+        <source>雷数</source>
         <translation>Mines</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="739"/>
         <source>快捷键设置</source>
-        <translation>Shortcut Settings</translation>
+        <translation>Shortcuts</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="786"/>
@@ -216,12 +216,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="782"/>
         <source>高度：</source>
-        <translation>Row:</translation>
+        <translation>Height:</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="783"/>
         <source>宽度：</source>
-        <translation>Column:</translation>
+        <translation>Width:</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="785"/>
@@ -249,7 +249,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui_main_board.py" line="380"/>
         <source>预留、备用</source>
-        <translation type="obsolete">Reserve</translation>
+        <translation type="obsolete">Reserved</translation>
     </message>
     <message>
         <location filename="ui_main_board.py" line="384"/>
@@ -289,7 +289,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui_main_board.py" line="392"/>
         <source>自定义</source>
-        <translation>Custom Board</translation>
+        <translation>Custom</translation>
     </message>
     <message>
         <location filename="ui_main_board.py" line="393"/>
@@ -299,7 +299,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui_main_board.py" line="394"/>
         <source>游戏设置</source>
-        <translation>Game Setting</translation>
+        <translation>Game Settings</translation>
     </message>
     <message>
         <location filename="ui_main_board.py" line="341"/>
@@ -329,7 +329,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui_main_board.py" line="400"/>
         <source>快捷键设置</source>
-        <translation>Keyboard Settings</translation>
+        <translation>Shortcut Settings</translation>
     </message>
     <message>
         <location filename="ui_main_board.py" line="401"/>
