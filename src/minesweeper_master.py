@@ -284,6 +284,8 @@ def enumerateChangeBoard(board, BoardofGame, xx, yy):
     #     BoardofGame, NotMine,flag= SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
     #     if BoardofGame[xx][yy] == 11:
     #         return board, False
+    if not isinstance(board, list):
+        board = board.into_vec_vec()
     if ms.is_guess_while_needless(BoardofGame, (xx, yy)) == 4:
         return board, False
     

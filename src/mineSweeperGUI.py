@@ -447,6 +447,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             
             self.label.ms_board.is_fair = self.is_fair()
             self.label.ms_board.is_offical = self.is_official()
+            # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:
+            #     self.label.ms_board.checksum = metaminesweeper_checksum.get_checksum()
             self.label.ms_board.mode = self.gameMode
             self.label.ms_board.software = "元3.1".encode( "UTF-8" )
             self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
@@ -457,6 +459,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             if not os.path.exists(self.replay_path):
                 os.mkdir(self.replay_path)
             self.label.ms_board.generate_evf_v0_raw_data()
+            # 补上校验值
+            checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
+            self.label.ms_board.checksum = checksum
+            # print(checksum)
+            
+            
             # mm.debug_ms_board(self.label.ms_board)
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
                 filename_level = "b_"

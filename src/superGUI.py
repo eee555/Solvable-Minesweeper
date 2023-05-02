@@ -10,6 +10,7 @@ from ui.ui_main_board import Ui_MainWindow
 from pathlib import Path
 from gameScoreBoard import gameScoreBoardManager
 import minesweeper_master as mm
+import metaminesweeper_checksum
 
 class Ui_MainWindow(Ui_MainWindow):
     minimum_counter = 0 # 最小化展示窗口有关
@@ -23,6 +24,7 @@ class Ui_MainWindow(Ui_MainWindow):
         # 记录了全局游戏设置
         self.game_setting_path = str(r_path.with_name('gameSetting.ini'))
         # 记录了计数器的配置，显示哪些指标等等
+        self.checksum_guard = metaminesweeper_checksum.ChecksumGuard()
         self.ico_path = str(r_path.with_name('media').joinpath('cat.ico'))
         self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
         self.clickface_path = str(r_path.with_name('media').joinpath('clickface.svg'))
