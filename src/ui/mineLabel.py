@@ -185,7 +185,7 @@ class mineLabel(QtWidgets.QLabel):
                 painter.drawPixmap(current_y * pix_size + 4, current_x * pix_size + 4, QPixmap(self.pixmapNum[0]))
         # 画光标
         if self.paint_cursor:
-            painter.translate(x, y)
+            painter.translate(x + 4, y + 4)
             painter.drawPath(self.mouse)
             painter.fillPath(self.mouse,Qt.white)
         painter.end()

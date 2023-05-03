@@ -159,3 +159,5 @@ toollib/frame.csv
 *.ini
 *.autosave
 *.qm
+*.evf
+*.mvf

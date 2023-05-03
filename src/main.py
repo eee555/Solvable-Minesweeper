@@ -3,20 +3,14 @@ from PyQt5 import QtWidgets
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
-# import minesweeper_master as mm
-# import os
-# sys.path.append(os.path.realpath('.'))
 
 
 if __name__ == "__main__":
-    # appctxt = ApplicationContext()   # 1. Instantiate ApplicationContext
     app = QtWidgets.QApplication (sys.argv)
-    # app.aboutToQuit.connect(app.deleteLater)
     mainWindow = mainWindowGUI.MainWindow()
     ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
     ui.mainWindow.show()
     ui.mainWindow.game_setting_path = ui.game_setting_path
-    # exit_code = appctxt.app.exec_()  # 2. Invoke appctxt.app.exec_()
     sys.exit(app.exec_())
     ...
 

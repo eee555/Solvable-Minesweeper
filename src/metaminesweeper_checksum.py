@@ -5,7 +5,7 @@ class ChecksumGuard():
     def get_checksum(self, data):
         return b'\0'*32
     def valid_checksum(self, data, checksum):
-        return True
+        return False
 
 
 

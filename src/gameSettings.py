@@ -13,9 +13,10 @@ from ui.uiComponents import RoundQDialog
 # from PyQt5.QtWidgets import  QWidget, QDialog
 
 class ui_Form(Ui_Form):
-    def __init__(self, game_setting_path, pix_size):
+    def __init__(self, game_setting_path, r_path, pix_size):
         # 甚至界面的参数，主要从配置文件里来，pix_size除外
         self.game_setting_path = game_setting_path
+        self.r_path = r_path
         config = configparser.ConfigParser()
         config.read(game_setting_path)
         self.gameMode = config.getint('DEFAULT','gameMode')
@@ -86,6 +87,13 @@ class ui_Form(Ui_Form):
         # gameMode = 0，4, 5, 6, 7, 8, 9, 10代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         self.comboBox_gamemode.setCurrentIndex([0, 999, 999, 999, 1, 4, 2, 3, 5, 6, 7][self.gameMode])
+        
+        self.pushButton_yes.setStyleSheet("border-image: url(" + str(self.r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
+"font: 16pt \"黑体\";\n"
+"color:white;font: bold;")
+        self.pushButton_no.setStyleSheet("border-image: url(" + str(self.r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
+"font: 16pt \"黑体\";\n"
+"color:white;font: bold;")
         
     def processParameter(self):
         #只有点确定才能进来

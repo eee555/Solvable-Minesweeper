@@ -7,18 +7,20 @@ from ui.uiComponents import RoundQDialog
 # 减少ui文件生成的原始的.py的改动
 
 class myGameSettingShortcuts(Ui_Form):
-    def __init__(self):
+    def __init__(self, game_setting_path, ico_path, r_path):
+        self.game_setting_path = game_setting_path
+        self.r_path = r_path
         self.Dialog = RoundQDialog()
         self.setupUi(self.Dialog)
         self.setParameter()
-        self.Dialog.setWindowIcon(QtGui.QIcon ("media/cat.ico"))
+        self.Dialog.setWindowIcon(QtGui.QIcon (ico_path))
         self.pushButton.clicked.connect(self.processParameter)
         self.pushButton_2.clicked.connect(self.Dialog.close)
         self.alter = False
 
     def setParameter(self):
         config = configparser.ConfigParser()
-        config.read('gameSetting.ini')
+        config.read(self.game_setting_path)
 
         modTable = [0,1,4,2,3,5,6,7]
         self.comboBox_gamemode4.setCurrentIndex(modTable[config.getint('CUSTOM_PRESET_4','gameMode')])
@@ -44,14 +46,21 @@ class myGameSettingShortcuts(Ui_Form):
         self.spinBox_attempt_times_limit6.setProperty("value", config.getint('CUSTOM_PRESET_6','attempt_times_limit'))
         self.spinBox_minenum6.setProperty("value", config.getint('CUSTOM_PRESET_6','mineNum'))
         self.lineEdit_constraint6.setProperty("value", config["CUSTOM_PRESET_6"]["board_constraint"])
-
+        
+        self.pushButton.setStyleSheet("border-image: url(" + str(self.r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
+"font: 16pt \"黑体\";\n"
+"color:white;font: bold;")
+        self.pushButton_2.setStyleSheet("border-image: url(" + str(self.r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
+"font: 16pt \"黑体\";\n"
+"color:white;font: bold;")
+        
     def processParameter(self):
         #只有点确定才能进来
         self.alter = True
 
         modTable = [0,1,3,4,2,5,6,7]
         conf = configparser.ConfigParser()
-        conf.read("gameSetting.ini")
+        conf.read(self.game_setting_path)
         conf.set("CUSTOM_PRESET_4", "gameMode", str(modTable[self.comboBox_gamemode4.currentIndex()]))
         conf.set("CUSTOM_PRESET_4", "row", str(self.spinBox_height4.value()))
         conf.set("CUSTOM_PRESET_4", "column", str(self.spinBox_width4.value()))
@@ -75,7 +84,7 @@ class myGameSettingShortcuts(Ui_Form):
         conf.set("CUSTOM_PRESET_6", "attempt_times_limit", str(self.spinBox_attempt_times_limit6.value()))
         conf.set("CUSTOM_PRESET_6", "mineNum", str(self.spinBox_minenum6.value()))
         conf.set("CUSTOM_PRESET_6", "board_constraint", self.lineEdit_constraint6.text())
-        conf.write(open('gameSetting.ini', "w"))
+        conf.write(open(self.game_setting_path, "w"))
 
         self.Dialog.close ()
 

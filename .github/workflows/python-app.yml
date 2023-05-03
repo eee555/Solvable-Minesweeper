@@ -59,6 +59,16 @@ jobs:
       run: |
         lrelease src/ui/en_US.ts -qm en_US.qm
         
+    - name: Generate metaminesweeper_checksum.pyd
+      run: |
+        pip install cython
+        cd package_tool
+        python setup.py build_ext --inplace
+        ren *.pyd metaminesweeper_checksum.pyd
+        cd ..
+        move package_tool/metaminesweeper_checksum.pyd src/metaminesweeper_checksum.pyd
+
+
     - name: Package with PyInstaller
       run: |
         pyinstaller -i cat.ico -w -y --clean --add-data "./media/*;./media" --add-data "./en_US.qm;." -p src src/main.py -n metaminesweeper

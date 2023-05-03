@@ -421,6 +421,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.paintPossibility = False
         self.label.paint_cursor = False
         # self.label.setMouseTracking(False) # 鼠标未按下时，组织移动事件回调
+        
+        self.score_board_manager.with_namespace({
+            "checksum_ok": "--"
+            })
 
 
     def gameFinished(self):  # 游戏结束画残局，改状态
@@ -627,7 +631,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_NEvent(self):
         # 游戏设置
         self.actionChecked('N')
-        ui = gameSettings.ui_Form(self.game_setting_path, self.pixSize)
+        ui = gameSettings.ui_Form(self.game_setting_path, self.r_path, self.pixSize)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -664,7 +668,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_QEvent(self):
         # 快捷键设置的回调
         self.actionChecked('Q')
-        ui = gameSettingShortcuts.myGameSettingShortcuts()
+        ui = gameSettingShortcuts.myGameSettingShortcuts(self.game_setting_path, self.ico_path, self.r_path)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -809,6 +813,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         video.parse_video()
         video.analyse()
+        # 检查checksum
+        if isinstance(video, ms.EvfVideo):
+            self.score_board_manager.with_namespace({
+                "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-32], video.checksum),
+                })
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",
                                     "mouse_trace", "vision_transfer", "survive_poss"])
         
@@ -834,7 +843,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         self.timer_video = QTimer()
         self.timer_video.timeout.connect(self.video_playing_step)
-        self.ui_video_control = videoControl.ui_Form(video.video_time, comments)
+        self.ui_video_control = videoControl.ui_Form(self.r_path, video.video_time, comments)
         self.mainWindow.closeEvent_.connect(self.ui_video_control.QWidget.close)
         self.ui_video_control.pushButton_play.clicked.connect(self.video_play)
         self.ui_video_control.pushButton_replay.clicked.connect(self.video_replay)
