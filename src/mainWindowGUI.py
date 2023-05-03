@@ -10,7 +10,6 @@ class MainWindow(QtWidgets.QMainWindow):
     closeEvent_ = QtCore.pyqtSignal()
     flag_drag_border = False
     minimum_counter = 0
-    game_setting_path = "gameSetting.ini"
     def closeEvent(self, event):
         self.closeEvent_.emit()
 

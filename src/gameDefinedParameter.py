@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'ui_defined_parameter.ui'
-#
-# Created by: PyQt5 UI code generator 5.9.2
-#
-# WARNING! All changes made in this file will be lost!
+# 自定义
 
 from PyQt5 import QtGui
 from ui.ui_defined_parameter import Ui_Form
 from ui.uiComponents import RoundQDialog
 
 class ui_Form(Ui_Form):
-    def __init__(self, row, column, num):
+    def __init__(self, r_path, row, column, num):
         self.row = row
         self.column = column
         self.mineNum = num
@@ -21,9 +18,16 @@ class ui_Form(Ui_Form):
         self.Dialog = RoundQDialog()
         self.setupUi (self.Dialog)
         self.setParameter()
-        self.Dialog.setWindowIcon (QtGui.QIcon ("media/mine.ico"))
+        self.Dialog.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico')).replace("\\", "/")))
         self.pushButton_3.clicked.connect (self.processParameter)
         self.pushButton_2.clicked.connect (self.Dialog.close)
+        
+        self.pushButton_2.setStyleSheet("border-image: url(" + str(r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
+"font: 16pt \"黑体\";\n"
+"color:white;font: bold;")
+        self.pushButton_3.setStyleSheet("border-image: url(" + str(r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
+"font: 16pt \"黑体\";\n"
+"color:white;font: bold;")
         
     def setParameter(self):
         self.spinBox.setValue (self.row)
