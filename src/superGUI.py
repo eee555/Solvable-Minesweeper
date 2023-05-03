@@ -19,6 +19,7 @@ class Ui_MainWindow(Ui_MainWindow):
         self.mainWindow = MainWindow
         # 设置全局路径
         r_path = Path(args[0])
+        self.r_path = r_path
         # 录像保存位置
         self.replay_path = str(r_path.with_name('replay'))
         # 记录了全局游戏设置
@@ -395,7 +396,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.timer_.stop()
             
     def trans_english(self):
-        self.trans.load(r"ui/en_US.qm")
+        self.trans.load(str(self.r_path.parent.with_name('en_US.qm')))
         app = QApplication.instance()
         app.installTranslator(self.trans)
         self.retranslateUi(self.mainWindow)

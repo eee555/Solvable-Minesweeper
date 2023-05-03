@@ -4,8 +4,8 @@ from PyQt5.QtGui import QPixmap, QKeySequence
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
 from PyQt5.QtWidgets import QApplication, QFileDialog
 import gameDefinedParameter
-import superGUI, gameAbout, gameSettings, gameHelp, gameTerms,\
-    gameSettingShortcuts, captureScreen, mine_num_bar, videoControl
+import superGUI, gameAbout, gameSettings, gameSettingShortcuts,\
+    captureScreen, mine_num_bar, videoControl
 import minesweeper_master as mm
 import ms_toollib as ms
 import configparser

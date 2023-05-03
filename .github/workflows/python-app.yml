@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Build Blackcat
+name: Build Metaminesweeper
 
 on:
   push:
@@ -52,9 +52,13 @@ jobs:
     #     pyrcc5 src_help_pic.qrc -o src_help_pic_rc.py
     #     cd ..
 
+    - name: transform qrc to py with pyrcc5
+      run: |
+        lrelease src/ui/en_US.ts -qm en_US.qm
+        
     - name: Package with PyInstaller
       run: |
-        pyinstaller -i cat.ico -w -y --clean --add-data "./src/media/*;./media" -p src src/main.py -n metaminesweeper
+        pyinstaller -i cat.ico -w -y --clean --add-data "./src/media/*;../media" --add-data "./en_US.qm;../en_US.qm" -p src src/main.py -n metaminesweeper
 
     # upload the result package as an artifact
     - name: Upload artifacts
