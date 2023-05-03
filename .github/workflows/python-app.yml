@@ -61,12 +61,17 @@ jobs:
         
     - name: Package with PyInstaller
       run: |
-        pyinstaller -i cat.ico -w -y --clean --add-data "./src/media/*;../media" --add-data "./en_US.qm;../en_US.qm" -p src src/main.py -n metaminesweeper
+        pyinstaller -i cat.ico -w -y --clean --add-data "./src/media/*;./media" --add-data "./en_US.qm;./en_US.qm" -p src src/main.py -n metaminesweeper
+
+    - name: Move media and qm file
+      run: |
+        move dist/metaminesweeper/media dist/media
+        move dist/metaminesweeper/en_US.qm dist/en_US.qm
 
     # upload the result package as an artifact
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       if: success()
       with:
-        name: blackcat-snapshot
+        name: Metaminesweeper-snapshot
         path: dist/
