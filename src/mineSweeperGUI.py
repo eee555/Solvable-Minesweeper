@@ -43,9 +43,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actiontui_chu.triggered.connect(QCoreApplication.instance().quit)
         self.actionyouxi_she_zhi.triggered.connect(self.action_NEvent)
         self.action_kuaijiejian.triggered.connect(self.action_QEvent)
-        self.actionxis.triggered.connect(self.action_HEvent)
         self.actiongaun_yv.triggered.connect(self.action_AEvent)
-        self.actionrumjc.triggered.connect(self.action_JEvent)
         self.actionopen.triggered.connect(self.action_OpenFile)
         self.english_3.triggered.connect(self.trans_english)
         self.chinese_3.triggered.connect(self.trans_chinese)
@@ -673,26 +671,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if ui.alter:
             self.readPredefinedBoardPara()
 
-    def action_HEvent(self):
-        # 词典，即游戏帮助、术语表
-        self.actionChecked('H')
-        ui = gameTerms.Ui_Form()
-        ui.Dialog.setModal(True)
-        ui.Dialog.show()
-        ui.Dialog.exec_()
-
     def action_AEvent(self):
         # 关于
         self.actionChecked('A')
         ui = gameAbout.ui_Form()
-        ui.Dialog.setModal(True)
-        ui.Dialog.show()
-        ui.Dialog.exec_()
-
-    def action_JEvent(self):
-        # 入门教程
-        self.actionChecked('J')
-        ui = gameHelp.Ui_Form()
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
