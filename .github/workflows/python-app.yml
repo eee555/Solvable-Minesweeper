@@ -52,6 +52,9 @@ jobs:
     #     pyrcc5 src_help_pic.qrc -o src_help_pic_rc.py
     #     cd ..
 
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+
     - name: transform qrc to py with pyrcc5
       run: |
         lrelease src/ui/en_US.ts -qm en_US.qm
