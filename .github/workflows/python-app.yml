@@ -61,6 +61,9 @@ jobs:
         
     - name: Generate metaminesweeper_checksum.pyd
       run: |
+        where python
+        where pip
+        python -V
         pip install cython
         cd package_tool
         python setup.py build_ext --inplace
