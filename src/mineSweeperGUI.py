@@ -462,7 +462,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 os.mkdir(self.replay_path)
             self.label.ms_board.generate_evf_v0_raw_data()
             # 补上校验值
-            checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data)
+            checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
             self.label.ms_board.checksum = checksum
             # print(checksum)
             
@@ -816,7 +816,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 检查checksum
         if isinstance(video, ms.EvfVideo):
             self.score_board_manager.with_namespace({
-                "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-32], video.checksum),
+                "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-33], video.checksum),
                 })
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",
                                     "mouse_trace", "vision_transfer", "survive_poss"])
