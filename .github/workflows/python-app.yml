@@ -61,15 +61,13 @@ jobs:
         
     - name: Generate metaminesweeper_checksum.pyd
       run: |
-        where python
-        where pip
-        python -V
         pip install cython
         cd package_tool
         python setup.py build_ext --inplace
         ren *.pyd metaminesweeper_checksum.pyd
         cd ..
         move package_tool/metaminesweeper_checksum.pyd src/metaminesweeper_checksum.pyd
+        del src/metaminesweeper_checksum.py
 
 
     - name: Package with PyInstaller
