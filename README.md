@@ -96,8 +96,12 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 
 ## 下载链接
 
+### 正式版v3.1.3：
+修复了6个bug。现在已经支持国际化，支持汉语和英语。提高了对某两种作弊手段的防御能力。改进了软件的架构，将有用的文件全部放到目录外层，软件本体放到目录内层。现在能够给录像添加校验码并验证录像来源。此外也精简了部分功能。  
+链接：[https://wwwl.lanzouw.com/i36LJ0upglmf](https://wwwl.lanzouw.com/i36LJ0upglmf)
+
 ### 正式版v3.1.1：
-修复了8个bug。现在能够播放mvf录像。提高了对变速齿轮的防御能力。
+修复了8个bug。现在能够播放mvf录像。提高了对变速齿轮的防御能力。  
 链接：[https://wwwl.lanzouw.com/itjCR0p24hdc](https://wwwl.lanzouw.com/itjCR0p24hdc)
 
 ### 测试版v3.1.0_beta：
