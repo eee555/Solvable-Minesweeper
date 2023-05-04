@@ -462,7 +462,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 os.mkdir(self.replay_path)
             self.label.ms_board.generate_evf_v0_raw_data()
             # 补上校验值
-            checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
+            checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data)
             self.label.ms_board.checksum = checksum
             # print(checksum)
             
