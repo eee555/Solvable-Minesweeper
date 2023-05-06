@@ -25,6 +25,7 @@ class Ui_Form(object):
         Form.setStyleSheet("background-color:#F2F2F2")
         self.pushButton_2 = QtWidgets.QPushButton(Form)
         self.pushButton_2.setGeometry(QtCore.QRect(390, 130, 181, 51))
+        self.pushButton_2.setFocusPolicy(QtCore.Qt.NoFocus)
         self.pushButton_2.setStyleSheet("border-image: url(media/button.png);\n"
 "font: 16pt \"黑体\";\n"
 "color:white;font: bold;")
@@ -38,7 +39,7 @@ class Ui_Form(object):
         font.setItalic(False)
         font.setWeight(75)
         self.pushButton_3.setFont(font)
-        self.pushButton_3.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.pushButton_3.setFocusPolicy(QtCore.Qt.NoFocus)
         self.pushButton_3.setStyleSheet("border-image: url(media/button.png);\n"
 "font: 16pt \"黑体\";\n"
 "color:white;font: bold;")

@@ -9,12 +9,12 @@
         <translation>Game Settings</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="741"/>
+        <location filename="ui_gameSettingShortcuts.py" line="742"/>
         <source>确定</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="740"/>
+        <location filename="ui_gameSettingShortcuts.py" line="741"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
@@ -74,42 +74,42 @@
         <translation>Zoom:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="774"/>
+        <location filename="ui_gameSettingShortcuts.py" line="775"/>
         <source>标准</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="775"/>
+        <location filename="ui_gameSettingShortcuts.py" line="776"/>
         <source>Win7</source>
         <translation>Win7</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="776"/>
+        <location filename="ui_gameSettingShortcuts.py" line="777"/>
         <source>强无猜</source>
         <translation>Strong solvable</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="777"/>
+        <location filename="ui_gameSettingShortcuts.py" line="778"/>
         <source>弱无猜</source>
         <translation>Weak solvable</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="778"/>
+        <location filename="ui_gameSettingShortcuts.py" line="779"/>
         <source>竞速无猜</source>
         <translation>Competitive solvable</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="779"/>
+        <location filename="ui_gameSettingShortcuts.py" line="780"/>
         <source>准无猜</source>
         <translation>To be solvable</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="780"/>
+        <location filename="ui_gameSettingShortcuts.py" line="781"/>
         <source>强可猜</source>
         <translation>Strong guessable</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="781"/>
+        <location filename="ui_gameSettingShortcuts.py" line="782"/>
         <source>弱可猜</source>
         <translation>Weak guessable</translation>
     </message>
@@ -121,127 +121,179 @@
     <message>
         <location filename="ui_gameSettings.py" line="474"/>
         <source>允许纪录弹窗（推荐）</source>
-        <translation>Allow popovers for best scores (recommended)</translation>
+        <translation type="obsolete">Allow popovers for best scores (recommended)</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="784"/>
+        <location filename="ui_gameSettingShortcuts.py" line="785"/>
         <source>尝试次数：</source>
         <translation>Attempts:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="788"/>
+        <location filename="ui_gameSettingShortcuts.py" line="789"/>
         <source>局面约束：</source>
         <translation>Constraint:</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="77"/>
+        <location filename="ui_about.py" line="144"/>
         <source>关于</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="79"/>
+        <location filename="ui_about.py" line="150"/>
         <source>Space</source>
         <translation>Space</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="80"/>
+        <location filename="ui_about.py" line="117"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#000000;&quot;&gt;项目主页：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#000000;&quot;&gt;Home:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#000000;&quot;&gt;Home:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="81"/>
+        <location filename="ui_about.py" line="118"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/eee555/Solvable-Minesweeper&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/eee555/Solvable-Minesweeper&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/eee555/Solvable-Minesweeper&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/eee555/Solvable-Minesweeper&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/eee555/Solvable-Minesweeper&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/eee555/Solvable-Minesweeper&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="82"/>
+        <location filename="ui_about.py" line="119"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;资料教程：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Tutorials:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Tutorials:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="83"/>
+        <location filename="ui_about.py" line="120"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/putianyi889/Minesweeper-makes-me-happy/wiki&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/putianyi889/Minesweeper-makes-me-happy/wiki&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/putianyi889/Minesweeper-makes-me-happy/wiki&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/putianyi889/Minesweeper-makes-me-happy/wiki&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/putianyi889/Minesweeper-makes-me-happy/wiki&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/putianyi889/Minesweeper-makes-me-happy/wiki&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui_about.py" line="84"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun'; font-size:12pt; font-weight:600;&quot;&gt;①本软件可以不受任何限制地复制、储存、传播。&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun'; font-size:12pt; font-weight:600;&quot;&gt;②任何人可以在任何一个项目中使用本项目源代码的任何&lt;br /&gt;一个部分，同时欢迎在本项目主页提出宝贵的意见。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;SimSun&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;①本软件可以不受任何限制地复制、储存、传播。&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;②任何人可以在任何一个项目中使用本项目源代码的任何&lt;br /&gt;一个部分，同时欢迎在本项目主页提出宝贵的意见。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun'; font-size:12pt; font-weight:600;&quot;&gt;①This software can be copied, stored and transmitted without any restrictions.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'SimSun'; font-size:12pt; font-weight:600;&quot;&gt;②Anyone can use any  part of the project source code in any project, and you are welcome to make valuable comments on the project home page.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;SimSun&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;①This software can be copied, stored and transmitted without any restrictions.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;②Anyone can use any  part of the project source code in any project, and you are welcome to make valuable comments on the project home page.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="ui_defined_parameter.py" line="148"/>
+        <location filename="ui_defined_parameter.py" line="149"/>
         <source>自定义设置</source>
         <translation>Custom Settings</translation>
     </message>
     <message>
         <location filename="ui_defined_parameter.py" line="151"/>
         <source>高度</source>
-        <translation>Height</translation>
+        <translation type="obsolete">Height</translation>
     </message>
     <message>
         <location filename="ui_defined_parameter.py" line="152"/>
         <source>宽度</source>
-        <translation>Width</translation>
+        <translation type="obsolete">Width</translation>
     </message>
     <message>
         <location filename="ui_defined_parameter.py" line="153"/>
         <source>雷数</source>
-        <translation>Mines</translation>
+        <translation type="obsolete">Mines</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="739"/>
+        <location filename="ui_gameSettingShortcuts.py" line="740"/>
         <source>快捷键设置</source>
         <translation>Shortcuts</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="786"/>
+        <location filename="ui_gameSettingShortcuts.py" line="787"/>
         <source>模式：</source>
         <translation>Mode:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="787"/>
+        <location filename="ui_gameSettingShortcuts.py" line="788"/>
         <source>雷数：</source>
         <translation>Mines:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="782"/>
+        <location filename="ui_gameSettingShortcuts.py" line="783"/>
         <source>高度：</source>
         <translation>Height:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="783"/>
+        <location filename="ui_gameSettingShortcuts.py" line="784"/>
         <source>宽度：</source>
         <translation>Width:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="785"/>
+        <location filename="ui_gameSettingShortcuts.py" line="786"/>
         <source>边长：</source>
         <translation>Zoom:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="757"/>
+        <location filename="ui_gameSettingShortcuts.py" line="758"/>
         <source>快捷键[4]</source>
         <translation>Shortcut [4]</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="773"/>
+        <location filename="ui_gameSettingShortcuts.py" line="774"/>
         <source>快捷键[5]</source>
         <translation>Shortcut [5]</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="789"/>
+        <location filename="ui_gameSettingShortcuts.py" line="790"/>
         <source>快捷键[6]</source>
         <translation>Shortcut [6]</translation>
+    </message>
+    <message>
+        <location filename="ui_gameSettings.py" line="474"/>
+        <source>允许记录弹窗（推荐）</source>
+        <translation>Allow popovers for best scores (recommended)</translation>
+    </message>
+    <message>
+        <location filename="ui_about.py" line="121"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;微软雅黑&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;①本软件可以不受任何限制地复制、储存、传播。&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;②任何人可以在任何一个项目中使用本项目源代码的任何一个部分，同时欢迎在本项目主页提出宝贵的意见。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;SimSun&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;①This software can be copied, stored and transmitted without any restrictions.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;justify&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;SimSun&apos;; font-size:12pt; font-weight:600;&quot;&gt;②Anyone can use any  part of the project source code in any project, and you are welcome to make valuable comments on the project home page.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="ui_defined_parameter.py" line="152"/>
+        <source>行数(row)</source>
+        <translation>row</translation>
+    </message>
+    <message>
+        <location filename="ui_defined_parameter.py" line="153"/>
+        <source>列数(column)</source>
+        <translation>column</translation>
+    </message>
+    <message>
+        <location filename="ui_defined_parameter.py" line="154"/>
+        <source>雷数(number)</source>
+        <translation>mine number</translation>
+    </message>
+    <message>
+        <location filename="ui_about.py" line="145"/>
+        <source>项目主页：</source>
+        <translation>Home:</translation>
+    </message>
+    <message>
+        <location filename="ui_about.py" line="146"/>
+        <source>资料教程：</source>
+        <translation>Tutorials:</translation>
+    </message>
+    <message>
+        <location filename="ui_about.py" line="147"/>
+        <source>①本软件可以不受任何限制地复制、储存、传播。
+②任何人可以在任何一个项目中使用本项目源代码的任何一个部分，同时欢迎在本项目主页提出宝贵的意见。</source>
+        <translation>①This software can be copied, stored and transmitted without any restrictions.
+②Anyone can use any  part of the project source code in any project, and you are welcome to make valuable comments on the project home page.</translation>
     </message>
 </context>
 <context>

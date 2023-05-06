@@ -50,6 +50,9 @@
      <height>51</height>
     </rect>
    </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
    <property name="styleSheet">
     <string notr="true">border-image: url(media/button.png);
 font: 16pt &quot;黑体&quot;;
@@ -78,7 +81,7 @@ color:white;font: bold;</string>
     </font>
    </property>
    <property name="focusPolicy">
-    <enum>Qt::StrongFocus</enum>
+    <enum>Qt::NoFocus</enum>
    </property>
    <property name="styleSheet">
     <string notr="true">border-image: url(media/button.png);

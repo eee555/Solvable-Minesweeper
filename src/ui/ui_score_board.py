@@ -18,6 +18,9 @@ class Ui_Form(object):
         Form.setMinimumSize(QtCore.QSize(200, 30))
         Form.setMaximumSize(QtCore.QSize(200, 1000))
         Form.setSizeIncrement(QtCore.QSize(0, 0))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("media/cat.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Form.setWindowIcon(icon)
         Form.setWindowOpacity(10.0)
         Form.setStyleSheet("")
         self.label_3 = QtWidgets.QLabel(Form)
@@ -85,7 +88,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "雷数设置"))
+        Form.setWindowTitle(_translate("Form", "计数器"))
         self.label_3.setText(_translate("Form", "计数器"))
         item = self.tableWidget.verticalHeaderItem(0)
         item.setText(_translate("Form", "新建行"))

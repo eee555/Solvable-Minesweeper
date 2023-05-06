@@ -57,7 +57,7 @@ class ui_Form(Ui_Form):
         # self.Dialog = QDialog()
         self.setupUi (self.Dialog)
         self.setParameter ()
-        self.Dialog.setWindowIcon (QtGui.QIcon ("media/cat.ico"))
+        self.Dialog.setWindowIcon (QtGui.QIcon (str(self.r_path.with_name('media').joinpath('cat.ico'))))
         self.pushButton_yes.clicked.connect (self.processParameter)
         self.pushButton_no.clicked.connect (self.Dialog.close)
 

@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QSize, QTimer
-from PyQt5.QtCore import QTranslator
+from PyQt5.QtCore import QTranslator, QLocale
+from os import environ
 from PyQt5.QtWidgets import QApplication
 import configparser
 from PyQt5.QtGui import QPalette, QPixmap, QFont, QIcon
@@ -189,9 +190,11 @@ class Ui_MainWindow(Ui_MainWindow):
         self.retranslateUi(MainWindow)
         
         self.trans = QTranslator()
+        # print(QLocale.local(environ))
+        print(environ.get('LANG', None))
                 
         score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
-        self.score_board_manager = gameScoreBoardManager(score_board_path,
+        self.score_board_manager = gameScoreBoardManager(r_path, score_board_path,
                                                          self.game_setting_path, 
                                                          self.pixSize)
         self.score_board_manager.ui.QWidget.move(_scoreBoardTop, _scoreBoardLeft)

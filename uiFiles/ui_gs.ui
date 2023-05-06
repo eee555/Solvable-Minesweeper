@@ -48,9 +48,21 @@
     <rect>
      <x>30</x>
      <y>470</y>
-     <width>241</width>
+     <width>254</width>
      <height>38</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>254</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>254</width>
+     <height>16777215</height>
+    </size>
    </property>
    <property name="font">
     <font>
@@ -82,11 +94,23 @@ color:white;</string>
   <widget class="QPushButton" name="pushButton_no">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>297</x>
      <y>470</y>
-     <width>241</width>
+     <width>254</width>
      <height>38</height>
     </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>254</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>254</width>
+     <height>16777215</height>
+    </size>
    </property>
    <property name="font">
     <font>
@@ -114,7 +138,7 @@ color:white;</string>
     <rect>
      <x>30</x>
      <y>450</y>
-     <width>501</width>
+     <width>521</width>
      <height>20</height>
     </rect>
    </property>
@@ -127,7 +151,7 @@ color:white;</string>
     <rect>
      <x>150</x>
      <y>425</y>
-     <width>311</width>
+     <width>331</width>
      <height>22</height>
     </rect>
    </property>
@@ -169,7 +193,7 @@ color:white;</string>
   <widget class="QLabel" name="label_transparency_percent_value">
    <property name="geometry">
     <rect>
-     <x>465</x>
+     <x>480</x>
      <y>420</y>
      <width>41</width>
      <height>31</height>
@@ -200,7 +224,7 @@ color:white;</string>
   <widget class="QLabel" name="label_transparency_percent">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>530</x>
      <y>420</y>
      <width>21</width>
      <height>31</height>

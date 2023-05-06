@@ -13,6 +13,18 @@ if __name__ == "__main__":
     ui.mainWindow.game_setting_path = ui.game_setting_path
     sys.exit(app.exec_())
     ...
+    
+    
+# 语言不能保存
+# 校验校验和模块
+# 计时器增减功能
+# 计时器快捷键切换
+# 国家旗帜
+# 默认语言
+# 可信的历史记录
+# 截屏功能安全性
+# 局面约束if语法
+# 鼠标设置
 
 # 局面标记的约定：
 # 其中0代表空；1到8代表数字1到8；10代表未打开；11代表玩家或算法确定是雷；12代表算法确定不是雷；
@@ -46,6 +58,7 @@ if __name__ == "__main__":
 #           bbbv_s, (op_solved), (isl_solved)
 # 录像静态类：bbbv，op, isl, cell0, cell1, cell2, cell3, cell4, cell5, cell6,
 #           cell7, cell8, fps, (hizi)
+# 其他类：checksum_ok, race_designator, mode
 
 
 

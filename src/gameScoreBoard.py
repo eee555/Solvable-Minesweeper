@@ -1,20 +1,18 @@
 # 左侧计时器
 import configparser
 import minesweeper_master as mm
-import ms_toollib as ms
 from ui.ui_score_board import Ui_Form
 from ui.uiComponents import RoundQWidget
 from safe_eval import safe_eval
-from PyQt5 import QtCore
 from PyQt5.QtWidgets import QTableWidgetItem
-from PyQt5.QtCore import QTimer
+from PyQt5 import QtCore, QtGui
 
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)
     # barSetMineNumCalPoss = QtCore.pyqtSignal(int)
     # doubleClick = QtCore.pyqtSignal (int, int)
     # leftClick = QtCore.pyqtSignal (int, int)
-    def __init__(self, pix_size):
+    def __init__(self, r_path, pix_size):
         self.pix_size = pix_size
         self.QWidget = RoundQWidget()
         self.setupUi(self.QWidget)
@@ -22,6 +20,9 @@ class ui_Form(Ui_Form):
         self.tableWidget.setColumnWidth(0, 80)
         self.tableWidget.setColumnWidth(1, 120)
         self.tableWidget.verticalHeader().setDefaultSectionSize(24)
+        
+        self.QWidget.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico'))))
+        
         # self.setParameter ()
         
         # self.tableWidget.doubleClicked.connect(self.table_change)
@@ -80,7 +81,7 @@ class gameScoreBoardManager():
                      "ce_s", "bbbv_solved", "bbbv_s", "op_solved", "isl_solved"]
     # is_visible = False
     # 5、错误的表达式，一旦算出报错，永远不再算，显示error
-    def __init__(self, score_board_path, game_setting_path, pix_size):
+    def __init__(self, r_path, score_board_path, game_setting_path, pix_size):
         # 从文件中读取指标并设置
         # self.ms_board = None
         self.pix_size = pix_size
@@ -122,7 +123,7 @@ class gameScoreBoardManager():
                                   i in _score_board_items]
         self.update_score_board_items_type()
         self.index_num = len(self.score_board_items_type)
-        self.ui = ui_Form(pix_size)
+        self.ui = ui_Form(r_path, pix_size)
         self.ui.tableWidget.doubleClicked.connect(self.__table_change)
         self.ui.tableWidget.clicked.connect(self.__table_ok)
         self.ui.tableWidget.cellChanged.connect(self.__cell_changed)
