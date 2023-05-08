@@ -4,6 +4,7 @@ from random import shuffle, choice
 # from itertools import combinations
 # import time
 from safe_eval import safe_eval
+import configparser
 
 import ms_toollib as ms
 import math
@@ -690,6 +691,12 @@ def calScores(mode, rtime, operationStream, MinesweeperBoard, Difficulty):
     return scores, scoresValue, msBoard
 
 
+def updata_ini(file_name: str, data):
+    conf = configparser.ConfigParser()
+    conf.read(file_name)
+    for i in data:
+        conf.set(i[0], i[1], str(i[2]))
+    conf.write(open(file_name, "w"))
 
 def main():
     # # 测试枚举法判雷速度算例

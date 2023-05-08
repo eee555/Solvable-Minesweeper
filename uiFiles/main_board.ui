@@ -571,7 +571,7 @@
     <property name="title">
      <string>设置</string>
     </property>
-    <widget class="QMenu" name="language">
+    <widget class="QMenu" name="language_menu">
      <property name="font">
       <font>
        <family>微软雅黑</family>
@@ -581,12 +581,13 @@
      <property name="title">
       <string>语言设置</string>
      </property>
-     <addaction name="chinese_3"/>
-     <addaction name="english_3"/>
+     <addaction name="chinese_action"/>
+     <addaction name="english_action"/>
     </widget>
     <addaction name="actionyouxi_she_zhi"/>
     <addaction name="action_kuaijiejian"/>
-    <addaction name="language"/>
+    <addaction name="action_mouse"/>
+    <addaction name="language_menu"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -823,7 +824,7 @@
     <string>中文</string>
    </property>
   </action>
-  <action name="chinese_3">
+  <action name="chinese_action">
    <property name="text">
     <string notr="true">中文</string>
    </property>
@@ -843,7 +844,7 @@
     </font>
    </property>
   </action>
-  <action name="english_3">
+  <action name="english_action">
    <property name="text">
     <string>English</string>
    </property>
@@ -852,6 +853,20 @@
      <family>微软雅黑</family>
      <pointsize>12</pointsize>
     </font>
+   </property>
+  </action>
+  <action name="action_mouse">
+   <property name="text">
+    <string>鼠标设置</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="shortcut">
+    <string>M</string>
    </property>
   </action>
  </widget>
