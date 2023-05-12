@@ -6,6 +6,8 @@ from ui.uiComponents import RoundQWidget
 from safe_eval import safe_eval
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QShortcut
+from PyQt5.QtCore import Qt
 
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)
@@ -24,9 +26,6 @@ class ui_Form(Ui_Form):
         self.QWidget.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico'))))
         
         # self.setParameter ()
-        
-        # self.tableWidget.doubleClicked.connect(self.table_change)
-        # self.tableWidget.clicked.connect(self.table_ok)
     
     def show(self, index_value_list: list[str]):
         # 更新数值,指标数量不变
@@ -38,19 +37,17 @@ class ui_Form(Ui_Form):
         # 更新数值、指标。指标数量可能变
         table_height = len(index_name_list)*24
         self.tableWidget.setRowCount(len(index_name_list))
-        self.tableWidget.setGeometry(QtCore.QRect(12, 50, 200+2,
-                                                  table_height+len(index_name_list)+2))
-        self.QWidget.setMinimumSize(QtCore.QSize(224+2, table_height + 88))
-        self.QWidget.setMaximumSize(QtCore.QSize(224+2, table_height + 88))
+        self.tableWidget.setMinimumWidth(202)
+        self.tableWidget.setMaximumWidth(202)
+        self.tableWidget.setMaximumHeight(table_height + len(index_name_list) + 2)
+        self.tableWidget.setMinimumHeight(table_height + len(index_name_list) + 2)
+        
+        # self.QWidget.setMinimumSize(QtCore.QSize(224+2, table_height + 88))
+        # self.QWidget.setMaximumSize(QtCore.QSize(224+2, table_height + 88))
         for idx, i in enumerate(index_name_list):
             self.tableWidget.setItem(idx, 0, QTableWidgetItem(i))
         self.show(index_value_list)
         
-    # def table_change(self, e):
-    #     print(e)
-       
-    # def table_ok(self, e):
-    #     print(e)
         
     def setSignal(self):
         ...
@@ -127,10 +124,19 @@ class gameScoreBoardManager():
         self.ui.tableWidget.doubleClicked.connect(self.__table_change)
         self.ui.tableWidget.clicked.connect(self.__table_ok)
         self.ui.tableWidget.cellChanged.connect(self.__cell_changed)
+        self.ui.pushButton_add.clicked.connect(self.__add_blank_line)
+        QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Return), self.ui.QWidget).\
+            activated.connect(self.__table_ok)
         self.editing_row = -1 # -1不在编辑状态，-2不能编辑（正在游戏）
+        self.editing_column = -1
         
         # self.ui.QWidget.closeEvent_.connect(self.close) 
         
+    # def keyPressEvent(self, event):
+    #     print(666)
+    #     if event.key() == Qt.Key_Return:
+    #         self.__table_ok()
+
     def update_score_board_items_type(self):
         self.score_board_items_type = []
         # 整理出计时器上各指标的类型，1表示游戏时更新，2表示录像、游戏时更新
@@ -260,40 +266,63 @@ class gameScoreBoardManager():
         self.show()
 
     def __table_change(self, e):
+        # 编辑开始时，把数值换成公式
         if e.column() == 1 and self.editing_row == -1:
             r = e.row()
             self.editing_row = r
+            self.editing_column = 1
             self.ui.tableWidget.editItem(self.ui.tableWidget.item(r, 1))
             self.ui.tableWidget.setItem(r, 1, 
                                         QTableWidgetItem(self.score_board_items[r][1]))
         elif e.column() == 0 and self.editing_row == -1:
             r = e.row()
-            # self.editing_row = r
+            self.editing_row = r
+            self.editing_column = 0
             self.ui.tableWidget.editItem(self.ui.tableWidget.item(r, 0))
             
-    def __table_ok(self, e):
-        if self.editing_row >= 0 and (e.column() == 0 or self.editing_row != e.row()):
-            self.score_board_items[self.editing_row][1] = self.ui.tableWidget.item(self.editing_row, 1).text()
-            self.update_score_board_items_type()
+    def __table_ok(self, e = None):
+        # 编辑完成后的回调，e == None表示是回车键结束的
+        if e == None or (self.editing_row >= 0 and self.editing_column >= 0 and (self.editing_row != e.row() or\
+                                                    self.editing_column != e.column())):
+            # 编辑完成后修改指标值
+            self.ui.tableWidget.setDisabled(True)
+            self.ui.tableWidget.setDisabled(False)
+            new_formula = self.ui.tableWidget.item(self.editing_row, self.editing_column).text()
+            if self.editing_column == 0:
+                if not new_formula:
+                    self.score_board_items.pop(self.editing_row)
+                    self.score_board_items_type.pop(self.editing_row)
+                else:
+                    self.score_board_items[self.editing_row][0] = new_formula
+            else:
+                self.score_board_items[self.editing_row][1] = new_formula
+                self.update_score_board_items_type()
             if self.ms_board.game_board_state == 1\
                 or self.ms_board.game_board_state == 2\
                     or self.ms_board.game_board_state == 5:
-                self.show(self.ms_board, 1)
+                self.reshow(self.ms_board, 1)
             else:
-                self.show(self.ms_board, 2)
+                # 3、4为win和loss
+                self.reshow(self.ms_board, 2)
             self.editing_row = -1
-        # elif self.editing_row >= 0 and (e.column() == 1 or self.editing_row != e.row()):
-        #     self.score_board_items[self.editing_row][0] = self.ui.tableWidget.item(self.editing_row, 0).text()
+            self.editing_column = -1
         
     def __cell_changed(self, x, y):
+        # 把计数器里的公式改成新设置的公式
         if y == 0:
             t = self.ui.tableWidget.item(x, y).text()
             if self.score_board_items[x][0] != t:
                 self.score_board_items[x][0] = self.ui.tableWidget.item(x, 0).text()
                 
+    def __add_blank_line(self):
+        # 添加一个空开的行，并刷新显示
+        self.score_board_items.append(["", ""])
+        self.score_board_items_type.append(1)
+        self.reshow(self.ms_board, 1)
+                
     def close(self):
         config = configparser.ConfigParser()
-        config["DEFAULT"] = dict(self.score_board_items)
+        config["DEFAULT"] = dict(filter(lambda x: x[0], self.score_board_items))
         config.write(open(self.score_board_path, "w"))
         conf = configparser.ConfigParser()
         conf.read(self.game_setting_path)

@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>487</height>
+    <width>234</width>
+    <height>492</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>200</width>
+    <width>234</width>
     <height>30</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>200</width>
+    <width>239</width>
     <height>1000</height>
    </size>
   </property>
@@ -41,154 +41,229 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>123</width>
-     <height>32</height>
-    </rect>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>2</number>
    </property>
-   <property name="font">
-    <font>
-     <family>微软雅黑</family>
-     <pointsize>12</pointsize>
-    </font>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetFixedSize</enum>
    </property>
-   <property name="text">
-    <string>计数器</string>
+   <property name="leftMargin">
+    <number>16</number>
    </property>
-   <property name="scaledContents">
-    <bool>false</bool>
+   <property name="topMargin">
+    <number>12</number>
    </property>
-   <property name="wordWrap">
-    <bool>false</bool>
+   <property name="rightMargin">
+    <number>16</number>
    </property>
-  </widget>
-  <widget class="ScoreTable" name="tableWidget">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>70</y>
-     <width>181</width>
-     <height>191</height>
-    </rect>
+   <property name="bottomMargin">
+    <number>12</number>
    </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-   <property name="lineWidth">
-    <number>1</number>
-   </property>
-   <property name="midLineWidth">
-    <number>1</number>
-   </property>
-   <property name="verticalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
-   </property>
-   <property name="horizontalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
-   </property>
-   <property name="sizeAdjustPolicy">
-    <enum>QAbstractScrollArea::AdjustIgnored</enum>
-   </property>
-   <property name="editTriggers">
-    <set>QAbstractItemView::NoEditTriggers</set>
-   </property>
-   <property name="showDropIndicator" stdset="0">
-    <bool>false</bool>
-   </property>
-   <property name="dragEnabled">
-    <bool>true</bool>
-   </property>
-   <property name="dragDropOverwriteMode">
-    <bool>true</bool>
-   </property>
-   <property name="dragDropMode">
-    <enum>QAbstractItemView::DragDrop</enum>
-   </property>
-   <property name="selectionMode">
-    <enum>QAbstractItemView::NoSelection</enum>
-   </property>
-   <property name="textElideMode">
-    <enum>Qt::ElideMiddle</enum>
-   </property>
-   <property name="showGrid">
-    <bool>true</bool>
-   </property>
-   <property name="gridStyle">
-    <enum>Qt::DashLine</enum>
-   </property>
-   <attribute name="horizontalHeaderVisible">
-    <bool>false</bool>
-   </attribute>
-   <attribute name="horizontalHeaderCascadingSectionResizes">
-    <bool>false</bool>
-   </attribute>
-   <attribute name="horizontalHeaderMinimumSectionSize">
-    <number>28</number>
-   </attribute>
-   <attribute name="horizontalHeaderDefaultSectionSize">
-    <number>87</number>
-   </attribute>
-   <attribute name="horizontalHeaderHighlightSections">
-    <bool>false</bool>
-   </attribute>
-   <attribute name="verticalHeaderVisible">
-    <bool>false</bool>
-   </attribute>
-   <attribute name="verticalHeaderHighlightSections">
-    <bool>false</bool>
-   </attribute>
-   <row>
-    <property name="text">
-     <string>新建行</string>
-    </property>
-   </row>
-   <row>
-    <property name="text">
-     <string>1</string>
-    </property>
-   </row>
-   <row>
-    <property name="text">
-     <string>3</string>
-    </property>
-   </row>
-   <column>
-    <property name="text">
-     <string>指标</string>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-     </font>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>表达式</string>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-     </font>
-    </property>
-   </column>
-  </widget>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="QLabel" name="label_counter">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>27</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>27</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>计数器</string>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item alignment="Qt::AlignHCenter">
+    <widget class="ScoreTable" name="tableWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>202</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>203</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="midLineWidth">
+      <number>1</number>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustIgnored</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropOverwriteMode">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::DragDrop</enum>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::NoSelection</enum>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideMiddle</enum>
+     </property>
+     <property name="showGrid">
+      <bool>true</bool>
+     </property>
+     <property name="gridStyle">
+      <enum>Qt::DashLine</enum>
+     </property>
+     <attribute name="horizontalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>28</number>
+     </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>87</number>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="verticalHeaderHighlightSections">
+      <bool>false</bool>
+     </attribute>
+     <row>
+      <property name="text">
+       <string>新建行</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </row>
+     <row>
+      <property name="text">
+       <string>3</string>
+      </property>
+     </row>
+     <column>
+      <property name="text">
+       <string>指标</string>
+      </property>
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+       </font>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>表达式</string>
+      </property>
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+       </font>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButton_add">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>15</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>2000</width>
+       <height>15</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>微软雅黑</family>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton{
+    background-color:rgba(0,0,0,0);
+    color:rgba(0,0,0,0);
+}
+QPushButton:hover{
+    background-color:#00a2e8;
+    border-radius:3px;
+    color:white;
+}</string>
+     </property>
+     <property name="text">
+      <string notr="true">+</string>
+     </property>
+     <property name="shortcut">
+      <string notr="true"/>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>

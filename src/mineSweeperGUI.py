@@ -528,7 +528,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             else:
                 del_items += [13, 14, 15]
             if b.right == 0:
-                del_items = [1, 3, 5, 7, 9, 11]
+                del_items += [1, 3, 5, 7, 9, 11]
                 if b.rtime < self.record["BNF"]["rtime"]:
                     self.record["BNF"]["rtime"] = b.rtime
                 else:
@@ -542,7 +542,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 else:
                     del_items.append(6)
                 if b.ioe > self.record["BNF"]["ioe"]:
-                    self.record["NF"]["ioe"] = b.ioe
+                    self.record["BNF"]["ioe"] = b.ioe
                 else:
                     del_items.append(8)
                 if b.path < self.record["BNF"]["path"]:
@@ -554,7 +554,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 else:
                     del_items.append(12)
             else:
-                del_items = [2, 4, 6, 8, 10, 12]
+                del_items += [2, 4, 6, 8, 10, 12]
                 if b.rtime < self.record["BFLAG"]["rtime"]:
                     self.record["BFLAG"]["rtime"] = b.rtime
                 else:
@@ -586,7 +586,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             else:
                 del_items += [13, 14, 15]
             if b.right == 0:
-                del_items = [1, 3, 5, 7, 9, 11]
+                del_items += [1, 3, 5, 7, 9, 11]
                 if b.rtime < self.record["INF"]["rtime"]:
                     self.record["INF"]["rtime"] = b.rtime
                 else:
@@ -612,7 +612,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 else:
                     del_items.append(12)
             else:
-                del_items = [2, 4, 6, 8, 10, 12]
+                del_items += [2, 4, 6, 8, 10, 12]
                 if b.rtime < self.record["IFLAG"]["rtime"]:
                     self.record["IFLAG"]["rtime"] = b.rtime
                 else:
@@ -644,7 +644,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             else:
                 del_items += [13, 14, 15]
             if b.right == 0:
-                del_items = [1, 3, 5, 7, 9, 11]
+                del_items += [1, 3, 5, 7, 9, 11]
                 if b.rtime < self.record["ENF"]["rtime"]:
                     self.record["ENF"]["rtime"] = b.rtime
                 else:
@@ -670,7 +670,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 else:
                     del_items.append(12)
             else:
-                del_items = [2, 4, 6, 8, 10, 12]
+                del_items += [2, 4, 6, 8, 10, 12]
                 if b.rtime < self.record["EFLAG"]["rtime"]:
                     self.record["EFLAG"]["rtime"] = b.rtime
                 else:

@@ -8,4 +8,6 @@ pyuic5 -o ui_video_control.py ui_video_control.ui
 pyuic5 -o ui_score_board.py ui_score_board.ui
 pyuic5 -o ui_about.py ui_about.ui
 pyuic5 -o ui_record_pop.py ui_record_pop.ui
+copy /y ui_score_board.py ..\src\ui\ui_score_board.py
+copy /y ui_gameSettings.py ..\src\ui\ui_gameSettings.py
 pause

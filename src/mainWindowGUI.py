@@ -16,9 +16,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def keyReleaseEvent(self, event):
         if event.key() == Qt.Key_Space and not event.isAutoRepeat():
             self.keyRelease.emit('Space')
-    
-    # def mousePressEvent(self, event):
-    #     print(666)
             
     def resizeEvent(self,event):
         # 拖拽边框后resize尺寸

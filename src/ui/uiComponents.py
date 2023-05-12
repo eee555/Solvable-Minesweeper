@@ -5,7 +5,7 @@ Created on Wed Aug 11 20:04:25 2021
 @author: jia32
 """
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import  QWidget, QDialog
+from PyQt5.QtWidgets import  QWidget, QDialog, QComboBox
 from PyQt5.QtCore import Qt, QRectF
 # from PyQt5.Qt import  QApplication, QDialog
 from PyQt5.QtGui import QPainter, QPainterPath
@@ -13,6 +13,7 @@ from PyQt5.QtGui import QPainter, QPainterPath
 from PyQt5.QtGui import QBrush, QColor
 from PyQt5.QtGui import QPixmap
 import configparser
+from PyQt5.QtCore import pyqtSignal 
 # ui相关的小组件，非窗口
 
 class RoundQDialog(QDialog):
@@ -228,6 +229,32 @@ class CommentLabel(QtWidgets.QLabel):
 
 class ScoreTable(QtWidgets.QTableWidget):
     ...
+
+# 能响应点击的QComboBox
+class BetterQCombox(QComboBox):
+    # clicked = pyqtSignal()
+    # show_popup = pyqtSignal()
+    resize = pyqtSignal()
+    def __init__(self, parent=None):
+        super(BetterQCombox, self).__init__(parent)
+
+    # def mousePressEvent(self, QMouseEvent):
+    #     self.clicked.emit()
+    #     QComboBox.mousePressEvent(self, QMouseEvent)
+
+    # def showPopup(self):
+    #     self.show_popup.emit()
+    #     QComboBox.showPopup(self)
+
+    # def hidePopup(self):
+    #     QComboBox.hidePopup(self)
+        
+    def resizeEvent(self, e):
+        self.resize.emit()
+
+
+
+
 
 
 

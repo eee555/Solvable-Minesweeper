@@ -65,42 +65,6 @@ class Ui_Form(object):
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
-        self.horizontalSlider_transparency = QtWidgets.QSlider(Form)
-        self.horizontalSlider_transparency.setGeometry(QtCore.QRect(150, 425, 331, 22))
-        self.horizontalSlider_transparency.setMaximum(100)
-        self.horizontalSlider_transparency.setSingleStep(1)
-        self.horizontalSlider_transparency.setOrientation(QtCore.Qt.Horizontal)
-        self.horizontalSlider_transparency.setObjectName("horizontalSlider_transparency")
-        self.label_transparency = QtWidgets.QLabel(Form)
-        self.label_transparency.setGeometry(QtCore.QRect(40, 420, 101, 31))
-        font = QtGui.QFont()
-        font.setFamily("微软雅黑")
-        font.setPointSize(12)
-        self.label_transparency.setFont(font)
-        self.label_transparency.setScaledContents(False)
-        self.label_transparency.setWordWrap(False)
-        self.label_transparency.setObjectName("label_transparency")
-        self.label_transparency_percent_value = QtWidgets.QLabel(Form)
-        self.label_transparency_percent_value.setGeometry(QtCore.QRect(480, 420, 41, 31))
-        font = QtGui.QFont()
-        font.setFamily("微软雅黑")
-        font.setPointSize(12)
-        self.label_transparency_percent_value.setFont(font)
-        self.label_transparency_percent_value.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_transparency_percent_value.setText("")
-        self.label_transparency_percent_value.setScaledContents(False)
-        self.label_transparency_percent_value.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_transparency_percent_value.setWordWrap(False)
-        self.label_transparency_percent_value.setObjectName("label_transparency_percent_value")
-        self.label_transparency_percent = QtWidgets.QLabel(Form)
-        self.label_transparency_percent.setGeometry(QtCore.QRect(530, 420, 21, 31))
-        font = QtGui.QFont()
-        font.setFamily("微软雅黑")
-        font.setPointSize(12)
-        self.label_transparency_percent.setFont(font)
-        self.label_transparency_percent.setScaledContents(False)
-        self.label_transparency_percent.setWordWrap(False)
-        self.label_transparency_percent.setObjectName("label_transparency_percent")
         self.checkBox_end_then_flag = QtWidgets.QCheckBox(Form)
         self.checkBox_end_then_flag.setGeometry(QtCore.QRect(40, 260, 511, 31))
         font = QtGui.QFont()
@@ -119,15 +83,6 @@ class Ui_Form(object):
         self.label_label.setScaledContents(False)
         self.label_label.setWordWrap(False)
         self.label_label.setObjectName("label_label")
-        self.label_race_label = QtWidgets.QLabel(Form)
-        self.label_race_label.setGeometry(QtCore.QRect(30, 120, 101, 32))
-        font = QtGui.QFont()
-        font.setFamily("微软雅黑")
-        font.setPointSize(12)
-        self.label_race_label.setFont(font)
-        self.label_race_label.setScaledContents(False)
-        self.label_race_label.setWordWrap(False)
-        self.label_race_label.setObjectName("label_race_label")
         self.checkBox_filter_forever = QtWidgets.QCheckBox(Form)
         self.checkBox_filter_forever.setGeometry(QtCore.QRect(40, 230, 511, 31))
         font = QtGui.QFont()
@@ -149,20 +104,6 @@ class Ui_Form(object):
         self.checkBox_autosave_video.setFont(font)
         self.checkBox_autosave_video.setStyleSheet("")
         self.checkBox_autosave_video.setObjectName("checkBox_autosave_video")
-        self.label_country = QtWidgets.QLabel(Form)
-        self.label_country.setGeometry(QtCore.QRect(30, 160, 101, 32))
-        font = QtGui.QFont()
-        font.setFamily("微软雅黑")
-        font.setPointSize(12)
-        self.label_country.setFont(font)
-        self.label_country.setScaledContents(False)
-        self.label_country.setWordWrap(False)
-        self.label_country.setObjectName("label_country")
-        self.label_national_flag = QtWidgets.QLabel(Form)
-        self.label_national_flag.setGeometry(QtCore.QRect(430, 160, 51, 31))
-        self.label_national_flag.setStyleSheet("background-color:rgb(255, 42, 42)")
-        self.label_national_flag.setText("")
-        self.label_national_flag.setObjectName("label_national_flag")
         self.label_gamemode = QtWidgets.QLabel(Form)
         self.label_gamemode.setGeometry(QtCore.QRect(30, 20, 101, 32))
         font = QtGui.QFont()
@@ -172,25 +113,6 @@ class Ui_Form(object):
         self.label_gamemode.setScaledContents(False)
         self.label_gamemode.setWordWrap(False)
         self.label_gamemode.setObjectName("label_gamemode")
-        self.lineEdit_race_label = QtWidgets.QLineEdit(Form)
-        self.lineEdit_race_label.setGeometry(QtCore.QRect(130, 120, 421, 31))
-        font = QtGui.QFont()
-        font.setFamily("微软雅黑")
-        font.setPointSize(12)
-        self.lineEdit_race_label.setFont(font)
-        self.lineEdit_race_label.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.lineEdit_race_label.setStyleSheet("border-width: 2px;\n"
-"border-radius: 8px;\n"
-"border-style: solid;\n"
-"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"background-color: #f4f4f4;\n"
-"color: #3d3d3d;")
-        self.lineEdit_race_label.setText("")
-        self.lineEdit_race_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.lineEdit_race_label.setObjectName("lineEdit_race_label")
         self.lineEdit_label = QtWidgets.QLineEdit(Form)
         self.lineEdit_label.setGeometry(QtCore.QRect(130, 80, 421, 31))
         font = QtGui.QFont()
@@ -208,27 +130,9 @@ class Ui_Form(object):
 "background-color: #f4f4f4;\n"
 "color: #3d3d3d;")
         self.lineEdit_label.setText("")
+        self.lineEdit_label.setMaxLength(1024)
         self.lineEdit_label.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit_label.setObjectName("lineEdit_label")
-        self.lineEdit_country = QtWidgets.QLineEdit(Form)
-        self.lineEdit_country.setGeometry(QtCore.QRect(130, 160, 291, 31))
-        font = QtGui.QFont()
-        font.setFamily("微软雅黑")
-        font.setPointSize(12)
-        self.lineEdit_country.setFont(font)
-        self.lineEdit_country.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.lineEdit_country.setStyleSheet("border-width: 2px;\n"
-"border-radius: 8px;\n"
-"border-style: solid;\n"
-"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
-"background-color: #f4f4f4;\n"
-"color: #3d3d3d;")
-        self.lineEdit_country.setText("")
-        self.lineEdit_country.setAlignment(QtCore.Qt.AlignCenter)
-        self.lineEdit_country.setObjectName("lineEdit_country")
         self.spinBox_pixsize = QtWidgets.QSpinBox(Form)
         self.spinBox_pixsize.setGeometry(QtCore.QRect(420, 20, 132, 32))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
@@ -410,7 +314,8 @@ class Ui_Form(object):
         font.setPointSize(12)
         self.spinBox_auto_replay.setFont(font)
         self.spinBox_auto_replay.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.spinBox_auto_replay.setStyleSheet("border-width: 2px;\n"
+        self.spinBox_auto_replay.setStyleSheet("QSpinBox{\n"
+"border-width: 2px;\n"
 "border-radius: 8px;\n"
 "border-style: solid;\n"
 "border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
@@ -418,7 +323,8 @@ class Ui_Form(object):
 "border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
 "border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
 "background-color: #f4f4f4;\n"
-"color: #3d3d3d;")
+"color: #3d3d3d;\n"
+"}")
         self.spinBox_auto_replay.setFrame(True)
         self.spinBox_auto_replay.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_auto_replay.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
@@ -441,13 +347,186 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.label_auto_replay_percent)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
+        self.horizontalWidget_country = QtWidgets.QWidget(Form)
+        self.horizontalWidget_country.setGeometry(QtCore.QRect(30, 155, 521, 41))
+        self.horizontalWidget_country.setObjectName("horizontalWidget_country")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.horizontalWidget_country)
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2.setSpacing(2)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_country = QtWidgets.QLabel(self.horizontalWidget_country)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_country.sizePolicy().hasHeightForWidth())
+        self.label_country.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.label_country.setFont(font)
+        self.label_country.setScaledContents(False)
+        self.label_country.setWordWrap(False)
+        self.label_country.setObjectName("label_country")
+        self.horizontalLayout_2.addWidget(self.label_country)
+        self.comboBox_country = BetterQCombox(self.horizontalWidget_country)
+        self.comboBox_country.setMinimumSize(QtCore.QSize(0, 31))
+        self.comboBox_country.setMaximumSize(QtCore.QSize(16777215, 31))
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.comboBox_country.setFont(font)
+        self.comboBox_country.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.comboBox_country.setStyleSheet("QComboBox {\n"
+"border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: rgba(244,244,244,0);\n"
+"width:102px;\n"
+"height: 32px;\n"
+"color: #3d3d3d;\n"
+"    font: 12pt \"微软雅黑\";\n"
+"}\n"
+"\n"
+"")
+        self.comboBox_country.setEditable(True)
+        self.comboBox_country.setCurrentText("")
+        self.comboBox_country.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLength)
+        self.comboBox_country.setModelColumn(0)
+        self.comboBox_country.setObjectName("comboBox_country")
+        self.horizontalLayout_2.addWidget(self.comboBox_country)
+        self.label_national_flag = QtWidgets.QLabel(self.horizontalWidget_country)
+        self.label_national_flag.setMinimumSize(QtCore.QSize(51, 0))
+        self.label_national_flag.setMaximumSize(QtCore.QSize(500, 500))
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(16)
+        self.label_national_flag.setFont(font)
+        self.label_national_flag.setStyleSheet("background-color:rgba(0,0,0,0)")
+        self.label_national_flag.setText("")
+        self.label_national_flag.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_national_flag.setWordWrap(False)
+        self.label_national_flag.setObjectName("label_national_flag")
+        self.horizontalLayout_2.addWidget(self.label_national_flag)
+        self.horizontalLayout_2.setStretch(0, 2)
+        self.horizontalLayout_2.setStretch(1, 20)
+        self.horizontalLayout_2.setStretch(2, 1)
+        self.horizontalWidget_transparency = QtWidgets.QWidget(Form)
+        self.horizontalWidget_transparency.setGeometry(QtCore.QRect(40, 415, 511, 41))
+        self.horizontalWidget_transparency.setObjectName("horizontalWidget_transparency")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.horizontalWidget_transparency)
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_3.setSpacing(2)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_transparency = QtWidgets.QLabel(self.horizontalWidget_transparency)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.label_transparency.setFont(font)
+        self.label_transparency.setScaledContents(False)
+        self.label_transparency.setWordWrap(False)
+        self.label_transparency.setObjectName("label_transparency")
+        self.horizontalLayout_3.addWidget(self.label_transparency)
+        self.horizontalSlider_transparency = QtWidgets.QSlider(self.horizontalWidget_transparency)
+        self.horizontalSlider_transparency.setMaximum(100)
+        self.horizontalSlider_transparency.setSingleStep(1)
+        self.horizontalSlider_transparency.setOrientation(QtCore.Qt.Horizontal)
+        self.horizontalSlider_transparency.setObjectName("horizontalSlider_transparency")
+        self.horizontalLayout_3.addWidget(self.horizontalSlider_transparency)
+        self.label_transparency_percent_value = QtWidgets.QLabel(self.horizontalWidget_transparency)
+        self.label_transparency_percent_value.setMinimumSize(QtCore.QSize(30, 0))
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.label_transparency_percent_value.setFont(font)
+        self.label_transparency_percent_value.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_transparency_percent_value.setText("")
+        self.label_transparency_percent_value.setScaledContents(False)
+        self.label_transparency_percent_value.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_transparency_percent_value.setWordWrap(False)
+        self.label_transparency_percent_value.setObjectName("label_transparency_percent_value")
+        self.horizontalLayout_3.addWidget(self.label_transparency_percent_value)
+        self.label_transparency_percent = QtWidgets.QLabel(self.horizontalWidget_transparency)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.label_transparency_percent.setFont(font)
+        self.label_transparency_percent.setScaledContents(False)
+        self.label_transparency_percent.setWordWrap(False)
+        self.label_transparency_percent.setObjectName("label_transparency_percent")
+        self.horizontalLayout_3.addWidget(self.label_transparency_percent)
+        self.horizontalWidget_race = QtWidgets.QWidget(Form)
+        self.horizontalWidget_race.setGeometry(QtCore.QRect(30, 115, 521, 41))
+        self.horizontalWidget_race.setObjectName("horizontalWidget_race")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.horizontalWidget_race)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4.setSpacing(2)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.label_race_label = QtWidgets.QLabel(self.horizontalWidget_race)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.label_race_label.setFont(font)
+        self.label_race_label.setScaledContents(False)
+        self.label_race_label.setWordWrap(False)
+        self.label_race_label.setObjectName("label_race_label")
+        self.horizontalLayout_4.addWidget(self.label_race_label)
+        self.lineEdit_race_label = QtWidgets.QLineEdit(self.horizontalWidget_race)
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.lineEdit_race_label.setFont(font)
+        self.lineEdit_race_label.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.lineEdit_race_label.setStyleSheet("border-width: 2px;\n"
+"border-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
+        self.lineEdit_race_label.setText("")
+        self.lineEdit_race_label.setMaxLength(1024)
+        self.lineEdit_race_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.lineEdit_race_label.setObjectName("lineEdit_race_label")
+        self.horizontalLayout_4.addWidget(self.lineEdit_race_label)
+        self.lineEdit_country = QtWidgets.QLineEdit(Form)
+        self.lineEdit_country.setGeometry(QtCore.QRect(300, 200, 231, 32))
+        font = QtGui.QFont()
+        font.setFamily("微软雅黑")
+        font.setPointSize(12)
+        self.lineEdit_country.setFont(font)
+        self.lineEdit_country.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.lineEdit_country.setStyleSheet("border-width: 2px;\n"
+"border-top-left-radius: 8px;\n"
+"border-bottom-left-radius: 8px;\n"
+"border-style: solid;\n"
+"border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-right-color: rgba(0,0,0,0);\n"
+"border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);\n"
+"background-color: #f4f4f4;\n"
+"color: #3d3d3d;")
+        self.lineEdit_country.setText("")
+        self.lineEdit_country.setMaxLength(1024)
+        self.lineEdit_country.setAlignment(QtCore.Qt.AlignCenter)
+        self.lineEdit_country.setObjectName("lineEdit_country")
 
         self.retranslateUi(Form)
         self.comboBox_gamemode.setCurrentIndex(0)
-        self.horizontalSlider_transparency.valueChanged['int'].connect(self.label_transparency_percent_value.setNum) # type: ignore
-        self.pushButton_no.clicked.connect(Form.close) # type: ignore
+        self.comboBox_country.setCurrentIndex(-1)
         self.checkBox_auto_replay.toggled['bool'].connect(self.spinBox_auto_replay.setEnabled) # type: ignore
         self.checkBox_auto_replay.toggled['bool'].connect(self.label_auto_replay_percent.setEnabled) # type: ignore
+        self.pushButton_no.clicked.connect(Form.close) # type: ignore
+        self.horizontalSlider_transparency.valueChanged['int'].connect(self.label_transparency_percent_value.setNum) # type: ignore
+        self.comboBox_country.activated['QString'].connect(self.lineEdit_country.setText) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -455,16 +534,12 @@ class Ui_Form(object):
         Form.setWindowTitle(_translate("Form", "游戏设置"))
         self.pushButton_yes.setText(_translate("Form", "确定"))
         self.pushButton_no.setText(_translate("Form", "取消"))
-        self.label_transparency.setText(_translate("Form", "窗口透明度"))
-        self.label_transparency_percent.setText(_translate("Form", "%"))
         self.checkBox_end_then_flag.setText(_translate("Form", "结束后标雷"))
         self.label_label.setText(_translate("Form", "标识："))
-        self.label_race_label.setText(_translate("Form", "比赛后缀："))
         self.checkBox_filter_forever.setToolTip(_translate("Form", "勾选后永远使用筛选法埋雷，否则会智能改用调整法"))
         self.checkBox_filter_forever.setText(_translate("Form", "永远使用筛选法埋雷（不推荐）"))
         self.checkBox_autosave_video.setToolTip(_translate("Form", "勾选后永远使用筛选法埋雷，否则会智能改用调整法"))
         self.checkBox_autosave_video.setText(_translate("Form", "自动保存录像（推荐）"))
-        self.label_country.setText(_translate("Form", "国家："))
         self.label_gamemode.setText(_translate("Form", "游戏模式："))
         self.label_pixsize.setText(_translate("Form", "方格边长："))
         self.comboBox_gamemode.setItemText(0, _translate("Form", "标准"))
@@ -480,3 +555,8 @@ class Ui_Form(object):
         self.label_constraint.setText(_translate("Form", "局面约束："))
         self.checkBox_auto_replay.setText(_translate("Form", "自动重开："))
         self.label_auto_replay_percent.setText(_translate("Form", "%"))
+        self.label_country.setText(_translate("Form", "国家或地区："))
+        self.label_transparency.setText(_translate("Form", "窗口透明度："))
+        self.label_transparency_percent.setText(_translate("Form", "%"))
+        self.label_race_label.setText(_translate("Form", "比赛后缀："))
+from ui.uiComponents import BetterQCombox

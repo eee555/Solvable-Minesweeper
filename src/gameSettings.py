@@ -10,11 +10,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import configparser
 from ui.ui_gameSettings import Ui_Form
 from ui.uiComponents import RoundQDialog
+from PyQt5.QtCore import QPoint
 # from PyQt5.QtWidgets import  QWidget, QDialog
+import json
+from country_name import country_name
+from PyQt5.QtGui import QPixmap
 
 class ui_Form(Ui_Form):
     def __init__(self, game_setting_path, r_path, pix_size):
-        # 甚至界面的参数，主要从配置文件里来，pix_size除外
+        # 设置界面的参数，主要从配置文件里来，pix_size除外
         self.game_setting_path = game_setting_path
         self.r_path = r_path
         config = configparser.ConfigParser()
@@ -53,6 +57,7 @@ class ui_Form(Ui_Form):
             self.board_constraint = config["CUSTOM"]["board_constraint"]
             self.attempt_times_limit = config.getint('CUSTOM', 'attempt_times_limit')
         self.alter = False
+        
         self.Dialog = RoundQDialog()
         # self.Dialog = QDialog()
         self.setupUi (self.Dialog)
@@ -60,16 +65,48 @@ class ui_Form(Ui_Form):
         self.Dialog.setWindowIcon (QtGui.QIcon (str(self.r_path.with_name('media').joinpath('cat.ico'))))
         self.pushButton_yes.clicked.connect (self.processParameter)
         self.pushButton_no.clicked.connect (self.Dialog.close)
+        self.comboBox_country.resize.connect (self.set_lineedit_country_geometry)
+        self.lineEdit_country.textEdited.connect(lambda x: self.set_combobox_country(x))
+        self.comboBox_country.activated['QString'].connect(lambda x: self.set_country_flag(x))
+        self.lineEdit_country.textEdited.connect(lambda x: self.set_country_flag(x))
+        
+        self.country_name = list(country_name.keys())
+        self.set_combobox_country(self.lineEdit_country.text())
+        self.set_country_flag(self.lineEdit_country.text())
+        
+    def set_country_flag(self, flag_name):
+        if flag_name not in country_name:
+            self.label_national_flag.clear()
+            self.label_national_flag.update()
+        else:
+            fn = country_name[flag_name]
+            pixmap = QPixmap(str(self.r_path.with_name('media') / "country_flags" / \
+                                 (fn + ".svg"))).scaled(51, 31)
+            self.label_national_flag.setPixmap(pixmap)
+            self.label_national_flag.update()
+        # 设置国旗图案
+        ...
+        
+    def set_lineedit_country_geometry(self):
+        # 把lineEdit_country重叠到comboBox_country上
+        QRect1 = self.comboBox_country.geometry()
+        QRect2 = self.horizontalWidget_country.geometry()
+        self.lineEdit_country.setGeometry(QRect1.x() + QRect2.x(),
+                                          QRect1.y() + QRect2.y(),
+                                          QRect1.width() - 30, # 把箭头露出来
+                                          QRect1.height())
+        
+    def set_combobox_country(self, qtext):
+        # 修改comboBox_country里的国家选项
+        self.comboBox_country.clear()
+        self.comboBox_country.addItems(filter(lambda x: qtext in x, self.country_name))
+        
 
     def setParameter(self):
-        # self.spinBox_min_bbbv.setValue (self.min3BV)
-        # self.spinBox_max_bbbv.setValue (self.max3BV)
         self.spinBox_pixsize.setValue (self.pixSize)
         self.spinBox_auto_replay.setValue (self.auto_replay)
         self.checkBox_auto_replay.setChecked(self.allow_auto_replay)
         self.checkBox_auto_notification.setChecked(self.auto_notification)
-        # self.checkBox_allow_min3BV.setChecked(self.allow_min3BV)
-        # self.checkBox_allow_max3BV.setChecked(self.allow_max3BV)
         self.checkBox_autosave_video.setChecked(self.autosave_video)
         self.checkBox_filter_forever.setChecked(self.filter_forever)
         self.lineEdit_constraint.setText(self.board_constraint)
@@ -99,15 +136,11 @@ class ui_Form(Ui_Form):
         #只有点确定才能进来
 
         self.alter = True
-        # self.min3BV = self.spinBox_min_bbbv.value()
-        # self.max3BV = self.spinBox_max_bbbv.value()
         self.transparency = self.horizontalSlider_transparency.value()
         self.pixSize = self.spinBox_pixsize.value()
         self.auto_replay = self.spinBox_auto_replay.value()
         self.allow_auto_replay = self.checkBox_auto_replay.isChecked()
         self.auto_notification = self.checkBox_auto_notification.isChecked()
-        # self.allow_min3BV = self.checkBox_allow_min3BV.isChecked()
-        # self.allow_max3BV = self.checkBox_allow_max3BV.isChecked()
         self.player_designator = self.lineEdit_label.text()
         self.race_designator = self.lineEdit_race_label.text()
         self.country = self.lineEdit_country.text()
@@ -123,8 +156,6 @@ class ui_Form(Ui_Form):
         
         conf = configparser.ConfigParser()
         conf.read(self.game_setting_path)
-        # conf.set("DEFAULT", "min3BV", str(self.min3BV))
-        # conf.set("DEFAULT", "max3BV", str(self.max3BV))
         conf.set("DEFAULT", "gameMode", str(self.gameMode))
         conf.set("DEFAULT", "transparency", str(self.transparency))
         conf.set("DEFAULT", "pixSize", str(self.pixSize))
@@ -132,8 +163,6 @@ class ui_Form(Ui_Form):
         conf.set("DEFAULT", "allow_auto_replay", str(self.allow_auto_replay))
         conf.set("DEFAULT", "end_then_flag", str(self.end_then_flag))
         conf.set("DEFAULT", "auto_notification", str(self.auto_notification))
-        # conf.set("DEFAULT", "allow_min3BV", str(self.allow_min3BV))
-        # conf.set("DEFAULT", "allow_max3BV", str(self.allow_max3BV))
         conf.set("DEFAULT", "autosave_video", str(self.autosave_video))
         conf.set("DEFAULT", "filter_forever", str(self.filter_forever))
         # conf.set("DEFAULT", "board_constraint", str(self.board_constraint))

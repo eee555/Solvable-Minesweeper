@@ -64,7 +64,7 @@ class ui_Form(Ui_Form):
             
         self.pushButton.setStyleSheet("border-image: url(" + str(r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
 "font: 16pt \"黑体\";\n"
-"color:white;font: bold;")  
+"color:white;font: bold;")
         self.label__13.setText(str(pb_bbbv))
         self.label__14.setText(str(pb_bbbv))
         self.label__15.setText(str(pb_bbbv))
