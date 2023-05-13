@@ -12,6 +12,7 @@ from pathlib import Path
 from gameScoreBoard import gameScoreBoardManager
 import minesweeper_master as mm
 import metaminesweeper_checksum
+from country_name import country_name
 
 class Ui_MainWindow(Ui_MainWindow):
     minimum_counter = 0 # 最小化展示窗口有关
@@ -96,10 +97,8 @@ class Ui_MainWindow(Ui_MainWindow):
         pe = QPalette()
         pe.setColor(QPalette.WindowText, Qt.black)  # 设置字体颜色
         self.label_info.setPalette(pe)         # 最下面的框
-        # self.label_info.setFont(QFont("Arial", 20, QFont.Bold))
-        # self.label_info.setText(str(self.mineNum))
-        
         self.label_info.setText(self.player_designator)
+        self.set_country_flag()
 
         self.frameShortcut1 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_1), MainWindow)
         self.frameShortcut2 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_2), MainWindow)
@@ -125,7 +124,7 @@ class Ui_MainWindow(Ui_MainWindow):
         self.label.leftPressed.connect(self.mineAreaLeftPressed)
         self.label.leftRelease.connect(self.mineAreaLeftRelease)
         self.label.leftAndRightPressed.connect(self.mineAreaLeftAndRightPressed)
-        self.label.leftAndRightRelease.connect(self.mineAreaLeftAndRightRelease)
+        # self.label.leftAndRightRelease.connect(self.mineAreaLeftAndRightRelease)
         self.label.rightPressed.connect(self.mineAreaRightPressed)
         self.label.rightRelease.connect(self.mineAreaRightRelease)
         self.label.mouseMove.connect(self.mineMouseMove)
@@ -191,7 +190,7 @@ class Ui_MainWindow(Ui_MainWindow):
     def readPredefinedBoardPara(self):
         # 从配置中更新出快捷键1, 2, 3, 4、5、6的定义(0是自定义)
         config = configparser.ConfigParser()
-        config.read(self.game_setting_path)
+        config.read(self.game_setting_path, encoding='utf-8')
         self.predefinedBoardPara[0] = {
             "game_mode": config.getint('DEFAULT','gamemode'),
             "row": 8,
@@ -298,7 +297,7 @@ class Ui_MainWindow(Ui_MainWindow):
         
     def read_or_create_game_setting(self):
         config = configparser.ConfigParser()
-        if config.read(self.game_setting_path):
+        if config.read(self.game_setting_path, encoding='utf-8'):
             self.gameMode = config.getint('DEFAULT', 'gameMode')
             self.mainWindow.setWindowOpacity((config.getint('DEFAULT', 'transparency') + 1) / 100)
             self.pixSize = config.getint('DEFAULT', 'pixSize')
@@ -425,7 +424,7 @@ class Ui_MainWindow(Ui_MainWindow):
                                          "board_constraint": "",
                                          "attempt_times_limit": 100000,
                                          }
-            with open(self.game_setting_path, 'w') as configfile:
+            with open(self.game_setting_path, 'w', encoding='utf-8') as configfile:
                 config.write(configfile)  # 将对象写入文件
         return _scoreBoardTop, _scoreBoardLeft
     
@@ -548,6 +547,22 @@ class Ui_MainWindow(Ui_MainWindow):
             config["EXPERT"] = self.record["EXPERT"]
             with open(self.record_path, 'w') as configfile:
                 config.write(configfile)  # 将对象写入文件
+
+    def set_country_flag(self):
+        # 设置右下角国旗图案
+        if self.country not in country_name:
+            self.label_flag.clear()
+            self.label_flag.update()
+        else:
+            fn = country_name[self.country]
+            pixmap = QPixmap(str(self.r_path.with_name('media') / "country_flags" / \
+                                 (fn + ".svg"))).scaled(51, 31)
+            self.label_flag.setPixmap(pixmap)
+            self.label_flag.update()
+
+
+
+
 
 
 

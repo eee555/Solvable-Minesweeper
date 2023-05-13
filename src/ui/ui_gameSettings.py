@@ -403,7 +403,7 @@ class Ui_Form(object):
         self.horizontalLayout_2.addWidget(self.comboBox_country)
         self.label_national_flag = QtWidgets.QLabel(self.horizontalWidget_country)
         self.label_national_flag.setMinimumSize(QtCore.QSize(51, 0))
-        self.label_national_flag.setMaximumSize(QtCore.QSize(500, 500))
+        self.label_national_flag.setMaximumSize(QtCore.QSize(51, 500))
         font = QtGui.QFont()
         font.setFamily("微软雅黑")
         font.setPointSize(16)

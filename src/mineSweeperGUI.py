@@ -50,7 +50,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.chinese_action.triggered.connect(self.trans_chinese)
 
         config = configparser.ConfigParser()
-        config.read(self.game_setting_path)
+        config.read(self.game_setting_path, encoding='utf-8')
 
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             self.actionChecked('B')
@@ -204,7 +204,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     self.score_board_manager.editing_row = -2
                 self.label.ms_board.step('lr', (i, j)) # 把这个删了也能开始，不知道为什么
                 self.label.update()
-
+            self.set_face(14)
         elif self.game_state == 'playing' or self.game_state == 'joking':
             # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai劫持、处理下
             if self.pos_is_in_board(i, j):
@@ -223,11 +223,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.update()
                 return
             self.label.update()
+            self.set_face(14)
 
         elif self.game_state == 'show':
             # 看概率时，所有操作都移出局面外
             self.label.ms_board.step('lr', (self.row * self.pixSize, self.column * self.pixSize))
-        self.set_face(14)
+            self.set_face(14)
 
     def mineAreaRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
@@ -261,23 +262,23 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.set_face(15)
 
 
-    def mineAreaLeftAndRightRelease(self, i, j):
-        # 这个弃用了
-        if self.game_state == 'ready' or self.game_state == 'playing' or\
-            self.game_state == 'joking':
-            if self.label.ms_board.mouse_state == 2:
-                self.label.ms_board.step('lr', (i, j))
-            elif self.label.ms_board.mouse_state == 7:
-                self.label.ms_board.step('rr', (i, j))
-            self.set_face(14)
-            # pixmap = QPixmap(self.pixmapNum[14])
-            # self.label_2.setPixmap(pixmap)
-            # self.label_2.setScaledContents(True)
-            if self.label.ms_board.game_board_state == 3:
-                self.gameWin()
-            elif self.label.ms_board.game_board_state == 4:
-                self.gameFailed()
-            self.label.update()
+    # def mineAreaLeftAndRightRelease(self, i, j):
+    #     # 这个弃用了
+    #     if self.game_state == 'ready' or self.game_state == 'playing' or\
+    #         self.game_state == 'joking':
+    #         if self.label.ms_board.mouse_state == 2:
+    #             self.label.ms_board.step('lr', (i, j))
+    #         elif self.label.ms_board.mouse_state == 7:
+    #             self.label.ms_board.step('rr', (i, j))
+    #         self.set_face(14)
+    #         # pixmap = QPixmap(self.pixmapNum[14])
+    #         # self.label_2.setPixmap(pixmap)
+    #         # self.label_2.setScaledContents(True)
+    #         if self.label.ms_board.game_board_state == 3:
+    #             self.gameWin()
+    #         elif self.label.ms_board.game_board_state == 4:
+    #             self.gameFailed()
+    #         self.label.update()
 
     def mineMouseMove(self, i, j):
         # 按住空格后的鼠标移动事件，与概率的显示有关
@@ -340,7 +341,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.timer_save_size = QTimer()
             # self.timer_save_size.timeout.connect(self.refreshSettingsDefault)
             self.timer_save_size.setSingleShot(True)
-            self.timer_save_size.start(3000)
+            self.timer_save_size.start(500)
 
     def mineNumWheel(self, i):
         # 在雷上滚轮，调雷数
@@ -495,7 +496,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
         
         # 尝试弹窗，没有破纪录则不弹
-        self.try_record_pop()
+        if self.auto_notification:
+            self.try_record_pop()
 
     def gameFailed(self): # 失败后改脸和状态变量
         self.timer_10ms.stop()
@@ -998,6 +1000,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 实例化
         if not openfile_name:
             return
+        self.set_face(14)
 
         if openfile_name[-3:] == "avf":
             video = ms.AvfVideo(openfile_name)
@@ -1148,14 +1151,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 主窗口关闭的回调
         self.score_board_manager.close()
         conf = configparser.ConfigParser()
-        conf.read(self.game_setting_path)
+        conf.read(self.game_setting_path, encoding='utf-8')
         conf.set("DEFAULT", "mainWinTop", str(self.mainWindow.x()))
         conf.set("DEFAULT", "mainWinLeft", str(self.mainWindow.y()))
         conf.set("DEFAULT", "pixsize", str(self.pixSize))
         conf.set("DEFAULT", "row", str(self.row))
         conf.set("DEFAULT", "column", str(self.column))
         conf.set("DEFAULT", "minenum", str(self.mineNum))
-        conf.write(open(self.game_setting_path, "w"))
+        conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
         
         conf = configparser.ConfigParser()
         conf.read(self.record_path)

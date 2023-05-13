@@ -168,7 +168,7 @@ class StatusLabel (QtWidgets.QLabel):
         self.smilefacedown_path = str(r_path.with_name('media').joinpath('smilefacedown.svg'))
 
         config = configparser.ConfigParser()
-        config.read(game_setting_path)
+        config.read(game_setting_path, encoding='utf-8')
         self.pixSize = config.getint('DEFAULT','pixSize')
         self.pixmap1_svg = QPixmap(self.smilefacedown_path)
         self.pixmap2_svg = QPixmap(self.smileface_path)

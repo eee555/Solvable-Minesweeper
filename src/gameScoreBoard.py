@@ -325,10 +325,10 @@ class gameScoreBoardManager():
         config["DEFAULT"] = dict(filter(lambda x: x[0], self.score_board_items))
         config.write(open(self.score_board_path, "w"))
         conf = configparser.ConfigParser()
-        conf.read(self.game_setting_path)
+        conf.read(self.game_setting_path, encoding='utf-8')
         conf.set("DEFAULT", "scoreBoardTop", str(self.ui.QWidget.x()))
         conf.set("DEFAULT", "scoreBoardLeft", str(self.ui.QWidget.y()))
-        conf.write(open(self.game_setting_path, "w"))
+        conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
         self.ui.QWidget.close()
         
 

@@ -20,7 +20,7 @@ class myGameSettingShortcuts(Ui_Form):
 
     def setParameter(self):
         config = configparser.ConfigParser()
-        config.read(self.game_setting_path)
+        config.read(self.game_setting_path, encoding='utf-8')
 
         modTable = [0,1,4,2,3,5,6,7]
         self.comboBox_gamemode4.setCurrentIndex(modTable[config.getint('CUSTOM_PRESET_4','gameMode')])

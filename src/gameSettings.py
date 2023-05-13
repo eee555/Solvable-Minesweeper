@@ -22,7 +22,7 @@ class ui_Form(Ui_Form):
         self.game_setting_path = game_setting_path
         self.r_path = r_path
         config = configparser.ConfigParser()
-        config.read(game_setting_path)
+        config.read(game_setting_path, encoding='utf-8')
         self.gameMode = config.getint('DEFAULT','gameMode')
         self.transparency = config.getint('DEFAULT','transparency')
         self.pixSize = pix_size
@@ -75,6 +75,7 @@ class ui_Form(Ui_Form):
         self.set_country_flag(self.lineEdit_country.text())
         
     def set_country_flag(self, flag_name):
+        # 设置国旗图案
         if flag_name not in country_name:
             self.label_national_flag.clear()
             self.label_national_flag.update()
@@ -84,8 +85,7 @@ class ui_Form(Ui_Form):
                                  (fn + ".svg"))).scaled(51, 31)
             self.label_national_flag.setPixmap(pixmap)
             self.label_national_flag.update()
-        # 设置国旗图案
-        ...
+            
         
     def set_lineedit_country_geometry(self):
         # 把lineEdit_country重叠到comboBox_country上
@@ -155,7 +155,7 @@ class ui_Form(Ui_Form):
         
         
         conf = configparser.ConfigParser()
-        conf.read(self.game_setting_path)
+        conf.read(self.game_setting_path, encoding='utf-8')
         conf.set("DEFAULT", "gameMode", str(self.gameMode))
         conf.set("DEFAULT", "transparency", str(self.transparency))
         conf.set("DEFAULT", "pixSize", str(self.pixSize))
@@ -170,7 +170,7 @@ class ui_Form(Ui_Form):
         conf.set("DEFAULT", "player_designator", str(self.player_designator))
         conf.set("DEFAULT", "race_designator", str(self.race_designator))
         conf.set("DEFAULT", "country", str(self.country))
-        conf.write(open('gameSetting.ini', "w"))
+        conf.write(open('gameSetting.ini', "w", encoding='utf-8'))
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             conf.set("BEGINNER", "board_constraint", str(self.board_constraint))
             conf.set("BEGINNER", "attempt_times_limit", str(self.attempt_times_limit))
@@ -183,7 +183,7 @@ class ui_Form(Ui_Form):
         else:
             conf.set("CUSTOM", "board_constraint", str(self.board_constraint))
             conf.set("CUSTOM", "attempt_times_limit", str(self.attempt_times_limit))
-        conf.write(open(self.game_setting_path, "w"))
+        conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
 
         self.Dialog.close ()
 
