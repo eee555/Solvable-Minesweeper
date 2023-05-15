@@ -128,7 +128,7 @@ class Ui_MainWindow(Ui_MainWindow):
         self.label.rightPressed.connect(self.mineAreaRightPressed)
         self.label.rightRelease.connect(self.mineAreaRightRelease)
         self.label.mouseMove.connect(self.mineMouseMove)
-        self.label.mousewheelEvent.connect(self.resizeWheel)
+        self.label.mousewheelEvent.connect(lambda x, y, z: self.resizeWheel(x, y, z))
         self.label_11.mousewheelEvent.connect(self.mineNumWheel)
         self.label_12.mousewheelEvent.connect(self.mineNumWheel)
         self.label_13.mousewheelEvent.connect(self.mineNumWheel)

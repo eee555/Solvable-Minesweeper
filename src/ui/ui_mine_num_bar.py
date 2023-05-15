@@ -39,6 +39,7 @@ class Ui_Form(object):
         font.setWeight(75)
         self.label_4.setFont(font)
         self.label_4.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
+        self.label_4.setText("32")
         self.label_4.setAlignment(QtCore.Qt.AlignCenter)
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(Form)
@@ -49,6 +50,7 @@ class Ui_Form(object):
         font.setBold(True)
         font.setWeight(75)
         self.label_5.setFont(font)
+        self.label_5.setText("32")
         self.label_5.setAlignment(QtCore.Qt.AlignCenter)
         self.label_5.setObjectName("label_5")
         self.spinBox = QtWidgets.QSpinBox(Form)
@@ -68,5 +70,3 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "雷数设置"))
-        self.label_4.setText(_translate("Form", "32"))
-        self.label_5.setText(_translate("Form", "32"))

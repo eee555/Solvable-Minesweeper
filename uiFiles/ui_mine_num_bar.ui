@@ -81,7 +81,7 @@
     <enum>Qt::PreventContextMenu</enum>
    </property>
    <property name="text">
-    <string>32</string>
+    <string notr="true">32</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -105,7 +105,7 @@
     </font>
    </property>
    <property name="text">
-    <string>32</string>
+    <string notr="true">32</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

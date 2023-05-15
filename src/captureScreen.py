@@ -18,6 +18,7 @@ class CaptureScreen(QDialog):
     def __init__(self):
         super(CaptureScreen, self).__init__()
         # self.setWindowModality(Qt.ApplicationModal)
+        self.success_flag = False
         self.initWindow()   # 初始化窗口
         self.captureFullScreen()    # 获取全屏
 
@@ -98,24 +99,15 @@ class CaptureScreen(QDialog):
         s = Struct(str(byteCount) + 'B')
         self.data = s.unpack(bits[0:])
         
-        self.board = ms_toollib.OBR_board(self.data, self.height, self.width)
-        
+        self.success_flag = True
+        try:
+            self.board = ms_toollib.OBR_board(self.data, self.height, self.width)
+        except:
+            self.success_flag = False
+            
+        # print(self.board)
 
-        # print(ms_toollib.py_OBR_board(self.data, self.height, self.width))
 
-
-        # import numpy as np
-        # np.savetxt('frame.csv', self.data, fmt='%d', delimiter=None)
-        # print(self.height)
-        # print(self.width)
-        # d = np.zeros((self.height, self.width, 3))
-        # C = [2, 1, 0]
-        # for k in range(3):
-        #     for i in range(self.height):
-        #         for j in range(self.width):
-        #             d[i, j, k] = self.data[(i * self.width + j) * 4 + C[k]]
-        # plt.imshow(d/255)
-        # plt.show()
 
 if __name__ == "__main__":
 

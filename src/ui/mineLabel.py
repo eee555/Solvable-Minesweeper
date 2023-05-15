@@ -15,7 +15,7 @@ class mineLabel(QtWidgets.QLabel):
     leftAndRightPressed = QtCore.pyqtSignal (int, int)
     leftAndRightRelease = QtCore.pyqtSignal (int, int)
     mouseMove = QtCore.pyqtSignal (int, int)
-    mousewheelEvent = QtCore.pyqtSignal (int)
+    mousewheelEvent = QtCore.pyqtSignal (int, int, int)
     row = 0
     column = 0
 
@@ -135,9 +135,15 @@ class mineLabel(QtWidgets.QLabel):
 
     def wheelEvent(self, event):
         # 滚轮事件
-        angle=event.angleDelta()
-        angleY=angle.y()
-        self.mousewheelEvent.emit(angleY)
+        angle = event.angleDelta()
+        angle_y = angle.y()
+        xx = int(event.x() - 4) # 距离左侧
+        yy = int(event.y() - 4) # 距离上方
+        if yy < 0 or xx < 0 or yy >= self.row * self.pixSize or\
+            xx >= self.column * self.pixSize:
+            self.mousewheelEvent.emit(angle_y, self.row, self.column)
+        else:
+            self.mousewheelEvent.emit(angle_y, yy // self.pixSize, xx // self.pixSize)
 
     def paintEvent(self, event):
         super().paintEvent(event)
