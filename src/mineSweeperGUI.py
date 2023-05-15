@@ -432,6 +432,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
         elif self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
+            self.score_board_manager.visible()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
         self.label_info.setText(self.player_designator)
         self.game_state = 'ready'
