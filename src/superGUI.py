@@ -555,7 +555,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.label_flag.update()
         else:
             fn = country_name[self.country]
-            pixmap = QPixmap(str(self.r_path.with_name('media') / "country_flags" / \
+            pixmap = QPixmap(str(self.r_path.with_name('media') / \
                                  (fn + ".svg"))).scaled(51, 31)
             self.label_flag.setPixmap(pixmap)
             self.label_flag.update()

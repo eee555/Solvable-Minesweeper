@@ -81,7 +81,7 @@ class ui_Form(Ui_Form):
             self.label_national_flag.update()
         else:
             fn = country_name[flag_name]
-            pixmap = QPixmap(str(self.r_path.with_name('media') / "country_flags" / \
+            pixmap = QPixmap(str(self.r_path.with_name('media') / \
                                  (fn + ".svg"))).scaled(51, 31)
             self.label_national_flag.setPixmap(pixmap)
             self.label_national_flag.update()
@@ -170,7 +170,7 @@ class ui_Form(Ui_Form):
         conf.set("DEFAULT", "player_designator", str(self.player_designator))
         conf.set("DEFAULT", "race_designator", str(self.race_designator))
         conf.set("DEFAULT", "country", str(self.country))
-        conf.write(open('gameSetting.ini', "w", encoding='utf-8'))
+        # conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             conf.set("BEGINNER", "board_constraint", str(self.board_constraint))
             conf.set("BEGINNER", "attempt_times_limit", str(self.attempt_times_limit))
