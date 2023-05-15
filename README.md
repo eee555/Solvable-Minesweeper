@@ -1,12 +1,12 @@
-# MetaSweeper-v3.1.0_beta —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
+# MetaSweeper-v3.1.5 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
 
-# 元扫雷v3.1.0_beta —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
+# 元扫雷v3.1.5 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
 
 [![SolvableMinesweeper](https://img.shields.io/badge/SolvableMinesweeper-v2.2.5-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
 
 ## 简介(Introduction)
 
-元扫雷v3.1.0_beta是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
+元扫雷v3.1.5是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
 
 优势：
 
