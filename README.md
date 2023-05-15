@@ -96,6 +96,10 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 
 ## 下载链接
 
+### 正式版v3.1.5：
+修复了十几个bug。弹窗功能、独一无二的pb弹窗功能。像arbiter一样的鼠标设置，但只要点一层，而且快捷键是“M”。在设置界面可以选择国旗，可以用8种语言设置自己的国家名称。在主界面显示国旗。截屏计算概率不再像之前那样轻易闪退。截屏得到局面后，可以用滚轮修改指向的格子，修复错误的结果，雷数的上下限等都是联动的，满足一切预期。现在可以点击计数器下方的按钮来增加指标，可以删掉计数器的指标的名称从而把这条指标删掉。  
+链接：[https://eee555.lanzouw.com/imY6g0w9qfha](https://eee555.lanzouw.com/imY6g0w9qfha)
+
 ### 正式版v3.1.3：
 修复了6个bug。现在已经支持国际化，支持汉语和英语。提高了对某两种作弊手段的防御能力。改进了软件的架构，将有用的文件全部放到目录外层，软件本体放到目录内层。现在能够给录像添加校验码并验证录像来源。此外也精简了部分功能。  
 链接：[https://wwwl.lanzouw.com/i36LJ0upglmf](https://wwwl.lanzouw.com/i36LJ0upglmf)
