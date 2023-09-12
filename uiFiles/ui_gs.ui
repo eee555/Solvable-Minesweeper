@@ -798,8 +798,14 @@ color: #3d3d3d;
       <property name="toolTip">
        <string notr="true"/>
       </property>
+      <property name="statusTip">
+       <string notr="true"/>
+      </property>
+      <property name="whatsThis">
+       <string notr="true"/>
+      </property>
       <property name="text">
-       <string>%</string>
+       <string notr="true">%</string>
       </property>
       <property name="scaledContents">
        <bool>false</bool>
@@ -1067,8 +1073,23 @@ color: #3d3d3d;
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string notr="true"/>
+      </property>
+      <property name="statusTip">
+       <string notr="true"/>
+      </property>
+      <property name="whatsThis">
+       <string notr="true"/>
+      </property>
+      <property name="accessibleName">
+       <string notr="true"/>
+      </property>
+      <property name="accessibleDescription">
+       <string notr="true"/>
+      </property>
       <property name="text">
-       <string>%</string>
+       <string notr="true">%</string>
       </property>
       <property name="scaledContents">
        <bool>false</bool>

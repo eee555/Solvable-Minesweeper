@@ -655,6 +655,8 @@
      </property>
      <addaction name="chinese_action"/>
      <addaction name="english_action"/>
+     <addaction name="polish_action"/>
+     <addaction name="german_action"/>
     </widget>
     <addaction name="actionyouxi_she_zhi"/>
     <addaction name="action_kuaijiejian"/>
@@ -908,22 +910,43 @@
    <property name="statusTip">
     <string notr="true"/>
    </property>
+   <property name="whatsThis">
+    <string notr="true"/>
+   </property>
    <property name="font">
     <font>
      <family>微软雅黑</family>
      <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
   </action>
   <action name="english_action">
    <property name="text">
-    <string>English</string>
+    <string notr="true">English</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">English</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">English</string>
+   </property>
+   <property name="statusTip">
+    <string notr="true"/>
+   </property>
+   <property name="whatsThis">
+    <string notr="true"/>
    </property>
    <property name="font">
     <font>
      <family>微软雅黑</family>
      <pointsize>12</pointsize>
     </font>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
   </action>
   <action name="action_mouse">
@@ -937,7 +960,53 @@
     </font>
    </property>
    <property name="shortcut">
-    <string>M</string>
+    <string notr="true">M</string>
+   </property>
+  </action>
+  <action name="polish_action">
+   <property name="text">
+    <string notr="true">Polski</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">Polski</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Polski</string>
+   </property>
+   <property name="statusTip">
+    <string notr="true"/>
+   </property>
+   <property name="whatsThis">
+    <string notr="true"/>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="german_action">
+   <property name="text">
+    <string notr="true">Deutsch</string>
+   </property>
+   <property name="iconText">
+    <string notr="true">Deutsch</string>
+   </property>
+   <property name="toolTip">
+    <string notr="true">Deutsch</string>
+   </property>
+   <property name="statusTip">
+    <string notr="true"/>
+   </property>
+   <property name="whatsThis">
+    <string notr="true"/>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
   </action>
  </widget>

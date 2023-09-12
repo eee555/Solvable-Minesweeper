@@ -22,7 +22,8 @@ class myGameSettingShortcuts(Ui_Form):
         config = configparser.ConfigParser()
         config.read(self.game_setting_path, encoding='utf-8')
 
-        modTable = [0,1,4,2,3,5,6,7]
+        # modTable = [0,1,4,2,3,5,6,7]
+        modTable = [0,0,0,0,1,4,2,3,5,6,7]
         self.comboBox_gamemode4.setCurrentIndex(modTable[config.getint('CUSTOM_PRESET_4','gameMode')])
         self.spinBox_height4.setProperty("value", config.getint('CUSTOM_PRESET_4','row'))
         self.spinBox_width4.setProperty("value", config.getint('CUSTOM_PRESET_4','column'))
@@ -58,9 +59,10 @@ class myGameSettingShortcuts(Ui_Form):
         #只有点确定才能进来
         self.alter = True
 
-        modTable = [0,1,3,4,2,5,6,7]
+        # modTable = [0,1,3,4,2,5,6,7]
+        modTable = [0,4,6,7,5,8,9,10]
         conf = configparser.ConfigParser()
-        conf.read(self.game_setting_path)
+        conf.read(self.game_setting_path, encoding='utf-8')
         conf.set("CUSTOM_PRESET_4", "gameMode", str(modTable[self.comboBox_gamemode4.currentIndex()]))
         conf.set("CUSTOM_PRESET_4", "row", str(self.spinBox_height4.value()))
         conf.set("CUSTOM_PRESET_4", "column", str(self.spinBox_width4.value()))
@@ -84,7 +86,7 @@ class myGameSettingShortcuts(Ui_Form):
         conf.set("CUSTOM_PRESET_6", "attempt_times_limit", str(self.spinBox_attempt_times_limit6.value()))
         conf.set("CUSTOM_PRESET_6", "mineNum", str(self.spinBox_minenum6.value()))
         conf.set("CUSTOM_PRESET_6", "board_constraint", self.lineEdit_constraint6.text())
-        conf.write(open(self.game_setting_path, "w"))
+        conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
 
         self.Dialog.close ()
 

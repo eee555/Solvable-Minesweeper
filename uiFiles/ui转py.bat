@@ -12,4 +12,7 @@ copy /y ui_score_board.py ..\src\ui\ui_score_board.py
 copy /y ui_gameSettings.py ..\src\ui\ui_gameSettings.py
 copy /y ui_main_board.py ..\src\ui\ui_main_board.py
 copy /y ui_mine_num_bar.py ..\src\ui\ui_mine_num_bar.py
+copy /y ui_defined_parameter.py ..\src\ui\ui_defined_parameter.py
+copy /y ui_gameSettingShortcuts.py ..\src\ui\ui_gameSettingShortcuts.py
+copy /y ui_record_pop.py ..\src\ui\ui_record_pop.py
 pause

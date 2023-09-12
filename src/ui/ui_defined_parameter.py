@@ -106,7 +106,7 @@ class Ui_Form(object):
 "color:black;")
         self.spinBox_2.setAlignment(QtCore.Qt.AlignCenter)
         self.spinBox_2.setMinimum(6)
-        self.spinBox_2.setMaximum(2000)
+        self.spinBox_2.setMaximum(1000)
         self.spinBox_2.setDisplayIntegerBase(10)
         self.spinBox_2.setObjectName("spinBox_2")
         self.gridLayout.addWidget(self.spinBox_2, 1, 1, 1, 2)

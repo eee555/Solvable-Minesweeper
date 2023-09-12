@@ -12,8 +12,10 @@ import configparser
 # from pathlib import Path
 # import time
 import os
+import hashlib
 # from PyQt5.QtWidgets import QApplication
 from country_name import country_name
+import metaminesweeper_checksum
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow, args):
@@ -47,8 +49,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.action_mouse.triggered.connect(self.action_mouse_setting)
         self.actiongaun_yv.triggered.connect(self.action_AEvent)
         self.actionopen.triggered.connect(self.action_OpenFile)
-        self.english_action.triggered.connect(self.trans_english)
-        self.chinese_action.triggered.connect(self.trans_chinese)
+        self.english_action.triggered.connect(lambda: self.trans_language("en_US"))
+        self.chinese_action.triggered.connect(lambda: self.trans_language("zh_CN"))
+        self.polish_action.triggered.connect(lambda: self.trans_language("pl_PL"))
+        self.german_action.triggered.connect(lambda: self.trans_language("de_DE"))
 
         config = configparser.ConfigParser()
         config.read(self.game_setting_path, encoding='utf-8')
@@ -113,7 +117,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         elif self.gameMode == 4:
             Board, _ = mm.laymine_op(self.board_constraint,
                                      self.attempt_times_limit, (xx, yy, num, i, j))
-
+        
         self.label.ms_board.board = Board
 
     def timeCount(self):
@@ -147,14 +151,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         elif self.gameMode == 6:
             if self.label.ms_board.board[i][j] >= 0 and \
                 not ms.is_able_to_solve(self.label.ms_board.game_board, (i, j)):
-                board = self.label.ms_board.board
+                board = self.label.ms_board.board.into_vec_vec()
                 board[i][j] = -1
                 self.label.ms_board.board = board
             return
         elif self.gameMode == 7:
             code = ms.is_guess_while_needless(self.label.ms_board.game_board, (i, j))
             if code == 3:
-                board = self.label.ms_board.board
+                board = self.label.ms_board.board.into_vec_vec()
                 board[i][j] = -1
                 self.label.ms_board.board = board
             elif code == 2:
@@ -475,44 +479,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.game_state = 'win'
         self.set_face(17)
 
-        if self.autosave_video:
-
-            self.label.ms_board.is_fair = self.is_fair()
-            self.label.ms_board.is_offical = self.is_official()
-            # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:
-            #     self.label.ms_board.checksum = metaminesweeper_checksum.get_checksum()
-            self.label.ms_board.mode = self.gameMode
-            self.label.ms_board.software = "元3.1".encode( "UTF-8" )
-            self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
-            self.label.ms_board.race_designator = self.race_designator.encode( "UTF-8" )
-            self.label.ms_board.country = self.country.encode( "UTF-8" )
-            self.label.ms_board.uniqueness_designator = "".encode( "UTF-8" ) # 暂时不能填
-
-            if not os.path.exists(self.replay_path):
-                os.mkdir(self.replay_path)
-            self.label.ms_board.generate_evf_v0_raw_data()
-            # 补上校验值
-            checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
-            self.label.ms_board.checksum = checksum
-            # print(checksum)
-
-
-            # mm.debug_ms_board(self.label.ms_board)
-            if (self.row, self.column, self.mineNum) == (8, 8, 10):
-                filename_level = "b_"
-            elif (self.row, self.column, self.mineNum) == (16, 16, 40):
-                filename_level = "i_"
-            elif (self.row, self.column, self.mineNum) == (16, 30, 99):
-                filename_level = "e_"
-            else:
-                filename_level = "c_"
-            self.label.ms_board.\
-                save_to_evf_file(self.replay_path + '\\' + filename_level +\
-                                 str(self.gameMode) + '_' +\
-                                     f'{self.label.ms_board.rtime:.3f}' +\
-                                         '_3BV=' + f'{self.label.ms_board.bbbv}' +\
-                                             '_3BVs=' + f'{self.label.ms_board.bbbv_s:.3f}' +\
-                                                 '_' + self.player_designator)
+        if self.autosave_video and self.checksum_module_ok():
+            self.save_evf_file()
+            
+            
 
         self.gameFinished()
 
@@ -520,6 +490,51 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 尝试弹窗，没有破纪录则不弹
         if self.auto_notification and self.is_fair():
             self.try_record_pop()
+
+    def checksum_module_ok(self):
+        # 检查校验和模块的签名
+        return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
+            '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
+
+    def save_evf_file(self):
+        # 搜集本局各种信息，存成evf文件
+        self.label.ms_board.is_fair = self.is_fair()
+        self.label.ms_board.is_offical = self.is_official()
+        # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:
+        #     self.label.ms_board.checksum = metaminesweeper_checksum.get_checksum()
+        self.label.ms_board.mode = self.gameMode
+        self.label.ms_board.software = "元3.1".encode( "UTF-8" )
+        self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
+        self.label.ms_board.race_designator = self.race_designator.encode( "UTF-8" )
+        self.label.ms_board.country = self.country.encode( "UTF-8" )
+        self.label.ms_board.uniqueness_designator = "".encode( "UTF-8" ) # 暂时不能填
+
+        if not os.path.exists(self.replay_path):
+            os.mkdir(self.replay_path)
+        self.label.ms_board.generate_evf_v0_raw_data()
+        # 补上校验值
+        checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
+        self.label.ms_board.checksum = checksum
+        
+
+        if (self.row, self.column, self.mineNum) == (8, 8, 10):
+            filename_level = "b_"
+        elif (self.row, self.column, self.mineNum) == (16, 16, 40):
+            filename_level = "i_"
+        elif (self.row, self.column, self.mineNum) == (16, 30, 99):
+            filename_level = "e_"
+        else:
+            filename_level = "c_"
+        self.label.ms_board.\
+            save_to_evf_file(self.replay_path + '\\' + filename_level +\
+                             str(self.gameMode) + '_' +\
+                                 f'{self.label.ms_board.rtime:.3f}' +\
+                                     '_3BV=' + f'{self.label.ms_board.bbbv}' +\
+                                         '_3BVs=' + f'{self.label.ms_board.bbbv_s:.3f}' +\
+                                             '_' + self.player_designator)
+        
+        
+        
 
     def gameFailed(self): # 失败后改脸和状态变量
         self.timer_10ms.stop()
@@ -546,183 +561,100 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             # 自定义不弹窗
             return
         if b.level == 3:
-            if b.rtime < self.record["BEGINNER"][str(b.bbbv)]:
-                self.record["BEGINNER"][str(b.bbbv)] = b.rtime
-                del_items += [14, 15]
-            else:
-                del_items += [13, 14, 15]
-            if b.right == 0:
-                del_items += [1, 3, 5, 7, 9, 11]
-                if b.rtime < self.record["BNF"]["rtime"]:
-                    self.record["BNF"]["rtime"] = b.rtime
-                else:
-                    del_items.append(2)
-                if b.bbbv_s > self.record["BNF"]["bbbv_s"]:
-                    self.record["BNF"]["bbbv_s"] = b.bbbv_s
-                else:
-                    del_items.append(4)
-                if b.stnb > self.record["BNF"]["stnb"]:
-                    self.record["BNF"]["stnb"] = b.stnb
-                else:
-                    del_items.append(6)
-                if b.ioe > self.record["BNF"]["ioe"]:
-                    self.record["BNF"]["ioe"] = b.ioe
-                else:
-                    del_items.append(8)
-                if b.path < self.record["BNF"]["path"]:
-                    self.record["BNF"]["path"] = b.path
-                else:
-                    del_items.append(10)
-                if b.rqp < self.record["BNF"]["rqp"]:
-                    self.record["BNF"]["rqp"] = b.rqp
-                else:
-                    del_items.append(12)
-            else:
-                del_items += [2, 4, 6, 8, 10, 12]
-                if b.rtime < self.record["BFLAG"]["rtime"]:
-                    self.record["BFLAG"]["rtime"] = b.rtime
-                else:
-                    del_items.append(1)
-                if b.bbbv_s > self.record["BFLAG"]["bbbv_s"]:
-                    self.record["BFLAG"]["bbbv_s"] = b.bbbv_s
-                else:
-                    del_items.append(3)
-                if b.stnb > self.record["BFLAG"]["stnb"]:
-                    self.record["BFLAG"]["stnb"] = b.stnb
-                else:
-                    del_items.append(5)
-                if b.ioe > self.record["BFLAG"]["ioe"]:
-                    self.record["BFLAG"]["ioe"] = b.ioe
-                else:
-                    del_items.append(7)
-                if b.path < self.record["BFLAG"]["path"]:
-                    self.record["BFLAG"]["path"] = b.path
-                else:
-                    del_items.append(9)
-                if b.rqp < self.record["BFLAG"]["rqp"]:
-                    self.record["BFLAG"]["rqp"] = b.rqp
-                else:
-                    del_items.append(11)
+            record_key = "B"
         elif b.level == 4:
-            if b.rtime < self.record["INTERMEDIATE"][str(b.bbbv)]:
-                self.record["INTERMEDIATE"][str(b.bbbv)] = b.rtime
-                del_items += [13, 15]
-            else:
-                del_items += [13, 14, 15]
-            if b.right == 0:
-                del_items += [1, 3, 5, 7, 9, 11]
-                if b.rtime < self.record["INF"]["rtime"]:
-                    self.record["INF"]["rtime"] = b.rtime
-                else:
-                    del_items.append(2)
-                if b.bbbv_s > self.record["INF"]["bbbv_s"]:
-                    self.record["INF"]["bbbv_s"] = b.bbbv_s
-                else:
-                    del_items.append(4)
-                if b.stnb > self.record["INF"]["stnb"]:
-                    self.record["INF"]["stnb"] = b.stnb
-                else:
-                    del_items.append(6)
-                if b.ioe > self.record["INF"]["ioe"]:
-                    self.record["INF"]["ioe"] = b.ioe
-                else:
-                    del_items.append(8)
-                if b.path < self.record["INF"]["path"]:
-                    self.record["INF"]["path"] = b.path
-                else:
-                    del_items.append(10)
-                if b.rqp < self.record["INF"]["rqp"]:
-                    self.record["INF"]["rqp"] = b.rqp
-                else:
-                    del_items.append(12)
-            else:
-                del_items += [2, 4, 6, 8, 10, 12]
-                if b.rtime < self.record["IFLAG"]["rtime"]:
-                    self.record["IFLAG"]["rtime"] = b.rtime
-                else:
-                    del_items.append(1)
-                if b.bbbv_s > self.record["IFLAG"]["bbbv_s"]:
-                    self.record["IFLAG"]["bbbv_s"] = b.bbbv_s
-                else:
-                    del_items.append(3)
-                if b.stnb > self.record["IFLAG"]["stnb"]:
-                    self.record["IFLAG"]["stnb"] = b.stnb
-                else:
-                    del_items.append(5)
-                if b.ioe > self.record["IFLAG"]["ioe"]:
-                    self.record["IFLAG"]["ioe"] = b.ioe
-                else:
-                    del_items.append(7)
-                if b.path < self.record["IFLAG"]["path"]:
-                    self.record["IFLAG"]["path"] = b.path
-                else:
-                    del_items.append(9)
-                if b.rqp < self.record["IFLAG"]["rqp"]:
-                    self.record["IFLAG"]["rqp"] = b.rqp
-                else:
-                    del_items.append(11)
+            record_key = "I"
         elif b.level == 5:
-            if b.rtime < self.record["EXPERT"][str(b.bbbv)]:
-                self.record["EXPERT"][str(b.bbbv)] = b.rtime
-                del_items += [13, 14]
-            else:
-                del_items += [13, 14, 15]
+            record_key = "E"
+        else:
+            raise RuntimeError('没有定义的难度代码')
+            
+        _translate = QtCore.QCoreApplication.translate
+        
+        if self.gameMode == 0:
             if b.right == 0:
-                del_items += [1, 3, 5, 7, 9, 11]
-                if b.rtime < self.record["ENF"]["rtime"]:
-                    self.record["ENF"]["rtime"] = b.rtime
-                else:
-                    del_items.append(2)
-                if b.bbbv_s > self.record["ENF"]["bbbv_s"]:
-                    self.record["ENF"]["bbbv_s"] = b.bbbv_s
-                else:
-                    del_items.append(4)
-                if b.stnb > self.record["ENF"]["stnb"]:
-                    self.record["ENF"]["stnb"] = b.stnb
-                else:
-                    del_items.append(6)
-                if b.ioe > self.record["ENF"]["ioe"]:
-                    self.record["ENF"]["ioe"] = b.ioe
-                else:
-                    del_items.append(8)
-                if b.path < self.record["ENF"]["path"]:
-                    self.record["ENF"]["path"] = b.path
-                else:
-                    del_items.append(10)
-                if b.rqp < self.record["ENF"]["rqp"]:
-                    self.record["ENF"]["rqp"] = b.rqp
-                else:
-                    del_items.append(12)
+                record_key += "NF"
+                mode_text = _translate("Form", "未标雷（标准）")
             else:
-                del_items += [2, 4, 6, 8, 10, 12]
-                if b.rtime < self.record["EFLAG"]["rtime"]:
-                    self.record["EFLAG"]["rtime"] = b.rtime
+                record_key += "FLAG"
+                mode_text = _translate("Form", "标准")
+        elif self.gameMode == 4:
+            record_key += "WIN7"
+            mode_text = _translate("Form", "Win7")
+        elif self.gameMode == 5:
+            record_key += "CS"
+            mode_text = _translate("Form", "竞速无猜")
+        elif self.gameMode == 6:
+            record_key += "SS"
+            mode_text = _translate("Form", "强无猜")
+        elif self.gameMode == 7:
+            record_key += "WS"
+            mode_text = _translate("Form", "弱无猜")
+        elif self.gameMode == 8:
+            record_key += "TBS"
+            mode_text = _translate("Form", "准无猜")
+        elif self.gameMode == 9:
+            record_key += "SG"
+            mode_text = _translate("Form", "强可猜")
+        elif self.gameMode == 10:
+            record_key += "WG"
+            mode_text = _translate("Form", "弱可猜")
+        else:
+            raise RuntimeError('没有定义的模式代码')
+              
+        if b.rtime < self.record[record_key]["rtime"]:
+            self.record[record_key]["rtime"] = b.rtime
+        else:
+            del_items.append(1)
+        if b.bbbv_s > self.record[record_key]["bbbv_s"]:
+            self.record[record_key]["bbbv_s"] = b.bbbv_s
+        else:
+            del_items.append(3)
+        if b.stnb > self.record[record_key]["stnb"]:
+            self.record[record_key]["stnb"] = b.stnb
+        else:
+            del_items.append(5)
+        if b.ioe > self.record[record_key]["ioe"]:
+            self.record[record_key]["ioe"] = b.ioe
+        else:
+            del_items.append(7)
+        if b.path < self.record[record_key]["path"]:
+            self.record[record_key]["path"] = b.path
+        else:
+            del_items.append(9)
+        if b.rqp < self.record[record_key]["rqp"]:
+            self.record[record_key]["rqp"] = b.rqp
+        else:
+            del_items.append(11)
+            
+        if self.gameMode == 0:
+            if b.level == 3:
+                if b.rtime < self.record["BEGINNER"][str(b.bbbv)]:
+                    self.record["BEGINNER"][str(b.bbbv)] = b.rtime
+                    del_items += [14, 15]
                 else:
-                    del_items.append(1)
-                if b.bbbv_s > self.record["EFLAG"]["bbbv_s"]:
-                    self.record["EFLAG"]["bbbv_s"] = b.bbbv_s
+                    del_items += [13, 14, 15]
+            elif b.level == 4:
+                if b.rtime < self.record["INTERMEDIATE"][str(b.bbbv)]:
+                    self.record["INTERMEDIATE"][str(b.bbbv)] = b.rtime
+                    del_items += [13, 15]
                 else:
-                    del_items.append(3)
-                if b.stnb > self.record["EFLAG"]["stnb"]:
-                    self.record["EFLAG"]["stnb"] = b.stnb
+                    del_items += [13, 14, 15]
+            elif b.level == 5:
+                if b.rtime < self.record["EXPERT"][str(b.bbbv)]:
+                    self.record["EXPERT"][str(b.bbbv)] = b.rtime
+                    del_items += [13, 14]
                 else:
-                    del_items.append(5)
-                if b.ioe > self.record["EFLAG"]["ioe"]:
-                    self.record["EFLAG"]["ioe"] = b.ioe
-                else:
-                    del_items.append(7)
-                if b.path < self.record["EFLAG"]["path"]:
-                    self.record["EFLAG"]["path"] = b.path
-                else:
-                    del_items.append(9)
-                if b.rqp < self.record["EFLAG"]["rqp"]:
-                    self.record["EFLAG"]["rqp"] = b.rqp
-                else:
-                    del_items.append(11)
-
-        if len(del_items) < 15:
+                    del_items += [13, 14, 15]
+            else:
+                raise RuntimeError('没有定义的难度代码')
+        else:
+            del_items += [13, 14, 15]
+            
+        if len(del_items) < 9:
             ui = gameRecordPop.ui_Form(self.r_path, del_items, b.bbbv)
             ui.Dialog.setModal(True)
+            ui.label_16.setText(mode_text)
             ui.Dialog.show()
             ui.Dialog.exec_()
 
@@ -771,6 +703,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def predefined_Board(self, k):
         # 按快捷键123456时的回调
         self.gameMode = self.predefinedBoardPara[k]['game_mode']
+        self.score_board_manager.with_namespace({
+            "mode": mm.trans_game_mode(self.gameMode),
+            })
+        self.score_board_manager.show(self.label.ms_board, index_type=1)
         self.board_constraint = self.predefinedBoardPara[k]['board_constraint']
         self.attempt_times_limit = self.predefinedBoardPara[k]['attempt_times_limit']
         self.pixSize = self.predefinedBoardPara[k]['pix_size']
@@ -878,7 +814,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.readPredefinedBoardPara()
 
     def action_mouse_setting(self):
-        os.system("C:\WINDOWS\System32\main.cpl")
+        # 打开鼠标设置的第三个菜单
+        os.system("rundll32.exe shell32.dll,Control_RunDLL main.cpl,,2")
 
     def action_AEvent(self):
         # 关于
@@ -914,7 +851,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 在局面上画概率，或不画
         game_board = self.label.ms_board.game_board
 
-        ans = ms.cal_possibility_onboard_unsafe(game_board, 0.20625 if len(game_board[0]) >= 24 else 0.15625)
+        # print(game_board)
+        ans = ms.cal_possibility_onboard(game_board, 0.20625 if len(game_board[0]) >= 24 else 0.15625)
         if not ans[0]:
             # 概率矩阵为空就是出错了
             return
@@ -952,14 +890,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.minimumWindow()
 
     def render_poss_on_board(self):
-        # 雷数条拉动后、改局面后，显示雷数并展示概率
-        # print(self.mineNumShow)
-        # print(self.label.ms_board.game_board)
-        ans = ms.cal_possibility_onboard_unsafe(self.label.ms_board.game_board, self.mineNumShow)
-        if not ans[0]:
-            ans = ms.cal_possibility_onboard_unsafe(self.label.ms_board.game_board,
-                                             self.mineNumShow / self.row / self.column)
-            if not ans[0]:
+        # 雷数条拉动后、改局面后，显示雷数并展示
+        try:
+            ans = ms.cal_possibility_onboard(self.label.ms_board.game_board, self.mineNumShow)
+        except:
+            try:
+                ans = ms.cal_possibility_onboard(self.label.ms_board.game_board,
+                                                 self.mineNumShow / self.row / self.column)
+            except:
+                # 无解，算法增加雷数后无解
                 self.label.paintPossibility = False
                 self.num_bar_ui.QWidget.hide()
                 self.label.update()
@@ -1198,6 +1137,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.close()
         conf = configparser.ConfigParser()
         conf.read(self.game_setting_path, encoding='utf-8')
+        conf.set("DEFAULT", "gamemode", str(self.gameMode))
         conf.set("DEFAULT", "mainWinTop", str(self.mainWindow.x()))
         conf.set("DEFAULT", "mainWinLeft", str(self.mainWindow.y()))
         conf.set("DEFAULT", "pixsize", str(self.pixSize))
@@ -1208,15 +1148,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         conf = configparser.ConfigParser()
         conf.read(self.record_path)
-        conf["BFLAG"] = self.record["BFLAG"]
-        conf["BNF"] = self.record["BNF"]
-        conf["IFLAG"] = self.record["IFLAG"]
-        conf["INF"] = self.record["INF"]
-        conf["EFLAG"] = self.record["EFLAG"]
-        conf["ENF"] = self.record["ENF"]
-        conf["BEGINNER"] = self.record["BEGINNER"]
-        conf["INTERMEDIATE"] = self.record["INTERMEDIATE"]
-        conf["EXPERT"] = self.record["EXPERT"]
+        for key_name in self.record_key_name_list:
+            conf[key_name] = self.record[key_name]
+        # conf["BFLAG"] = self.record["BFLAG"]
+        # conf["BNF"] = self.record["BNF"]
+        # conf["IFLAG"] = self.record["IFLAG"]
+        # conf["INF"] = self.record["INF"]
+        # conf["EFLAG"] = self.record["EFLAG"]
+        # conf["ENF"] = self.record["ENF"]
+        # conf["BEGINNER"] = self.record["BEGINNER"]
+        # conf["INTERMEDIATE"] = self.record["INTERMEDIATE"]
+        # conf["EXPERT"] = self.record["EXPERT"]
         with open(self.record_path, 'w') as configfile:
             conf.write(configfile)  # 将对象写入文件
 

@@ -19,37 +19,19 @@ class ui_Form(Ui_Form):
         self.label1.setStyleSheet("border-image: url(" +\
                                   str(r_path.with_name('media').\
                                       joinpath('rtime.svg')).replace("\\", "/") + ");")
-        self.label2.setStyleSheet("border-image: url(" +\
-                                  str(r_path.with_name('media').\
-                                      joinpath('rtime.svg')).replace("\\", "/") + ");")
         self.label3.setStyleSheet("border-image: url(" +\
-                                  str(r_path.with_name('media').\
-                                      joinpath('bbbv_s.svg')).replace("\\", "/") + ");")
-        self.label4.setStyleSheet("border-image: url(" +\
                                   str(r_path.with_name('media').\
                                       joinpath('bbbv_s.svg')).replace("\\", "/") + ");")
         self.label5.setStyleSheet("border-image: url(" +\
                                   str(r_path.with_name('media').\
                                       joinpath('stnb.svg')).replace("\\", "/") + ");")
-        self.label6.setStyleSheet("border-image: url(" +\
-                                  str(r_path.with_name('media').\
-                                      joinpath('stnb.svg')).replace("\\", "/") + ");")
         self.label7.setStyleSheet("border-image: url(" +\
-                                  str(r_path.with_name('media').\
-                                      joinpath('ioe.svg')).replace("\\", "/") + ");")
-        self.label8.setStyleSheet("border-image: url(" +\
                                   str(r_path.with_name('media').\
                                       joinpath('ioe.svg')).replace("\\", "/") + ");")
         self.label9.setStyleSheet("border-image: url(" +\
                                   str(r_path.with_name('media').\
                                       joinpath('path.svg')).replace("\\", "/") + ");")
-        self.label10.setStyleSheet("border-image: url(" +\
-                                  str(r_path.with_name('media').\
-                                      joinpath('path.svg')).replace("\\", "/") + ");")
         self.label11.setStyleSheet("border-image: url(" +\
-                                  str(r_path.with_name('media').\
-                                      joinpath('rqp.svg')).replace("\\", "/") + ");")
-        self.label12.setStyleSheet("border-image: url(" +\
                                   str(r_path.with_name('media').\
                                       joinpath('rqp.svg')).replace("\\", "/") + ");")
         self.label13.setStyleSheet("border-image: url(" +\

@@ -275,25 +275,21 @@ class Ui_MainWindow(Ui_MainWindow):
             self.timer_.stop()
             
             
-    def trans_language(self):
-        if self.language != "zh_CN":
-            self.trans.load(str(self.r_path.with_name(self.language + '.qm')))
+    def trans_language(self, language = ""):
+        if not language:
+            language = self.language
         app = QApplication.instance()
-        app.installTranslator(self.trans)
-        self.retranslateUi(self.mainWindow)
+        if language != "zh_CN":
+            self.trans.load(str(self.r_path.with_name(language + '.qm')))
+            app.installTranslator(self.trans)
+            self.retranslateUi(self.mainWindow)
+        else:
+            app.removeTranslator(self.trans)
+            self.retranslateUi(self.mainWindow)
+        mm.updata_ini(self.game_setting_path, [("DEFAULT", "language", language)])
+        self.language = language
         
-    def trans_english(self):
-        self.trans.load(str(self.r_path.with_name('en_US.qm')))
-        app = QApplication.instance()
-        app.installTranslator(self.trans)
-        self.retranslateUi(self.mainWindow)
-        mm.updata_ini(self.game_setting_path, [("DEFAULT", "language", "en_US")])
-
-    def trans_chinese(self):
-        app = QApplication.instance()
-        app.removeTranslator(self.trans)
-        self.retranslateUi(self.mainWindow)
-        mm.updata_ini(self.game_setting_path, [("DEFAULT", "language", "zh_CN")])
+        
         
     def read_or_create_game_setting(self):
         config = configparser.ConfigParser()
@@ -430,50 +426,63 @@ class Ui_MainWindow(Ui_MainWindow):
     
     def read_or_create_record(self):
         config = configparser.ConfigParser()
+        record_key_name_list = ["BFLAG", "BNF", "BWIN7", "BSS", "BWS", "BCS", "BTBS", "BSG",
+                                "BWG", "IFLAG", "INF", "IWIN7", "ISS", "IWS", "ICS", "ITBS",
+                                "ISG", "IWG", "EFLAG", "ENF", "EWIN7", "ESS", "EWS", "ECS", 
+                                "ETBS", "ESG", "EWG"]
+        self.record_key_name_list = record_key_name_list
         if config.read(self.record_path):
             self.record = {}
-            self.record["BFLAG"] = {'rtime': config.getfloat('BFLAG', 'rtime'),
-                                   'bbbv_s': config.getfloat('BFLAG', 'bbbv_s'),
-                                   'stnb': config.getfloat('BFLAG', 'stnb'),
-                                   'ioe': config.getfloat('BFLAG', 'ioe'),
-                                   'path': config.getfloat('BFLAG', 'path'),
-                                   'rqp': config.getfloat('BFLAG', 'rqp'),
-                                   }
-            self.record["BNF"] = {'rtime': config.getfloat('BNF', 'rtime'),
-                                 'bbbv_s': config.getfloat('BNF', 'bbbv_s'),
-                                 'stnb': config.getfloat('BNF', 'stnb'),
-                                 'ioe': config.getfloat('BNF', 'ioe'),
-                                 'path': config.getfloat('BNF', 'path'),
-                                 'rqp': config.getfloat('BNF', 'rqp'),
-                                 }
-            self.record["IFLAG"] = {'rtime': config.getfloat('IFLAG', 'rtime'),
-                                   'bbbv_s': config.getfloat('IFLAG', 'bbbv_s'),
-                                   'stnb': config.getfloat('IFLAG', 'stnb'),
-                                   'ioe': config.getfloat('IFLAG', 'ioe'),
-                                   'path': config.getfloat('IFLAG', 'path'),
-                                   'rqp': config.getfloat('IFLAG', 'rqp'),
-                                   }
-            self.record["INF"] = {'rtime': config.getfloat('INF', 'rtime'),
-                                 'bbbv_s': config.getfloat('INF', 'bbbv_s'),
-                                 'stnb': config.getfloat('INF', 'stnb'),
-                                 'ioe': config.getfloat('INF', 'ioe'),
-                                 'path': config.getfloat('INF', 'path'),
-                                 'rqp': config.getfloat('INF', 'rqp'),
-                                 }
-            self.record["EFLAG"] = {'rtime': config.getfloat('EFLAG', 'rtime'),
-                                   'bbbv_s': config.getfloat('EFLAG', 'bbbv_s'),
-                                   'stnb': config.getfloat('EFLAG', 'stnb'),
-                                   'ioe': config.getfloat('EFLAG', 'ioe'),
-                                   'path': config.getfloat('EFLAG', 'path'),
-                                   'rqp': config.getfloat('EFLAG', 'rqp'),
-                                   }
-            self.record["ENF"] = {'rtime': config.getfloat('ENF', 'rtime'),
-                                 'bbbv_s': config.getfloat('ENF', 'bbbv_s'),
-                                 'stnb': config.getfloat('ENF', 'stnb'),
-                                 'ioe': config.getfloat('ENF', 'ioe'),
-                                 'path': config.getfloat('ENF', 'path'),
-                                 'rqp': config.getfloat('ENF', 'rqp'),
-                                 }
+            for record_key_name in record_key_name_list:
+                self.record[record_key_name] = {'rtime': config.getfloat(record_key_name, 'rtime'),
+                                       'bbbv_s': config.getfloat(record_key_name, 'bbbv_s'),
+                                       'stnb': config.getfloat(record_key_name, 'stnb'),
+                                       'ioe': config.getfloat(record_key_name, 'ioe'),
+                                       'path': config.getfloat(record_key_name, 'path'),
+                                       'rqp': config.getfloat(record_key_name, 'rqp'),
+                                       }
+            # self.record["BFLAG"] = {'rtime': config.getfloat('BFLAG', 'rtime'),
+            #                        'bbbv_s': config.getfloat('BFLAG', 'bbbv_s'),
+            #                        'stnb': config.getfloat('BFLAG', 'stnb'),
+            #                        'ioe': config.getfloat('BFLAG', 'ioe'),
+            #                        'path': config.getfloat('BFLAG', 'path'),
+            #                        'rqp': config.getfloat('BFLAG', 'rqp'),
+            #                        }
+            # self.record["BNF"] = {'rtime': config.getfloat('BNF', 'rtime'),
+            #                      'bbbv_s': config.getfloat('BNF', 'bbbv_s'),
+            #                      'stnb': config.getfloat('BNF', 'stnb'),
+            #                      'ioe': config.getfloat('BNF', 'ioe'),
+            #                      'path': config.getfloat('BNF', 'path'),
+            #                      'rqp': config.getfloat('BNF', 'rqp'),
+            #                      }
+            # self.record["IFLAG"] = {'rtime': config.getfloat('IFLAG', 'rtime'),
+            #                        'bbbv_s': config.getfloat('IFLAG', 'bbbv_s'),
+            #                        'stnb': config.getfloat('IFLAG', 'stnb'),
+            #                        'ioe': config.getfloat('IFLAG', 'ioe'),
+            #                        'path': config.getfloat('IFLAG', 'path'),
+            #                        'rqp': config.getfloat('IFLAG', 'rqp'),
+            #                        }
+            # self.record["INF"] = {'rtime': config.getfloat('INF', 'rtime'),
+            #                      'bbbv_s': config.getfloat('INF', 'bbbv_s'),
+            #                      'stnb': config.getfloat('INF', 'stnb'),
+            #                      'ioe': config.getfloat('INF', 'ioe'),
+            #                      'path': config.getfloat('INF', 'path'),
+            #                      'rqp': config.getfloat('INF', 'rqp'),
+            #                      }
+            # self.record["EFLAG"] = {'rtime': config.getfloat('EFLAG', 'rtime'),
+            #                        'bbbv_s': config.getfloat('EFLAG', 'bbbv_s'),
+            #                        'stnb': config.getfloat('EFLAG', 'stnb'),
+            #                        'ioe': config.getfloat('EFLAG', 'ioe'),
+            #                        'path': config.getfloat('EFLAG', 'path'),
+            #                        'rqp': config.getfloat('EFLAG', 'rqp'),
+            #                        }
+            # self.record["ENF"] = {'rtime': config.getfloat('ENF', 'rtime'),
+            #                      'bbbv_s': config.getfloat('ENF', 'bbbv_s'),
+            #                      'stnb': config.getfloat('ENF', 'stnb'),
+            #                      'ioe': config.getfloat('ENF', 'ioe'),
+            #                      'path': config.getfloat('ENF', 'path'),
+            #                      'rqp': config.getfloat('ENF', 'rqp'),
+            #                      }
             self.record["BEGINNER"] = dict(zip(map(lambda x: str(x), range(1, 55)),
                                                map(lambda x: config.\
                                                    getfloat('BEGINNER', str(x)),
@@ -488,60 +497,53 @@ class Ui_MainWindow(Ui_MainWindow):
                                                    range(1, 382))))
         else:
             # 找不到配置文件就初始化
+            # 只有标准模式记录pb，且分nf/flag
             self.record = {}
-            self.record["BFLAG"] = {'rtime': 999.999,
-                                  'bbbv_s': 0.000,
-                                  'stnb': 0.000,
-                                  'ioe': 0.000,
-                                  'path': 999999.999,
-                                  'rqp': 999999.999,
-                                  }
-            self.record["BNF"] = {'rtime': 999.999,
-                                  'bbbv_s': 0.000,
-                                  'stnb': 0.000,
-                                  'ioe': 0.000,
-                                  'path': 999999.999,
-                                  'rqp': 999999.999,
-                                  }
+            record_init_dict = {'rtime': 999.999,
+                                'bbbv_s': 0.000,
+                                'stnb': 0.000,
+                                'ioe': 0.000,
+                                'path': 999999.999,
+                                'rqp': 999999.999,
+                                }
+            for record_key_name in record_key_name_list:
+                self.record[record_key_name] = record_init_dict.copy()
             
-            self.record["IFLAG"] = {'rtime': 999.999,
-                                  'bbbv_s': 0.000,
-                                  'stnb': 0.000,
-                                  'ioe': 0.000,
-                                  'path': 999999.999,
-                                  'rqp': 999999.999,
-                                  }
-            self.record["INF"] = {'rtime': 999.999,
-                                  'bbbv_s': 0.000,
-                                  'stnb': 0.000,
-                                  'ioe': 0.000,
-                                  'path': 999999.999,
-                                  'rqp': 999999.999,
-                                  }
             
-            self.record["EFLAG"] = {'rtime': 999.999,
-                                  'bbbv_s': 0.000,
-                                  'stnb': 0.000,
-                                  'ioe': 0.000,
-                                  'path': 999999.999,
-                                  'rqp': 999999.999,
-                                  }
-            self.record["ENF"] = {'rtime': 999.999,
-                                  'bbbv_s': 0.000,
-                                  'stnb': 0.000,
-                                  'ioe': 0.000,
-                                  'path': 999999.999,
-                                  'rqp': 999999.999,
-                                  }
+            
             self.record["BEGINNER"] = dict.fromkeys(map(lambda x: str(x), range(1, 55)), 999.999)
             self.record["INTERMEDIATE"] = dict.fromkeys(map(lambda x: str(x), range(1, 217)), 999.999)
             self.record["EXPERT"] = dict.fromkeys(map(lambda x: str(x), range(1, 382)), 999.999)
             config["BFLAG"] = self.record["BFLAG"]
             config["BNF"] = self.record["BNF"]
+            config["BWIN7"] = self.record["BWIN7"]
+            config["BSS"] = self.record["BSS"]
+            config["BWS"] = self.record["BWS"]
+            config["BCS"] = self.record["BCS"]
+            config["BTBS"] = self.record["BTBS"]
+            config["BSG"] = self.record["BSG"]
+            config["BWG"] = self.record["BWG"]
+            
             config["IFLAG"] = self.record["IFLAG"]
             config["INF"] = self.record["INF"]
+            config["IWIN7"] = self.record["IWIN7"]
+            config["ISS"] = self.record["ISS"]
+            config["IWS"] = self.record["IWS"]
+            config["ICS"] = self.record["ICS"]
+            config["ITBS"] = self.record["ITBS"]
+            config["ISG"] = self.record["ISG"]
+            config["IWG"] = self.record["IWG"]
+            
             config["EFLAG"] = self.record["EFLAG"]
             config["ENF"] = self.record["ENF"]
+            config["EWIN7"] = self.record["EWIN7"]
+            config["ESS"] = self.record["ESS"]
+            config["EWS"] = self.record["EWS"]
+            config["ECS"] = self.record["ECS"]
+            config["ETBS"] = self.record["ETBS"]
+            config["ESG"] = self.record["ESG"]
+            config["EWG"] = self.record["EWG"]
+            
             config["BEGINNER"] = self.record["BEGINNER"]
             config["INTERMEDIATE"] = self.record["INTERMEDIATE"]
             config["EXPERT"] = self.record["EXPERT"]

@@ -483,6 +483,8 @@ class abstract_game_board(object):
     __slots__ = ('game_board', 'mouse_state', 'game_board_state')
     def reset(self, *args):
         ...
+    def step(self, *args):
+        ...
         
 
 # unsolvableStructure = ms_toollib.py_unsolvableStructure
@@ -640,6 +642,7 @@ def main():
 
 
 if __name__ == '__main__':
+    
     main()
 
 

@@ -9,7 +9,7 @@
         <translation>Game Settings</translation>
     </message>
     <message>
-        <location filename="ui_gameSettingShortcuts.py" line="742"/>
+        <location filename="ui_record_pop.py" line="571"/>
         <source>确定</source>
         <translation>OK</translation>
     </message>
@@ -134,12 +134,12 @@
         <translation>Constraint:</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="144"/>
+        <location filename="ui_record_pop.py" line="551"/>
         <source>关于</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="150"/>
+        <location filename="ui_record_pop.py" line="572"/>
         <source>Space</source>
         <translation>Space</translation>
     </message>
@@ -305,6 +305,121 @@ p, li { white-space: pre-wrap; }
         <source>窗口透明度：</source>
         <translation>Window transparency:</translation>
     </message>
+    <message>
+        <location filename="ui_score_board.py" line="128"/>
+        <source>计数器</source>
+        <translation>Counters</translation>
+    </message>
+    <message>
+        <location filename="ui_score_board.py" line="130"/>
+        <source>新建行</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui_score_board.py" line="132"/>
+        <source>1</source>
+        <translation>1</translation>
+    </message>
+    <message>
+        <location filename="ui_score_board.py" line="134"/>
+        <source>3</source>
+        <translation>3</translation>
+    </message>
+    <message>
+        <location filename="ui_score_board.py" line="136"/>
+        <source>指标</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui_score_board.py" line="138"/>
+        <source>表达式</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="552"/>
+        <source>恭喜打破：</source>
+        <translation>Congratulations:</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="553"/>
+        <source>Flag Time成绩！</source>
+        <translation>Flag Time Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="554"/>
+        <source>NF Time成绩！</source>
+        <translation>NF Time Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="555"/>
+        <source>Flag 3BV/s成绩！</source>
+        <translation>Flag 3BV/s Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="556"/>
+        <source>NF 3BV/s成绩！</source>
+        <translation>NF 3BV/s Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="557"/>
+        <source>Flag STNB成绩！</source>
+        <translation>Flag STNB Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="558"/>
+        <source>NF STNB成绩！</source>
+        <translation>NF STNB Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="559"/>
+        <source>Flag IOE成绩！</source>
+        <translation>Flag IOE Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="560"/>
+        <source>NF IOE成绩！</source>
+        <translation>NF IOE Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="561"/>
+        <source>Flag Path成绩！</source>
+        <translation>Flag Path Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="562"/>
+        <source>NF Path成绩！</source>
+        <translation>NF Path Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="563"/>
+        <source>Flag RQP成绩！</source>
+        <translation>Flag RQP Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="564"/>
+        <source>NF RQP成绩！</source>
+        <translation>NF RQP Record!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="565"/>
+        <source>初级</source>
+        <translation>Beginner</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="570"/>
+        <source>个人最佳！</source>
+        <translation>PB!</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="567"/>
+        <source>中级</source>
+        <translation>Intermediate</translation>
+    </message>
+    <message>
+        <location filename="ui_record_pop.py" line="569"/>
+        <source>高级</source>
+        <translation>Expert</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -314,52 +429,52 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Reserved</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="412"/>
+        <location filename="ui_main_board.py" line="415"/>
         <source>游戏</source>
         <translation>Game</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="413"/>
+        <location filename="ui_main_board.py" line="416"/>
         <source>设置</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="415"/>
+        <location filename="ui_main_board.py" line="418"/>
         <source>帮助</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="416"/>
+        <location filename="ui_main_board.py" line="419"/>
         <source>新游戏</source>
         <translation>New Game</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="417"/>
+        <location filename="ui_main_board.py" line="420"/>
         <source>初级</source>
         <translation>Beginner</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="418"/>
+        <location filename="ui_main_board.py" line="421"/>
         <source>中级</source>
         <translation>Intermediate</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="419"/>
+        <location filename="ui_main_board.py" line="422"/>
         <source>高级</source>
         <translation>Expert</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="420"/>
+        <location filename="ui_main_board.py" line="423"/>
         <source>自定义</source>
         <translation>Custom</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="421"/>
+        <location filename="ui_main_board.py" line="424"/>
         <source>退出</source>
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="422"/>
+        <location filename="ui_main_board.py" line="425"/>
         <source>游戏设置</source>
         <translation>Game Settings</translation>
     </message>
@@ -369,69 +484,69 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">A</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="424"/>
+        <location filename="ui_main_board.py" line="427"/>
         <source>词典</source>
         <translation>Dictionary</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="425"/>
+        <location filename="ui_main_board.py" line="428"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="426"/>
+        <location filename="ui_main_board.py" line="429"/>
         <source>入门教程</source>
         <translation>Getting Started</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="427"/>
+        <location filename="ui_main_board.py" line="430"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="428"/>
+        <location filename="ui_main_board.py" line="431"/>
         <source>快捷键设置</source>
         <translation>Shortcut Settings</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="429"/>
+        <location filename="ui_main_board.py" line="432"/>
         <source>打开</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="414"/>
+        <location filename="ui_main_board.py" line="417"/>
         <source>语言设置</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="411"/>
+        <location filename="ui_main_board.py" line="414"/>
         <source>元扫雷</source>
         <translation>Metasweeper</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="423"/>
+        <location filename="ui_main_board.py" line="426"/>
         <source>关于</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="432"/>
+        <location filename="ui_main_board.py" line="435"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="431"/>
+        <location filename="ui_main_board.py" line="434"/>
         <source>中文</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="433"/>
+        <location filename="ui_main_board.py" line="436"/>
         <source>鼠标设置</source>
         <translation>Mouse Settings</translation>
     </message>
     <message>
         <location filename="ui_main_board.py" line="434"/>
         <source>M</source>
-        <translation>M</translation>
+        <translation type="obsolete">M</translation>
     </message>
 </context>
 </TS>

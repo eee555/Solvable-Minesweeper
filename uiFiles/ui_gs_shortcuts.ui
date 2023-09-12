@@ -410,8 +410,11 @@ color: #3d3d3d;</string>
      <property name="showGroupSeparator" stdset="0">
       <bool>false</bool>
      </property>
+     <property name="minimum">
+      <number>6</number>
+     </property>
      <property name="maximum">
-      <number>999</number>
+      <number>1000</number>
      </property>
      <property name="value">
       <number>16</number>
@@ -455,8 +458,11 @@ color: #3d3d3d;</string>
      <property name="showGroupSeparator" stdset="0">
       <bool>false</bool>
      </property>
+     <property name="minimum">
+      <number>6</number>
+     </property>
      <property name="maximum">
-      <number>999</number>
+      <number>1000</number>
      </property>
      <property name="value">
       <number>16</number>
@@ -925,8 +931,11 @@ color: #3d3d3d;</string>
      <property name="showGroupSeparator" stdset="0">
       <bool>false</bool>
      </property>
+     <property name="minimum">
+      <number>6</number>
+     </property>
      <property name="maximum">
-      <number>999</number>
+      <number>1000</number>
      </property>
      <property name="value">
       <number>16</number>
@@ -970,8 +979,11 @@ color: #3d3d3d;</string>
      <property name="showGroupSeparator" stdset="0">
       <bool>false</bool>
      </property>
+     <property name="minimum">
+      <number>6</number>
+     </property>
      <property name="maximum">
-      <number>999</number>
+      <number>1000</number>
      </property>
      <property name="value">
       <number>16</number>
@@ -1391,8 +1403,11 @@ color: #3d3d3d;</string>
      <property name="showGroupSeparator" stdset="0">
       <bool>false</bool>
      </property>
+     <property name="minimum">
+      <number>6</number>
+     </property>
      <property name="maximum">
-      <number>999</number>
+      <number>1000</number>
      </property>
      <property name="value">
       <number>16</number>
@@ -1483,8 +1498,11 @@ color: #3d3d3d;</string>
      <property name="showGroupSeparator" stdset="0">
       <bool>false</bool>
      </property>
+     <property name="minimum">
+      <number>6</number>
+     </property>
      <property name="maximum">
-      <number>999</number>
+      <number>1000</number>
      </property>
      <property name="value">
       <number>16</number>
