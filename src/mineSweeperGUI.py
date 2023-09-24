@@ -493,6 +493,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def checksum_module_ok(self):
         # 检查校验和模块的签名
+        # 调试的时候不会自动存录像，除非将此处改为return true
         return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
             '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
 
@@ -774,6 +775,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.exec_()
         if ui.alter:
             self.gameMode = ui.gameMode
+            
             self.pixSize = ui.pixSize
             if not ui.allow_auto_replay:
                 self.auto_replay = -1
@@ -975,12 +977,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         conf.set("DEFAULT", "row", str(self.row))
         conf.set("DEFAULT", "column", str(self.column))
         conf.set("DEFAULT", "minenum", str(self.mineNum))
-        conf.write(open(self.game_setting_path, "w"))
+        conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
 
     def action_OpenFile(self, openfile_name = None):
         if not openfile_name:
             openfile_name = QFileDialog.\
-                getOpenFileName(self.mainWindow, '打开文件','','All(*.avf *.evf *.rmv *.mvf);;Arbiter video(*.avf);;Metasweeper video(*.evf);;Vienna MineSweeper video(*.rmv);;Minesweeper Clone 0.97(*.mvf)')
+                getOpenFileName(self.mainWindow, '打开文件','../replay','All(*.avf *.evf *.rmv *.mvf);;Arbiter video(*.avf);;Metasweeper video(*.evf);;Vienna MineSweeper video(*.rmv);;Minesweeper Clone 0.97(*.mvf)')
             openfile_name = openfile_name[0]
         # 实例化
         if not openfile_name:

@@ -23,6 +23,8 @@ jobs:
     - name: transform qrc to py with pyrcc5
       run: |
         lrelease src/ui/en_US.ts -qm en_US.qm
+        lrelease src/ui/de_DE.ts -qm de_DE.qm
+        lrelease src/ui/pl_PL.ts -qm pl_PL.qm
 
 
     - name: Set up Python 3.10
@@ -72,12 +74,14 @@ jobs:
 
     - name: Package with PyInstaller
       run: |
-        pyinstaller -i cat.ico -w -y --clean --add-data "./media/*;./media" --add-data "./en_US.qm;." -p src src/main.py -n metaminesweeper
+        pyinstaller -i cat.ico -w -y --clean --add-data "./media/*;./media" --add-data "./de_DE.qm;./pl_PL.qm;./en_US.qm;." -p src src/main.py -n metaminesweeper
 
     - name: Move media and qm file
       run: |
         move dist/metaminesweeper/media dist/media
         move dist/metaminesweeper/en_US.qm dist/en_US.qm
+        move dist/metaminesweeper/de_DE.qm dist/de_DE.qm
+        move dist/metaminesweeper/pl_PL.qm dist/pl_PL.qm
 
     # upload the result package as an artifact
     - name: Upload artifacts

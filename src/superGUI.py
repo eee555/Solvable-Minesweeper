@@ -31,7 +31,7 @@ class Ui_MainWindow(Ui_MainWindow):
         
         self.checksum_guard = metaminesweeper_checksum.ChecksumGuard()
         self.timer_is_safe = QTimer()
-        self.timer_is_safe.setInterval(200)  # 定时判断是否安全
+        self.timer_is_safe.setInterval(580)  # 定时判断是否安全
         self.timer_is_safe.timeout.connect(self.checksum_guard.is_safe)
         self.timer_is_safe.start()
         
