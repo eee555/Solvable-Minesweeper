@@ -217,6 +217,7 @@ class Ui_MainWindow(object):
         self.label_flag = QtWidgets.QLabel(self.centralwidget)
         self.label_flag.setMinimumSize(QtCore.QSize(51, 31))
         self.label_flag.setMaximumSize(QtCore.QSize(51, 31))
+        self.label_flag.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.label_flag.setLineWidth(0)
         self.label_flag.setText("")
         self.label_flag.setObjectName("label_flag")
