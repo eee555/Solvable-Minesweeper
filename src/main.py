@@ -21,7 +21,6 @@ if __name__ == "__main__":
 # 可信的历史记录
 # 选择某些国家报错，布维岛(难复现)
 # self.label.ms_board.step('rr', (i, j))报错
-# 回放录像拉进度条指标不变
 # 强可猜点之间位置出错（需要跟踪）
 # self.predefinedBoardPara相关的设计还不够好
 

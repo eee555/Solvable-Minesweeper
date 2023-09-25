@@ -9,13 +9,16 @@ from PyQt5 import QtCore
 from ui.uiComponents import RoundQWidget, CommentLabel
 from ui.ui_video_control import Ui_Form
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget
 
-class ui_Form(Ui_Form):
-    # barSetMineNum = QtCore.pyqtSignal(int)
+class ui_Form(QWidget, Ui_Form):
+    videoSetTime = QtCore.pyqtSignal(int)
     # barSetMineNumCalPoss = QtCore.pyqtSignal(int)
     # time_current = 0.0
     
     def __init__(self, r_path, time, comments):
+        super (ui_Form, self).__init__ ()
+        
         self.QWidget = RoundQWidget()
         self.setupUi(self.QWidget)
         self.horizontalSlider_time.setMaximum(int(time * 100 + 1))
@@ -52,10 +55,18 @@ class ui_Form(Ui_Form):
         
     def set_double_spin_box_time(self, int_time):
         self.doubleSpinBox_time.setValue(int_time / 100)
+        self.horizontalSlider_time.blockSignals(True)
+        self.horizontalSlider_time.setValue(int_time)
+        self.horizontalSlider_time.blockSignals(False)
+        self.videoSetTime.emit(int_time)
         # self.time_current = int_time / 100
         
+        
     def set_horizontal_slider_time(self, float_time):
+        self.doubleSpinBox_time.blockSignals(True)
         self.horizontalSlider_time.setValue(int(float_time * 100))
+        self.doubleSpinBox_time.blockSignals(False)
+        self.videoSetTime.emit(int(float_time * 100))
         # self.time_current = float_time
         
     

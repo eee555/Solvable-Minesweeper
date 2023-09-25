@@ -1040,7 +1040,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.mainWindow.closeEvent_.connect(self.ui_video_control.QWidget.close)
         self.ui_video_control.pushButton_play.clicked.connect(self.video_play)
         self.ui_video_control.pushButton_replay.clicked.connect(self.video_replay)
-        self.ui_video_control.horizontalSlider_time.sliderMoved.connect(self.video_set_time)
+        self.ui_video_control.videoSetTime.connect(self.video_set_time)
         self.ui_video_control.label_speed.wEvent.connect(self.video_set_speed)
         for labels in self.ui_video_control.comments_labels:
             labels[0].Release.connect(self.video_set_a_time)
@@ -1060,7 +1060,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_info.setText(bytes(self.label.ms_board.player_designator).decode())
 
     def video_playing_step(self):
-        # 定时器的回调
+        # 播放录像时定时器的回调
         self.label.ms_board.current_time = self.video_time
         if self.video_time >= self.video_stop_time:
             self.timer_video.stop()
@@ -1094,6 +1094,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.video_time = time / 100
         self.label.ms_board.current_time = self.video_time
         self.label.update()
+        self.score_board_manager.show(self.label.ms_board, index_type = 2)
 
     def video_set_a_time(self, time):
         # 把录像定位到某一段时间，默认前后一秒，自动播放。是点录像事件的回调
