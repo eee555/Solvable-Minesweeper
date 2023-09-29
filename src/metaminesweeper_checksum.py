@@ -6,8 +6,6 @@ class ChecksumGuard():
         return b'\7'*32
     def valid_checksum(self, data, checksum):
         return False
-    def is_safe(self):
-        return True
 
 def get_self_key():
     return [88] * 32

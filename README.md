@@ -1,12 +1,16 @@
-# MetaSweeper-v3.1.5 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
+# MetaSweeper-v3.1.6 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
 
-# 元扫雷v3.1.5 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
+# 元扫雷v3.1.6 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
 
-[![SolvableMinesweeper](https://img.shields.io/badge/SolvableMinesweeper-v2.2.5-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
+[![MetaSweeper](https://img.shields.io/badge/MetaSweeper-v3.1.6-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
+[![ms_toollib](https://img.shields.io/badge/ms_toollib-v1.4.7-brightgreen.svg)](https://github.com/eee555/ms_toollib)
+[![stars](https://img.shields.io/github/stars/eee555/Solvable-Minesweeper)](https://github.com/eee555/Solvable-Minesweeper/stargazers)
+[![forks](https://img.shields.io/github/forks/eee555/Solvable-Minesweeper)](https://github.com/eee555/Solvable-Minesweeper/forks)
+
 
 ## 简介(Introduction)
 
-元扫雷v3.1.5是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
+元扫雷v3.1.6是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
 
 优势：
 
@@ -28,7 +32,9 @@
 
 + 完备的局面筛选功能，按用户配置来筛选。这是罕见的。
 
-+ 对变速齿轮的防御能力。
++ 对变速齿轮等多种作弊手段的防御能力。
+
++ 国际化，包括中、英、德、波兰等语言。
 
 目前属于漫长的开发阶段中，约1~3月更新一个版本，欢迎提issue、star、pull request、fork。
 
@@ -42,7 +48,7 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 + 算法工具箱文档：[https://docs.rs/ms_toollib](https://docs.rs/ms_toollib)
 
 ## 安装
-建议在`Windows 10`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
+建议在`Windows 11`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
 
 ### 通过网盘安装(推荐)
 在下面的[下载链接](#下载链接)中找到最新的版本，然后下载，解压，直接运行`main.exe`文件（如果警告请点击“仍然运行”），开箱即用。
@@ -95,6 +101,10 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 [https://twitter.com/RustRepos/status/1636837781765799940](https://twitter.com/RustRepos/status/1636837781765799940)
 
 ## 下载链接
+
+### 正式版v3.1.6：
+修复了拖动录像进度条时，指标不变化的bug。新增德语和波兰语。提高了对某两种作弊手段的防御能力。  
+链接：
 
 ### 正式版v3.1.5：
 修复了十几个bug。弹窗功能、独一无二的pb弹窗功能。像arbiter一样的鼠标设置，但只要点一层，而且快捷键是“M”。在设置界面可以选择国旗，可以用8种语言设置自己的国家名称。在主界面显示国旗。截屏计算概率不再像之前那样轻易闪退。截屏得到局面后，可以用滚轮修改指向的格子，修复错误的结果，雷数的上下限等都是联动的，满足一切预期。现在可以点击计数器下方的按钮来增加指标，可以删掉计数器的指标的名称从而把这条指标删掉。  
