@@ -108,7 +108,7 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 - 一次性捐款￥10或以上
 - 您的名字将出现在项目的贡献者列表中
 
-### 核心赞助者
+### 高级赞助者
 - 一次性捐款￥50或以上
 - 您的名字将出现在项目的贡献者列表中
 - 独家定期报告项目进展  
