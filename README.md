@@ -103,7 +103,7 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 [https://twitter.com/RustRepos/status/1636837781765799940](https://twitter.com/RustRepos/status/1636837781765799940)
 
 ## 赞助
-感谢您考虑支持我们的开源项目。您的赞助将有助于项目的持续发展和改进，使我们能够继续为社区提供高质量的软件（owner许诺向所有contributor按合理的比例分配赞助得到的收入）。  
+感谢您考虑支持我们的开源项目，赞助时请备注您的称呼。您的赞助将有助于项目的持续发展和改进，使我们能够继续提高软件的质量（owner许诺向所有contributor按合理的比例分配赞助得到的收入）。  
 ### 一般赞助者
 - 一次性捐款￥10或以上
 - 您的名字将出现在项目的贡献者列表中
