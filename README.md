@@ -100,6 +100,20 @@ MetaSweeper v3.1.0_beta is a minesweeper game developed by players who love mine
 被收录于Awesome Rust Repositories: 
 [https://twitter.com/RustRepos/status/1636837781765799940](https://twitter.com/RustRepos/status/1636837781765799940)
 
+## 赞助
+感谢您考虑支持我们的开源项目。您的赞助将有助于项目的持续发展和改进，使我们能够继续为社区提供高质量的软件（owner许诺向所有contributor按合理的比例分配赞助得到的收入）。  
+### 一般赞助者
+- 一次性捐款￥10或以上
+- 您的名字将出现在项目的贡献者列表中
+
+### 核心赞助者
+- 一次性捐款￥50或以上
+- 您的名字将出现在项目的贡献者列表中
+- 独家定期报告项目进展  
+
+![](readme_pic/微信收款码.png) ![](readme_pic/支付宝收款码.png)  
+
+
 ## 下载链接
 
 ### 正式版v3.1.6：

@@ -499,17 +499,17 @@ def print2(arr, mode = 0):
     if mode == 0:
         for i in arr:
             for j in i:
-                print('%3.d'%j, end=', ')
+                print('%2.d'%j, end=', ')
             print()
     elif mode == 1:
         for i in arr:
             for j in i:
-                print('%3.d'%j.num, end=', ')
+                print('%2.d'%j.num, end=', ')
             print()
     elif mode == 2:
         for i in arr:
             for j in i:
-                print('%3.d'%j.status, end=', ')
+                print('%2.d'%j.status, end=', ')
             print()
 
 def debug_ms_board(ms_board):

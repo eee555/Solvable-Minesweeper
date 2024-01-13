@@ -198,7 +198,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             if not self.pos_is_in_board(i, j):
                 self.label.ms_board.step('lr', (i, j))
             else:
-                if self.label.ms_board.mouse_state == 4:
+                if self.label.ms_board.mouse_state == 4 and\
+                    self.label.ms_board.game_board[i// self.pixSize][j// self.pixSize] == 10:
                     # 正式埋雷开始
                     self.layMine(i // self.pixSize, j // self.pixSize)
                     self.game_state = 'playing'
