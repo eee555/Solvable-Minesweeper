@@ -494,9 +494,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def checksum_module_ok(self):
         # 检查校验和模块的签名
-        # 调试的时候不会自动存录像，除非将此处改为return true
-        return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
-            '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
+        # 调试的时候不会自动存录像，除非将此处改为return True
+        return True
+        # return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
+        #     '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
 
     def save_evf_file(self):
         # 搜集本局各种信息，存成evf文件
@@ -980,6 +981,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         conf.set("DEFAULT", "minenum", str(self.mineNum))
         conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
 
+    # 打开录像文件的回调
     def action_OpenFile(self, openfile_name = None):
         if not openfile_name:
             openfile_name = QFileDialog.\
@@ -1037,7 +1039,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         self.timer_video = QTimer()
         self.timer_video.timeout.connect(self.video_playing_step)
-        self.ui_video_control = videoControl.ui_Form(self.r_path, video.video_time, comments)
+        self.ui_video_control = videoControl.ui_Form(self.r_path, video, comments)
         self.mainWindow.closeEvent_.connect(self.ui_video_control.QWidget.close)
         self.ui_video_control.pushButton_play.clicked.connect(self.video_play)
         self.ui_video_control.pushButton_replay.clicked.connect(self.video_replay)

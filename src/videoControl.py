@@ -16,12 +16,13 @@ class ui_Form(QWidget, Ui_Form):
     # barSetMineNumCalPoss = QtCore.pyqtSignal(int)
     # time_current = 0.0
     
-    def __init__(self, r_path, time, comments):
+    def __init__(self, r_path, video, comments):
         super (ui_Form, self).__init__ ()
         
         self.QWidget = RoundQWidget()
         self.setupUi(self.QWidget)
-        self.horizontalSlider_time.setMaximum(int(time * 100 + 1))
+        self.horizontalSlider_time.setMaximum(int(video.rtime * 100 + 1))
+        self.horizontalSlider_time.setMinimum(int((video.rtime - video.video_time) * 100 - 1))
         
         self.horizontalSlider_time.valueChanged[int].connect(self.set_double_spin_box_time)
         self.doubleSpinBox_time.valueChanged[float].connect(self.set_horizontal_slider_time)

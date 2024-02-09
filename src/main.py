@@ -24,6 +24,7 @@ if __name__ == "__main__":
 # self.label.ms_board.step('cc', (i, j))报错(难复现，需要跟踪)
 # self.predefinedBoardPara相关的设计还不够好
 # OBR修改局面还会报错的情况（不确定，需要跟踪）
+# 筛选局面的条件设置错误时，不能显式报告
 
 # 次优先级
 # 自定义模式弹窗
