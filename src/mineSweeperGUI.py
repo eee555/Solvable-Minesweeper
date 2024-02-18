@@ -1051,8 +1051,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             labels[2].Release.connect(self.video_set_a_time)
         self.ui_video_control.QWidget.show()
 
-        self.video_time = 0.0 # 录像当前时间
-        self.video_stop_time = video.video_time # 录像停止时间
+        self.video_time = video.video_start_time # 录像当前时间
+        self.video_stop_time = video.video_end_time # 录像停止时间
         self.video_time_step = 0.01 # 录像时间的步长，定时器始终是10毫秒
         self.label.paint_cursor = True
         self.video_playing = True # 录像正在播放
@@ -1071,7 +1071,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.update()
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
         self.video_time += self.video_time_step
+        self.ui_video_control.horizontalSlider_time.blockSignals(True)
         self.ui_video_control.horizontalSlider_time.setValue(int(self.video_time * 100))
+        self.ui_video_control.horizontalSlider_time.blockSignals(False)
+        self.ui_video_control.doubleSpinBox_time.blockSignals(True)
+        self.ui_video_control.doubleSpinBox_time.setValue(self.label.ms_board.time)
+        self.ui_video_control.doubleSpinBox_time.blockSignals(False)
 
     def video_play(self):
         # 点播放、暂停键的回调
@@ -1081,13 +1086,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         else:
             self.video_playing = True
             self.timer_video.start(10)
-            self.video_stop_time = self.label.ms_board.video_time
+            self.video_stop_time = self.label.ms_board.video_end_time
 
     def video_replay(self):
         self.video_playing = True
-        self.video_time = 0.0
+        self.video_time = self.label.ms_board.video_start_time
         self.timer_video.start(10)
-        self.video_stop_time = self.label.ms_board.video_time
+        self.video_stop_time = self.label.ms_board.video_end_time
 
     def video_set_speed(self, speed):
         self.video_time_step = speed * 0.01
@@ -1101,7 +1106,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def video_set_a_time(self, time):
         # 把录像定位到某一段时间，默认前后一秒，自动播放。是点录像事件的回调
-        self.video_time = max(0, (time - 100) / 100)
+        self.video_time = (time - 100) / 100
         self.video_stop_time = (time + 100) / 100  # 大了也没关系，ms_toollib自动处理
         self.timer_video.start()
         self.video_playing = True
