@@ -12,7 +12,7 @@ import configparser
 # from pathlib import Path
 # import time
 import os
-import hashlib
+import hashlib, uuid
 # from PyQt5.QtWidgets import QApplication
 from country_name import country_name
 import metaminesweeper_checksum
@@ -506,10 +506,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:
         #     self.label.ms_board.checksum = metaminesweeper_checksum.get_checksum()
         self.label.ms_board.mode = self.gameMode
-        self.label.ms_board.software = "元3.16".encode( "UTF-8" )
+        self.label.ms_board.software = "元3.1.7".encode( "UTF-8" )
         self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
         self.label.ms_board.race_designator = self.race_designator.encode( "UTF-8" )
         self.label.ms_board.country = self.country.encode( "UTF-8" )
+        self.label.ms_board.device_uuid = hashlib.md5(bytes(str(uuid.getnode()).encode())).hexdigest().encode( "UTF-8" )
         self.label.ms_board.uniqueness_designator = "".encode( "UTF-8" ) # 暂时不能填
 
         if not os.path.exists(self.replay_path):
