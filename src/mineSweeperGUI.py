@@ -495,9 +495,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def checksum_module_ok(self):
         # 检查校验和模块的签名
         # 调试的时候不会自动存录像，除非将此处改为return True
-        return True
-        # return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
-        #     '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
+        # return True
+        return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
+            '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
 
     def save_evf_file(self):
         # 搜集本局各种信息，存成evf文件
@@ -1114,7 +1114,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def is_official(self):
         # 局面开始时，判断一下局面是设置是否正式。
-        # 极端小的3BV依然是合法的，而网站是否认同不管软件的事。
+        # 极端小的3BV依然是合法的，而网站是否认同不关软件的事。
         if self.board_constraint:
             return False
         return self.game_state == "win" and self.gameMode == 0
