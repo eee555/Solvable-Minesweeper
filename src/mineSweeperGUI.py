@@ -268,24 +268,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.set_face(15)
 
 
-    # def mineAreaLeftAndRightRelease(self, i, j):
-    #     # 这个弃用了
-    #     if self.game_state == 'ready' or self.game_state == 'playing' or\
-    #         self.game_state == 'joking':
-    #         if self.label.ms_board.mouse_state == 2:
-    #             self.label.ms_board.step('lr', (i, j))
-    #         elif self.label.ms_board.mouse_state == 7:
-    #             self.label.ms_board.step('rr', (i, j))
-    #         self.set_face(14)
-    #         # pixmap = QPixmap(self.pixmapNum[14])
-    #         # self.label_2.setPixmap(pixmap)
-    #         # self.label_2.setScaledContents(True)
-    #         if self.label.ms_board.game_board_state == 3:
-    #             self.gameWin()
-    #         elif self.label.ms_board.game_board_state == 4:
-    #             self.gameFailed()
-    #         self.label.update()
-
     def mineMouseMove(self, i, j):
         # 按住空格后的鼠标移动事件，与概率的显示有关
         if self.game_state == 'show' or self.game_state == 'study':
@@ -314,7 +296,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             if i > 0:
                 self.pixSize += 1
                 self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.label.importCellPic(self.pixSize)
+                self.label.reloadCellPic(self.pixSize)
+                for i in range(4):
+                    self.predefinedBoardPara[i]['pix_size'] = self.pixSize
                 self.reimportLEDPic(self.pixSize)
                 # self.label.ms_board.pix_size = self.pixSize
                 self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
@@ -331,7 +315,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.pixSize -= 1
                 self.pixSize = max(5, self.pixSize)
                 self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.label.importCellPic(self.pixSize)
+                self.label.reloadCellPic(self.pixSize)
+                for i in range(4):
+                    self.predefinedBoardPara[i]['pix_size'] = self.pixSize
                 self.reimportLEDPic(self.pixSize)
                 # self.label.ms_board.pix_size = self.pixSize
                 self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
@@ -345,7 +331,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.showTime(0)
 
                 self.minimumWindow()
-            # 这个哪里用了？？？
+            # 这个哪里用了？？？延时后缩紧
             self.timer_save_size = QTimer()
             # self.timer_save_size.timeout.connect(self.refreshSettingsDefault)
             self.timer_save_size.setSingleShot(True)
@@ -780,6 +766,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.gameMode = ui.gameMode
 
             self.pixSize = ui.pixSize
+            for i in range(4):
+                self.predefinedBoardPara[i]['pix_size'] = ui.pixSize
             if not ui.allow_auto_replay:
                 self.auto_replay = -1
             else:

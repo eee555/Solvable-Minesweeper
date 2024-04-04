@@ -28,10 +28,10 @@ class Ui_MainWindow(Ui_MainWindow):
         self.game_setting_path = str(r_path.with_name('gameSetting.ini'))
         # 个人记录，用来弹窗
         self.record_path = str(r_path.with_name('record.ini'))
-        
+
         self.checksum_guard = metaminesweeper_checksum.ChecksumGuard()
-    
-        
+
+
         self.ico_path = str(r_path.with_name('media').joinpath('cat.ico'))
         self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
         self.clickface_path = str(r_path.with_name('media').joinpath('clickface.svg'))
@@ -56,35 +56,35 @@ class Ui_MainWindow(Ui_MainWindow):
         # 缓存了6套游戏模式的配置，以减少快捷键切换模式时的io
         # gameMode = 0，1，2，3，4，5，6，7代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
-        
-        
-        self.read_or_create_record()                
+
+
+        self.read_or_create_record()
         _scoreBoardTop, _scoreBoardLeft = self.read_or_create_game_setting()
-        
-        
-              
-        
+
+
+
+
         self.readPredefinedBoardPara()
         self.setupUi(self.mainWindow)
         self.retranslateUi(MainWindow)
-        
+
         self.trans = QTranslator()
-        
-                
+
+
         # 记录了计数器的配置，显示哪些指标等等
         score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
         self.score_board_manager = gameScoreBoardManager(r_path, score_board_path,
-                                                         self.game_setting_path, 
+                                                         self.game_setting_path,
                                                          self.pixSize)
         self.score_board_manager.ui.QWidget.move(_scoreBoardTop, _scoreBoardLeft)
-        
-                
+
+
         self.score_board_manager.with_namespace({
             "race_designator": self.race_designator,
             "mode": mm.trans_game_mode(self.gameMode),
             "checksum_ok": "--"
             })
-        
+
         self.importLEDPic(self.pixSize) # 导入图片
         self.label.setPath(r_path)
         self.initMineArea()
@@ -142,7 +142,7 @@ class Ui_MainWindow(Ui_MainWindow):
 
 
     def importLEDPic(self, pixSize):
-        # 导入资源，并缩放到希望的尺寸、比例
+        # 从磁盘导入资源，并缩放到希望的尺寸、比例
         pixmap14 = QPixmap(self.smileface_path)
         pixmap15 = QPixmap(self.clickface_path)
         pixmap16 = QPixmap(self.lostface_path)
@@ -155,7 +155,7 @@ class Ui_MainWindow(Ui_MainWindow):
         pixmap17_ = pixmap17.scaled(int(pixSize * 1.5), int(pixSize * 1.5))
         pixmap18_ = pixmap18.scaled(int(pixSize * 1.5), int(pixSize * 1.5))
         self.pixmapNum = {14: pixmap14_, 15: pixmap15_, 16: pixmap16_, 17: pixmap17_, 18: pixmap18_}
-        # 以上是读取数字的图片，局面中的数字；一下是上方LED数字的图片
+        # 以上是读取数字的图片，局面中的数字；以下是上方LED数字的图片
         pixLEDmap0 = QPixmap(self.LED0_path)
         pixLEDmap1 = QPixmap(self.LED1_path)
         pixLEDmap2 = QPixmap(self.LED2_path)
@@ -184,7 +184,7 @@ class Ui_MainWindow(Ui_MainWindow):
                         8: pixLEDmap8_, 9: pixLEDmap9_}
 
     def reimportLEDPic(self, pixSize):
-        # 导重新入资源，并缩放到希望的尺寸、比例
+        # 重新将资源的尺寸缩放到希望的尺寸、比例
         self.pixmapNum = {key:value.copy().scaled(int(pixSize * 1.5), int(pixSize * 1.5)) for key,value in self.pixmapNumPix.items()}
         self.pixmapLEDNum = {key:value.copy().scaled(pixSize, int(pixSize * 1.75)) for key,value in self.pixmapLEDNumPix.items()}
 
@@ -248,7 +248,7 @@ class Ui_MainWindow(Ui_MainWindow):
             "board_constraint": config["CUSTOM_PRESET_5"]["board_constraint"],
             "attempt_times_limit": config.getint('CUSTOM_PRESET_5','attempt_times_limit'),
             }
-        
+
         self.predefinedBoardPara[6] = {
             "game_mode": config.getint('CUSTOM_PRESET_6','gameMode'),
             "row": config.getint('CUSTOM_PRESET_6','row'),
@@ -275,8 +275,8 @@ class Ui_MainWindow(Ui_MainWindow):
         if self.minimum_counter >= 100:
             self.minimum_counter = 0
             self.timer_.stop()
-            
-            
+
+
     def trans_language(self, language = ""):
         if not language:
             language = self.language
@@ -290,9 +290,9 @@ class Ui_MainWindow(Ui_MainWindow):
             self.retranslateUi(self.mainWindow)
         mm.updata_ini(self.game_setting_path, [("DEFAULT", "language", language)])
         self.language = language
-        
-        
-        
+
+
+
     def read_or_create_game_setting(self):
         config = configparser.ConfigParser()
         if config.read(self.game_setting_path, encoding='utf-8'):
@@ -313,7 +313,7 @@ class Ui_MainWindow(Ui_MainWindow):
             else:
                 self.auto_replay = -1
             self.auto_notification = config.getboolean("DEFAULT", "auto_notification")
-            
+
             self.player_designator = config["DEFAULT"]["player_designator"]
             self.race_designator = config["DEFAULT"]["race_designator"]
             self.country = config["DEFAULT"]["country"]
@@ -322,7 +322,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.language = config["DEFAULT"]["language"]
             # self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
             self.end_then_flag = config.getboolean("DEFAULT", "end_then_flag") # 游戏结束后自动标雷
-            
+
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
                 self.board_constraint = config["BEGINNER"]["board_constraint"]
                 self.attempt_times_limit = config.getint('BEGINNER', 'attempt_times_limit')
@@ -425,12 +425,12 @@ class Ui_MainWindow(Ui_MainWindow):
             with open(self.game_setting_path, 'w', encoding='utf-8') as configfile:
                 config.write(configfile)  # 将对象写入文件
         return _scoreBoardTop, _scoreBoardLeft
-    
+
     def read_or_create_record(self):
         config = configparser.ConfigParser()
         record_key_name_list = ["BFLAG", "BNF", "BWIN7", "BSS", "BWS", "BCS", "BTBS", "BSG",
                                 "BWG", "IFLAG", "INF", "IWIN7", "ISS", "IWS", "ICS", "ITBS",
-                                "ISG", "IWG", "EFLAG", "ENF", "EWIN7", "ESS", "EWS", "ECS", 
+                                "ISG", "IWG", "EFLAG", "ENF", "EWIN7", "ESS", "EWS", "ECS",
                                 "ETBS", "ESG", "EWG"]
         self.record_key_name_list = record_key_name_list
         if config.read(self.record_path):
@@ -510,9 +510,9 @@ class Ui_MainWindow(Ui_MainWindow):
                                 }
             for record_key_name in record_key_name_list:
                 self.record[record_key_name] = record_init_dict.copy()
-            
-            
-            
+
+
+
             self.record["BEGINNER"] = dict.fromkeys(map(lambda x: str(x), range(1, 55)), 999.999)
             self.record["INTERMEDIATE"] = dict.fromkeys(map(lambda x: str(x), range(1, 217)), 999.999)
             self.record["EXPERT"] = dict.fromkeys(map(lambda x: str(x), range(1, 382)), 999.999)
@@ -525,7 +525,7 @@ class Ui_MainWindow(Ui_MainWindow):
             config["BTBS"] = self.record["BTBS"]
             config["BSG"] = self.record["BSG"]
             config["BWG"] = self.record["BWG"]
-            
+
             config["IFLAG"] = self.record["IFLAG"]
             config["INF"] = self.record["INF"]
             config["IWIN7"] = self.record["IWIN7"]
@@ -535,7 +535,7 @@ class Ui_MainWindow(Ui_MainWindow):
             config["ITBS"] = self.record["ITBS"]
             config["ISG"] = self.record["ISG"]
             config["IWG"] = self.record["IWG"]
-            
+
             config["EFLAG"] = self.record["EFLAG"]
             config["ENF"] = self.record["ENF"]
             config["EWIN7"] = self.record["EWIN7"]
@@ -545,7 +545,7 @@ class Ui_MainWindow(Ui_MainWindow):
             config["ETBS"] = self.record["ETBS"]
             config["ESG"] = self.record["ESG"]
             config["EWG"] = self.record["EWG"]
-            
+
             config["BEGINNER"] = self.record["BEGINNER"]
             config["INTERMEDIATE"] = self.record["INTERMEDIATE"]
             config["EXPERT"] = self.record["EXPERT"]
