@@ -117,7 +117,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         elif self.gameMode == 4:
             Board, _ = mm.laymine_op(self.board_constraint,
                                      self.attempt_times_limit, (xx, yy, num, i, j))
-        
+
         self.label.ms_board.board = Board
 
     def timeCount(self):
@@ -482,8 +482,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         if self.autosave_video and self.checksum_module_ok():
             self.save_evf_file()
-            
-            
+
+
 
         self.gameFinished()
 
@@ -519,7 +519,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 补上校验值
         checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
         self.label.ms_board.checksum = checksum
-        
+
 
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             filename_level = "b_"
@@ -536,9 +536,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                                      '_3BV=' + f'{self.label.ms_board.bbbv}' +\
                                          '_3BVs=' + f'{self.label.ms_board.bbbv_s:.3f}' +\
                                              '_' + self.player_designator)
-        
-        
-        
+
+
+
 
     def gameFailed(self): # 失败后改脸和状态变量
         self.timer_10ms.stop()
@@ -572,9 +572,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             record_key = "E"
         else:
             raise RuntimeError('没有定义的难度代码')
-            
+
         _translate = QtCore.QCoreApplication.translate
-        
+
         if self.gameMode == 0:
             if b.right == 0:
                 record_key += "NF"
@@ -605,7 +605,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             mode_text = _translate("Form", "弱可猜")
         else:
             raise RuntimeError('没有定义的模式代码')
-              
+
         if b.rtime < self.record[record_key]["rtime"]:
             self.record[record_key]["rtime"] = b.rtime
         else:
@@ -630,7 +630,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.record[record_key]["rqp"] = b.rqp
         else:
             del_items.append(11)
-            
+
         if self.gameMode == 0:
             if b.level == 3:
                 if b.rtime < self.record["BEGINNER"][str(b.bbbv)]:
@@ -654,7 +654,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 raise RuntimeError('没有定义的难度代码')
         else:
             del_items += [13, 14, 15]
-            
+
         if len(del_items) < 9:
             ui = gameRecordPop.ui_Form(self.r_path, del_items, b.bbbv)
             ui.Dialog.setModal(True)
@@ -778,7 +778,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.exec_()
         if ui.alter:
             self.gameMode = ui.gameMode
-            
+
             self.pixSize = ui.pixSize
             if not ui.allow_auto_replay:
                 self.auto_replay = -1
@@ -840,6 +840,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if not ui.success_flag or len(ui.board) < 6 or len(ui.board[0]) < 6:
             return
 
+        # 会报两种runtimeerror，标记阶段无解的局面、枚举阶段无解的局面
+        try:
+            ans = ms.cal_possibility_onboard(ui.board, 0.20625 if len(ui.board[0]) >= 24 else 0.15625)
+        except:
+            return
+
+        if not ans[0]:
+            # 概率矩阵为空就是出错了
+            return
+
+
         # 连续截屏时
         if self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
@@ -856,11 +867,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 在局面上画概率，或不画
         game_board = self.label.ms_board.game_board
 
-        # print(game_board)
-        ans = ms.cal_possibility_onboard(game_board, 0.20625 if len(game_board[0]) >= 24 else 0.15625)
-        if not ans[0]:
-            # 概率矩阵为空就是出错了
-            return
 
 
         self.row = len(game_board)
