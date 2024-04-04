@@ -7,7 +7,7 @@
 [![forks](https://img.shields.io/github/forks/eee555/Solvable-Minesweeper)](https://github.com/eee555/Solvable-Minesweeper/forks)
 
 
-## 简介(Introduction)
+## 简介
 
 元扫雷v3.1.7是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
 
@@ -37,7 +37,7 @@
 
 目前属于漫长的开发阶段中，约1~3月更新一个版本，欢迎提issue、star、pull request、fork。
 
-# Minesweeper v3.1.7 Developed by Enthusiasts
+## Introduction
 
 Minesweeper v3.1.7 is a mineswering game developed by players who are passionate about the game. This project is not a simple repetition of existing work, but a concentration of modern design elements for minesweeper games.
 
