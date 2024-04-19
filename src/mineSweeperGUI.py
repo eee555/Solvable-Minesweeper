@@ -398,9 +398,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_info.setText(self.player_designator)
         # elif self.game_state == 'show':
         #     self.label.setMouseTracking(False)
-        self.game_state = 'ready'
-
+                
+        # 这里有点乱
+        if self.game_state == 'display' or self.game_state == 'showdisplay':
+            self.setBoard_and_start(self.row, self.column, self.mineNum)
+            self.label.set_rcp(self.row, self.column, self.pixSize)
         self.label.set_rcp(self.row, self.column, self.pixSize)
+        self.game_state = 'ready'
         self.label.reloadCellPic(self.pixSize)
         self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
         self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
