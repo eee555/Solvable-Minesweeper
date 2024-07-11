@@ -16,6 +16,8 @@ import hashlib, uuid
 # from PyQt5.QtWidgets import QApplication
 from country_name import country_name
 import metaminesweeper_checksum
+from win32gui import EnumWindows, GetWindowText, FindWindow
+import ctypes
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow, args):
@@ -87,7 +89,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         #      'joking':正在游戏状态，游戏中看过概率计算结果，游戏结果不是official的。
         #      'fail':游戏失败，踩雷了。
         #      'win':游戏成功。
-
+            
 
 
         # 相对路径
@@ -107,6 +109,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         xx = self.row
         yy = self.column
         num = self.mineNum
+        # 0，4, 5, 6, 7, 8, 9, 10代表：标准0、win74、竞速无猜5、强无猜6、
+        # 弱无猜7、准无猜8、强可猜9、弱可猜10
         if self.gameMode == 5 or self.gameMode == 6 or self.gameMode == 9:
             # 根据模式生成局面
             Board, _ = mm.laymine_solvable(self.board_constraint,
@@ -143,8 +147,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 0，4, 5, 6, 7, 8, 9, 10代表：标准、win7、
         # 竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         # 根据模式处理一次点击的全部流程
-        # 返回的最后一个值是一个flag，无论是不是雷，都代表是否失败，True为失败
-        # 该函数维护boardofGame，具体为标雷
         # （i，j）一定是未打开状态
         if self.gameMode == 0 or self.gameMode == 4 or self.gameMode == 5:
             return
@@ -175,6 +177,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             return
         elif self.gameMode == 9 or self.gameMode == 10:
             if self.label.ms_board.board[i][j] == -1:
+                # 可猜调整的核心逻辑
                 board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
                                                       self.label.ms_board.game_board, i, j)
                 self.label.ms_board.board = board
@@ -203,6 +206,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     # 正式埋雷开始
                     self.layMine(i // self.pixSize, j // self.pixSize)
                     self.game_state = 'playing'
+                    
+                    self.SetWindowDisplayAffinity = ctypes.windll.user32.SetWindowDisplayAffinity
+                    self.SetWindowDisplayAffinity.argtypes = ctypes.wintypes.HWND, ctypes.wintypes.DWORD
+                    self.SetWindowDisplayAffinity.restype = ctypes.wintypes.BOOL
+                    if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000011):
+                        raise ctypes.WinError()
+                    # print('failed', ctypes.get_last_error())
+                    # raise ctypes.WinError()
+                    
                     # 核实用的时间，防变速齿轮
                     self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
                                                 toMSecsSinceEpoch()
@@ -453,6 +465,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
 
     def gameFinished(self):  # 游戏结束画残局，改状态
+        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000000):
+            raise ctypes.WinError()
         if self.label.ms_board.game_board_state == 3 and self.end_then_flag:
             self.label.ms_board.win_then_flag_all_mine()
         elif self.label.ms_board.game_board_state == 4:
@@ -491,6 +505,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def save_evf_file(self):
         # 搜集本局各种信息，存成evf文件
+        # 调试的时候不会自动存录像，见checksum_module_ok
         self.label.ms_board.is_fair = self.is_fair()
         self.label.ms_board.is_offical = self.is_official()
         # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:

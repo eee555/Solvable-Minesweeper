@@ -3,6 +3,8 @@ from PyQt5 import QtWidgets
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
+from win32gui import EnumWindows, GetWindowText, FindWindow
+import ctypes
 
 
 if __name__ == "__main__":
@@ -11,6 +13,14 @@ if __name__ == "__main__":
     ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
     ui.mainWindow.show()
     ui.mainWindow.game_setting_path = ui.game_setting_path
+    
+
+    SetWindowDisplayAffinity = ctypes.windll.user32.SetWindowDisplayAffinity
+    SetWindowDisplayAffinity.argtypes = ctypes.wintypes.HWND, ctypes.wintypes.DWORD
+    SetWindowDisplayAffinity.restype = ctypes.wintypes.BOOL
+    ui.hwnd = FindWindow(None, "元扫雷")
+    
+
     sys.exit(app.exec_())
     ...
     

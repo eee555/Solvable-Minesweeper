@@ -1,7 +1,7 @@
 # author : Wang Jianing(18201)
 from random import shuffle, choice
 # from random import randint, seed, sample
-# from itertools import combinations
+from typing import List
 # import time
 from safe_eval import safe_eval
 import configparser
@@ -11,7 +11,8 @@ import math
 
 # OutputEnable = 0
 # seedNum = 60223
-EnuLimit = 40
+# EnuLimit = 40
+EnuLimit = 4
 
 def choose_3BV(board_constraint, attempt_times_limit, params):
     # def choose_3BV_laymine(laymine):
@@ -175,81 +176,7 @@ def refreshBoard2(Board , BoardofGame, ClickedPoses):
                         ClickedPoses.append((m,n))
     return BoardofGame
 
-# def SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame):
-#     # 考虑只一个方程判雷，比如3个方格，雷数也是正好是3，等等
-#     # 返回MatrixA, Matrixx, Matrixb, BoardofGame, NotMine, flag
-#     # flag=1表明有所动作，比如标雷或发现NotMine
-#     # NotMine存储非雷的位置
-#     # 注意：处理结束后的矩阵可能有重复的行(?)
-#     flag = 0
-#     NotMine = []
-#     MatrixColumn = len(Matrixx)
-#     MatrixRow = len(Matrixb)
-#     for i in range(MatrixRow-1, -1, -1):#第一轮循环，找是雷的位置
-#         if sum(MatrixA[i][:]) == Matrixb[i]:
-#             flag = 1
-#             for k in range(MatrixColumn-1, -1, -1):
-#                 if MatrixA[i][k] == 1:
-#                     m,n = Matrixx[k]
-#                     BoardofGame[m][n] = 11#在游戏局面中标雷
-#                     Matrixx.pop(k)
-#                     for t in range(0,MatrixRow):
-#                         if MatrixA[t][k] == 0:
-#                             MatrixA[t].pop(k)
-#                         else:
-#                             MatrixA[t].pop(k)
-#                             Matrixb[t] -= 1
-#                     MatrixColumn -= 1
-#             MatrixA.pop(i)
-#             Matrixb.pop(i)
-#             MatrixRow -= 1
-#     for i in range(MatrixRow-1, -1, -1):# 第二轮循环，找不是雷的位置
-#         if Matrixb[i]==0:
-#             flag = 1
-#             for k in range(MatrixColumn-1, -1, -1):
-#                 if MatrixA[i][k] == 1 and Matrixx[k] not in NotMine:
-#                     NotMine.append(Matrixx[k])
 
-#     return BoardofGame, NotMine, flag
-
-# SolveMinus = ms_toollib.py_SolveMinus
-# SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
-# 用减法和集合的包含关系判雷
-# 返回BoardofGame, NotMine, flag
-# 如果发现IsMine而没有发现NotMine，会再用单集合找一遍。如果发现NotMine，则不调用方法1
-# 因此，若方法2没有发现NotMine，则方法1也不可能发现NotMine；
-# 若方法2发现NotMine，则方法1还可能发现NotMine
-# 注意：处理结束后的矩阵可能有重复的行
-
-# SolveEnumerate = ms_toollib.py_SolveEnumerate
-# SolveEnumerate(MatrixA, Matrixx, Matrixb, BoardofGame, enuLimit=30)
-#枚举法判雷
-
-# calPossibility = ms_toollib.py_cal_possibility
-
-# calPossibility_onboard = ms_toollib.py_cal_possibility_onboard
-
-def refreshMatrixWithNotMine(MatrixA,Matrixx,Matrixb,NotMine):
-    # 用非雷刷新三个矩阵，同时删掉全为0的行
-    # 拟弃用。不合理。
-    # MatrixA,Matrixx,Matrixb = refreshMatrixWithNotMine(MatrixA,Matrixx,Matrixb,NotMine)
-    MatrixRow = len(Matrixb)
-    # MatrixColumn = len(Matrixx)
-    NotMineRel = []
-    for j in NotMine:
-        NotMineRel.append(Matrixx.index(j))
-    NotMineRel.sort(reverse=True)
-    for m in NotMineRel:
-        Matrixx.pop(m)
-    for i in range(MatrixRow-1, -1, -1):
-        if sum(MatrixA[i][:]) == 0:
-            MatrixA.pop(i)
-            Matrixb.pop(i)
-            continue
-        for m in NotMineRel:
-            MatrixA[i].pop(m)
-
-    return MatrixA, Matrixx, Matrixb
 
 def Victory(BoardofGame,Board):
     # 判断当前是否获胜
@@ -264,7 +191,7 @@ def Victory(BoardofGame,Board):
     return 1
 
 
-def enumerateChangeBoard(board, BoardofGame, xx, yy):
+def enumerateChangeBoard(board, BoardofGame, xx, yy) -> (List[List[int]], bool):
     # 等可能给出全部可能情况中(i,j)不为雷的随机一种情况,此时(i,j)一定是未打开状态；
     # 但若超过最大枚举长度，
     # 将返回非随机的某一种可能的情况（暂未实现），若剩余位置数少于雷数，则返回原图
@@ -517,59 +444,6 @@ def debug_ms_board(ms_board):
         print(f"{ms_board.events_time(i)}: '{ms_board.events_mouse(i)}', ({ms_board.events_y(i)}, {ms_board.events_x(i)})")
 
 
-
-# layMineSolvable = ms_toollib.layMineSolvable
-# layMineSolvable = ms_toollib.py_layMineSolvable_thread
-# layMineSolvable(Row, Column, MineNum, X0, Y0, Min3BV = 0, Max3BV = 1e6,
-#                 MaxTimes = 1e6, enuLimit = 30)
-# 3BV下限、上限，最大尝试次数，返回是否成功。
-# 若不成功返回最后生成的局面（不一定无猜），默认尝试十万次
-# 工具箱里的这两个函数，一个是单线程，一个是多线程
-# 性能对比：(16, 16, 72) -> 10.49, 32.02
-# (16, 30, 99) -> 2.98, 2.66
-# layMineSolvable = debug_laymine
-
-
-# calOp = ms_toollib.py_calOp # 输入列表的局面，计算空，0的8连通域数
-# calOp(Board)
-
-# cal3BV = ms_toollib.py_cal3BV
-# 计算3BV，接受列表
-# def cal3BV(Board):
-
-# def isJudgeable(BoardofGame, EnuLimit=30):
-#     # 返回此时是否存在可判的格子，如果还能判返回True
-#     # 这个过程中，如果AI见到的游戏局面中有未标的雷，会标雷，但仍然可能有漏标的
-#     # flag = 0
-#     MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-#     BoardofGame, NotMine, flag = SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
-#     if not NotMine:
-#         MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-#         BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
-#         if not NotMine:
-#             Matrix_as, Matrix_xs, Matrix_bs, _ = refresh_matrixs(BoardofGame)
-#             BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
-#             if not NotMine:
-#                 return BoardofGame, False
-#     return BoardofGame, True
-
-# def xyisJudgeable(BoardofGame, x, y, EnuLimit=30):
-#     # (x,y)是否必然安全，如果必然安全，返回True
-#     MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-
-#     if (x,y) not in Matrixx:  # 内部的非雷按理无法判出
-#         return False
-
-#     BoardofGame, NotMine, flag = SolveDirect(MatrixA, Matrixx, Matrixb, BoardofGame)
-#     if (x,y) not in NotMine:
-#         MatrixA, Matrixx, Matrixb = refreshMatrix(BoardofGame)
-#         BoardofGame, NotMine, flag = SolveMinus(MatrixA, Matrixx, Matrixb, BoardofGame)
-#         if (x,y) not in NotMine:
-#             Matrix_as, Matrix_xs, Matrix_bs, _, _ = refresh_matrixs(BoardofGame)  # result of refresh_matrixs has len of 5
-#             BoardofGame, NotMine, flag = SolveEnumerate(Matrix_as, Matrix_xs, Matrix_bs, BoardofGame, EnuLimit)
-#             if (x,y) not in NotMine:
-#                 return False
-#     return True
 
 def updata_ini(file_name: str, data):
     conf = configparser.ConfigParser()
