@@ -207,11 +207,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     self.layMine(i // self.pixSize, j // self.pixSize)
                     self.game_state = 'playing'
                     
-                    self.SetWindowDisplayAffinity = ctypes.windll.user32.SetWindowDisplayAffinity
-                    self.SetWindowDisplayAffinity.argtypes = ctypes.wintypes.HWND, ctypes.wintypes.DWORD
-                    self.SetWindowDisplayAffinity.restype = ctypes.wintypes.BOOL
-                    if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000011):
-                        raise ctypes.WinError()
+                    if self.player_designator[:6] != "[live]":
+                        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000011):
+                            raise ctypes.WinError()
+                    else:
+                        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000000):
+                            raise ctypes.WinError()
                     # print('failed', ctypes.get_last_error())
                     # raise ctypes.WinError()
                     
@@ -1156,6 +1157,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.score_board_manager.invisible()
         else:
             self.score_board_manager.visible()
+
 
     def closeEvent_(self):
         # 主窗口关闭的回调

@@ -19,6 +19,7 @@ if __name__ == "__main__":
     SetWindowDisplayAffinity.argtypes = ctypes.wintypes.HWND, ctypes.wintypes.DWORD
     SetWindowDisplayAffinity.restype = ctypes.wintypes.BOOL
     ui.hwnd = FindWindow(None, "元扫雷")
+    ui.SetWindowDisplayAffinity = SetWindowDisplayAffinity
     
 
     sys.exit(app.exec_())
