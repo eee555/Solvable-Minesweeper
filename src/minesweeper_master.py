@@ -11,8 +11,7 @@ import math
 
 # OutputEnable = 0
 # seedNum = 60223
-# EnuLimit = 40
-EnuLimit = 4
+EnuLimit = 40
 
 def choose_3BV(board_constraint, attempt_times_limit, params):
     # def choose_3BV_laymine(laymine):
@@ -215,7 +214,7 @@ def enumerateChangeBoard(board, BoardofGame, xx, yy) -> (List[List[int]], bool):
     if not isinstance(board, list):
         board = board.into_vec_vec()
     if ms.is_guess_while_needless(BoardofGame, (xx, yy)) == 4:
-        return board, False
+        return board, False# 踩到必然的雷
     
     MatrixA, Matrixx, Matrixb = ms.refresh_matrix(BoardofGame)
     MatrixColumn = len(Matrixx)

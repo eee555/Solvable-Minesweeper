@@ -29,10 +29,19 @@ class ui_Form(Ui_Form):
 "font: 16pt \"黑体\";\n"
 "color:white;font: bold;")
         
+        
     def setParameter(self):
         self.spinBox.setValue (self.row)
         self.spinBox_2.setValue (self.column)
         self.spinBox_3.setValue (self.mineNum)
+        self.change_minenum_limit()
+        self.spinBox.valueChanged.connect(self.change_minenum_limit)
+        self.spinBox_2.valueChanged.connect(self.change_minenum_limit)
+        
+    def change_minenum_limit(self):
+        minenum_limit = self.spinBox.value () * self.spinBox_2.value () - 1
+        self.spinBox_3.setValue (min(self.spinBox_3.value (), minenum_limit))
+        self.spinBox_3.setMaximum(minenum_limit)
 
     def processParameter(self):
         r = self.spinBox.value ()
@@ -42,16 +51,17 @@ class ui_Form(Ui_Form):
             self.alter = True
             self.row = r
             self.column = c
-            self.mineNum = min (max (n, 2), r * c - 1)
+            self.mineNum = min (max (n, 1), r * c - 1)
         self.Dialog.close ()
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QApplication
-    import sys
-    app = QApplication(sys.argv)
-    demo = ui_Form(8, 8, 10)
-    demo.Dialog.show()
-    sys.exit(app.exec_())
+    # from PyQt5.QtWidgets import QApplication
+    # import sys
+    # app = QApplication(sys.argv)
+    # demo = ui_Form(8, 8, 10)
+    # demo.Dialog.show()
+    # sys.exit(app.exec_())
+    ...
 
 

@@ -222,7 +222,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     self.timer_10ms.start()
                     self.score_board_manager.editing_row = -2
                 self.label.ms_board.step('lr', (i, j)) # 把这个删了也能开始，不知道为什么
-                self.label.update()
+                # print(self.label.ms_board.game_board)
+                # print(self.label.ms_board.game_board_state)
+                
+                if self.label.ms_board.game_board_state == 3:
+                    # 点一下可能获胜
+                    self.gameWin()
+                    self.label.update()
+                    return
+                elif self.label.ms_board.game_board_state == 4:
+                    # 点一下不可能踩雷，但为完整性需要这样写
+                    self.gameFailed()
+                    self.label.update()
+                    return
+                else:
+                    self.label.update()
             self.set_face(14)
         elif self.game_state == 'playing' or self.game_state == 'joking':
             # 如果是游戏中，且是左键抬起（不是双击），且是在10上，且在局面内，则用ai劫持、处理下
@@ -479,10 +493,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
 
-        if self.game_state == 'joking':
+        if self.game_state == 'joking' or self.game_state == 'show':
             self.game_state = 'jowin'
-        else:
+        elif self.game_state == 'playing':
             self.game_state = 'win'
+        else:
+            raise RuntimeError
         self.set_face(17)
 
         if self.autosave_video and self.checksum_module_ok():
@@ -841,6 +857,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def screenShot(self):
         # ‘ctrl’ + ‘space’ 事件，启动截图
 
+        if self.game_state == "playing":
+            self.game_state = "joking"
+        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000000):
+            raise ctypes.WinError()
+                
         ui = captureScreen.CaptureScreen()
         ui.show()
         ui.exec_()
