@@ -16,8 +16,6 @@ import hashlib, uuid
 # from PyQt5.QtWidgets import QApplication
 from country_name import country_name
 import metaminesweeper_checksum
-from win32gui import EnumWindows, GetWindowText, FindWindow
-import ctypes
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow, args):
@@ -208,22 +206,19 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     self.game_state = 'playing'
                     
                     if self.player_designator[:6] != "[live]":
-                        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000011):
-                            raise ctypes.WinError()
+                        self.disable_screenshot()
                     else:
-                        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000000):
-                            raise ctypes.WinError()
-                    # print('failed', ctypes.get_last_error())
-                    # raise ctypes.WinError()
+                        self.enable_screenshot()
                     
                     # 核实用的时间，防变速齿轮
                     self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
                                                 toMSecsSinceEpoch()
                     self.timer_10ms.start()
                     self.score_board_manager.editing_row = -2
-                self.label.ms_board.step('lr', (i, j)) # 把这个删了也能开始，不知道为什么
+                self.label.ms_board.step('lr', (i, j))
                 # print(self.label.ms_board.game_board)
                 # print(self.label.ms_board.game_board_state)
+                # print(self.label.ms_board.mouse_state)
                 
                 if self.label.ms_board.game_board_state == 3:
                     # 点一下可能获胜
@@ -384,16 +379,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineNumWheel(self, i):
         # 在雷上滚轮，调雷数
-        # 没用过
         if self.game_state == 'ready':
             if i > 0:
-                self.mineNum += 1
-                self.mineUnFlagedNum += 1
-                self.showMineNum(self.mineUnFlagedNum)
+                if self.mineNum < self.row * self.column - 1:
+                    self.mineNum += 1
+                    self.mineUnFlagedNum += 1
+                    self.showMineNum(self.mineUnFlagedNum)
             elif i < 0:
-                self.mineNum -= 1
-                self.mineUnFlagedNum -= 1
-                self.showMineNum(self.mineUnFlagedNum)
+                if self.mineNum > 1:
+                    self.mineNum -= 1
+                    self.mineUnFlagedNum -= 1
+                    self.showMineNum(self.mineUnFlagedNum)
             self.timer_mine_num = QTimer()
             # self.timer_mine_num.timeout.connect(self.refreshSettingsDefault)
             self.timer_mine_num.setSingleShot(True)
@@ -458,6 +454,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
         self.label_info.setText(self.player_designator)
         self.game_state = 'ready'
+        self.enable_screenshot()
 
         self.time_10ms = 0
         self.showTime(self.time_10ms)
@@ -480,16 +477,23 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
 
     def gameFinished(self):  # 游戏结束画残局，改状态
-        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000000):
-            raise ctypes.WinError()
+        self.enable_screenshot()
         if self.label.ms_board.game_board_state == 3 and self.end_then_flag:
             self.label.ms_board.win_then_flag_all_mine()
         elif self.label.ms_board.game_board_state == 4:
             self.label.ms_board.loss_then_open_all_mine()
+        # 刷新游戏局面
         self.label.update()
+        # 刷新计数器数值
+        self.timeCount()
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
 
     def gameWin(self):  # 成功后改脸和状态变量，停时间
+        # print(self.label.ms_board.game_board)
+        # print(self.label.ms_board.game_board_state)
+        # print(self.label.ms_board.mouse_state)
+        # print(2256)
+        
         self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
 
@@ -859,8 +863,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         if self.game_state == "playing":
             self.game_state = "joking"
-        if not self.SetWindowDisplayAffinity(self.hwnd, 0x00000000):
-            raise ctypes.WinError()
+        self.enable_screenshot()
                 
         ui = captureScreen.CaptureScreen()
         ui.show()

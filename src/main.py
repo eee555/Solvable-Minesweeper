@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
-from win32gui import EnumWindows, GetWindowText, FindWindow
+from win32gui import FindWindow
 import ctypes
 
 
@@ -13,18 +13,15 @@ if __name__ == "__main__":
     ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
     ui.mainWindow.show()
     ui.mainWindow.game_setting_path = ui.game_setting_path
-    
+
 
     SetWindowDisplayAffinity = ctypes.windll.user32.SetWindowDisplayAffinity
-    SetWindowDisplayAffinity.argtypes = ctypes.wintypes.HWND, ctypes.wintypes.DWORD
-    SetWindowDisplayAffinity.restype = ctypes.wintypes.BOOL
-    ui.hwnd = FindWindow(None, "元扫雷")
-    ui.SetWindowDisplayAffinity = SetWindowDisplayAffinity
-    
+    ui.disable_screenshot = lambda: ... if SetWindowDisplayAffinity(FindWindow(None, "元扫雷"), 0x00000011) else 1/0
+    ui.enable_screenshot = lambda: ... if SetWindowDisplayAffinity(FindWindow(None, "元扫雷"), 0x00000000) else 1/0
 
     sys.exit(app.exec_())
     ...
-    
+
 
 # 最高优先级
 # 校验校验和模块
@@ -35,6 +32,7 @@ if __name__ == "__main__":
 # self.label.ms_board.step('cc', (i, j))报错(难复现，需要跟踪)
 # OBR修改局面还会报错的情况（不确定，需要跟踪）
 # 筛选局面的条件设置错误时，不能显式报告
+# 回放、保存、另存为
 
 # 次优先级
 # 自定义模式弹窗
@@ -72,9 +70,9 @@ if __name__ == "__main__":
 
 # 指标命名：
 # 游戏静态类：race_designator, mode
-# 游戏动态类：rtime, left, right, double，cl，left_s，right_s, double_s, cl_s, path, 
+# 游戏动态类：rtime, left, right, double，cl，left_s，right_s, double_s, cl_s, path,
 #           flag, flag_s
-# 录像动态类：etime, stnb, rqp, qg, ioe, thrp, corr, ce, ce_s, bbbv_solved, 
+# 录像动态类：etime, stnb, rqp, qg, ioe, thrp, corr, ce, ce_s, bbbv_solved,
 #           bbbv_s, (op_solved), (isl_solved)
 # 录像静态类：bbbv，op, isl, cell0, cell1, cell2, cell3, cell4, cell5, cell6,
 #           cell7, cell8, fps, (hizi)
