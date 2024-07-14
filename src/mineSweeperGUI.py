@@ -163,21 +163,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.label.ms_board.board = board
             elif code == 2:
                 board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
-                                                      self.label.ms_board.game_board, i, j)
+                                                      self.label.ms_board.game_board, [(i, j)])
                 self.label.ms_board.board = board
             return
         elif self.gameMode == 8:
             code = ms.is_guess_while_needless(self.label.ms_board.game_board, (i, j))
             if code == 2:
                 board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
-                                                      self.label.ms_board.game_board, i, j)
+                                                      self.label.ms_board.game_board, [(i, j)])
                 self.label.ms_board.board = board
             return
         elif self.gameMode == 9 or self.gameMode == 10:
             if self.label.ms_board.board[i][j] == -1:
                 # 可猜调整的核心逻辑
                 board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
-                                                      self.label.ms_board.game_board, i, j)
+                                                      self.label.ms_board.game_board, [(i, j)])
                 self.label.ms_board.board = board
             return
 
