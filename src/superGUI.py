@@ -19,6 +19,7 @@ class Ui_MainWindow(Ui_MainWindow):
     # windowSizeState = 'loose'  # loose or tight
     def __init__(self, MainWindow, args):
         self.mainWindow = MainWindow
+        self.setupUi(self.mainWindow)
         # 设置全局路径
         r_path = Path(args[0]).parent
         self.r_path = r_path
@@ -57,15 +58,13 @@ class Ui_MainWindow(Ui_MainWindow):
         # gameMode = 0，1，2，3，4，5，6，7代表：
         # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
 
-
         self.read_or_create_record()
+        self.label.setPath(r_path)
         _scoreBoardTop, _scoreBoardLeft = self.read_or_create_game_setting()
-
-
+        self.initMineArea()
 
 
         self.readPredefinedBoardPara()
-        self.setupUi(self.mainWindow)
         self.retranslateUi(MainWindow)
 
         self.trans = QTranslator()
@@ -86,8 +85,7 @@ class Ui_MainWindow(Ui_MainWindow):
             })
 
         self.importLEDPic(self.pixSize) # 导入图片
-        self.label.setPath(r_path)
-        self.initMineArea()
+        # self.label.setPath(r_path)
 
 
         self.label_2.setPath(r_path)
@@ -121,7 +119,7 @@ class Ui_MainWindow(Ui_MainWindow):
 
     def initMineArea(self):
 
-        self.label.set_rcp(self.row, self.column, self.pixSize)
+        # self.label.set_rcp(self.row, self.column, self.pixSize)
         self.label.setMinimumSize(QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
         self.label.leftPressed.connect(self.mineAreaLeftPressed)
         self.label.leftRelease.connect(self.mineAreaLeftRelease)
@@ -296,7 +294,6 @@ class Ui_MainWindow(Ui_MainWindow):
     def read_or_create_game_setting(self):
         config = configparser.ConfigParser()
         if config.read(self.game_setting_path, encoding='utf-8'):
-            self.gameMode = config.getint('DEFAULT', 'gameMode')
             self.mainWindow.setWindowOpacity((config.getint('DEFAULT', 'transparency') + 1) / 100)
             self.pixSize = config.getint('DEFAULT', 'pixSize')
             self.mainWindow.move(config.getint('DEFAULT', 'mainWinTop'), config.getint('DEFAULT', 'mainWinLeft'))
@@ -306,6 +303,10 @@ class Ui_MainWindow(Ui_MainWindow):
             _scoreBoardLeft = config.getint('DEFAULT', 'scoreBoardLeft')
             self.row = config.getint("DEFAULT", "row")
             self.column = config.getint("DEFAULT", "column")
+
+            self.label.set_rcp(self.row, self.column, self.pixSize)
+            self.gameMode = config.getint('DEFAULT', 'gameMode')
+
             self.mineNum = config.getint("DEFAULT", "mineNum")
             # 完成度低于该百分比炸雷自动重开
             if config.getboolean("DEFAULT", "allow_auto_replay"):
@@ -339,7 +340,6 @@ class Ui_MainWindow(Ui_MainWindow):
             # 找不到配置文件就初始化
             self.min3BV = 100
             self.max3BV = 381
-            self.gameMode = 0
             self.mainWindow.setWindowOpacity(1)
             self.pixSize = 20
             self.mainWindow.move(100, 200)
@@ -347,6 +347,8 @@ class Ui_MainWindow(Ui_MainWindow):
             _scoreBoardLeft = 100
             self.row = 16
             self.column = 30
+            self.label.set_rcp(self.row, self.column, self.pixSize)
+            self.gameMode = 0
             self.mineNum = 99
             self.auto_replay = 30
             self.allow_auto_replay = False

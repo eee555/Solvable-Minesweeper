@@ -87,7 +87,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         #      'joking':正在游戏状态，游戏中看过概率计算结果，游戏结果不是official的。
         #      'fail':游戏失败，踩雷了。
         #      'win':游戏成功。
-            
+
 
 
         # 相对路径
@@ -102,6 +102,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.trans_language()
 
         self.mainWindow.closeEvent_.connect(self.closeEvent_)
+
+    @property
+    def gameMode(self):
+        return self._game_mode
+
+    @gameMode.setter
+    def gameMode(self, game_mode):
+        self.label.ms_board.mode = game_mode
+        self._game_mode = game_mode
 
     def layMine(self, i, j):
         xx = self.row
@@ -178,6 +187,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 # 可猜调整的核心逻辑
                 board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
                                                       self.label.ms_board.game_board, [(i, j)])
+
                 self.label.ms_board.board = board
             return
 
@@ -203,23 +213,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     self.label.ms_board.game_board[i// self.pixSize][j// self.pixSize] == 10:
                     # 正式埋雷开始
                     self.layMine(i // self.pixSize, j // self.pixSize)
-                    self.game_state = 'playing'
                     
+                    self.game_state = 'playing'
+
                     if self.player_designator[:6] != "[live]":
                         self.disable_screenshot()
                     else:
                         self.enable_screenshot()
-                    
+
                     # 核实用的时间，防变速齿轮
                     self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
                                                 toMSecsSinceEpoch()
                     self.timer_10ms.start()
                     self.score_board_manager.editing_row = -2
                 self.label.ms_board.step('lr', (i, j))
-                # print(self.label.ms_board.game_board)
-                # print(self.label.ms_board.game_board_state)
-                # print(self.label.ms_board.mouse_state)
-                
+
                 if self.label.ms_board.game_board_state == 3:
                     # 点一下可能获胜
                     self.gameWin()
@@ -421,7 +429,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_info.setText(self.player_designator)
         # elif self.game_state == 'show':
         #     self.label.setMouseTracking(False)
-                
+
         # 这里有点乱
         if self.game_state == 'display' or self.game_state == 'showdisplay':
             self.setBoard_and_start(self.row, self.column, self.mineNum)
@@ -489,11 +497,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
 
     def gameWin(self):  # 成功后改脸和状态变量，停时间
-        # print(self.label.ms_board.game_board)
-        # print(self.label.ms_board.game_board_state)
-        # print(self.label.ms_board.mouse_state)
-        # print(2256)
-        
         self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
 
@@ -531,7 +534,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.ms_board.is_offical = self.is_official()
         # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:
         #     self.label.ms_board.checksum = metaminesweeper_checksum.get_checksum()
-        self.label.ms_board.mode = self.gameMode
+        # self.label.ms_board.mode = self.gameMode
         self.label.ms_board.software = "元3.1.7".encode( "UTF-8" )
         self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
         self.label.ms_board.race_designator = self.race_designator.encode( "UTF-8" )
@@ -732,6 +735,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def predefined_Board(self, k):
         # 按快捷键123456时的回调
+        row = self.predefinedBoardPara[k]['row']
+        column = self.predefinedBoardPara[k]['column']
+        self.pixSize = self.predefinedBoardPara[k]['pix_size']
+        self.label.ms_board.reset(row, column, self.pixSize)
         self.gameMode = self.predefinedBoardPara[k]['game_mode']
         self.score_board_manager.with_namespace({
             "mode": mm.trans_game_mode(self.gameMode),
@@ -739,13 +746,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.show(self.label.ms_board, index_type=1)
         self.board_constraint = self.predefinedBoardPara[k]['board_constraint']
         self.attempt_times_limit = self.predefinedBoardPara[k]['attempt_times_limit']
-        self.pixSize = self.predefinedBoardPara[k]['pix_size']
         self.importLEDPic(self.pixSize)
         self.label.importCellPic(self.pixSize)
         self.label_2.reloadFace(self.pixSize)
-        self.label.ms_board.pix_size = self.pixSize
-        self.setBoard_and_start(self.predefinedBoardPara[k]['row'],
-                                self.predefinedBoardPara[k]['column'],
+        self.setBoard_and_start(row,
+                                column,
                                 self.predefinedBoardPara[k]['mine_num'])
         # self.refreshSettingsDefault()
 
@@ -864,7 +869,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if self.game_state == "playing":
             self.game_state = "joking"
         self.enable_screenshot()
-                
+
         ui = captureScreen.CaptureScreen()
         ui.show()
         ui.exec_()

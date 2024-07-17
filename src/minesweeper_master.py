@@ -166,6 +166,10 @@ def enumerateChangeBoard(board, game_board, poses: List[Tuple[int, int]]) -> (Li
     if all([board[x][y] != -1 for x,y in poses]):
         # 全不是雷
         return board, True
+    for i in range(len(board)):
+        for j in range(len(board[0])):
+            if game_board[i][j] == 11:
+                game_board[i][j] = 10
     game_board = ms.mark_board(game_board)
     if any([game_board[x][y] == 11 for x,y in poses]):
         # 有一个必然是雷，就直接返回
