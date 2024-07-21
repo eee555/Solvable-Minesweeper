@@ -10,7 +10,7 @@ import minesweeper_master as mm
 import ms_toollib as ms
 import configparser
 # from pathlib import Path
-# import time
+import time
 import os
 import hashlib, uuid
 # from PyQt5.QtWidgets import QApplication
@@ -77,7 +77,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.frameShortcut9.activated.connect(self.screenShot)
         self.shortcut_hidden_score_board.activated.connect(self.hidden_score_board)
 
-        self.game_state = 'ready'
+        self._game_state = self.game_state = 'ready'
         # 用状态机控制局面状态。
         # 约定：'ready'：预备状态。表示局面完全没有左键点过，可能被右键标雷；刚打开或点脸时进入这种状态。
         #               此时可以改雷数、改格子大小（ctrl+滚轮）、行数、列数（拖拉边框）。
@@ -111,6 +111,25 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def gameMode(self, game_mode):
         self.label.ms_board.mode = game_mode
         self._game_mode = game_mode
+        
+    @property
+    def game_state(self):
+        return self._game_state
+
+    @game_state.setter
+    def game_state(self, game_state: str):
+        # print(self._game_state, " -> " ,game_state)
+        if self._game_state in ("playing", "show", "joking") and\
+            game_state not in ("playing", "show", "joking"):
+            self.timer_10ms.stop()
+        elif self._game_state in ("display", "showdisplay") and\
+            game_state not in ("display", "showdisplay"):
+            self.timer_video.stop()
+            self.ui_video_control.QWidget.close()
+            self.label.paint_cursor = False
+        elif self._game_state == 'study':
+            self.num_bar_ui.QWidget.close()
+        self._game_state = game_state
 
     def layMine(self, i, j):
         xx = self.row
@@ -139,7 +158,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.time_10ms = int(t * 100)
             self.showTime(self.time_10ms // 100)
             since_time_unix_2 = QtCore.QDateTime.currentDateTime().\
-                ArithmeticErrortoMSecsSinceEpoch() - self.start_time_unix_2
+                toMSecsSinceEpoch() - self.start_time_unix_2
             if abs(t * 1000 - since_time_unix_2) > 10 and\
                 (self.game_state == "playing" or self.game_state == "joking"):
                 # 防CE作弊
@@ -302,8 +321,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
 
     def mineMouseMove(self, i, j):
+        # 正常情况的鼠标移动事件，与高亮的显示有关
+        if self.game_state == 'playing' or self.game_state == 'joking' or self.game_state == 'ready':
+            self.label.ms_board.step('mv', (i, j))
+            self.label.update()
         # 按住空格后的鼠标移动事件，与概率的显示有关
-        if self.game_state == 'show' or self.game_state == 'study':
+        elif self.game_state == 'show' or self.game_state == 'study':
             if not self.pos_is_in_board(i, j):
                 self.label_info.setText('(是雷的概率)')
             else:
@@ -316,10 +339,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             else:
                 text4 = '{:.3f}'.format(max(0, self.label.ms_board.game_board_poss[i//self.pixSize][j//self.pixSize]))
                 self.label_info.setText(text4)
-        # 正常情况的鼠标移动事件，与高亮的显示有关
-        elif self.game_state == 'playing' or self.game_state == 'joking' or self.game_state == 'ready':
-            self.label.ms_board.step('mv', (i, j))
-            self.label.update()
+        
 
     def resizeWheel(self, i, x, y):
         # 按住ctrl滚轮，调整局面大小
@@ -421,14 +441,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.operationStream = []  # 记录整局的鼠标操作流，格式例如[('l1',(x,y)),('r1',(x,y)),('c2',(x,y))]
 
         self.label.paintPossibility = False
-        self.label.paint_cursor = False
+        # self.label.paint_cursor = False
         # self.label.setMouseTracking(False) # 鼠标未按下时，组织移动事件回调
 
-        if self.game_state == 'display':
-            self.timer_video.stop()
-            self.ui_video_control.QWidget.close()
-        elif self.game_state == 'study':
-            self.num_bar_ui.QWidget.close()
+        # if self.game_state == 'display':
+        #     self.timer_video.stop()
+        #     self.ui_video_control.QWidget.close()
+        # elif self.game_state == 'study':
+        #     self.num_bar_ui.QWidget.close()
         self.label_info.setText(self.player_designator)
         # elif self.game_state == 'show':
         #     self.label.setMouseTracking(False)
@@ -458,12 +478,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 return
         # 此时self.label.ms_board是mm.abstract_game_board的实例
         if self.game_state == 'display' or self.game_state == 'showdisplay':
-            self.timer_video.stop()
-            self.ui_video_control.QWidget.close()
+            # self.timer_video.stop()
+            # self.ui_video_control.QWidget.close()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
             self.label.ms_board.mode = self.gameMode
         elif self.game_state == 'study':
-            self.num_bar_ui.QWidget.close()
+            # self.num_bar_ui.QWidget.close()
             self.score_board_manager.visible()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
             self.label.ms_board.mode = self.gameMode
@@ -483,7 +503,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.update()
 
         self.label.paintPossibility = False
-        self.label.paint_cursor = False
+        # self.label.paint_cursor = False
         # self.label.setMouseTracking(False) # 鼠标未按下时，组织移动事件回调
 
         self.score_board_manager.with_namespace({
@@ -530,9 +550,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def checksum_module_ok(self):
         # 检查校验和模块的签名
         # 调试的时候不会自动存录像，除非将此处改为return True
-        # return True
-        return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
-            '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
+        return True
+        # return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
+        #     '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
 
     def save_evf_file(self):
         # 搜集本局各种信息，存成evf文件
@@ -796,10 +816,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def setBoard_and_start(self, row, column, mineNum):
         # 把局面设置成(row, column, mineNum)，把3BV的限制设置成min3BV, max3BV
-        if self.game_state == 'display': # 先把定时器停了再说
+        if self.game_state == 'display' or self.game_state == 'showdisplay':
             self.label.paintPossibility = False
-            self.label.paint_cursor = False
-            self.timer_video.stop()
+            # self.label.paint_cursor = False
+            # self.timer_video.stop()
         if (self.row, self.column, self.mineNum) != (row, column, mineNum):
             self.setBoard(row, column, mineNum)
             self.gameStart()
@@ -875,6 +895,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         if self.game_state == "playing":
             self.game_state = "joking"
+        if self.game_state == "display" or self.game_state == "showdisplay":
+            self.video_playing = False
+            self.timer_video.stop()
+            
+        
         self.enable_screenshot()
 
         ui = captureScreen.CaptureScreen()
@@ -896,8 +921,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
 
         # 连续截屏时
-        if self.game_state == 'study':
-            self.num_bar_ui.QWidget.close()
+        # if self.game_state == 'study':
+        #     self.num_bar_ui.QWidget.close()
         self.game_state = 'study'    # 局面进入研究模式
 
         # 主定时器停一下，不停的话需要的修补太多

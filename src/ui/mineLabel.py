@@ -53,7 +53,8 @@ class mineLabel(QtWidgets.QLabel):
         # ui层面，重设一下宽、高、大小
         # self.paintPossibility = False  # 是否打印概率
         if self.paintPossibility:
-            self.ms_board = mm.abstract_game_board()
+            # self.ms_board = mm.abstract_game_board()
+            self.ms_board = mm.CoreBaseVideo([[0] * column for _ in range(row)], pixSize)
         else:
             self.row = row
             self.column = column

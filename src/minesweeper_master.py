@@ -300,12 +300,42 @@ def trans_game_mode(mode: int) -> str:
     elif mode == 10:
         return '弱可猜'
     
-class abstract_game_board(object):
-    __slots__ = ('game_board', 'mouse_state', 'game_board_state')
-    def reset(self, *args):
-        ...
-    def step(self, *args):
-        ...
+# class abstract_game_board(object):
+#     __slots__ = ('game_board', 'mouse_state', 'game_board_state')
+#     def reset(self, *args):
+#         ...
+#     def step(self, *args):
+#         ...
+   
+    
+class CoreBaseVideo(ms.BaseVideo):
+    mouse_state = 1
+    game_board_state = 1
+    x_y = (0, 0)
+    def __new__(cls, board, cell_pixel_size):
+        return ms.BaseVideo.__new__(cls, board, cell_pixel_size)
+    def __init__(self, board, cell_pixel_size):
+        super(CoreBaseVideo, self).__init__()
+    @property
+    def game_board(self):
+        return self._game_board
+    @game_board.setter
+    def game_board(self, game_board):
+        self._game_board = game_board
+    class AlwaysZero:  
+        def __getitem__(self, key):  
+            class Inner:
+                def __getitem__(self, inner_key):  
+                    return 0  
+            return Inner()
+    # self.timer_video.stop()以后，槽函数可能还在跑
+    # self.label.ms_board就会变成abstract_game_board
+    # 使game_board_poss[x][y]永远返回0。否则此处就会报错
+    game_board_poss = AlwaysZero()
+    
+    
+
+        
         
 
 # unsolvableStructure = ms_toollib.py_unsolvableStructure
