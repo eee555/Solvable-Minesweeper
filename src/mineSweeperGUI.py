@@ -138,8 +138,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             t = self.label.ms_board.time
             self.time_10ms = int(t * 100)
             self.showTime(self.time_10ms // 100)
-            since_time_unix_2 = QtCore.QDateTime.currentDateTime().toMSecsSinceEpoch() - self.start_time_unix_2
-            if abs(t * 1000 - since_time_unix_2) > 10:
+            since_time_unix_2 = QtCore.QDateTime.currentDateTime().\
+                ArithmeticErrortoMSecsSinceEpoch() - self.start_time_unix_2
+            if abs(t * 1000 - since_time_unix_2) > 10 and\
+                (self.game_state == "playing" or self.game_state == "joking"):
                 # 防CE作弊
                 self.gameRestart()
 
@@ -188,6 +190,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 board, flag = mm.enumerateChangeBoard(self.label.ms_board.board,
                                                       self.label.ms_board.game_board, [(i, j)])
 
+                
                 self.label.ms_board.board = board
             return
 
@@ -433,6 +436,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 这里有点乱
         if self.game_state == 'display' or self.game_state == 'showdisplay':
             self.setBoard_and_start(self.row, self.column, self.mineNum)
+            self.label.paintPossibility = False
             self.label.set_rcp(self.row, self.column, self.pixSize)
         self.label.set_rcp(self.row, self.column, self.pixSize)
         self.game_state = 'ready'
@@ -446,20 +450,23 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # self.mainWindow.setMinimumSize(QtCore.QSize(10, 10))
         self.minimumWindow()
 
+    # 点击脸时调用，或尺寸不变时重开
     def gameRestart(self, e = None):  # 画界面，但是不埋雷，改数据而不是重新生成label
         if e:
         # 点脸周围时，会传入一个e参数
             if not (self.MinenumTimeWigdet.width() >= e.localPos().x() >= 0 and 0 <= e.localPos().y() <= self.MinenumTimeWigdet.height()):
                 return
-        # 点击脸时调用
+        # 此时self.label.ms_board是mm.abstract_game_board的实例
         if self.game_state == 'display' or self.game_state == 'showdisplay':
             self.timer_video.stop()
             self.ui_video_control.QWidget.close()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
+            self.label.ms_board.mode = self.gameMode
         elif self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
             self.score_board_manager.visible()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
+            self.label.ms_board.mode = self.gameMode
         self.label_info.setText(self.player_designator)
         self.game_state = 'ready'
         self.enable_screenshot()
@@ -891,23 +898,22 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 连续截屏时
         if self.game_state == 'study':
             self.num_bar_ui.QWidget.close()
+        self.game_state = 'study'    # 局面进入研究模式
 
         # 主定时器停一下，不停的话需要的修补太多
         self.timer_10ms.stop()
         self.score_board_manager.invisible()
 
-        self.label.ms_board = mm.abstract_game_board()
-        self.label.ms_board.mouse_state = 1
-        self.label.ms_board.game_board_state = 1
-        self.label.ms_board.game_board = ui.board
+        # self.label.ms_board = mm.abstract_game_board()
+        # self.label.ms_board.mouse_state = 1
+        # self.label.ms_board.game_board_state = 1
+        # self.label.ms_board.game_board = ui.board
 
         # 在局面上画概率，或不画
-        game_board = self.label.ms_board.game_board
+        # game_board = ui.board
 
-
-
-        self.row = len(game_board)
-        self.column = len(game_board[0])
+        self.row = len(ui.board)
+        self.column = len(ui.board[0])
 
         self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * self.row)
         self.num_bar_ui.QWidget.barSetMineNum.connect(self.showMineNum)
@@ -924,16 +930,20 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         # self.setBoard_and_start(len(ui.board), len(ui.board[0]), ans[1][1])
         self.setBoard(self.row, self.column, ans[1][1])
+        
+        self.label.paintPossibility = True
         self.label.set_rcp(self.row, self.column, self.pixSize)
+        
+        self.label.ms_board.game_board = ui.board
+        self.label.ms_board.mouse_state = 1
+        self.label.ms_board.game_board_state = 1
         self.mineNumShow = ans[1][1]
         self.showMineNum(self.mineNumShow)
-
-        # ans = ms.cal_possibility_onboard(ui.board, self.mineNumShow)
         self.label.boardPossibility = ans[0]
-        self.label.paintPossibility = True
+        
+
         self.label.update()
         # self.label.setMouseTracking(True)
-        self.game_state = 'study'    # 局面进入研究模式
 
         self.minimumWindow()
 
@@ -1072,6 +1082,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 调整窗口
         if (video.row, video.column) != (self.row, self.column):
             self.setBoard(video.row, video.column, video.mine_num)
+            self.label.paintPossibility = False
             self.label.set_rcp(self.row, self.column, self.pixSize)
             # self.label.reloadCellPic(self.pixSize)
             self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
@@ -1180,6 +1191,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         pixmap = QPixmap(self.pixmapNum[face_type])
         self.label_2.setPixmap(pixmap)
         self.label_2.setScaledContents(True)
+        
     def hidden_score_board(self):
         # 按/隐藏计数器，再按显示
         if self.score_board_manager.ui.QWidget.isVisible():

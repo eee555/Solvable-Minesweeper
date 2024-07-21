@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget
 import ms_toollib as ms
 from PyQt5.QtCore import QPoint, Qt
 # from PyQt5.QtSvg import QSvgWidget
+import minesweeper_master as mm
 
 
 class mineLabel(QtWidgets.QLabel):
@@ -18,6 +19,7 @@ class mineLabel(QtWidgets.QLabel):
     mousewheelEvent = QtCore.pyqtSignal (int, int, int)
     row = 0
     column = 0
+    pixSize = 0
 
     def __init__(self, parent):
         super (mineLabel, self).__init__ (parent)
@@ -27,6 +29,7 @@ class mineLabel(QtWidgets.QLabel):
         self.mouse.addPolygon(mouse_)
         self.setMouseTracking(True)
         self.paint_cursor = False # 是否画光标。不仅控制画光标，还代表了是游戏还是播放录像。
+        self.paintPossibility = False
 
     def setPath(self, r_path):
         # 告诉局面控件，相对路径
@@ -48,42 +51,38 @@ class mineLabel(QtWidgets.QLabel):
 
     def set_rcp(self, row, column, pixSize):
         # ui层面，重设一下宽、高、大小
-        self.pixSize = pixSize
-        self.paintPossibility = False  # 是否打印概率
-        if (self.row, self.column) != (row, column): # 如果不相等，重新实例化
+        # self.paintPossibility = False  # 是否打印概率
+        if self.paintPossibility:
+            self.ms_board = mm.abstract_game_board()
+        else:
             self.row = row
             self.column = column
             if not hasattr(self, "ms_board"):
-                self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
+                self.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], pixSize)
             else:
                 if isinstance(self.ms_board, ms.BaseVideo):
                     self.ms_board.reset(row, column, pixSize)
                 else:
-                    self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
-            # print("new board")
-            # print(self.ms_board.mode)
-            # if not hasattr(self,'ms_board'):
-            #     self.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
-            self.boardPossibility = [[0.0] * self.ms_board.column for _ in range(self.ms_board.row)]
+                    self.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], pixSize)
+            self.boardPossibility = [[0.0] * column for _ in range(row)]
         
-        # 这里有问题，尺寸不一样也可以reset吗
-        self.ms_board.reset(self.row, self.column, self.pixSize)
-        
-        self.importCellPic(self.pixSize)
-        self.resize(QtCore.QSize(self.pixSize * self.column + 8, self.pixSize * self.row + 8))
-        self.current_x = self.row # 鼠标坐标，和高亮的展示有关
-        self.current_y = self.column
-
-        points = [ QPoint(0, 0),   # 你猜这个多边形是什么，它就是鼠标
-                  QPoint(0, pixSize),
-                QPoint(int(0.227 * pixSize), int(0.773 * pixSize)),
-                QPoint(int(0.359 * pixSize), int(1.125 * pixSize)),
-                QPoint(int(0.493 * pixSize), int(1.066 * pixSize)),
-                QPoint(int(0.357 * pixSize), int(0.72 * pixSize)),
-                QPoint(int(0.666 * pixSize), int(0.72 * pixSize)) ]
-        mouse_ = QPolygonF(points)
-        self.mouse = QPainterPath()
-        self.mouse.addPolygon(mouse_)
+        if self.pixSize != pixSize:
+            self.pixSize = pixSize
+            self.importCellPic(pixSize)
+            self.resize(QtCore.QSize(pixSize * column + 8, pixSize * row + 8))
+            self.current_x = self.row # 鼠标坐标，和高亮的展示有关
+            self.current_y = self.column
+    
+            points = [ QPoint(0, 0),   # 你猜这个多边形是什么，它就是鼠标
+                      QPoint(0, pixSize),
+                    QPoint(int(0.227 * pixSize), int(0.773 * pixSize)),
+                    QPoint(int(0.359 * pixSize), int(1.125 * pixSize)),
+                    QPoint(int(0.493 * pixSize), int(1.066 * pixSize)),
+                    QPoint(int(0.357 * pixSize), int(0.72 * pixSize)),
+                    QPoint(int(0.666 * pixSize), int(0.72 * pixSize)) ]
+            mouse_ = QPolygonF(points)
+            self.mouse = QPainterPath()
+            self.mouse.addPolygon(mouse_)
 
     def mousePressEvent(self, e):
         # 重载一下鼠标点击事件
@@ -189,7 +188,7 @@ class mineLabel(QtWidgets.QLabel):
 
         # 画高亮
         if (game_board_state == 2 or game_board_state == 1 or game_board_state == 5) and\
-            not self.paintPossibility and current_x < self.row and current_y < self.column:
+            current_x < self.row and current_y < self.column:
             if mouse_state == 5 or mouse_state == 6:
                 for r in range(max(current_x - 1, 0), min(current_x + 2, self.row)):
                     for c in range(max(current_y - 1, 0), min(current_y + 2, self.column)):
