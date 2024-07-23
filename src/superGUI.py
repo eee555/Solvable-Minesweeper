@@ -259,9 +259,8 @@ class Ui_MainWindow(Ui_MainWindow):
 
     def minimumWindow(self):
         # 最小化展示窗口，并固定尺寸
-        # if self.windowSizeState == 'loose':
-        self.label.setFixedSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-            # self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+        self.label.setFixedSize(QtCore.QSize(self.pixSize*self.column + 8,
+                                             self.pixSize*self.row + 8))
         self.windowSizeState = 'tight'
         self.timer_ = QTimer()
         self.timer_.timeout.connect(self.__minimumWindow)
@@ -273,6 +272,7 @@ class Ui_MainWindow(Ui_MainWindow):
         if self.minimum_counter >= 100:
             self.minimum_counter = 0
             self.timer_.stop()
+            
 
 
     def trans_language(self, language = ""):
@@ -295,7 +295,7 @@ class Ui_MainWindow(Ui_MainWindow):
         config = configparser.ConfigParser()
         if config.read(self.game_setting_path, encoding='utf-8'):
             self.mainWindow.setWindowOpacity((config.getint('DEFAULT', 'transparency') + 1) / 100)
-            self.pixSize = config.getint('DEFAULT', 'pixSize')
+            self._pixSize = config.getint('DEFAULT', 'pixSize')
             self.mainWindow.move(config.getint('DEFAULT', 'mainWinTop'), config.getint('DEFAULT', 'mainWinLeft'))
             # self.score_board_manager.ui.QWidget.move(config.getint('DEFAULT', 'scoreBoardTop'),
             #                                          config.getint('DEFAULT', 'scoreBoardLeft'))
@@ -341,7 +341,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.min3BV = 100
             self.max3BV = 381
             self.mainWindow.setWindowOpacity(1)
-            self.pixSize = 20
+            self._pixSize = 20
             self.mainWindow.move(100, 200)
             _scoreBoardTop = 100
             _scoreBoardLeft = 100

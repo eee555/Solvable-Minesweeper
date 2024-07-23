@@ -23,7 +23,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         super(MineSweeperGUI, self).__init__(MainWindow, args)
         # MineSweeperGUI父类的init中读.ini、读图片、设置字体、局面初始化等
 
-        self.operationStream = []
+        # self.operationStream = []
 
         self.time_10ms: int = 0 # 已毫秒为单位的游戏时间，全局统一的
         self.showTime(self.time_10ms // 100)
@@ -102,6 +102,35 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.trans_language()
 
         self.mainWindow.closeEvent_.connect(self.closeEvent_)
+
+    @property
+    def pixSize(self):
+        return self._pixSize
+    
+    @pixSize.setter
+    def pixSize(self, pixSize):
+        pixSize = max(5, pixSize)
+        if pixSize == self._pixSize:
+            return
+        self.label.set_rcp(self.row, self.column, pixSize)
+        self.label.reloadCellPic(pixSize)
+        for i in range(4):
+            self.predefinedBoardPara[i]['pix_size'] = pixSize
+        self.reimportLEDPic(pixSize)
+        self.label.setMinimumSize(QtCore.QSize(pixSize * self.column + 8, pixSize * self.row + 8))
+        self.label.setMaximumSize(QtCore.QSize(pixSize * self.column + 8, pixSize * self.row + 8))
+        # self.label.setFixedSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
+
+        self.label_2.reloadFace(pixSize)
+        self.set_face(14)
+        self.showMineNum(self.mineUnFlagedNum)
+        self.showTime(0)
+        if pixSize < self._pixSize:
+            self._pixSize = pixSize
+            self.minimumWindow()
+        else:
+            self._pixSize = pixSize
+
 
     @property
     def gameMode(self):
@@ -348,47 +377,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if QApplication.keyboardModifiers() == Qt.ControlModifier and self.game_state == 'ready': # 检测是否按ctrl
             if i > 0:
                 self.pixSize += 1
-                self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.label.reloadCellPic(self.pixSize)
-                for i in range(4):
-                    self.predefinedBoardPara[i]['pix_size'] = self.pixSize
-                self.reimportLEDPic(self.pixSize)
-                # self.label.ms_board.pix_size = self.pixSize
-                self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-                self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-                self.label_2.reloadFace(self.pixSize)
-                self.set_face(14)
-                # pixmap = QPixmap(self.pixmapNum[14])
-                # self.label_2.setPixmap(pixmap)
-                # self.label_2.setScaledContents(True)
-                self.showMineNum(self.mineUnFlagedNum)
-                self.showTime(0)
-                # self.label.resize(QtCore.QSize(self.pixSize * self.column + 8, self.pixSize * self.row + 8))
             elif i < 0:
                 self.pixSize -= 1
-                self.pixSize = max(5, self.pixSize)
-                self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.label.reloadCellPic(self.pixSize)
-                for i in range(4):
-                    self.predefinedBoardPara[i]['pix_size'] = self.pixSize
-                self.reimportLEDPic(self.pixSize)
-                # self.label.ms_board.pix_size = self.pixSize
-                self.label.setMinimumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-                self.label.setMaximumSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
-                self.label_2.reloadFace(self.pixSize)
-                self.set_face(14)
-                # pixmap = QPixmap(self.pixmapNum[14])
-                # self.label_2.setPixmap(pixmap)
-                # self.label_2.setScaledContents(True)
-                self.showMineNum(self.mineUnFlagedNum)
-                self.showTime(0)
 
-                self.minimumWindow()
-            # 这个哪里用了？？？延时后缩紧
-            self.timer_save_size = QTimer()
-            # self.timer_save_size.timeout.connect(self.refreshSettingsDefault)
-            self.timer_save_size.setSingleShot(True)
-            self.timer_save_size.start(500)
         elif self.game_state == 'study':
             if x < 0 or x >= self.row or y < 0 or y >= self.column:
                 return
@@ -438,20 +429,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.showTime(self.time_10ms)
         self.timer_10ms.stop()
         self.score_board_manager.editing_row = -1
-        self.operationStream = []  # 记录整局的鼠标操作流，格式例如[('l1',(x,y)),('r1',(x,y)),('c2',(x,y))]
 
         self.label.paintPossibility = False
-        # self.label.paint_cursor = False
-        # self.label.setMouseTracking(False) # 鼠标未按下时，组织移动事件回调
-
-        # if self.game_state == 'display':
-        #     self.timer_video.stop()
-        #     self.ui_video_control.QWidget.close()
-        # elif self.game_state == 'study':
-        #     self.num_bar_ui.QWidget.close()
         self.label_info.setText(self.player_designator)
-        # elif self.game_state == 'show':
-        #     self.label.setMouseTracking(False)
 
         # 这里有点乱
         if self.game_state == 'display' or self.game_state == 'showdisplay':
@@ -1052,7 +1032,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 刷新游戏设置.ini里默认部分的设置，与当前游戏里一致，
         # 除了transparency、mainwintop和mainwinleft
         conf = configparser.ConfigParser()
-        conf.read(self.game_setting_path)
+        conf.read(self.game_setting_path, encoding='utf-8')
         conf.set("DEFAULT", "gamemode", str(self.gameMode))
         conf.set("DEFAULT", "pixsize", str(self.pixSize))
         conf.set("DEFAULT", "row", str(self.row))
@@ -1240,7 +1220,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
 
         conf = configparser.ConfigParser()
-        conf.read(self.record_path)
+        conf.read(self.record_path, encoding='utf-8')
         for key_name in self.record_key_name_list:
             conf[key_name] = self.record[key_name]
         # conf["BFLAG"] = self.record["BFLAG"]
