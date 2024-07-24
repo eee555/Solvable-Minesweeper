@@ -537,6 +537,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def save_evf_file(self):
         # 搜集本局各种信息，存成evf文件
         # 调试的时候不会自动存录像，见checksum_module_ok
+        self.label.ms_board.use_question = False # 禁用问号是共识
+        self.label.ms_board.use_cursor_pos_lim = False # 目前还不能限制
+        self.label.ms_board.use_auto_replay = self.auto_replay > 0
+        
         self.label.ms_board.is_fair = self.is_fair()
         self.label.ms_board.is_offical = self.is_official()
         # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:
@@ -551,7 +555,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         if not os.path.exists(self.replay_path):
             os.mkdir(self.replay_path)
-        self.label.ms_board.generate_evf_v0_raw_data()
+        self.label.ms_board.generate_evf_v3_raw_data()
         # 补上校验值
         checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
         self.label.ms_board.checksum = checksum
@@ -1171,14 +1175,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.timer_video.start()
         self.video_playing = True
 
-    def is_official(self):
+    def is_official(self) -> bool:
         # 局面开始时，判断一下局面是设置是否正式。
         # 极端小的3BV依然是合法的，而网站是否认同不关软件的事。
         if self.board_constraint:
             return False
         return self.game_state == "win" and self.gameMode == 0
 
-    def is_fair(self):
+    def is_fair(self) -> bool:
         if self.board_constraint:
             return False
         return self.game_state == "win" or self.game_state == "fail"
@@ -1187,7 +1191,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 点在局面内，单位是格不是像素
         # return i >= 0 and i < self.row and j >= 0 and j < self.column
 
-    def pos_is_in_board(self, i, j):
+    def pos_is_in_board(self, i, j) -> bool:
         # 点在局面内，单位是像素不是格
         return i >= 0 and i < self.row * self.pixSize and j >= 0 and j < self.column * self.pixSize
 
