@@ -1,6 +1,6 @@
-# MetaSweeper-v3.1.7 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
+# MetaSweeper-v3.1.8 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
 
-# 元扫雷v3.1.7 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
+# 元扫雷v3.1.8 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
 
 [![MetaSweeper](https://img.shields.io/badge/MetaSweeper-v3.1.6-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
 [![stars](https://img.shields.io/github/stars/eee555/Solvable-Minesweeper)](https://github.com/eee555/Solvable-Minesweeper/stargazers)
@@ -9,7 +9,7 @@
 
 ## 简介
 
-元扫雷v3.1.7是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
+元扫雷v3.1.8是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
 
 优势：
 
@@ -39,7 +39,7 @@
 
 ## Introduction
 
-Minesweeper v3.1.7 is a mineswering game developed by players who are passionate about the game. This project is not a simple repetition of existing work, but a concentration of modern design elements for minesweeper games.
+Minesweeper v3.1.8 is a mineswering game developed by players who are passionate about the game. This project is not a simple repetition of existing work, but a concentration of modern design elements for minesweeper games.
 
 Advantages:
 
@@ -154,6 +154,10 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 
 
 ## 下载链接
+
+### 正式版v3.1.8：
+
+修复了7个bug，包括弱可猜模式可能踩雷；用设置修改尺寸时，布局出错；使用快捷键切换模式时，部分操作引发异常等。提高了对某种作弊手段的防御能力。升级了录像格式到evf-v0.3。  
 
 ### 正式版v3.1.7：
 
