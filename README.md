@@ -158,6 +158,7 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 ### 正式版v3.1.8：
 
 修复了7个bug，包括弱可猜模式可能踩雷；用设置修改尺寸时，布局出错；使用快捷键切换模式时，部分操作引发异常等。提高了对某种作弊手段的防御能力。升级了录像格式到evf-v0.3。  
+链接：[https://eee555.lanzn.com/iLApV25lg8xg](https://eee555.lanzn.com/iLApV25lg8xg)
 
 ### 正式版v3.1.7：
 
