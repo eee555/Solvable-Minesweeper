@@ -3,21 +3,39 @@ from PyQt5 import QtWidgets
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
-from win32gui import FindWindow
 import ctypes
+from ctypes import wintypes
+
+
+def find_window(class_name, window_name):
+    user32 = ctypes.WinDLL('user32', use_last_error=True)
+    user32.FindWindowW.argtypes = [wintypes.LPCWSTR, wintypes.LPCWSTR]
+    user32.FindWindowW.restype = wintypes.HWND
+
+    hwnd = user32.FindWindowW(class_name, window_name)
+    if not hwnd:
+        raise ctypes.WinError(ctypes.get_last_error())
+    return hwnd
 
 
 if __name__ == "__main__":
+    
+
+
     app = QtWidgets.QApplication (sys.argv)
     mainWindow = mainWindowGUI.MainWindow()
     ui = mineSweeperGUI.MineSweeperGUI(mainWindow, sys.argv)
     ui.mainWindow.show()
     ui.mainWindow.game_setting_path = ui.game_setting_path
 
+    hwnd = find_window(None, "元扫雷")
 
     SetWindowDisplayAffinity = ctypes.windll.user32.SetWindowDisplayAffinity
-    ui.disable_screenshot = lambda: ... if SetWindowDisplayAffinity(FindWindow(None, "元扫雷"), 0x00000011) else 1/0
-    ui.enable_screenshot = lambda: ... if SetWindowDisplayAffinity(FindWindow(None, "元扫雷"), 0x00000000) else 1/0
+    ui.disable_screenshot = lambda: ... if SetWindowDisplayAffinity(hwnd, 0x00000011) else 1/0
+    ui.enable_screenshot = lambda: ... if SetWindowDisplayAffinity(hwnd, 0x00000000) else 1/0
+
+    
+
 
     sys.exit(app.exec_())
     ...
