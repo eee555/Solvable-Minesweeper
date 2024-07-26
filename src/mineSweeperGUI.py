@@ -117,6 +117,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         for i in range(4):
             self.predefinedBoardPara[i]['pix_size'] = pixSize
         self.reimportLEDPic(pixSize)
+        
         self.label.setMinimumSize(QtCore.QSize(pixSize * self.column + 8, pixSize * self.row + 8))
         self.label.setMaximumSize(QtCore.QSize(pixSize * self.column + 8, pixSize * self.row + 8))
         # self.label.setFixedSize(QtCore.QSize(self.pixSize*self.column + 8, self.pixSize*self.row + 8))
@@ -548,7 +549,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.ms_board.use_auto_replay = self.auto_replay > 0
         
         self.label.ms_board.is_fair = self.is_fair()
-        self.label.ms_board.is_offical = self.is_official()
+        self.label.ms_board.is_official = self.is_official()
         
         self.label.ms_board.software = "元3.1.9".encode( "UTF-8" )
         self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
@@ -761,9 +762,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.show(self.label.ms_board, index_type=1)
         self.board_constraint = self.predefinedBoardPara[k]['board_constraint']
         self.attempt_times_limit = self.predefinedBoardPara[k]['attempt_times_limit']
-        self.importLEDPic(self.pixSize)
-        self.label.importCellPic(self.pixSize)
-        self.label_2.reloadFace(self.pixSize)
+        # self.importLEDPic(self.pixSize)
+        # self.label.importCellPic(self.pixSize)
+        # self.label_2.reloadFace(self.pixSize)
         self.setBoard_and_start(row,
                                 column,
                                 self.predefinedBoardPara[k]['mine_num'])
@@ -823,11 +824,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.show()
         ui.Dialog.exec_()
         if ui.alter:
-            self.gameMode = ui.gameMode
-
+            
             self.pixSize = ui.pixSize
             for i in range(4):
                 self.predefinedBoardPara[i]['pix_size'] = ui.pixSize
+                
+            self.gameStart()
+            
+            self.gameMode = ui.gameMode
             if not ui.allow_auto_replay:
                 self.auto_replay = -1
             else:
@@ -845,10 +849,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.attempt_times_limit = ui.attempt_times_limit
             self.end_then_flag = ui.end_then_flag # 游戏结束后自动标雷
 
-            self.importLEDPic(self.pixSize)
-            self.label.importCellPic(self.pixSize)
-            self.label_2.reloadFace(self.pixSize)
-            self.gameStart()
+            # self.importLEDPic(self.pixSize)
+            # self.label.importCellPic(self.pixSize)
+            # self.label_2.reloadFace(self.pixSize)
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
             self.score_board_manager.with_namespace({
                 "race_designator": ui.race_designator,
@@ -1080,7 +1083,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if isinstance(video, ms.EvfVideo):
             self.score_board_manager.with_namespace({
                 "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-33], video.checksum),
-                "is_official": video.is_offical, # 此处拼写错误，将修改
+                "is_official": video.is_official, # 此处拼写错误，将修改
                 "is_fair": video.is_fair
                 })
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",
