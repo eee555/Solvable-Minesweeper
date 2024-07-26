@@ -91,7 +91,7 @@ if __name__ == "__main__":
 #           bbbv_s, (op_solved), (isl_solved)
 # 录像静态类：bbbv，op, isl, cell0, cell1, cell2, cell3, cell4, cell5, cell6,
 #           cell7, cell8, fps, (hizi)
-# 其他类：checksum_ok, race_designator, mode
+# 其他类：checksum_ok, race_designator, mode, is_offical, is_fair
 
 
 

@@ -487,7 +487,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # self.label.setMouseTracking(False) # 鼠标未按下时，组织移动事件回调
 
         self.score_board_manager.with_namespace({
-            "checksum_ok": "--"
+            "checksum_ok": "--",
+            "is_official": "--",
+            "is_fair": "--"
             })
 
 
@@ -501,6 +503,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.update()
         # 刷新计数器数值
         self.timeCount()
+        self.score_board_manager.with_namespace({
+            "is_official": self.is_official(),
+            "is_fair": self.is_fair()
+            })
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
 
     def gameWin(self):  # 成功后改脸和状态变量，停时间
@@ -543,9 +549,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
         self.label.ms_board.is_fair = self.is_fair()
         self.label.ms_board.is_offical = self.is_official()
-        # if self.label.ms_board.is_fair and self.label.ms_board.is_offical:
-        #     self.label.ms_board.checksum = metaminesweeper_checksum.get_checksum()
-        # self.label.ms_board.mode = self.gameMode
+        
         self.label.ms_board.software = "元3.1.8".encode( "UTF-8" )
         self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
         self.label.ms_board.race_designator = self.race_designator.encode( "UTF-8" )
@@ -1076,6 +1080,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if isinstance(video, ms.EvfVideo):
             self.score_board_manager.with_namespace({
                 "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-33], video.checksum),
+                "is_official": video.is_offical, # 此处拼写错误，将修改
+                "is_fair": video.is_fair
                 })
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",
                                     "mouse_trace", "vision_transfer", "survive_poss"])

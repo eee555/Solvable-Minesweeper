@@ -76,6 +76,7 @@ class gameScoreBoardManager():
                     "cell4", "cell5", "cell6", "cell7", "cell8", "fps", "etime",
                     "stnb", "rqp", "qg", "ioe", "thrp", "corr", "ce",
                      "ce_s", "bbbv_solved", "bbbv_s", "op_solved", "isl_solved"]
+    
     # is_visible = False
     # 5、错误的表达式，一旦算出报错，永远不再算，显示error
     def __init__(self, r_path, score_board_path, game_setting_path, pix_size):

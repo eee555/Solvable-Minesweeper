@@ -81,7 +81,9 @@ class Ui_MainWindow(Ui_MainWindow):
         self.score_board_manager.with_namespace({
             "race_designator": self.race_designator,
             "mode": mm.trans_game_mode(self.gameMode),
-            "checksum_ok": "--"
+            "checksum_ok": "--",
+            "is_official": "--",
+            "is_fair": "--"
             })
 
         self.importLEDPic(self.pixSize) # 导入图片
