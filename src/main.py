@@ -1,5 +1,6 @@
 # from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 import sys
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
@@ -28,7 +29,8 @@ if __name__ == "__main__":
     ui.mainWindow.show()
     ui.mainWindow.game_setting_path = ui.game_setting_path
 
-    hwnd = find_window(None, "元扫雷")
+    _translate = QtCore.QCoreApplication.translate
+    hwnd = find_window(None, _translate("MainWindow", "元扫雷"))
 
     SetWindowDisplayAffinity = ctypes.windll.user32.SetWindowDisplayAffinity
     ui.disable_screenshot = lambda: ... if SetWindowDisplayAffinity(hwnd, 0x00000011) else 1/0
