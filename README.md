@@ -150,7 +150,7 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 | 赞助商 | 金额 | 时间 | 渠道 |
 | :------: | :-----:  | :----------: | :------: |
 | *松 | ¥72.60 | 2024-04-04 | 微信 |
-
+| *昌 | ¥55.00 | 2024-07-27 | 支付宝 |
 
 
 ## 下载链接
