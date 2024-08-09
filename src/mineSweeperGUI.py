@@ -266,7 +266,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     # 正式埋雷开始
                     self.layMine(i // self.pixSize, j // self.pixSize)
                     
-                    self.game_state = 'playing'
+                    if self.board_constraint:
+                        self.game_state = 'joking'
+                    else:
+                        self.game_state = 'playing'
 
                     if self.player_designator[:6] != "[live]":
                         self.disable_screenshot()
@@ -537,9 +540,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def checksum_module_ok(self):
         # 检查校验和模块的签名
         # 调试的时候不会自动存录像，除非将此处改为return True
-        # return True
-        return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
-            '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
+        return True
+        # return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
+        #     '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
 
     def save_evf_file(self):
         # 搜集本局各种信息，存成evf文件
@@ -819,7 +822,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_NEvent(self):
         # 游戏设置
         self.actionChecked('N')
-        ui = gameSettings.ui_Form(self.game_setting_path, self.r_path, self.pixSize)
+        ui = gameSettings.ui_Form(self)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -828,7 +831,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.pixSize = ui.pixSize
             for i in range(4):
                 self.predefinedBoardPara[i]['pix_size'] = ui.pixSize
-                
+
             self.gameStart()
             
             self.gameMode = ui.gameMode
@@ -845,8 +848,22 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.set_country_flag()
             self.autosave_video = ui.autosave_video
             self.filter_forever = ui.filter_forever
+
             self.board_constraint = ui.board_constraint
             self.attempt_times_limit = ui.attempt_times_limit
+            if (self.row, self.column, self.mineNum) == (8, 8, 10):
+                self.predefinedBoardPara[1]['attempt_times_limit'] = self.attempt_times_limit
+                self.predefinedBoardPara[1]['board_constraint'] = self.board_constraint
+            elif (self.row, self.column, self.mineNum) == (16, 16, 40):
+                self.predefinedBoardPara[2]['attempt_times_limit'] = self.attempt_times_limit
+                self.predefinedBoardPara[2]['board_constraint'] = self.board_constraint
+            elif (self.row, self.column, self.mineNum) == (16, 30, 99):
+                self.predefinedBoardPara[3]['attempt_times_limit'] = self.attempt_times_limit
+                self.predefinedBoardPara[3]['board_constraint'] = self.board_constraint
+            else:
+                self.predefinedBoardPara[0]['attempt_times_limit'] = self.attempt_times_limit
+                self.predefinedBoardPara[0]['board_constraint'] = self.board_constraint
+            
             self.end_then_flag = ui.end_then_flag # 游戏结束后自动标雷
 
             # self.importLEDPic(self.pixSize)
@@ -1083,7 +1100,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if isinstance(video, ms.EvfVideo):
             self.score_board_manager.with_namespace({
                 "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-33], video.checksum),
-                "is_official": video.is_official, # 此处拼写错误，将修改
+                "is_official": video.is_official,
                 "is_fair": video.is_fair
                 })
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",

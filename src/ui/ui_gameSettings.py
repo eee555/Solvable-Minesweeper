@@ -559,7 +559,7 @@ class Ui_Form(object):
         self.comboBox_gamemode.setItemText(5, _translate("Form", "准无猜"))
         self.comboBox_gamemode.setItemText(6, _translate("Form", "强可猜"))
         self.comboBox_gamemode.setItemText(7, _translate("Form", "弱可猜"))
-        self.checkBox_auto_notification.setText(_translate("Form", "允许记录弹窗（推荐）"))
+        self.checkBox_auto_notification.setText(_translate("Form", "允许纪录弹窗（推荐）"))
         self.label_attempt_times_limit.setText(_translate("Form", "尝试次数："))
         self.label_constraint.setText(_translate("Form", "局面约束："))
         self.checkBox_auto_replay.setText(_translate("Form", "自动重开："))

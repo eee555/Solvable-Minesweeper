@@ -232,7 +232,7 @@ class gameScoreBoardManager():
                 "thrp": ms_board.thrp,
                 "corr": ms_board.corr,
                 "ce": ms_board.ce,
-                "ce_s": ms_board.ce_s,
+                "ce_s": ms_board.ce_s, # 一直为0
                 })
         
         

@@ -477,6 +477,21 @@ def main():
     #          ]
     
     # print2(enumerateChangeBoard2(board, game_board, [(2, 3), (3, 2), (2, 2)])[0])
+    
+    constraints = {
+        "sin": math.sin,
+        "tan": math.tan,
+        "cos": math.cos,
+        } # 也许还要加row, column, mine_num, level, mode
+    board_constraint="all([1,2,3])"
+    if "bbbv" in board_constraint:
+        constraints.update({"bbbv": 120})
+    try:
+        expression_flag = safe_eval(board_constraint, globals=constraints)
+        print(expression_flag)
+    except:
+        print("wrong")
+        
     ...
 
 if __name__ == '__main__':

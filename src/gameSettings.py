@@ -17,18 +17,18 @@ from country_name import country_name
 from PyQt5.QtGui import QPixmap
 
 class ui_Form(Ui_Form):
-    def __init__(self, game_setting_path, r_path, pix_size):
-        # 设置界面的参数，主要从配置文件里来，pix_size除外
-        self.game_setting_path = game_setting_path
-        self.r_path = r_path
+    def __init__(self, mainWindow):
+        # 设置界面的参数，不能用快捷键修改的从配置文件里来；能用快捷键修改的从mainWindow来
+        self.game_setting_path = mainWindow.game_setting_path
+        self.r_path = mainWindow.r_path
         config = configparser.ConfigParser()
-        config.read(game_setting_path, encoding='utf-8')
-        self.gameMode = config.getint('DEFAULT','gameMode')
+        config.read(self.game_setting_path, encoding='utf-8')
+        self.gameMode = mainWindow.gameMode
         self.transparency = config.getint('DEFAULT','transparency')
-        self.pixSize = pix_size
-        self.row = config.getint("DEFAULT", "row")
-        self.column = config.getint("DEFAULT", "column")
-        self.mineNum = config.getint("DEFAULT", "mineNum")
+        self.pixSize = mainWindow.pixSize
+        self.row = mainWindow.row
+        self.column = mainWindow.column
+        self.mineNum = mainWindow.mineNum
         
         self.auto_replay = config.getint("DEFAULT", "auto_replay")
         self.allow_auto_replay = config.getboolean("DEFAULT", "allow_auto_replay")
@@ -43,19 +43,9 @@ class ui_Form(Ui_Form):
         self.filter_forever = config.getboolean("DEFAULT", "filter_forever")
         # self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
         self.end_then_flag = config.getboolean("DEFAULT", "end_then_flag") # 游戏结束后自动标雷
+        self.board_constraint = mainWindow.board_constraint
+        self.attempt_times_limit = mainWindow.attempt_times_limit
         
-        if (self.row, self.column, self.mineNum) == (8, 8, 10):
-            self.board_constraint = config["BEGINNER"]["board_constraint"]
-            self.attempt_times_limit = config.getint('BEGINNER', 'attempt_times_limit')
-        elif (self.row, self.column, self.mineNum) == (16, 16, 40):
-            self.board_constraint = config["INTERMEDIATE"]["board_constraint"]
-            self.attempt_times_limit = config.getint('INTERMEDIATE', 'attempt_times_limit')
-        elif (self.row, self.column, self.mineNum) == (16, 30, 99):
-            self.board_constraint = config["EXPERT"]["board_constraint"]
-            self.attempt_times_limit = config.getint('EXPERT', 'attempt_times_limit')
-        else:
-            self.board_constraint = config["CUSTOM"]["board_constraint"]
-            self.attempt_times_limit = config.getint('CUSTOM', 'attempt_times_limit')
         self.alter = False
         
         self.Dialog = RoundQDialog()
