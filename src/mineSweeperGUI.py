@@ -438,10 +438,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_info.setText(self.player_designator)
 
         # 这里有点乱
-        if self.game_state == 'display' or self.game_state == 'showdisplay':
-            self.setBoard_and_start(self.row, self.column, self.mineNum)
-            self.label.paintPossibility = False
-            self.label.set_rcp(self.row, self.column, self.pixSize)
+        self.label.paintPossibility = False
         self.label.set_rcp(self.row, self.column, self.pixSize)
         self.game_state = 'ready'
         self.label.reloadCellPic(self.pixSize)
@@ -808,10 +805,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def setBoard_and_start(self, row, column, mineNum):
         # 把局面设置成(row, column, mineNum)，把3BV的限制设置成min3BV, max3BV
+        # 比gameStart更高级
         if self.game_state == 'display' or self.game_state == 'showdisplay':
             self.label.paintPossibility = False
-            # self.label.paint_cursor = False
-            # self.timer_video.stop()
         if (self.row, self.column, self.mineNum) != (row, column, mineNum):
             self.setBoard(row, column, mineNum)
             self.gameStart()
@@ -888,7 +884,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def action_mouse_setting(self):
         # 打开鼠标设置的第三个菜单
-        os.system("rundll32.exe shell32.dll,Control_RunDLL main.cpl,,2")
+        try:
+            os.system("start rundll32.exe shell32.dll,Control_RunDLL main.cpl,,2")
+        except:
+            ...
+        
 
     def action_AEvent(self):
         # 关于

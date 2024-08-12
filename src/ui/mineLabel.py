@@ -52,19 +52,19 @@ class mineLabel(QtWidgets.QLabel):
     def set_rcp(self, row, column, pixSize):
         # ui层面，重设一下宽、高、大小
         # self.paintPossibility = False  # 是否打印概率
+        self.row = row
+        self.column = column
         if self.paintPossibility:
             # self.ms_board = mm.abstract_game_board()
             self.ms_board = mm.CoreBaseVideo([[0] * column for _ in range(row)], pixSize)
         else:
-            self.row = row
-            self.column = column
-            if not hasattr(self, "ms_board"):
-                self.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], pixSize)
-            else:
-                if isinstance(self.ms_board, ms.BaseVideo):
-                    self.ms_board.reset(row, column, pixSize)
-                else:
+            if hasattr(self, "ms_board"):
+                if isinstance(self.ms_board, mm.CoreBaseVideo):
                     self.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], pixSize)
+                else:
+                    self.ms_board.reset(row, column, pixSize)
+            else:
+                self.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], pixSize)
             self.boardPossibility = [[0.0] * column for _ in range(row)]
         
         if self.pixSize != pixSize:
@@ -172,8 +172,10 @@ class mineLabel(QtWidgets.QLabel):
             # poss = self.boardPossibility
         painter.begin(self)
         # 画游戏局面
-        for i in range(self.row):
-            for j in range(self.column):
+        row = len(game_board)
+        column = len(game_board[0])
+        for i in range(row):
+            for j in range(column):
                 if game_board[i][j] == 10:
                     painter.drawPixmap(j * pix_size + 4, i * pix_size + 4, QPixmap(self.pixmapNum[10]))
                     if self.paintPossibility: # 画概率
@@ -189,10 +191,10 @@ class mineLabel(QtWidgets.QLabel):
 
         # 画高亮
         if (game_board_state == 2 or game_board_state == 1 or game_board_state == 5) and\
-            current_x < self.row and current_y < self.column:
+            current_x < row and current_y < column:
             if mouse_state == 5 or mouse_state == 6:
-                for r in range(max(current_x - 1, 0), min(current_x + 2, self.row)):
-                    for c in range(max(current_y - 1, 0), min(current_y + 2, self.column)):
+                for r in range(max(current_x - 1, 0), min(current_x + 2, row)):
+                    for c in range(max(current_y - 1, 0), min(current_y + 2, column)):
                         if game_board[r][c] == 10:
                             painter.drawPixmap(c * pix_size + 4, r * pix_size + 4, QPixmap(self.pixmapNum[0]))
             elif mouse_state == 4 and game_board[current_x][current_y] == 10:
