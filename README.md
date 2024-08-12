@@ -69,8 +69,7 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 
 ### 开发计划
 
-+ 使用教程（有些老旧）：[https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg](https://mp.weixin.qq.com/s/gh9Oxtv9eHaPTUMTDwX-fg)
-+ 更全面的文档（施工中）：
++ 使用教程：[https://fff666.top/#/guide/[80.%E6%95%99%E7%A8%8B.%E8%BD%AF%E4%BB%B6]%E5%85%83%E6%89%AB%E9%9B%B7%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B](https://fff666.top/#/guide/[80.%E6%95%99%E7%A8%8B.%E8%BD%AF%E4%BB%B6]%E5%85%83%E6%89%AB%E9%9B%B7%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B)
 + 算法工具箱地址：[https://github.com/eee555/ms_toollib](https://github.com/eee555/ms_toollib)
 + 算法工具箱文档：[https://docs.rs/ms_toollib](https://docs.rs/ms_toollib)
 
@@ -147,10 +146,10 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 
 ## 贡献者列表
 
-| 赞助商 | 金额 | 时间 | 渠道 |
-| :------: | :-----:  | :----------: | :------: |
-| *松 | ¥72.60 | 2024-04-04 | 微信 |
-| *昌 | ¥55.00 | 2024-07-27 | 支付宝 |
+| 赞助商 | 金额 | 时间 | 渠道 | 分配情况 |
+| :------: | :-----:  | :----------: | :------: | :------: |
+| *松 | ¥72.60 | 2024-04-04 | 微信 | 未分配 |
+| *昌 | ¥55.00 | 2024-07-27 | 支付宝 | 未分配 |
 
 
 ## 下载链接
