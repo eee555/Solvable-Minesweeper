@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtCore import QTimer, QCoreApplication, Qt
+from PyQt5.QtCore import QTimer, QCoreApplication, Qt, QRect
 from PyQt5.QtGui import QPixmap, QKeySequence
 # from PyQt5.QtWidgets import QLineEdit, QInputDialog, QShortcut
 from PyQt5.QtWidgets import QApplication, QFileDialog
@@ -12,6 +12,7 @@ import configparser
 # from pathlib import Path
 import time
 import os
+import ctypes
 import hashlib, uuid
 # from PyQt5.QtWidgets import QApplication
 from country_name import country_name
@@ -22,8 +23,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.mainWindow = MainWindow
         super(MineSweeperGUI, self).__init__(MainWindow, args)
         # MineSweeperGUI父类的init中读.ini、读图片、设置字体、局面初始化等
-
-        # self.operationStream = []
 
         self.time_10ms: int = 0 # 已毫秒为单位的游戏时间，全局统一的
         self.showTime(self.time_10ms // 100)
@@ -96,12 +95,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if len(args) == 2:
             self.action_OpenFile(args[1])
 
-
         self.score_board_manager.reshow(self.label.ms_board, index_type = 1)
         self.score_board_manager.visible()
         self.trans_language()
 
         self.mainWindow.closeEvent_.connect(self.closeEvent_)
+        
 
     @property
     def pixSize(self):
@@ -152,6 +151,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if self._game_state in ("playing", "show", "joking") and\
             game_state not in ("playing", "show", "joking"):
             self.timer_10ms.stop()
+            self.unlimit_cursor()
         elif self._game_state in ("display", "showdisplay") and\
             game_state not in ("display", "showdisplay"):
             self.timer_video.stop()
@@ -275,6 +275,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                         self.disable_screenshot()
                     else:
                         self.enable_screenshot()
+                        
+                    
+                    self.limit_cursor()
+                    
 
                     # 核实用的时间，防变速齿轮
                     self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
@@ -494,8 +498,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             })
 
 
-    def gameFinished(self):  # 游戏结束画残局，改状态
-        self.enable_screenshot()
+    # 游戏结束画残局，改状态
+    def gameFinished(self):
         if self.label.ms_board.game_board_state == 3 and self.end_then_flag:
             self.label.ms_board.win_then_flag_all_mine()
         elif self.label.ms_board.game_board_state == 4:
@@ -509,6 +513,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             "is_fair": self.is_fair()
             })
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
+        self.enable_screenshot()
+        self.unlimit_cursor()
+
 
     def gameWin(self):  # 成功后改脸和状态变量，停时间
         self.timer_10ms.stop()
@@ -754,7 +761,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         row = self.predefinedBoardPara[k]['row']
         column = self.predefinedBoardPara[k]['column']
         self.pixSize = self.predefinedBoardPara[k]['pix_size']
-        self.label.ms_board.reset(row, column, self.pixSize)
+        if isinstance(self.label.ms_board, ms.BaseVideo):
+            self.label.ms_board.reset(row, column, self.pixSize)
+        else:
+            # 解决播放录像时快捷键切换难度报错
+            self.label.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], self.pixSize)
         self.gameMode = self.predefinedBoardPara[k]['game_mode']
         self.score_board_manager.with_namespace({
             "mode": mm.trans_game_mode(self.gameMode),
@@ -1233,10 +1244,37 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.score_board_manager.invisible()
         else:
             self.score_board_manager.visible()
+            self.mainWindow.activateWindow()
+
+    # 将鼠标区域限制在游戏界面中
+    def limit_cursor(self):
+        widget_pos = self.label.mapToGlobal(self.label.rect().topLeft())
+        widget_size = self.label.size()
+        # 计算限制区域
+        rect = QRect(widget_pos, widget_size)
+        self.clip_mouse(rect)
+
+    # 取消将鼠标区域限制在游戏界面中
+    def unlimit_cursor(self):
+        ctypes.windll.user32.ClipCursor(None)
+
+    def clip_mouse(self, rect):
+        # 定义RECT结构体
+        class RECT(ctypes.Structure):
+            _fields_ = [("left", ctypes.c_long),
+                        ("top", ctypes.c_long),
+                        ("right", ctypes.c_long),
+                        ("bottom", ctypes.c_long)]
+        # 创建RECT实例
+        r = RECT(rect.left() + 4, rect.top() + 4, 
+                 rect.right() - 4, rect.bottom() - 4)
+        # 调用Windows API函数ClipCursor来限制光标
+        ctypes.windll.user32.ClipCursor(ctypes.byref(r))
 
 
     def closeEvent_(self):
         # 主窗口关闭的回调
+        self.unlimit_cursor()
         self.score_board_manager.close()
         conf = configparser.ConfigParser()
         conf.read(self.game_setting_path, encoding='utf-8')
