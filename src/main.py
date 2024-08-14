@@ -84,14 +84,14 @@ if __name__ == "__main__":
 # 'showdisplay':正在一边播放录像、一边看概率。播放录像时按空格进入。
 
 # 指标命名：
-# 游戏静态类：race_designator, mode
+# 游戏静态类：race_identifier, mode
 # 游戏动态类：rtime, left, right, double，cl，left_s，right_s, double_s, cl_s, path,
 #           flag, flag_s
 # 录像动态类：etime, stnb, rqp, qg, ioe, thrp, corr, ce, ce_s, bbbv_solved,
 #           bbbv_s, (op_solved), (isl_solved)
 # 录像静态类：bbbv，op, isl, cell0, cell1, cell2, cell3, cell4, cell5, cell6,
 #           cell7, cell8, fps, (hizi)
-# 其他类：checksum_ok, race_designator, mode, is_offical, is_fair
+# 其他类：checksum_ok, race_identifier, mode, is_offical, is_fair
 
 
 

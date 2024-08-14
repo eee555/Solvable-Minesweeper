@@ -161,6 +161,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.num_bar_ui.QWidget.close()
         self._game_state = game_state
 
+
     def layMine(self, i, j):
         xx = self.row
         yy = self.column
@@ -271,14 +272,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                     else:
                         self.game_state = 'playing'
 
-                    if self.player_designator[:6] != "[live]":
+                    if self.player_identifier[:6] != "[live]":
                         self.disable_screenshot()
                     else:
                         self.enable_screenshot()
-                        
-                    
-                    self.limit_cursor()
-                    
+
+                    if self.cursor_limit:
+                        self.limit_cursor()
+
 
                     # 核实用的时间，防变速齿轮
                     self.start_time_unix_2 = QtCore.QDateTime.currentDateTime().\
@@ -439,7 +440,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.editing_row = -1
 
         self.label.paintPossibility = False
-        self.label_info.setText(self.player_designator)
+        self.label_info.setText(self.player_identifier)
 
         # 这里有点乱
         self.label.paintPossibility = False
@@ -472,7 +473,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.score_board_manager.visible()
             self.label.ms_board = ms.BaseVideo([[0] * self.column for _ in range(self.row)], self.pixSize)
             self.label.ms_board.mode = self.gameMode
-        self.label_info.setText(self.player_designator)
+        self.label_info.setText(self.player_identifier)
         self.game_state = 'ready'
         self.enable_screenshot()
 
@@ -559,11 +560,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.ms_board.is_official = self.is_official()
         
         self.label.ms_board.software = "元3.1.9".encode( "UTF-8" )
-        self.label.ms_board.player_designator = self.player_designator.encode( "UTF-8" )
-        self.label.ms_board.race_designator = self.race_designator.encode( "UTF-8" )
+        self.label.ms_board.player_identifier = self.player_identifier.encode( "UTF-8" )
+        self.label.ms_board.race_identifier = self.race_identifier.encode( "UTF-8" )
+        self.label.ms_board.uniqueness_identifier = self.unique_identifier.encode( "UTF-8" )
         self.label.ms_board.country = self.country.encode( "UTF-8" )
         self.label.ms_board.device_uuid = hashlib.md5(bytes(str(uuid.getnode()).encode())).hexdigest().encode( "UTF-8" )
-        self.label.ms_board.uniqueness_designator = "".encode( "UTF-8" ) # 暂时不能填
+
 
         if not os.path.exists(self.replay_path):
             os.mkdir(self.replay_path)
@@ -587,7 +589,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                                  f'{self.label.ms_board.rtime:.3f}' +\
                                      '_3BV=' + f'{self.label.ms_board.bbbv}' +\
                                          '_3BVs=' + f'{self.label.ms_board.bbbv_s:.3f}' +\
-                                             '_' + self.player_designator)
+                                             '_' + self.player_identifier)
 
 
 
@@ -847,10 +849,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             else:
                 self.auto_replay = ui.auto_replay
             self.end_then_flag = ui.end_then_flag
+            self.cursor_limit = ui.cursor_limit
             self.auto_notification = ui.auto_notification
-            self.player_designator = ui.player_designator
-            self.label_info.setText(self.player_designator)
-            self.race_designator = ui.race_designator
+            self.player_identifier = ui.player_identifier
+            self.label_info.setText(self.player_identifier)
+            self.race_identifier = ui.race_identifier
             self.country = ui.country
             self.set_country_flag()
             self.autosave_video = ui.autosave_video
@@ -870,15 +873,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             else:
                 self.predefinedBoardPara[0]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[0]['board_constraint'] = self.board_constraint
-            
-            self.end_then_flag = ui.end_then_flag # 游戏结束后自动标雷
 
-            # self.importLEDPic(self.pixSize)
-            # self.label.importCellPic(self.pixSize)
-            # self.label_2.reloadFace(self.pixSize)
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
             self.score_board_manager.with_namespace({
-                "race_designator": ui.race_designator,
+                "race_identifier": ui.race_identifier,
                 "mode": mm.trans_game_mode(ui.gameMode),
                 })
             self.score_board_manager.show(self.label.ms_board, index_type=1)
@@ -1054,7 +1052,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.game_state = 'joking'
                 self.label.paintPossibility = False
                 # self.label.setMouseTracking(False)
-                self.label_info.setText(self.player_designator)
+                self.label_info.setText(self.player_identifier)
                 self.label.update()
             elif self.game_state == 'display':
                 self.game_state = 'showdisplay'
@@ -1161,7 +1159,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         video.video_playing_pix_size = self.label.pixSize
         self.label.ms_board = video
-        self.label_info.setText(bytes(self.label.ms_board.player_designator).decode())
+        self.label_info.setText(bytes(self.label.ms_board.player_identifier).decode())
 
     def video_playing_step(self):
         # 播放录像时定时器的回调

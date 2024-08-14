@@ -79,7 +79,7 @@ class Ui_MainWindow(Ui_MainWindow):
 
 
         self.score_board_manager.with_namespace({
-            "race_designator": self.race_designator,
+            "race_identifier": self.race_identifier,
             "mode": mm.trans_game_mode(self.gameMode),
             "checksum_ok": "--",
             "is_official": "--",
@@ -99,7 +99,7 @@ class Ui_MainWindow(Ui_MainWindow):
         pe = QPalette()
         pe.setColor(QPalette.WindowText, Qt.black)  # 设置字体颜色
         self.label_info.setPalette(pe)         # 最下面的框
-        self.label_info.setText(self.player_designator)
+        self.label_info.setText(self.player_identifier)
         self.set_country_flag()
 
         self.frameShortcut1 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_1), MainWindow)
@@ -317,15 +317,16 @@ class Ui_MainWindow(Ui_MainWindow):
                 self.auto_replay = -1
             self.auto_notification = config.getboolean("DEFAULT", "auto_notification")
 
-            self.player_designator = config["DEFAULT"]["player_designator"]
-            self.race_designator = config["DEFAULT"]["race_designator"]
+            self.player_identifier = config["DEFAULT"]["player_identifier"]
+            self.race_identifier = config["DEFAULT"]["race_identifier"]
+            self.unique_identifier = config["DEFAULT"]["unique_identifier"]
             self.country = config["DEFAULT"]["country"]
             self.autosave_video = config.getboolean("DEFAULT", "autosave_video")
             self.filter_forever = config.getboolean("DEFAULT", "filter_forever")
             self.language = config["DEFAULT"]["language"]
             # self.auto_show_score = config.getint("DEFAULT", "auto_show_score") # 自动弹成绩
             self.end_then_flag = config.getboolean("DEFAULT", "end_then_flag") # 游戏结束后自动标雷
-
+            self.cursor_limit = config.getboolean("DEFAULT", "cursor_limit")
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
                 self.board_constraint = config["BEGINNER"]["board_constraint"]
                 self.attempt_times_limit = config.getint('BEGINNER', 'attempt_times_limit')
@@ -357,12 +358,14 @@ class Ui_MainWindow(Ui_MainWindow):
             self.auto_notification = True
             self.allow_min3BV = False
             self.allow_max3BV = False
-            self.player_designator = "匿名玩家(anonymous player)"
-            self.race_designator = ""
+            self.player_identifier = "匿名玩家(anonymous player)"
+            self.race_identifier = ""
+            self.unique_identifier = ""
             self.country = "未知(unknow)"
             self.autosave_video = True
             self.filter_forever = False
             self.end_then_flag = True
+            self.cursor_limit = False
             self.board_constraint = ""
             self.attempt_times_limit = 100000
             if environ.get('LANG', None) == "zh_CN":
@@ -382,12 +385,14 @@ class Ui_MainWindow(Ui_MainWindow):
                                  "auto_replay": 30,
                                  "allow_auto_replay": False,
                                  "auto_notification": True,
-                                 "player_designator": "匿名玩家(anonymous player)",
-                                 "race_designator": "",
+                                 "player_identifier": "匿名玩家(anonymous player)",
+                                 "race_identifier": "",
+                                 "unique_identifier": "",
                                  "country": "未知(unknow)",
                                  "autosave_video": True,
                                  "filter_forever": False,
                                  "end_then_flag": True,
+                                 "cursor_limit": False,
                                  "language": self.language,
                                  }
             config["BEGINNER"] = {"board_constraint": "",
