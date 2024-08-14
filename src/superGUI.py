@@ -561,13 +561,15 @@ class Ui_MainWindow(Ui_MainWindow):
             with open(self.record_path, 'w') as configfile:
                 config.write(configfile)  # 将对象写入文件
 
-    def set_country_flag(self):
+    def set_country_flag(self, country = None):
+        if country == None:
+            country = self.country
         # 设置右下角国旗图案
-        if self.country not in country_name:
+        if country not in country_name:
             self.label_flag.clear()
             self.label_flag.update()
         else:
-            fn = country_name[self.country]
+            fn = country_name[country]
             pixmap = QPixmap(str(self.r_path.with_name('media') / \
                                  (fn + ".svg"))).scaled(51, 31)
             self.label_flag.setPixmap(pixmap)

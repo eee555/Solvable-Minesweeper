@@ -157,6 +157,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.timer_video.stop()
             self.ui_video_control.QWidget.close()
             self.label.paint_cursor = False
+            self.set_country_flag()
         elif self._game_state == 'study':
             self.num_bar_ui.QWidget.close()
         self._game_state = game_state
@@ -443,7 +444,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label_info.setText(self.player_identifier)
 
         # 这里有点乱
-        self.label.paintPossibility = False
         self.label.set_rcp(self.row, self.column, self.pixSize)
         self.game_state = 'ready'
         self.label.reloadCellPic(self.pixSize)
@@ -1159,7 +1159,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         video.video_playing_pix_size = self.label.pixSize
         self.label.ms_board = video
+        # 改成录像的标识
         self.label_info.setText(bytes(self.label.ms_board.player_identifier).decode())
+        # 改成录像的国旗
+        self.set_country_flag(bytes(self.label.ms_board.country).decode())
+
 
     def video_playing_step(self):
         # 播放录像时定时器的回调
