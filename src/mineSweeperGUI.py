@@ -42,6 +42,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actionzhogn_ji.triggered.connect(lambda: self.predefined_Board(2))
         self.actiongao_ji.triggered.connect(lambda: self.predefined_Board(3))
         self.actionzi_ding_yi.triggered.connect(self.action_CEvent)
+        self.actiongao_ji.triggered.connect(lambda: self.predefined_Board(3))
+        def save_evf_file_if_checksum_module_ok():
+            if self.checksum_module_ok():
+                self.save_evf_file()
+        self.action_save.triggered.connect(save_evf_file_if_checksum_module_ok)
+        self.action_replay.triggered.connect(self.replay_game)
         self.actiontui_chu.triggered.connect(QCoreApplication.instance().quit)
         self.actionyouxi_she_zhi.triggered.connect(self.action_NEvent)
         self.action_kuaijiejian.triggered.connect(self.action_QEvent)
@@ -549,11 +555,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # return hashlib.sha256(bytes(metaminesweeper_checksum.get_self_key())).hexdigest() ==\
         #     '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
 
+
+    # 搜集本局各种信息，存成evf文件
+    # 调试的时候不会自动存录像，见checksum_module_ok
+    # 菜单保存的回调。以及游戏结束自动保存。
     def save_evf_file(self):
-        # 搜集本局各种信息，存成evf文件
-        # 调试的时候不会自动存录像，见checksum_module_ok
         self.label.ms_board.use_question = False # 禁用问号是共识
-        self.label.ms_board.use_cursor_pos_lim = False # 目前还不能限制
+        self.label.ms_board.use_cursor_pos_lim = self.cursor_limit
         self.label.ms_board.use_auto_replay = self.auto_replay > 0
         
         self.label.ms_board.is_fair = self.is_fair()
@@ -583,15 +591,21 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             filename_level = "e_"
         else:
             filename_level = "c_"
-        self.label.ms_board.\
-            save_to_evf_file(self.replay_path + '\\' + filename_level +\
-                             str(self.gameMode) + '_' +\
-                                 f'{self.label.ms_board.rtime:.3f}' +\
-                                     '_3BV=' + f'{self.label.ms_board.bbbv}' +\
-                                         '_3BVs=' + f'{self.label.ms_board.bbbv_s:.3f}' +\
-                                             '_' + self.player_identifier)
-
-
+        file_name = self.replay_path + '\\' + filename_level +\
+                         str(self.gameMode) + '_' +\
+                             f'{self.label.ms_board.rtime:.3f}' +\
+                                 '_' + f'{self.label.ms_board.bbbv}' +\
+                                     '_' + f'{self.label.ms_board.bbbv_s:.3f}' +\
+                                         '_' + self.player_identifier
+        match self.game_state:
+            case "fail":
+                file_name += "_fail"
+            case "jowin":
+                file_name += "_cheat"
+            case "jofail":
+                file_name += "_fail_cheat"
+        
+        self.label.ms_board.save_to_evf_file(file_name)
 
 
     def gameFailed(self): # 失败后改脸和状态变量
@@ -782,6 +796,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                                 column,
                                 self.predefinedBoardPara[k]['mine_num'])
         # self.refreshSettingsDefault()
+    
+    # 菜单回放的回调
+    def replay_game(self):
+        
+        ...
+
 
     def action_CEvent(self):
         # 点击菜单栏的自定义后回调
@@ -1040,7 +1060,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.paintPossibility = True
             # self.label.setMouseTracking(True)
             mineNum = self.mineNum
-            ans = ms.cal_possibility_onboard(self.label.ms_board.game_board, mineNum)
+            # 删去用户标的雷，因为可能标错
+            game_board = list(map(lambda x: list(map(lambda y: min(y, 10), x)),
+                             self.label.ms_board.game_board))
+            ans = ms.cal_possibility_onboard(game_board, mineNum)
             self.label.boardPossibility = ans[0]
             self.label.update()
 
