@@ -17,6 +17,8 @@ import hashlib, uuid
 # from PyQt5.QtWidgets import QApplication
 from country_name import country_name
 import metaminesweeper_checksum
+import mmap
+
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow, args):
@@ -43,10 +45,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actiongao_ji.triggered.connect(lambda: self.predefined_Board(3))
         self.actionzi_ding_yi.triggered.connect(self.action_CEvent)
         self.actiongao_ji.triggered.connect(lambda: self.predefined_Board(3))
-        def save_evf_file_if_checksum_module_ok():
-            if self.checksum_module_ok():
-                self.save_evf_file()
-        self.action_save.triggered.connect(save_evf_file_if_checksum_module_ok)
+        def save_evf_file_integrated():
+            self.dump_evf_file_data()
+            self.save_evf_file()
+        self.action_save.triggered.connect(save_evf_file_integrated)
         self.action_replay.triggered.connect(self.replay_game)
         self.actiontui_chu.triggered.connect(QCoreApplication.instance().quit)
         self.actionyouxi_she_zhi.triggered.connect(self.action_NEvent)
@@ -537,8 +539,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.set_face(17)
 
         if self.autosave_video and self.checksum_module_ok():
+            self.dump_evf_file_data()
             self.save_evf_file()
-
 
 
         self.gameFinished()
@@ -556,32 +558,47 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         #     '590028493bb58a25ffc76e2e2ad490df839a1f449435c35789d3119ca69e5d4f'
 
 
-    # 搜集本局各种信息，存成evf文件
+    # 搜集数据，生成evf文件的二进制数据，但是不保存
+    def dump_evf_file_data(self):
+        if isinstance(self.label.ms_board, ms.BaseVideo):
+            self.label.ms_board.use_question = False # 禁用问号是共识
+            self.label.ms_board.use_cursor_pos_lim = self.cursor_limit
+            self.label.ms_board.use_auto_replay = self.auto_replay > 0
+            
+            self.label.ms_board.is_fair = self.is_fair()
+            self.label.ms_board.is_official = self.is_official()
+            
+            self.label.ms_board.software = "元3.1.9".encode( "UTF-8" )
+            self.label.ms_board.player_identifier = self.player_identifier.encode( "UTF-8" )
+            self.label.ms_board.race_identifier = self.race_identifier.encode( "UTF-8" )
+            self.label.ms_board.uniqueness_identifier = self.unique_identifier.encode( "UTF-8" )
+            self.label.ms_board.country = self.country.encode( "UTF-8" )
+            self.label.ms_board.device_uuid = hashlib.md5(bytes(str(uuid.getnode()).encode())).hexdigest().encode( "UTF-8" )
+    
+            self.label.ms_board.generate_evf_v3_raw_data()
+            # 补上校验值
+            checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
+            self.label.ms_board.checksum = checksum
+            return
+        elif isinstance(self.label.ms_board, ms.EvfVideo):
+            return
+        elif isinstance(self.label.ms_board, ms.AvfVideo):
+            self.label.ms_board.generate_evf_v3_raw_data()
+            return
+        elif isinstance(self.label.ms_board, ms.MvfVideo):
+            self.label.ms_board.generate_evf_v3_raw_data()
+            return
+        elif isinstance(self.label.ms_board, ms.RmvVideo):
+            self.label.ms_board.generate_evf_v3_raw_data()
+            return
+
+
+    # 将evf数据存成evf文件
     # 调试的时候不会自动存录像，见checksum_module_ok
     # 菜单保存的回调。以及游戏结束自动保存。
     def save_evf_file(self):
-        self.label.ms_board.use_question = False # 禁用问号是共识
-        self.label.ms_board.use_cursor_pos_lim = self.cursor_limit
-        self.label.ms_board.use_auto_replay = self.auto_replay > 0
-        
-        self.label.ms_board.is_fair = self.is_fair()
-        self.label.ms_board.is_official = self.is_official()
-        
-        self.label.ms_board.software = "元3.1.9".encode( "UTF-8" )
-        self.label.ms_board.player_identifier = self.player_identifier.encode( "UTF-8" )
-        self.label.ms_board.race_identifier = self.race_identifier.encode( "UTF-8" )
-        self.label.ms_board.uniqueness_identifier = self.unique_identifier.encode( "UTF-8" )
-        self.label.ms_board.country = self.country.encode( "UTF-8" )
-        self.label.ms_board.device_uuid = hashlib.md5(bytes(str(uuid.getnode()).encode())).hexdigest().encode( "UTF-8" )
-
-
         if not os.path.exists(self.replay_path):
             os.mkdir(self.replay_path)
-        self.label.ms_board.generate_evf_v3_raw_data()
-        # 补上校验值
-        checksum = self.checksum_guard.get_checksum(self.label.ms_board.raw_data[:-1])
-        self.label.ms_board.checksum = checksum
-
 
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             filename_level = "b_"
@@ -596,14 +613,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                              f'{self.label.ms_board.rtime:.3f}' +\
                                  '_' + f'{self.label.ms_board.bbbv}' +\
                                      '_' + f'{self.label.ms_board.bbbv_s:.3f}' +\
-                                         '_' + self.player_identifier
-        match self.game_state:
-            case "fail":
-                file_name += "_fail"
-            case "jowin":
-                file_name += "_cheat"
-            case "jofail":
-                file_name += "_fail_cheat"
+                                         '_' + bytes(self.label.ms_board.player_identifier).decode()
+        
+        if not self.label.ms_board.is_completed:
+            file_name += "_fail"
+        if not self.label.ms_board.is_fair:
+            file_name += "_cheat"
+        if not self.checksum_module_ok():
+            file_name += "_fake"
         
         self.label.ms_board.save_to_evf_file(file_name)
 
@@ -799,8 +816,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     
     # 菜单回放的回调
     def replay_game(self):
+        if not isinstance(self.label.ms_board, ms.BaseVideo):
+            return
+        if self.game_state not in ("fail", "win", "jofail", "jowin"):
+            return
+        self.dump_evf_file_data()
+        raw_data = bytes(self.label.ms_board.raw_data)
         
-        ...
+        video = ms.EvfVideo("virtual.evf", raw_data)
+        self.play_video(video)
 
 
     def action_CEvent(self):
@@ -1121,14 +1145,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             video = ms.MvfVideo(openfile_name)
         else:
             return
+        self.play_video(video)
 
+    # 播放AvfVideo、RmvVideo、EvfVideo、MvfVideo或BaseVideo
+    def play_video(self, video):
         if self.game_state == 'display':
             self.ui_video_control.QWidget.close()
         self.game_state = 'display'
 
         video.parse_video()
         video.analyse()
-        # 检查checksum
+        # 检查evf的checksum，其余录像没有鉴定能力
         if isinstance(video, ms.EvfVideo):
             self.score_board_manager.with_namespace({
                 "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-33], video.checksum),

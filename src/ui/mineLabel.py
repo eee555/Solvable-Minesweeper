@@ -59,7 +59,8 @@ class mineLabel(QtWidgets.QLabel):
             self.ms_board = mm.CoreBaseVideo([[0] * column for _ in range(row)], pixSize)
         else:
             if hasattr(self, "ms_board"):
-                if isinstance(self.ms_board, mm.CoreBaseVideo):
+                if isinstance(self.ms_board, mm.CoreBaseVideo) or\
+                    not isinstance(self.ms_board, ms.BaseVideo):
                     self.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], pixSize)
                 else:
                     self.ms_board.reset(row, column, pixSize)
