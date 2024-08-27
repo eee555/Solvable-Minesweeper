@@ -148,7 +148,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def gameMode(self, game_mode):
         self.label.ms_board.mode = game_mode
         self._game_mode = game_mode
-        
+
     @property
     def game_state(self):
         return self._game_state
@@ -215,7 +215,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 0，4, 5, 6, 7, 8, 9, 10代表：标准、win7、
         # 竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         # 根据模式处理一次点击的全部流程
-        # （i，j）一定是未打开状态
+        # （i，j）一定是未打开状态、为索引
         if self.gameMode == 0 or self.gameMode == 4 or self.gameMode == 5:
             return
         elif self.gameMode == 6:
@@ -252,6 +252,82 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 
                 self.label.ms_board.board = board
             return
+        
+    # 双击时进入，可以双击猜雷
+    # 此处架构可以改进，放到工具箱里
+    def chording_ai(self, i, j):
+        # 0，4, 5, 6, 7, 8, 9, 10代表：标准、win7、
+        # 竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        # i,j为索引
+        if self.label.ms_board.mouse_state != 5 and self.label.ms_board.mouse_state != 6:
+            return
+        if self.label.ms_board.game_board[i][j] >= 10 or\
+            self.label.ms_board.game_board[i][j] == 0:
+            return
+        if self.gameMode == 0 or self.gameMode == 4 or self.gameMode == 5:
+            return
+        not_mine_round = [] # 没有标雷，且非雷
+        is_mine_round = [] # 没有标雷，且是雷
+        flag_not_mine_round = [] # 标雷，且非雷
+        flag_is_mine_round = [] # 标雷，且是雷
+        for ii in range(max(0,i-1), min(self.row+1,i+2)):
+            for jj in range(max(0,j-1), min(self.column+1,j+2)):
+                if (ii, jj) != (i, j):
+                    if self.label.ms_board.game_board[ii][jj] == 10:
+                        if self.label.ms_board.board[ii][jj] == -1:
+                            is_mine_round.append((ii, jj))
+                        else:
+                            not_mine_round.append((ii, jj))
+                    elif self.label.ms_board.game_board[ii][jj] == 11:
+                        if self.label.ms_board.board[ii][jj] == -1:
+                            flag_is_mine_round.append((ii, jj))
+                        else:
+                            flag_not_mine_round.append((ii, jj))
+        if len(flag_is_mine_round) + len(flag_not_mine_round) !=\
+            self.label.ms_board.board[i][j]:
+            # 不满足双击条件
+            return
+        board = self.label.ms_board.board.into_vec_vec()
+        if self.gameMode == 6:
+            for (x, y) in is_mine_round + not_mine_round:
+                if not ms.is_able_to_solve(self.label.ms_board.game_board, (x, y)):
+                    board[x][y] = -1
+            self.label.ms_board.board = board
+            return
+        elif self.gameMode == 7:
+            must_guess = True
+            for (x, y) in is_mine_round + not_mine_round:
+                code = ms.is_guess_while_needless(self.label.ms_board.game_board, (x, y))
+                if code == 3:
+                    must_guess = False
+                    break
+            if must_guess:
+                board, flag = mm.enumerateChangeBoard(board,
+                                                      self.label.ms_board.game_board,
+                                                      not_mine_round + is_mine_round)
+                self.label.ms_board.board = board
+            else:
+                for (x, y) in is_mine_round + not_mine_round:
+                    board[x][y] = -1
+                self.label.ms_board.board = board
+        elif self.gameMode == 8:
+            must_guess = True
+            for (x, y) in is_mine_round + not_mine_round:
+                code = ms.is_guess_while_needless(self.label.ms_board.game_board, (x, y))
+                if code == 3:
+                    must_guess = False
+                    break
+            if must_guess:
+                board, flag = mm.enumerateChangeBoard(board,
+                                                      self.label.ms_board.game_board,
+                                                      not_mine_round + is_mine_round)
+                self.label.ms_board.board = board
+        elif self.gameMode == 9 or self.gameMode == 10:
+            board, flag = mm.enumerateChangeBoard(board,
+                                                  self.label.ms_board.game_board,
+                                                  not_mine_round + is_mine_round)
+            self.label.ms_board.board = board
+            
 
     def mineAreaLeftPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or\
@@ -295,6 +371,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                                                 toMSecsSinceEpoch()
                     self.timer_10ms.start()
                     self.score_board_manager.editing_row = -2
+                    
                 self.label.ms_board.step('lr', (i, j))
 
                 if self.label.ms_board.game_board_state == 3:
@@ -316,7 +393,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 if self.label.ms_board.game_board[i// self.pixSize][j// self.pixSize] == 10 \
                     and self.label.ms_board.mouse_state == 4:
                     self.ai(i // self.pixSize, j // self.pixSize)
-
+                self.chording_ai(i// self.pixSize, j// self.pixSize)
+                
             self.label.ms_board.step('lr', (i, j))
 
             if self.label.ms_board.game_board_state == 3:
@@ -350,6 +428,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def mineAreaRightRelease(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
+            self.chording_ai(i// self.pixSize, j// self.pixSize)
             self.label.ms_board.step('rr', (i, j))
             self.label.update()
             self.set_face(14)
@@ -908,15 +987,19 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
                 self.predefinedBoardPara[1]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[1]['board_constraint'] = self.board_constraint
+                self.predefinedBoardPara[1]['game_mode'] = ui.gameMode
             elif (self.row, self.column, self.mineNum) == (16, 16, 40):
                 self.predefinedBoardPara[2]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[2]['board_constraint'] = self.board_constraint
+                self.predefinedBoardPara[2]['game_mode'] = ui.gameMode
             elif (self.row, self.column, self.mineNum) == (16, 30, 99):
                 self.predefinedBoardPara[3]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[3]['board_constraint'] = self.board_constraint
+                self.predefinedBoardPara[3]['game_mode'] = ui.gameMode
             else:
                 self.predefinedBoardPara[0]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[0]['board_constraint'] = self.board_constraint
+                self.predefinedBoardPara[0]['gameMode'] = ui.gameMode
 
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
             self.score_board_manager.with_namespace({

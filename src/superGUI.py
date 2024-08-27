@@ -307,9 +307,9 @@ class Ui_MainWindow(Ui_MainWindow):
             self.column = config.getint("DEFAULT", "column")
 
             self.label.set_rcp(self.row, self.column, self.pixSize)
-            self.gameMode = config.getint('DEFAULT', 'gameMode')
 
             self.mineNum = config.getint("DEFAULT", "mineNum")
+            self.gameMode = config.getint('DEFAULT', 'gameMode')
             # 完成度低于该百分比炸雷自动重开
             if config.getboolean("DEFAULT", "allow_auto_replay"):
                 self.auto_replay = config.getint("DEFAULT", "auto_replay")
