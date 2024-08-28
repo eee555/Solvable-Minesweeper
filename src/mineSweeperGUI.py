@@ -121,8 +121,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             return
         self.label.set_rcp(self.row, self.column, pixSize)
         self.label.reloadCellPic(pixSize)
-        for i in range(4):
-            self.predefinedBoardPara[i]['pix_size'] = pixSize
+        if (self.row, self.column, self.mineNum) == (8, 8, 10):
+            self.predefinedBoardPara[1]['pix_size'] = pixSize
+        elif (self.row, self.column, self.mineNum) == (16, 16, 40):
+            self.predefinedBoardPara[2]['pix_size'] = pixSize
+        elif (self.row, self.column, self.mineNum) == (16, 30, 99):
+            self.predefinedBoardPara[3]['pix_size'] = pixSize
+        else:
+            self.predefinedBoardPara[0]['pix_size'] = pixSize
+            
         self.reimportLEDPic(pixSize)
         
         self.label.setMinimumSize(QtCore.QSize(pixSize * self.column + 8, pixSize * self.row + 8))
@@ -138,7 +145,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.minimumWindow()
         else:
             self._pixSize = pixSize
-
 
     @property
     def gameMode(self):
@@ -270,8 +276,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         is_mine_round = [] # 没有标雷，且是雷
         flag_not_mine_round = [] # 标雷，且非雷
         flag_is_mine_round = [] # 标雷，且是雷
-        for ii in range(max(0,i-1), min(self.row+1,i+2)):
-            for jj in range(max(0,j-1), min(self.column+1,j+2)):
+        for ii in range(max(0,i-1), min(self.row,i+2)):
+            for jj in range(max(0,j-1), min(self.column,j+2)):
                 if (ii, jj) != (i, j):
                     if self.label.ms_board.game_board[ii][jj] == 10:
                         if self.label.ms_board.board[ii][jj] == -1:
@@ -872,7 +878,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 按快捷键123456时的回调
         row = self.predefinedBoardPara[k]['row']
         column = self.predefinedBoardPara[k]['column']
-        self.pixSize = self.predefinedBoardPara[k]['pix_size']
+        mine_num = self.predefinedBoardPara[k]['mine_num']
+        self.setBoard_and_start(row, column, mine_num)
         if isinstance(self.label.ms_board, ms.BaseVideo):
             self.label.ms_board.reset(row, column, self.pixSize)
         else:
@@ -885,14 +892,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.show(self.label.ms_board, index_type=1)
         self.board_constraint = self.predefinedBoardPara[k]['board_constraint']
         self.attempt_times_limit = self.predefinedBoardPara[k]['attempt_times_limit']
-        # self.importLEDPic(self.pixSize)
-        # self.label.importCellPic(self.pixSize)
-        # self.label_2.reloadFace(self.pixSize)
-        self.setBoard_and_start(row,
-                                column,
-                                self.predefinedBoardPara[k]['mine_num'])
-        # self.refreshSettingsDefault()
-    
+
+
     # 菜单回放的回调
     def replay_game(self):
         if not isinstance(self.label.ms_board, ms.BaseVideo):
@@ -924,18 +925,26 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.mineNum = mineNum
         if (row, column, mineNum) == (8, 8, 10):
             self.actionChecked('B')
+            self.pixSize = self.predefinedBoardPara[1]['pix_size']
+            self.gameMode = self.predefinedBoardPara[1]['game_mode']
             self.board_constraint = self.predefinedBoardPara[1]['board_constraint']
             self.attempt_times_limit = self.predefinedBoardPara[1]['attempt_times_limit']
         elif (row, column, mineNum) == (16, 16, 40):
             self.actionChecked('I')
+            self.pixSize = self.predefinedBoardPara[2]['pix_size']
+            self.gameMode = self.predefinedBoardPara[2]['game_mode']
             self.board_constraint = self.predefinedBoardPara[2]['board_constraint']
             self.attempt_times_limit = self.predefinedBoardPara[2]['attempt_times_limit']
         elif (row, column, mineNum) == (16, 30, 99):
             self.actionChecked('E')
+            self.pixSize = self.predefinedBoardPara[3]['pix_size']
+            self.gameMode = self.predefinedBoardPara[3]['game_mode']
             self.board_constraint = self.predefinedBoardPara[3]['board_constraint']
             self.attempt_times_limit = self.predefinedBoardPara[3]['attempt_times_limit']
         else:
             self.actionChecked('C')
+            self.pixSize = self.predefinedBoardPara[0]['pix_size']
+            self.gameMode = self.predefinedBoardPara[0]['game_mode']
             self.board_constraint = self.predefinedBoardPara[0]['board_constraint']
             self.attempt_times_limit = self.predefinedBoardPara[0]['attempt_times_limit']
 
@@ -961,8 +970,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if ui.alter:
             
             self.pixSize = ui.pixSize
-            for i in range(4):
-                self.predefinedBoardPara[i]['pix_size'] = ui.pixSize
+            # for i in range(4):
+            #     self.predefinedBoardPara[i]['pix_size'] = ui.pixSize
 
             self.gameStart()
             
@@ -988,18 +997,22 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 self.predefinedBoardPara[1]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[1]['board_constraint'] = self.board_constraint
                 self.predefinedBoardPara[1]['game_mode'] = ui.gameMode
+                # self.predefinedBoardPara[1]['pix_size'] = ui.pixSize
             elif (self.row, self.column, self.mineNum) == (16, 16, 40):
                 self.predefinedBoardPara[2]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[2]['board_constraint'] = self.board_constraint
                 self.predefinedBoardPara[2]['game_mode'] = ui.gameMode
+                # self.predefinedBoardPara[2]['pix_size'] = ui.pixSize
             elif (self.row, self.column, self.mineNum) == (16, 30, 99):
                 self.predefinedBoardPara[3]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[3]['board_constraint'] = self.board_constraint
                 self.predefinedBoardPara[3]['game_mode'] = ui.gameMode
+                # self.predefinedBoardPara[3]['pix_size'] = ui.pixSize
             else:
                 self.predefinedBoardPara[0]['attempt_times_limit'] = self.attempt_times_limit
                 self.predefinedBoardPara[0]['board_constraint'] = self.board_constraint
                 self.predefinedBoardPara[0]['gameMode'] = ui.gameMode
+                # self.predefinedBoardPara[0]['pix_size'] = ui.pixSize
 
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
             self.score_board_manager.with_namespace({

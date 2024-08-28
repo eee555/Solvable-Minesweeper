@@ -60,6 +60,7 @@ class Ui_MainWindow(Ui_MainWindow):
 
         self.read_or_create_record()
         self.label.setPath(r_path)
+        self.label_2.setPath(r_path)
         _scoreBoardTop, _scoreBoardLeft = self.read_or_create_game_setting()
         self.initMineArea()
 
@@ -90,7 +91,6 @@ class Ui_MainWindow(Ui_MainWindow):
         # self.label.setPath(r_path)
 
 
-        self.label_2.setPath(r_path)
         self.label_2.leftRelease.connect(self.gameRestart)
         self.MinenumTimeWigdet.mouseReleaseEvent = self.gameRestart
 
@@ -194,37 +194,37 @@ class Ui_MainWindow(Ui_MainWindow):
         config = configparser.ConfigParser()
         config.read(self.game_setting_path, encoding='utf-8')
         self.predefinedBoardPara[0] = {
-            "game_mode": config.getint('DEFAULT','gamemode'),
+            "game_mode": config.getint('CUSTOM','gamemode'),
             "row": 8,
             "column": 8,
-            "pix_size": config.getint('DEFAULT','pixsize'),
+            "pix_size": config.getint('CUSTOM','pixsize'),
             "mine_num": 10,
             "board_constraint": config["CUSTOM"]["board_constraint"],
             "attempt_times_limit": config.getint('CUSTOM','attempt_times_limit'),
             }
         self.predefinedBoardPara[1] = {
-            "game_mode": config.getint('DEFAULT','gamemode'),
+            "game_mode": config.getint('BEGINNER','gamemode'),
             "row": 8,
             "column": 8,
-            "pix_size": config.getint('DEFAULT','pixsize'),
+            "pix_size": config.getint('BEGINNER','pixsize'),
             "mine_num": 10,
             "board_constraint": config["BEGINNER"]["board_constraint"],
             "attempt_times_limit": config.getint('BEGINNER','attempt_times_limit'),
             }
         self.predefinedBoardPara[2] = {
-            "game_mode": config.getint('DEFAULT','gamemode'),
+            "game_mode": config.getint('INTERMEDIATE','gamemode'),
             "row": 16,
             "column": 16,
-            "pix_size": config.getint('DEFAULT','pixsize'),
+            "pix_size": config.getint('INTERMEDIATE','pixsize'),
             "mine_num": 40,
             "board_constraint": config["INTERMEDIATE"]["board_constraint"],
             "attempt_times_limit": config.getint('INTERMEDIATE','attempt_times_limit'),
             }
         self.predefinedBoardPara[3] = {
-            "game_mode": config.getint('DEFAULT','gamemode'),
+            "game_mode": config.getint('EXPERT','gamemode'),
             "row": 16,
             "column": 30,
-            "pix_size": config.getint('DEFAULT','pixsize'),
+            "pix_size": config.getint('EXPERT','pixsize'),
             "mine_num": 99,
             "board_constraint": config["EXPERT"]["board_constraint"],
             "attempt_times_limit": config.getint('EXPERT','attempt_times_limit'),
@@ -297,7 +297,7 @@ class Ui_MainWindow(Ui_MainWindow):
         config = configparser.ConfigParser()
         if config.read(self.game_setting_path, encoding='utf-8'):
             self.mainWindow.setWindowOpacity((config.getint('DEFAULT', 'transparency') + 1) / 100)
-            self._pixSize = config.getint('DEFAULT', 'pixSize')
+            # self._pixSize = config.getint('DEFAULT', 'pixSize')
             self.mainWindow.move(config.getint('DEFAULT', 'mainWinTop'), config.getint('DEFAULT', 'mainWinLeft'))
             # self.score_board_manager.ui.QWidget.move(config.getint('DEFAULT', 'scoreBoardTop'),
             #                                          config.getint('DEFAULT', 'scoreBoardLeft'))
@@ -306,10 +306,10 @@ class Ui_MainWindow(Ui_MainWindow):
             self.row = config.getint("DEFAULT", "row")
             self.column = config.getint("DEFAULT", "column")
 
-            self.label.set_rcp(self.row, self.column, self.pixSize)
+            # self.label.set_rcp(self.row, self.column, self.pixSize)
 
             self.mineNum = config.getint("DEFAULT", "mineNum")
-            self.gameMode = config.getint('DEFAULT', 'gameMode')
+            # self.gameMode = config.getint('DEFAULT', 'gameMode')
             # 完成度低于该百分比炸雷自动重开
             if config.getboolean("DEFAULT", "allow_auto_replay"):
                 self.auto_replay = config.getint("DEFAULT", "auto_replay")
@@ -328,17 +328,30 @@ class Ui_MainWindow(Ui_MainWindow):
             self.end_then_flag = config.getboolean("DEFAULT", "end_then_flag") # 游戏结束后自动标雷
             self.cursor_limit = config.getboolean("DEFAULT", "cursor_limit")
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
+                self._pixSize = config.getint('BEGINNER', 'pixSize')
+                self.label.set_rcp(self.row, self.column, self.pixSize)
+                self.gameMode = config.getint('BEGINNER', 'gameMode')
                 self.board_constraint = config["BEGINNER"]["board_constraint"]
                 self.attempt_times_limit = config.getint('BEGINNER', 'attempt_times_limit')
             elif (self.row, self.column, self.mineNum) == (16, 16, 40):
+                self._pixSize = config.getint('INTERMEDIATE', 'pixSize')
+                self.label.set_rcp(self.row, self.column, self.pixSize)
+                self.gameMode = config.getint('INTERMEDIATE', 'gameMode')
                 self.board_constraint = config["INTERMEDIATE"]["board_constraint"]
                 self.attempt_times_limit = config.getint('INTERMEDIATE', 'attempt_times_limit')
             elif (self.row, self.column, self.mineNum) == (16, 30, 99):
+                self._pixSize = config.getint('EXPERT', 'pixSize')
+                self.label.set_rcp(self.row, self.column, self.pixSize)
+                self.gameMode = config.getint('EXPERT', 'gameMode')
                 self.board_constraint = config["EXPERT"]["board_constraint"]
                 self.attempt_times_limit = config.getint('EXPERT', 'attempt_times_limit')
             else:
+                self._pixSize = config.getint('CUSTOM', 'pixSize')
+                self.label.set_rcp(self.row, self.column, self.pixSize)
+                self.gameMode = config.getint('CUSTOM', 'gameMode')
                 self.board_constraint = config["CUSTOM"]["board_constraint"]
                 self.attempt_times_limit = config.getint('CUSTOM', 'attempt_times_limit')
+            self.label_2.reloadFace(self.pixSize)
         else:
             # 找不到配置文件就初始化
             self.min3BV = 100
@@ -372,9 +385,7 @@ class Ui_MainWindow(Ui_MainWindow):
                 self.language = "zh_CN"
             else:
                 self.language = "en_US"
-            config["DEFAULT"] = {'gameMode': 0,
-                                 'transparency': 100,
-                                 'pixSize': 20,
+            config["DEFAULT"] = {'transparency': 100,
                                  'mainWinTop': 100,
                                  'mainWinLeft': 200,
                                  'scoreBoardTop': 100,
@@ -395,16 +406,24 @@ class Ui_MainWindow(Ui_MainWindow):
                                  "cursor_limit": False,
                                  "language": self.language,
                                  }
-            config["BEGINNER"] = {"board_constraint": "",
+            config["BEGINNER"] = {"gameMode": 0,
+                                  "pixSize": 20,
+                                  "board_constraint": "",
                                   "attempt_times_limit": 100000,
                                   }
-            config["INTERMEDIATE"] = {"board_constraint": "",
+            config["INTERMEDIATE"] = {"gameMode": 0,
+                                      "pixSize": 20,
+                                      "board_constraint": "",
                                       "attempt_times_limit": 100000,
                                       }
-            config["EXPERT"] = {"board_constraint": "",
+            config["EXPERT"] = {"gameMode": 0,
+                                "pixSize": 20,
+                                "board_constraint": "",
                                 "attempt_times_limit": 100000,
                                 }
-            config["CUSTOM"] = {"board_constraint": "",
+            config["CUSTOM"] = {"gameMode": 0,
+                                "pixSize": 20,
+                                "board_constraint": "",
                                 "attempt_times_limit": 100000,
                                  }
             config["CUSTOM_PRESET_4"] = {'row': 16,

@@ -15,9 +15,9 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.setWindowModality(QtCore.Qt.NonModal)
-        Form.resize(580, 600)
-        Form.setMinimumSize(QtCore.QSize(580, 600))
-        Form.setMaximumSize(QtCore.QSize(580, 600))
+        Form.resize(580, 608)
+        Form.setMinimumSize(QtCore.QSize(580, 608))
+        Form.setMaximumSize(QtCore.QSize(580, 608))
         Form.setMouseTracking(True)
         Form.setFocusPolicy(QtCore.Qt.ClickFocus)
         icon = QtGui.QIcon()
