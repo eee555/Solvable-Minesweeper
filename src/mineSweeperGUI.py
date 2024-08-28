@@ -1426,13 +1426,27 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.close()
         conf = configparser.ConfigParser()
         conf.read(self.game_setting_path, encoding='utf-8')
-        conf.set("DEFAULT", "gamemode", str(self.gameMode))
+        # conf.set("DEFAULT", "gamemode", str(self.gameMode))
         conf.set("DEFAULT", "mainWinTop", str(self.mainWindow.x()))
         conf.set("DEFAULT", "mainWinLeft", str(self.mainWindow.y()))
-        conf.set("DEFAULT", "pixsize", str(self.pixSize))
+        # conf.set("DEFAULT", "pixsize", str(self.pixSize))
         conf.set("DEFAULT", "row", str(self.row))
         conf.set("DEFAULT", "column", str(self.column))
         conf.set("DEFAULT", "minenum", str(self.mineNum))
+        
+        if (self.row, self.column, self.mineNum) == (8, 8, 10):
+            conf.set("BEGINNER", "gamemode", str(self.gameMode))
+            conf.set("BEGINNER", "pixsize", str(self.pixSize))
+        elif (self.row, self.column, self.mineNum) == (16, 16, 40):
+            conf.set("INTERMEDIATE", "gamemode", str(self.gameMode))
+            conf.set("INTERMEDIATE", "pixsize", str(self.pixSize))
+        elif (self.row, self.column, self.mineNum) == (16, 30, 99):
+            conf.set("EXPERT", "gamemode", str(self.gameMode))
+            conf.set("EXPERT", "pixsize", str(self.pixSize))
+        else:
+            conf.set("CUSTOM", "gamemode", str(self.gameMode))
+            conf.set("CUSTOM", "pixsize", str(self.pixSize))
+            
         conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
 
         conf = configparser.ConfigParser()

@@ -328,27 +328,27 @@ class Ui_MainWindow(Ui_MainWindow):
             self.end_then_flag = config.getboolean("DEFAULT", "end_then_flag") # 游戏结束后自动标雷
             self.cursor_limit = config.getboolean("DEFAULT", "cursor_limit")
             if (self.row, self.column, self.mineNum) == (8, 8, 10):
-                self._pixSize = config.getint('BEGINNER', 'pixSize')
+                self._pixSize = config.getint('BEGINNER', 'pixsize')
                 self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.gameMode = config.getint('BEGINNER', 'gameMode')
+                self.gameMode = config.getint('BEGINNER', 'gamemode')
                 self.board_constraint = config["BEGINNER"]["board_constraint"]
                 self.attempt_times_limit = config.getint('BEGINNER', 'attempt_times_limit')
             elif (self.row, self.column, self.mineNum) == (16, 16, 40):
-                self._pixSize = config.getint('INTERMEDIATE', 'pixSize')
+                self._pixSize = config.getint('INTERMEDIATE', 'pixsize')
                 self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.gameMode = config.getint('INTERMEDIATE', 'gameMode')
+                self.gameMode = config.getint('INTERMEDIATE', 'gamemode')
                 self.board_constraint = config["INTERMEDIATE"]["board_constraint"]
                 self.attempt_times_limit = config.getint('INTERMEDIATE', 'attempt_times_limit')
             elif (self.row, self.column, self.mineNum) == (16, 30, 99):
-                self._pixSize = config.getint('EXPERT', 'pixSize')
+                self._pixSize = config.getint('EXPERT', 'pixsize')
                 self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.gameMode = config.getint('EXPERT', 'gameMode')
+                self.gameMode = config.getint('EXPERT', 'gamemode')
                 self.board_constraint = config["EXPERT"]["board_constraint"]
                 self.attempt_times_limit = config.getint('EXPERT', 'attempt_times_limit')
             else:
-                self._pixSize = config.getint('CUSTOM', 'pixSize')
+                self._pixSize = config.getint('CUSTOM', 'pixsize')
                 self.label.set_rcp(self.row, self.column, self.pixSize)
-                self.gameMode = config.getint('CUSTOM', 'gameMode')
+                self.gameMode = config.getint('CUSTOM', 'gamemode')
                 self.board_constraint = config["CUSTOM"]["board_constraint"]
                 self.attempt_times_limit = config.getint('CUSTOM', 'attempt_times_limit')
             self.label_2.reloadFace(self.pixSize)
@@ -374,7 +374,7 @@ class Ui_MainWindow(Ui_MainWindow):
             self.player_identifier = "匿名玩家(anonymous player)"
             self.race_identifier = ""
             self.unique_identifier = ""
-            self.country = "未知(unknow)"
+            self.country = ""
             self.autosave_video = True
             self.filter_forever = False
             self.end_then_flag = True
@@ -399,7 +399,7 @@ class Ui_MainWindow(Ui_MainWindow):
                                  "player_identifier": "匿名玩家(anonymous player)",
                                  "race_identifier": "",
                                  "unique_identifier": "",
-                                 "country": "未知(unknow)",
+                                 "country": "",
                                  "autosave_video": True,
                                  "filter_forever": False,
                                  "end_then_flag": True,
