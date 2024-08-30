@@ -152,7 +152,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     @gameMode.setter
     def gameMode(self, game_mode):
-        self.label.ms_board.mode = game_mode
+        if isinstance(self.label.ms_board.mode, ms.EvfVideo):
+            self.label.ms_board.mode = game_mode
         self._game_mode = game_mode
 
     @property
@@ -1320,6 +1321,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.label.update()
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
         self.video_time += self.video_time_step
+        self.showTime(int(self.video_time))
         self.ui_video_control.horizontalSlider_time.blockSignals(True)
         self.ui_video_control.horizontalSlider_time.setValue(int(self.video_time * 100))
         self.ui_video_control.horizontalSlider_time.blockSignals(False)
