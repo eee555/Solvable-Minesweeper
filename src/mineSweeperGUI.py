@@ -1348,17 +1348,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def video_set_speed(self, speed):
         self.video_time_step = speed * 0.01
 
-    def video_set_time(self, time):
+    def video_set_time(self, t):
         # 把录像定位到某一个时刻。是拖动进度条的回调
-        self.video_time = time / 100
+        self.video_time = t / 100
         self.label.ms_board.current_time = self.video_time
         self.label.update()
         self.score_board_manager.show(self.label.ms_board, index_type = 2)
 
-    def video_set_a_time(self, time):
+    def video_set_a_time(self, t):
         # 把录像定位到某一段时间，默认前后一秒，自动播放。是点录像事件的回调
-        self.video_time = (time - 100) / 100
-        self.video_stop_time = (time + 100) / 100  # 大了也没关系，ms_toollib自动处理
+        self.video_time = (t - 100) / 100
+        self.video_stop_time = (t + 100) / 100  # 大了也没关系，ms_toollib自动处理
         self.timer_video.start()
         self.video_playing = True
 
@@ -1455,15 +1455,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         conf.read(self.record_path, encoding='utf-8')
         for key_name in self.record_key_name_list:
             conf[key_name] = self.record[key_name]
-        # conf["BFLAG"] = self.record["BFLAG"]
-        # conf["BNF"] = self.record["BNF"]
-        # conf["IFLAG"] = self.record["IFLAG"]
-        # conf["INF"] = self.record["INF"]
-        # conf["EFLAG"] = self.record["EFLAG"]
-        # conf["ENF"] = self.record["ENF"]
-        # conf["BEGINNER"] = self.record["BEGINNER"]
-        # conf["INTERMEDIATE"] = self.record["INTERMEDIATE"]
-        # conf["EXPERT"] = self.record["EXPERT"]
         with open(self.record_path, 'w') as configfile:
             conf.write(configfile)  # 将对象写入文件
 

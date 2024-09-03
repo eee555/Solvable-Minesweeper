@@ -601,7 +601,7 @@ class Ui_Form(object):
         self.comboBox_gamemode.setItemText(1, _translate("Form", "Win7"))
         self.comboBox_gamemode.setItemText(2, _translate("Form", "强无猜"))
         self.comboBox_gamemode.setItemText(3, _translate("Form", "弱无猜"))
-        self.comboBox_gamemode.setItemText(4, _translate("Form", "竞速无猜"))
+        self.comboBox_gamemode.setItemText(4, _translate("Form", "经典无猜"))
         self.comboBox_gamemode.setItemText(5, _translate("Form", "准无猜"))
         self.comboBox_gamemode.setItemText(6, _translate("Form", "强可猜"))
         self.comboBox_gamemode.setItemText(7, _translate("Form", "弱可猜"))
