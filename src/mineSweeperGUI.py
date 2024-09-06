@@ -173,6 +173,14 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.ui_video_control.QWidget.close()
             self.label.paint_cursor = False
             self.set_country_flag()
+            self.score_board_manager.with_namespace({
+                "checksum_ok": "--",
+                "is_official": "--",
+                "is_fair": "--",
+                "mode": mm.trans_game_mode(self.gameMode),
+                })
+            self.score_board_manager.show(self.label.ms_board, index_type = 1)
+
         elif self._game_state == 'study':
             self.num_bar_ui.QWidget.close()
         self._game_state = game_state
@@ -586,12 +594,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # self.label.paint_cursor = False
         # self.label.setMouseTracking(False) # 鼠标未按下时，组织移动事件回调
 
-        self.score_board_manager.with_namespace({
-            "checksum_ok": "--",
-            "is_official": "--",
-            "is_fair": "--"
-            })
-
 
     # 游戏结束画残局，改状态
     def gameFinished(self):
@@ -655,6 +657,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board.is_official = self.is_official()
             
             self.label.ms_board.software = "元3.1.10".encode( "UTF-8" )
+            self.label.ms_board.mode = self.gameMode
             self.label.ms_board.player_identifier = self.player_identifier.encode( "UTF-8" )
             self.label.ms_board.race_identifier = self.race_identifier.encode( "UTF-8" )
             self.label.ms_board.uniqueness_identifier = self.unique_identifier.encode( "UTF-8" )
@@ -1255,10 +1258,18 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 检查evf的checksum，其余录像没有鉴定能力
         if isinstance(video, ms.EvfVideo):
             self.score_board_manager.with_namespace({
-                "checksum_ok": self.checksum_guard.valid_checksum(video.raw_data[:-33], video.checksum),
-                "is_official": video.is_official,
-                "is_fair": video.is_fair
+                "checksum_ok": self.checksum_guard.\
+                    valid_checksum(video.raw_data[:-33], video.checksum),
                 })
+        else:
+            self.score_board_manager.with_namespace({
+                "checksum_ok": False,
+                })
+        self.score_board_manager.with_namespace({
+            "is_official": video.is_official,
+            "is_fair": video.is_fair,
+            "mode": mm.trans_game_mode(video.mode),
+            })
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",
                                     "mouse_trace", "vision_transfer", "survive_poss"])
 
