@@ -351,7 +351,6 @@ class Ui_MainWindow(Ui_MainWindow):
                 self.gameMode = config.getint('CUSTOM', 'gamemode')
                 self.board_constraint = config["CUSTOM"]["board_constraint"]
                 self.attempt_times_limit = config.getint('CUSTOM', 'attempt_times_limit')
-            self.label_2.reloadFace(self.pixSize)
         else:
             # 找不到配置文件就初始化
             self.min3BV = 100
@@ -452,6 +451,7 @@ class Ui_MainWindow(Ui_MainWindow):
                                          }
             with open(self.game_setting_path, 'w', encoding='utf-8') as configfile:
                 config.write(configfile)  # 将对象写入文件
+        self.label_2.reloadFace(self.pixSize)
         return _scoreBoardTop, _scoreBoardLeft
 
     def read_or_create_record(self):
