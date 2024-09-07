@@ -884,6 +884,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         column = self.predefinedBoardPara[k]['column']
         mine_num = self.predefinedBoardPara[k]['mine_num']
         self.setBoard_and_start(row, column, mine_num)
+        if self.predefinedBoardPara[k]['pix_size'] != self.pixSize:
+            self.pixSize = self.predefinedBoardPara[k]['pix_size']
         if isinstance(self.label.ms_board, ms.BaseVideo):
             self.label.ms_board.reset(row, column, self.pixSize)
         else:
