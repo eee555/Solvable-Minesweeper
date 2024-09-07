@@ -10,14 +10,13 @@ import minesweeper_master as mm
 import ms_toollib as ms
 import configparser
 # from pathlib import Path
-import time
+# import time
 import os
 import ctypes
 import hashlib, uuid
 # from PyQt5.QtWidgets import QApplication
-from country_name import country_name
+# from country_name import country_name
 import metaminesweeper_checksum
-import mmap
 
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
@@ -1279,10 +1278,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         event_len = video.events_len
         comments = []
         for event_id in range(event_len):
-            time = video.events_time(event_id)
+            t = video.events_time(event_id)
             comment = video.events_comments(event_id)
             if comment:
-                comments.append((time, [i.split(': ') for i in comment.split(';')[:-1]]))
+                comments.append((t, [i.split(': ') for i in comment.split(';')[:-1]]))
         # 调整窗口
         if (video.row, video.column) != (self.row, self.column):
             self.setBoard(video.row, video.column, video.mine_num)
@@ -1403,6 +1402,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         
     def hidden_score_board(self):
         # 按/隐藏计数器，再按显示
+        if self.game_state == 'study':
+            return
         if self.score_board_manager.ui.QWidget.isVisible():
             self.score_board_manager.invisible()
         else:
@@ -1415,13 +1416,13 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         widget_size = self.label.size()
         # 计算限制区域
         rect = QRect(widget_pos, widget_size)
-        self.clip_mouse(rect)
+        self._clip_mouse(rect)
 
     # 取消将鼠标区域限制在游戏界面中
     def unlimit_cursor(self):
         ctypes.windll.user32.ClipCursor(None)
 
-    def clip_mouse(self, rect):
+    def _clip_mouse(self, rect):
         # 定义RECT结构体
         class RECT(ctypes.Structure):
             _fields_ = [("left", ctypes.c_long),

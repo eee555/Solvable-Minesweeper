@@ -285,9 +285,11 @@ class Ui_MainWindow(Ui_MainWindow):
             self.trans.load(str(self.r_path.with_name(language + '.qm')))
             app.installTranslator(self.trans)
             self.retranslateUi(self.mainWindow)
+            self.score_board_manager.ui.retranslateUi(self.score_board_manager.ui.QWidget)
         else:
             app.removeTranslator(self.trans)
             self.retranslateUi(self.mainWindow)
+            self.score_board_manager.ui.retranslateUi(self.score_board_manager.ui.QWidget)
         mm.updata_ini(self.game_setting_path, [("DEFAULT", "language", language)])
         self.language = language
 
