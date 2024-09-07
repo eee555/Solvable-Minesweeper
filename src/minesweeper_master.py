@@ -5,6 +5,7 @@ from typing import List, Tuple
 # import time
 from safe_eval import safe_eval
 import configparser
+from PyQt5 import QtCore
 
 import ms_toollib as ms
 import math
@@ -278,8 +279,9 @@ def trans_expression(expression: str):
 
 
 def trans_game_mode(mode: int) -> str:
+    _translate = QtCore.QCoreApplication.translate
     if mode == 0:
-        return '标准'
+        return _translate("Form", "标准")
     elif mode == 1:
         return 'upk'
     elif mode == 2:
@@ -289,17 +291,17 @@ def trans_game_mode(mode: int) -> str:
     elif mode == 4:
         return 'win7'
     elif mode == 5:
-        return '竞速无猜'
+        return _translate("Form", '竞速无猜')
     elif mode == 6:
-        return '强无猜'
+        return _translate("Form", '强无猜')
     elif mode == 7:
-        return '弱无猜'
+        return _translate("Form", '弱无猜')
     elif mode == 8:
-        return '准无猜'
+        return _translate("Form", '准无猜')
     elif mode == 9:
-        return '强可猜'
+        return _translate("Form", '强可猜')
     elif mode == 10:
-        return '弱可猜'
+        return _translate("Form", '弱可猜')
     
 # class abstract_game_board(object):
 #     __slots__ = ('game_board', 'mouse_state', 'game_board_state')

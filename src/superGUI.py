@@ -79,14 +79,6 @@ class Ui_MainWindow(Ui_MainWindow):
         self.score_board_manager.ui.QWidget.move(_scoreBoardTop, _scoreBoardLeft)
 
 
-        self.score_board_manager.with_namespace({
-            "race_identifier": self.race_identifier,
-            "mode": mm.trans_game_mode(self.gameMode),
-            "checksum_ok": "--",
-            "is_official": "--",
-            "is_fair": "--"
-            })
-
         self.importLEDPic(self.pixSize) # 导入图片
         # self.label.setPath(r_path)
 
@@ -285,11 +277,11 @@ class Ui_MainWindow(Ui_MainWindow):
             self.trans.load(str(self.r_path.with_name(language + '.qm')))
             app.installTranslator(self.trans)
             self.retranslateUi(self.mainWindow)
-            self.score_board_manager.ui.retranslateUi(self.score_board_manager.ui.QWidget)
+            self.score_board_manager.retranslateUi(self.score_board_manager.ui.QWidget)
         else:
             app.removeTranslator(self.trans)
             self.retranslateUi(self.mainWindow)
-            self.score_board_manager.ui.retranslateUi(self.score_board_manager.ui.QWidget)
+            self.score_board_manager.retranslateUi(self.score_board_manager.ui.QWidget)
         mm.updata_ini(self.game_setting_path, [("DEFAULT", "language", language)])
         self.language = language
 

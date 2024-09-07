@@ -102,9 +102,16 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         if len(args) == 2:
             self.action_OpenFile(args[1])
 
+        self.trans_language()
+        self.score_board_manager.with_namespace({
+            "race_identifier": self.race_identifier,
+            "mode": self.gameMode,
+            "checksum_ok": "--",
+            "is_official": "--",
+            "is_fair": "--"
+            })
         self.score_board_manager.reshow(self.label.ms_board, index_type = 1)
         self.score_board_manager.visible()
-        self.trans_language()
 
         self.mainWindow.closeEvent_.connect(self.closeEvent_)
         
@@ -176,7 +183,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
                 "checksum_ok": "--",
                 "is_official": "--",
                 "is_fair": "--",
-                "mode": mm.trans_game_mode(self.gameMode),
+                "mode": self.gameMode,
                 })
             self.score_board_manager.show(self.label.ms_board, index_type = 1)
 
@@ -892,7 +899,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], self.pixSize)
         self.gameMode = self.predefinedBoardPara[k]['game_mode']
         self.score_board_manager.with_namespace({
-            "mode": mm.trans_game_mode(self.gameMode),
+            "mode": self.gameMode,
             })
         self.score_board_manager.show(self.label.ms_board, index_type=1)
         self.board_constraint = self.predefinedBoardPara[k]['board_constraint']
@@ -1022,7 +1029,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.mainWindow.setWindowOpacity(ui.transparency / 100)
             self.score_board_manager.with_namespace({
                 "race_identifier": ui.race_identifier,
-                "mode": mm.trans_game_mode(ui.gameMode),
+                "mode": self.gameMode,
                 })
             self.score_board_manager.show(self.label.ms_board, index_type=1)
 
@@ -1269,7 +1276,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.score_board_manager.with_namespace({
             "is_official": video.is_official,
             "is_fair": video.is_fair,
-            "mode": mm.trans_game_mode(video.mode),
+            "mode": video.mode,
             })
         video.analyse_for_features(["high_risk_guess", "jump_judge", "needless_guess",
                                     "mouse_trace", "vision_transfer", "survive_poss"])

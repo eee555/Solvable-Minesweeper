@@ -131,12 +131,6 @@ class gameScoreBoardManager():
         self.editing_row = -1 # -1不在编辑状态，-2不能编辑（正在游戏）
         self.editing_column = -1
         
-        # self.ui.QWidget.closeEvent_.connect(self.close) 
-        
-    # def keyPressEvent(self, event):
-    #     print(666)
-    #     if event.key() == Qt.Key_Return:
-    #         self.__table_ok()
 
     def update_score_board_items_type(self):
         self.score_board_items_type = []
@@ -154,6 +148,9 @@ class gameScoreBoardManager():
         # 埋雷结束后调用，固化参数
         # self.pix_size = pix_size
         # self.board = board
+        if "mode" in namespace:
+            self._game_mode_code: int = namespace["mode"]
+            namespace["mode"] = mm.trans_game_mode(namespace["mode"])
         self.namespace.update(namespace)
         # race_designator, mode .etc
         # self.ms_board = ms.BaseVideo(board, pix_size)
@@ -265,7 +262,16 @@ class gameScoreBoardManager():
         
         
         self.show()
-
+    
+    # 重写窗口的翻译方法。主要是模式的翻译问题
+    def retranslateUi(self, Form):
+        self.ui.retranslateUi(Form)
+        if hasattr(self, "ms_board"):
+            self.with_namespace({
+                "mode": self._game_mode_code,
+                })
+            self.show(self.ms_board, index_type = 1)
+            
     def __table_change(self, e):
         # 编辑开始时，把数值换成公式
         if e.column() == 1 and self.editing_row == -1:

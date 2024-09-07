@@ -157,7 +157,7 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 
 ### 正式版v3.1.10：
 修复了快捷键切换难度后局面约束不能变化、研究模式中快捷键切换难度后卡死、鼠标设置阻塞进程、回放时切换难度崩溃等、标错雷时概率计算错误、回放时右上角时间不变化等问题。现在回放时可以显示正确的国旗。可以设置唯一性标识。录像可以回放、手动保存。每个级别的模式、尺寸可以分别保存。双击猜雷可以起作用。可以限制鼠标移动范围为游戏局面区域。  
-链接：[https://fff666.top/download/Metaminesweeper-v3.1.10.zip](https://fff666.top/download/Metaminesweeper-v3.1.10.zip)
+链接：无（不安全，已下架）
 
 ### 正式版v3.1.9：
 
