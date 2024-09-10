@@ -21,8 +21,37 @@ import metaminesweeper_checksum
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow, args):
+        print(args)
         self.mainWindow = MainWindow
+        self.checksum_guard = metaminesweeper_checksum.ChecksumGuard()
+        if len(args) == 3:
+            print(args)
+            if args[1] == "-v":
+                print(superGUI.version)
+                return
+            elif args[1] == "-t":
+                if args[2][-3:] == "evf":
+                    video = ms.EvfVideo(args[2])
+                else:
+                    print("unknown")
+                    return
+                try:
+                    video.parse_video()
+                except:
+                    print("false")
+                    return
+                
+                if self.checksum_guard.\
+                    valid_checksum(video.raw_data[:-33], video.checksum):
+                    print("true")
+                    return
+                else:
+                    print("false")
+                    return
+                
         super(MineSweeperGUI, self).__init__(MainWindow, args)
+        
+        
         # MineSweeperGUI父类的init中读.ini、读图片、设置字体、局面初始化等
 
         self.time_10ms: int = 0 # 已毫秒为单位的游戏时间，全局统一的
