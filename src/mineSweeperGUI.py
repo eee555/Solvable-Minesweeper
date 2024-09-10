@@ -18,6 +18,7 @@ import hashlib, uuid
 # from country_name import country_name
 import metaminesweeper_checksum
 
+version = "元3.1.11".encode( "UTF-8" )
 
 class MineSweeperGUI(superGUI.Ui_MainWindow):
     def __init__(self, MainWindow, args):
@@ -101,7 +102,31 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 用本软件打开录像
         if len(args) == 2:
             self.action_OpenFile(args[1])
-
+        elif len(args) == 3:
+            print(args)
+            if args[1] == "-v":
+                print(version)
+                return
+            elif args[1] == "-t":
+                if args[2][-3:] == "evf":
+                    video = ms.EvfVideo(args[2])
+                else:
+                    print("unknown")
+                    return
+                try:
+                    video.parse_video()
+                except:
+                    print("false")
+                    return
+                
+                if self.checksum_guard.\
+                    valid_checksum(video.raw_data[:-33], video.checksum):
+                    print("true")
+                    return
+                else:
+                    print("false")
+                    return
+                    
         self.trans_language()
         self.score_board_manager.with_namespace({
             "race_identifier": self.race_identifier,
@@ -662,7 +687,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board.is_fair = self.is_fair()
             self.label.ms_board.is_official = self.is_official()
             
-            self.label.ms_board.software = "元3.1.11".encode( "UTF-8" )
+            self.label.ms_board.software = version
             self.label.ms_board.mode = self.gameMode
             self.label.ms_board.player_identifier = self.player_identifier.encode( "UTF-8" )
             self.label.ms_board.race_identifier = self.race_identifier.encode( "UTF-8" )
