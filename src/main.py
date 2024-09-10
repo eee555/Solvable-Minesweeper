@@ -20,8 +20,7 @@ def find_window(class_name, window_name):
 
 
 if __name__ == "__main__":
-    
-
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
     app = QtWidgets.QApplication (sys.argv)
     mainWindow = mainWindowGUI.MainWindow()

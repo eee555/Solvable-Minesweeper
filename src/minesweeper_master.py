@@ -267,7 +267,7 @@ def enumerateChangeBoard(board, game_board, poses: List[Tuple[int, int]]) -> (Li
 
 
 def trans_expression(expression: str):
-    expression = expression.lower().strip()
+    expression = expression.lower().strip()[:10000]
     expression = expression.replace("3bv", "bbbv")
     expression = expression.replace("opening", "op")
     expression = expression.replace("click", "cl")

@@ -7,7 +7,6 @@ from safe_eval import safe_eval
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import QShortcut
-from PyQt5.QtCore import Qt
 
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)
@@ -20,8 +19,8 @@ class ui_Form(Ui_Form):
         self.setupUi(self.QWidget)
         
         self.tableWidget.setColumnWidth(0, 80)
-        self.tableWidget.setColumnWidth(1, 120)
-        self.tableWidget.verticalHeader().setDefaultSectionSize(24)
+        self.tableWidget.setColumnWidth(1, 150)
+        # self.tableWidget.verticalHeader().setDefaultSectionSize(24)
         
         self.QWidget.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico'))))
         
@@ -37,13 +36,11 @@ class ui_Form(Ui_Form):
         # 更新数值、指标。指标数量可能变
         table_height = len(index_name_list)*24
         self.tableWidget.setRowCount(len(index_name_list))
-        self.tableWidget.setMinimumWidth(202)
-        self.tableWidget.setMaximumWidth(202)
+        # self.tableWidget.setMinimumWidth(232)
+        # self.tableWidget.setMaximumWidth(232)
         self.tableWidget.setMaximumHeight(table_height + len(index_name_list) + 2)
         self.tableWidget.setMinimumHeight(table_height + len(index_name_list) + 2)
         
-        # self.QWidget.setMinimumSize(QtCore.QSize(224+2, table_height + 88))
-        # self.QWidget.setMaximumSize(QtCore.QSize(224+2, table_height + 88))
         for idx, i in enumerate(index_name_list):
             self.tableWidget.setItem(idx, 0, QTableWidgetItem(i))
         self.show(index_value_list)
