@@ -11,9 +11,8 @@ from ui.ui_main_board import Ui_MainWindow
 from pathlib import Path
 from gameScoreBoard import gameScoreBoardManager
 import minesweeper_master as mm
-import metaminesweeper_checksum
+# import metaminesweeper_checksum
 from country_name import country_name
-import ms_toollib as ms
 
 
 version = "元3.1.11".encode( "UTF-8" )
