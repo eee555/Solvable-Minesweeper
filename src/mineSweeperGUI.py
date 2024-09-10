@@ -662,7 +662,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             self.label.ms_board.is_fair = self.is_fair()
             self.label.ms_board.is_official = self.is_official()
             
-            self.label.ms_board.software = "元3.1.10".encode( "UTF-8" )
+            self.label.ms_board.software = "元3.1.11".encode( "UTF-8" )
             self.label.ms_board.mode = self.gameMode
             self.label.ms_board.player_identifier = self.player_identifier.encode( "UTF-8" )
             self.label.ms_board.race_identifier = self.race_identifier.encode( "UTF-8" )

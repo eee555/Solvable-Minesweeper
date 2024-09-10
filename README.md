@@ -1,15 +1,15 @@
-# MetaSweeper-v3.1.10 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
+# MetaSweeper-v3.1.11 —— project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
 
-# 元扫雷v3.1.10 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
+# 元扫雷v3.1.11 —— 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
 
-[![MetaSweeper](https://img.shields.io/badge/MetaSweeper-v3.1.10-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
+[![MetaSweeper](https://img.shields.io/badge/MetaSweeper-v3.1.11-brightgreen.svg)](https://github.com/eee555/Solvable-Minesweeper)
 [![stars](https://img.shields.io/github/stars/eee555/Solvable-Minesweeper)](https://github.com/eee555/Solvable-Minesweeper/stargazers)
 [![forks](https://img.shields.io/github/forks/eee555/Solvable-Minesweeper)](https://github.com/eee555/Solvable-Minesweeper/forks)
 
 
 ## 简介
 
-元扫雷v3.1.10是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
+元扫雷v3.1.11是由热爱扫雷的玩家开发的扫雷游戏。这个项目并非简单重复已有的工作，而是集中了一批扫雷游戏的现代化设计。
 
 优势：
 
@@ -76,7 +76,7 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 ## 安装
 建议在`Windows 10`或`Windows 11`下运行本游戏，其它操作系统未经测试，可能出现意想不到的问题。
 
-### 方案1：通过网盘安装(推荐)
+### 方案1：通过官方下载链接安装(推荐)
 在下面的[下载链接](#下载链接)中找到最新的版本，然后下载，解压，直接运行`main.exe`文件（如果警告请点击“仍然运行”），开箱即用。通过此方法安装的软件，是`正版`的软件，能够对录像文件进行官方的签名（签名功能打包在“metaminesweeper_checksum.pyd”中，占比很小，且是闭源的）。
 
 ### 方案2：通过Github Actions安装(最安全)
@@ -109,6 +109,10 @@ Currently in the lengthy development phase, with updates approximately every 1 t
     将ms_toollib\python_package\target\release下的ms_toollib.dll重命名为ms_toollib.pyd，复制到Solvable-Minesweeper\src下
     安装requirements.txt中除ms_toollib外剩余的依赖
 ```
+
+*   为了跑通全部功能，从下载的以往版本中找到en_US.qm、de_DE.qm、pl_PL.qm等语言文件，复制到Solvable-Minesweeper下
+
+*   为了跑通全部功能，从下载的以往版本中找到params.onnx神经网络模型数据，复制到Solvable-Minesweeper\src下
 
 *   运行程序，大功告成了~
 ```sh
@@ -154,6 +158,10 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 
 
 ## 下载链接
+
+### 正式版v3.1.11：
+修复了若干严重问题。计数器标题可以翻译。兼容高清屏。  
+链接：[https://fff666.top/download/Metaminesweeper-v3.1.11.zip](https://fff666.top/download/Metaminesweeper-v3.1.11.zip)
 
 ### 正式版v3.1.10：
 修复了快捷键切换难度后局面约束不能变化、研究模式中快捷键切换难度后卡死、鼠标设置阻塞进程、回放时切换难度崩溃等、标错雷时概率计算错误、回放时右上角时间不变化等问题。现在回放时可以显示正确的国旗。可以设置唯一性标识。录像可以回放、手动保存。每个级别的模式、尺寸可以分别保存。双击猜雷可以起作用。可以限制鼠标移动范围为游戏局面区域。  
