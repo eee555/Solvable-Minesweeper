@@ -20,7 +20,7 @@ class ui_Form(Ui_Form):
         
         self.tableWidget.setColumnWidth(0, 80)
         self.tableWidget.setColumnWidth(1, 150)
-        # self.tableWidget.verticalHeader().setDefaultSectionSize(24)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(24)
         
         self.QWidget.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico'))))
         
@@ -245,7 +245,16 @@ class gameScoreBoardManager():
         # if self.ui.QWidget.isVisible():
         #     self.visible()
         
-    def reshow(self, ms_board, index_type):
+    def reshow(self, ms_board, index_type = 0):
+        if not index_type:
+            if self.ms_board.game_board_state == 1\
+                or self.ms_board.game_board_state == 2\
+                    or self.ms_board.game_board_state == 5:
+                index_type = 1
+            else:
+                # 3、4为win和loss
+                index_type = 2
+            
         # 指标数量有变。增删指标用。游戏开始前。index_type是2
         self.ms_board = ms_board
         index_value_list = self.cal_index_value(ms_board, index_type)
@@ -301,13 +310,7 @@ class gameScoreBoardManager():
             else:
                 self.score_board_items[self.editing_row][1] = new_formula
                 self.update_score_board_items_type()
-            if self.ms_board.game_board_state == 1\
-                or self.ms_board.game_board_state == 2\
-                    or self.ms_board.game_board_state == 5:
-                self.reshow(self.ms_board, 1)
-            else:
-                # 3、4为win和loss
-                self.reshow(self.ms_board, 2)
+            self.reshow(self.ms_board)
             self.editing_row = -1
             self.editing_column = -1
         
@@ -322,7 +325,7 @@ class gameScoreBoardManager():
         # 添加一个空开的行，并刷新显示
         self.score_board_items.append(["", ""])
         self.score_board_items_type.append(1)
-        self.reshow(self.ms_board, 1)
+        self.reshow(self.ms_board)
                 
     def close(self):
         config = configparser.ConfigParser()

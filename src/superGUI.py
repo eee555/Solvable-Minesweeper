@@ -13,6 +13,11 @@ from gameScoreBoard import gameScoreBoardManager
 import minesweeper_master as mm
 import metaminesweeper_checksum
 from country_name import country_name
+import ms_toollib as ms
+
+
+version = "元3.1.11".encode( "UTF-8" )
+
 
 class Ui_MainWindow(Ui_MainWindow):
     minimum_counter = 0 # 最小化展示窗口有关
@@ -20,6 +25,33 @@ class Ui_MainWindow(Ui_MainWindow):
     def __init__(self, MainWindow, args):
         self.mainWindow = MainWindow
         self.setupUi(self.mainWindow)
+        
+        self.checksum_guard = metaminesweeper_checksum.ChecksumGuard()
+        if len(args) == 3:
+            print(args)
+            if args[1] == "-v":
+                print(version)
+                return
+            elif args[1] == "-t":
+                if args[2][-3:] == "evf":
+                    video = ms.EvfVideo(args[2])
+                else:
+                    print("unknown")
+                    return
+                try:
+                    video.parse_video()
+                except:
+                    print("false")
+                    return
+                
+                if self.checksum_guard.\
+                    valid_checksum(video.raw_data[:-33], video.checksum):
+                    print("true")
+                    return
+                else:
+                    print("false")
+                    return
+                
         # 设置全局路径
         r_path = Path(args[0]).parent
         self.r_path = r_path
@@ -29,8 +61,6 @@ class Ui_MainWindow(Ui_MainWindow):
         self.game_setting_path = str(r_path.with_name('gameSetting.ini'))
         # 个人记录，用来弹窗
         self.record_path = str(r_path.with_name('record.ini'))
-
-        self.checksum_guard = metaminesweeper_checksum.ChecksumGuard()
 
 
         self.ico_path = str(r_path.with_name('media').joinpath('cat.ico'))
