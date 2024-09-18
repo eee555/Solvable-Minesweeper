@@ -291,7 +291,7 @@ def trans_game_mode(mode: int) -> str:
     elif mode == 4:
         return 'win7'
     elif mode == 5:
-        return _translate("Form", '竞速无猜')
+        return _translate("Form", '经典无猜')
     elif mode == 6:
         return _translate("Form", '强无猜')
     elif mode == 7:

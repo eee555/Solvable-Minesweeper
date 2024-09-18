@@ -191,7 +191,7 @@ if __name__ == '__main__':
               'EstTime':'52.247', '3BV':'123/200', 'Ops':'12',
               'Isls':'10', 'Thrp':'0.968', 'Corr':'0.963',
               'Left':'123@3.21', 'Right':'123@3.21', 'Double':'123@3.21',
-              'Cl':'123@3.21', 'Ces':'123@3.21', 'Mode':'竞速无猜',
+              'Cl':'123@3.21', 'Ces':'123@3.21', 'Mode':'经典无猜',
               'Difficulty':'高级'}
     scoresValue = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
     app = QApplication(sys.argv)

@@ -200,7 +200,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         xx = self.row
         yy = self.column
         num = self.mineNum
-        # 0，4, 5, 6, 7, 8, 9, 10代表：标准0、win74、竞速无猜5、强无猜6、
+        # 0，4, 5, 6, 7, 8, 9, 10代表：标准0、win74、经典无猜5、强无猜6、
         # 弱无猜7、准无猜8、强可猜9、弱可猜10
         if self.gameMode == 5 or self.gameMode == 6 or self.gameMode == 9:
             # 根据模式生成局面
@@ -238,7 +238,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
     def ai(self, i, j):
         # 0，4, 5, 6, 7, 8, 9, 10代表：标准、win7、
-        # 竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        # 经典无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         # 根据模式处理一次点击的全部流程
         # （i，j）一定是未打开状态、为索引
         if self.gameMode == 0 or self.gameMode == 4 or self.gameMode == 5:
@@ -282,7 +282,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     # 此处架构可以改进，放到工具箱里
     def chording_ai(self, i, j):
         # 0，4, 5, 6, 7, 8, 9, 10代表：标准、win7、
-        # 竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        # 经典无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         # i,j为索引
         if self.label.ms_board.mouse_state != 5 and self.label.ms_board.mouse_state != 6:
             return
@@ -771,7 +771,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             mode_text = _translate("Form", "Win7")
         elif self.gameMode == 5:
             record_key += "CS"
-            mode_text = _translate("Form", "竞速无猜")
+            mode_text = _translate("Form", "经典无猜")
         elif self.gameMode == 6:
             record_key += "SS"
             mode_text = _translate("Form", "强无猜")

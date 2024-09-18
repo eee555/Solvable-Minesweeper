@@ -116,7 +116,7 @@ class ui_Form(Ui_Form):
             self.spinBox_auto_replay.setEnabled(False)
             self.label_auto_replay_percent.setEnabled(False)
         # gameMode = 0，4, 5, 6, 7, 8, 9, 10代表：
-        # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        # 标准、win7、经典无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         self.comboBox_gamemode.setCurrentIndex([0, 999, 999, 999, 1, 4, 2, 3, 5, 6, 7][self.gameMode])
         
         self.pushButton_yes.setStyleSheet("border-image: url(" + str(self.r_path.with_name('media').joinpath('button.png')).replace("\\", "/") + ");\n"
@@ -147,7 +147,7 @@ class ui_Form(Ui_Form):
         self.cursor_limit = self.checkBox_cursor_limit.isChecked()
         self.gameMode = [0, 4, 6, 7, 5, 8, 9, 10][self.comboBox_gamemode.currentIndex()]
         # gameMode = 0，4, 5, 6, 7, 8, 9, 10代表：
-        # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        # 标准、win7、经典无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         
         
         conf = configparser.ConfigParser()

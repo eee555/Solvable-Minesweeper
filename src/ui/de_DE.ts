@@ -75,7 +75,7 @@
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="785"/>
-        <source>竞速无猜</source>
+        <source>经典无猜</source>
         <translation>Rennen fahren ohne zu raten</translation>
     </message>
     <message>

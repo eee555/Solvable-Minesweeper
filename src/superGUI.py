@@ -60,7 +60,7 @@ class Ui_MainWindow(Ui_MainWindow):
         self.predefinedBoardPara = [{}] * 7
         # 缓存了6套游戏模式的配置，以减少快捷键切换模式时的io
         # gameMode = 0，1，2，3，4，5，6，7代表：
-        # 标准、win7、竞速无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
+        # 标准、win7、经典无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
 
         self.read_or_create_record()
         self.label.setPath(r_path)
