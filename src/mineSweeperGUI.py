@@ -933,7 +933,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_CEvent(self):
         # 点击菜单栏的自定义后回调
         self.actionChecked('C')
-        ui = gameDefinedParameter.ui_Form(self.r_path, self.row, self.column, self.mineNum)
+        ui = gameDefinedParameter.ui_Form(self.r_path, self.row, self.column, 
+                                          self.mineNum, self.mainWindow)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -1047,7 +1048,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def action_QEvent(self):
         # 快捷键设置的回调
         self.actionChecked('Q')
-        ui = gameSettingShortcuts.myGameSettingShortcuts(self.game_setting_path, self.ico_path, self.r_path)
+        ui = gameSettingShortcuts.myGameSettingShortcuts(self.game_setting_path,
+                                                         self.ico_path, self.r_path,
+                                                         self.mainWindow)
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
@@ -1120,12 +1123,12 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.row = len(ui.board)
         self.column = len(ui.board[0])
 
-        self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * self.row)
+        self.num_bar_ui = mine_num_bar.ui_Form(ans[1], self.pixSize * self.row, self.mainWindow)
         self.num_bar_ui.QWidget.barSetMineNum.connect(self.showMineNum)
         self.num_bar_ui.QWidget.barSetMineNumCalPoss.connect(self.render_poss_on_board)
         self.num_bar_ui.setSignal()
 
-        self.mainWindow.closeEvent_.connect(self.num_bar_ui.QWidget.close)
+        # self.mainWindow.closeEvent_.connect(self.num_bar_ui.QWidget.close)
 
         self.timer_close_bar = QTimer()
         self.timer_close_bar.timeout.connect(lambda:self.num_bar_ui.QWidget.show())
@@ -1315,8 +1318,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         self.timer_video = QTimer()
         self.timer_video.timeout.connect(self.video_playing_step)
-        self.ui_video_control = videoControl.ui_Form(self.r_path, video, comments)
-        self.mainWindow.closeEvent_.connect(self.ui_video_control.QWidget.close)
+        self.ui_video_control = videoControl.ui_Form(self.r_path, video, comments, self.mainWindow)
+        # self.mainWindow.closeEvent_.connect(self.ui_video_control.QWidget.close)
         self.ui_video_control.pushButton_play.clicked.connect(self.video_play)
         self.ui_video_control.pushButton_replay.clicked.connect(self.video_replay)
         self.ui_video_control.videoSetTime.connect(self.video_set_time)
@@ -1457,7 +1460,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def closeEvent_(self):
         # 主窗口关闭的回调
         self.unlimit_cursor()
-        self.score_board_manager.close()
+        # self.score_board_manager.close()
         conf = configparser.ConfigParser()
         conf.read(self.game_setting_path, encoding='utf-8')
         # conf.set("DEFAULT", "gamemode", str(self.gameMode))

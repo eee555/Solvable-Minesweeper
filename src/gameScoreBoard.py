@@ -13,9 +13,9 @@ class ui_Form(Ui_Form):
     # barSetMineNumCalPoss = QtCore.pyqtSignal(int)
     # doubleClick = QtCore.pyqtSignal (int, int)
     # leftClick = QtCore.pyqtSignal (int, int)
-    def __init__(self, r_path, pix_size):
+    def __init__(self, r_path, pix_size, parent):
         self.pix_size = pix_size
-        self.QWidget = RoundQWidget()
+        self.QWidget = RoundQWidget(parent)
         self.setupUi(self.QWidget)
         
         self.tableWidget.setColumnWidth(0, 80)
@@ -76,7 +76,7 @@ class gameScoreBoardManager():
     
     # is_visible = False
     # 5、错误的表达式，一旦算出报错，永远不再算，显示error
-    def __init__(self, r_path, score_board_path, game_setting_path, pix_size):
+    def __init__(self, r_path, score_board_path, game_setting_path, pix_size, parent):
         # 从文件中读取指标并设置
         # self.ms_board = None
         self.pix_size = pix_size
@@ -118,7 +118,7 @@ class gameScoreBoardManager():
                                   i in _score_board_items]
         self.update_score_board_items_type()
         self.index_num = len(self.score_board_items_type)
-        self.ui = ui_Form(r_path, pix_size)
+        self.ui = ui_Form(r_path, pix_size, parent)
         self.ui.tableWidget.doubleClicked.connect(self.__table_change)
         self.ui.tableWidget.clicked.connect(self.__table_ok)
         self.ui.tableWidget.cellChanged.connect(self.__cell_changed)

@@ -8,14 +8,14 @@ from ui.ui_defined_parameter import Ui_Form
 from ui.uiComponents import RoundQDialog
 
 class ui_Form(Ui_Form):
-    def __init__(self, r_path, row, column, num):
+    def __init__(self, r_path, row, column, num, parent):
         self.row = row
         self.column = column
         self.mineNum = num
         # self.maxRow = 1e6
         # self.maxColumn = 1e6
         self.alter = False
-        self.Dialog = RoundQDialog()
+        self.Dialog = RoundQDialog(parent)
         self.setupUi (self.Dialog)
         self.setParameter()
         self.Dialog.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico')).replace("\\", "/")))

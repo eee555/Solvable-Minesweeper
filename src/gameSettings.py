@@ -50,7 +50,7 @@ class ui_Form(Ui_Form):
         
         self.alter = False
         
-        self.Dialog = RoundQDialog()
+        self.Dialog = RoundQDialog(mainWindow.mainWindow)
         # self.Dialog = QDialog()
         self.setupUi (self.Dialog)
         self.setParameter ()

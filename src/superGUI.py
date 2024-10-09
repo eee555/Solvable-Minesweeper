@@ -79,7 +79,7 @@ class Ui_MainWindow(Ui_MainWindow):
         score_board_path = str(r_path.with_name('scoreBoardSetting.ini'))
         self.score_board_manager = gameScoreBoardManager(r_path, score_board_path,
                                                          self.game_setting_path,
-                                                         self.pixSize)
+                                                         self.pixSize, MainWindow)
         self.score_board_manager.ui.QWidget.move(_scoreBoardTop, _scoreBoardLeft)
 
 

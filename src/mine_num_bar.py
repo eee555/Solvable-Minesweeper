@@ -20,8 +20,8 @@ from ui.ui_mine_num_bar import Ui_Form
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)
     # barSetMineNumCalPoss = QtCore.pyqtSignal(int)
-    def __init__(self, mine_num, size):
-        self.QWidget = RoundQWidget()
+    def __init__(self, mine_num, size, parent):
+        self.QWidget = RoundQWidget(parent)
         self.setupUi(self.QWidget)
         # self.setParameter ()
         
