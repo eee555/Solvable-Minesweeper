@@ -458,7 +458,7 @@ class Ui_MainWindow(Ui_MainWindow):
                                 "BWG", "IFLAG", "INF", "IWIN7", "ISS", "IWS", "ICS", "ITBS",
                                 "ISG", "IWG", "EFLAG", "ENF", "EWIN7", "ESS", "EWS", "ECS",
                                 "ETBS", "ESG", "EWG"]
-        self.record_key_name_list = record_key_name_list
+        self.record_key_name_list = record_key_name_list + ["BEGINNER", "INTERMEDIATE", "EXPERT"]
         if config.read(self.record_path):
             self.record = {}
             for record_key_name in record_key_name_list:
@@ -469,48 +469,6 @@ class Ui_MainWindow(Ui_MainWindow):
                                        'path': config.getfloat(record_key_name, 'path'),
                                        'rqp': config.getfloat(record_key_name, 'rqp'),
                                        }
-            # self.record["BFLAG"] = {'rtime': config.getfloat('BFLAG', 'rtime'),
-            #                        'bbbv_s': config.getfloat('BFLAG', 'bbbv_s'),
-            #                        'stnb': config.getfloat('BFLAG', 'stnb'),
-            #                        'ioe': config.getfloat('BFLAG', 'ioe'),
-            #                        'path': config.getfloat('BFLAG', 'path'),
-            #                        'rqp': config.getfloat('BFLAG', 'rqp'),
-            #                        }
-            # self.record["BNF"] = {'rtime': config.getfloat('BNF', 'rtime'),
-            #                      'bbbv_s': config.getfloat('BNF', 'bbbv_s'),
-            #                      'stnb': config.getfloat('BNF', 'stnb'),
-            #                      'ioe': config.getfloat('BNF', 'ioe'),
-            #                      'path': config.getfloat('BNF', 'path'),
-            #                      'rqp': config.getfloat('BNF', 'rqp'),
-            #                      }
-            # self.record["IFLAG"] = {'rtime': config.getfloat('IFLAG', 'rtime'),
-            #                        'bbbv_s': config.getfloat('IFLAG', 'bbbv_s'),
-            #                        'stnb': config.getfloat('IFLAG', 'stnb'),
-            #                        'ioe': config.getfloat('IFLAG', 'ioe'),
-            #                        'path': config.getfloat('IFLAG', 'path'),
-            #                        'rqp': config.getfloat('IFLAG', 'rqp'),
-            #                        }
-            # self.record["INF"] = {'rtime': config.getfloat('INF', 'rtime'),
-            #                      'bbbv_s': config.getfloat('INF', 'bbbv_s'),
-            #                      'stnb': config.getfloat('INF', 'stnb'),
-            #                      'ioe': config.getfloat('INF', 'ioe'),
-            #                      'path': config.getfloat('INF', 'path'),
-            #                      'rqp': config.getfloat('INF', 'rqp'),
-            #                      }
-            # self.record["EFLAG"] = {'rtime': config.getfloat('EFLAG', 'rtime'),
-            #                        'bbbv_s': config.getfloat('EFLAG', 'bbbv_s'),
-            #                        'stnb': config.getfloat('EFLAG', 'stnb'),
-            #                        'ioe': config.getfloat('EFLAG', 'ioe'),
-            #                        'path': config.getfloat('EFLAG', 'path'),
-            #                        'rqp': config.getfloat('EFLAG', 'rqp'),
-            #                        }
-            # self.record["ENF"] = {'rtime': config.getfloat('ENF', 'rtime'),
-            #                      'bbbv_s': config.getfloat('ENF', 'bbbv_s'),
-            #                      'stnb': config.getfloat('ENF', 'stnb'),
-            #                      'ioe': config.getfloat('ENF', 'ioe'),
-            #                      'path': config.getfloat('ENF', 'path'),
-            #                      'rqp': config.getfloat('ENF', 'rqp'),
-            #                      }
             self.record["BEGINNER"] = dict(zip(map(lambda x: str(x), range(1, 55)),
                                                map(lambda x: config.\
                                                    getfloat('BEGINNER', str(x)),
@@ -536,8 +494,6 @@ class Ui_MainWindow(Ui_MainWindow):
                                 }
             for record_key_name in record_key_name_list:
                 self.record[record_key_name] = record_init_dict.copy()
-
-
 
             self.record["BEGINNER"] = dict.fromkeys(map(lambda x: str(x), range(1, 55)), 999.999)
             self.record["INTERMEDIATE"] = dict.fromkeys(map(lambda x: str(x), range(1, 217)), 999.999)
