@@ -49,8 +49,11 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.actionzi_ding_yi.triggered.connect(self.action_CEvent)
         self.actiongao_ji.triggered.connect(lambda: self.predefined_Board(3))
         def save_evf_file_integrated():
-            self.dump_evf_file_data()
-            self.save_evf_file()
+            if self.game_state != "ready" and self.game_state != "playing" and\
+                self.game_state != "show" and self.game_state != "study" and\
+                    self.game_state != "joking":
+                self.dump_evf_file_data()
+                self.save_evf_file()
         self.action_save.triggered.connect(save_evf_file_integrated)
         self.action_replay.triggered.connect(self.replay_game)
         self.actiontui_chu.triggered.connect(QCoreApplication.instance().quit)
@@ -284,6 +287,8 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 0，4, 5, 6, 7, 8, 9, 10代表：标准、win7、
         # 经典无猜、强无猜、弱无猜、准无猜、强可猜、弱可猜
         # i,j为索引
+        if not self.cell_is_in_board(i, j):
+            return
         if self.label.ms_board.mouse_state != 5 and self.label.ms_board.mouse_state != 6:
             return
         if self.label.ms_board.game_board[i][j] >= 10 or\
@@ -718,7 +723,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             file_name += "_fail"
         if not self.label.ms_board.is_fair:
             file_name += "_cheat"
-        if not self.checksum_module_ok():
+        if bytes(self.label.ms_board.software).decode()[0] != "元":
+            file_name += "_trans"
+        elif not self.checksum_module_ok():
             file_name += "_fake"
         
         self.label.ms_board.save_to_evf_file(file_name)
@@ -1397,9 +1404,9 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             return False
         return self.game_state == "win" or self.game_state == "fail"
 
-    # def cell_is_in_board(self, i, j):
+    def cell_is_in_board(self, i, j):
         # 点在局面内，单位是格不是像素
-        # return i >= 0 and i < self.row and j >= 0 and j < self.column
+        return i >= 0 and i < self.row and j >= 0 and j < self.column
 
     def pos_is_in_board(self, i, j) -> bool:
         # 点在局面内，单位是像素不是格
