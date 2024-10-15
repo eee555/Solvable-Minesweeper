@@ -91,5 +91,10 @@ if __name__ == "__main__":
 #           cell7, cell8, fps, (hizi)
 # 其他类：checksum_ok, race_identifier, mode, is_offical, is_fair
 
-
+# GameBoardState::Ready => Ok(1),
+# GameBoardState::Playing => Ok(2),
+# GameBoardState::Win => Ok(3),
+# GameBoardState::Loss => Ok(4),
+# GameBoardState::PreFlaging => Ok(5),
+# GameBoardState::Display => Ok(6),
 
