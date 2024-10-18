@@ -1,7 +1,7 @@
 # author : Wang Jianing(18201)
 from random import shuffle, choice
 # from random import randint, seed, sample
-from typing import List, Tuple
+from typing import List, Tuple, Union
 # import time
 from safe_eval import safe_eval
 import configparser
@@ -16,17 +16,6 @@ EnuLimit = 50
 assert EnuLimit >= 50
 
 def choose_3BV(board_constraint, attempt_times_limit, params):
-    # def choose_3BV_laymine(laymine):
-    #     t = 0
-    #     while t < attempt_times_limit:
-    #         ans = laymine(params)
-    #         if not isinstance(ans, tuple):
-    #             ans = (ans, True)
-            
-    #         if min_3BV <= ms.cal3BV(ans[0]) <= max_3BV:
-    #             return (ans[0], True and ans[1])
-    #     return (ans[0], False)
-    # return choose_3BV_laymine
     def choose_3BV_laymine(laymine):
         if not board_constraint:
             b = laymine(params)
@@ -162,7 +151,26 @@ def laymine_solvable(board_constraint, attempt_times_limit, params):
 # poses是将要打开的多个位置，尝试调整board，使得game_board不变，而这些位置不再是雷。
 # poses中至少有一个踩雷了。poses必须由同一个操作引起，例如单次双击
 # 返回修改后的board和成功标识位
-def enumerateChangeBoard(board, game_board, poses: List[Tuple[int, int]]) -> (List[List[int]], bool):
+def enumerateChangeBoard(board: ms.EvfVideo | List[List[int]], 
+                         game_board: List[List[int]],
+                         poses: List[Tuple[int, int]]) -> Tuple[List[List[int]], bool]:
+    """
+    根据游戏板面情况，对局面进行枚举。
+    
+    Args:
+        board (List[List[int]]): 原始的游戏板面，其中-1表示雷，非负整数表示周围雷的数量。
+        game_board (List[List[int]]): 当前的游戏板面，其中10表示未知，11表示必然为雷，非负整数表示周围雷的数量。
+        poses (List[Tuple[int, int]]): 需要枚举的坐标点列表。
+    
+    Returns:
+        Tuple[List[List[int]], bool]:
+            - List[List[int]]: 枚举后的游戏板面，其中-1表示雷，非负整数表示周围雷的数量。
+            - bool: 枚举是否成功，如果成功返回True，否则返回False。
+    
+    Raises:
+        TypeError: 如果board不是list类型，会尝试将其转换为二维向量，如果转换失败则抛出TypeError。
+    
+    """
     if not isinstance(board, list):
         board = board.into_vec_vec()    
     if all([board[x][y] != -1 for x,y in poses]):
@@ -267,6 +275,25 @@ def enumerateChangeBoard(board, game_board, poses: List[Tuple[int, int]]) -> (Li
 
 
 def trans_expression(expression: str):
+    """
+    将输入的表达式字符串进行一系列替换处理。
+    
+    Args:
+        expression (str): 待处理的表达式字符串。
+    
+    Returns:
+        str: 处理后的表达式字符串。
+    
+    具体处理规则如下：
+        1. 将表达式转换为小写，并去除首尾空白字符，且仅保留前10000个字符。
+        2. 将表达式中的"3bv"替换为"bbbv"。
+        3. 将表达式中的"opening"替换为"op"。
+        4. 将表达式中的"click"替换为"cl"。
+        5. 将表达式中的双引号（"）替换为单引号（'）。
+        6. 将表达式中的"island"替换为"isl"。
+        7. 将表达式中的"chording"替换为"double"。
+        8. 将表达式中的"solved_bbbv"替换为"bbbv_solved"。
+    """
     expression = expression.lower().strip()[:10000]
     expression = expression.replace("3bv", "bbbv")
     expression = expression.replace("opening", "op")
@@ -279,6 +306,19 @@ def trans_expression(expression: str):
 
 
 def trans_game_mode(mode: int) -> str:
+    """
+    将游戏模式数字转换为对应的中文描述。
+    
+    Args:
+        mode (int): 游戏模式数字，取值范围在0到10之间。
+    
+    Returns:
+        str: 返回对应的中文游戏模式描述。
+    
+    Raises:
+        ValueError: 如果mode不在0到10的范围内，将抛出异常。
+    
+    """
     _translate = QtCore.QCoreApplication.translate
     if mode == 0:
         return _translate("Form", "标准")

@@ -9,6 +9,20 @@ from ctypes import wintypes
 
 
 def find_window(class_name, window_name):
+    """
+    查找指定窗口的句柄。
+    
+    Args:
+        class_name (str): 要查找的窗口的类名。
+        window_name (str): 要查找的窗口的标题。
+    
+    Returns:
+        int: 查找到的窗口的句柄。如果未找到窗口，则抛出异常。
+    
+    Raises:
+        ctypes.WinError: 如果未找到指定窗口，则抛出此异常。
+    
+    """
     user32 = ctypes.WinDLL('user32', use_last_error=True)
     user32.FindWindowW.argtypes = [wintypes.LPCWSTR, wintypes.LPCWSTR]
     user32.FindWindowW.restype = wintypes.HWND

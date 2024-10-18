@@ -753,27 +753,32 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         # 尝试弹窗，或不弹窗
         # 不显示的记录的序号
         del_items = []
+        nf_items = []
         b = self.label.ms_board
         if b.level == 6:
             # 自定义不弹窗
             return
         if b.level == 3:
             record_key = "B"
+            LNF = "BNF"
         elif b.level == 4:
             record_key = "I"
+            LNF = "INF"
         elif b.level == 5:
             record_key = "E"
+            LNF = "ENF"
         else:
             raise RuntimeError('没有定义的难度代码')
 
         _translate = QtCore.QCoreApplication.translate
 
+        # 上方的模式，标准和盲扫都是标准
         if self.gameMode == 0:
+            record_key += "FLAG"
+            mode_text = _translate("Form", "标准")
             if b.right == 0:
-                record_key += "NF"
-                mode_text = _translate("Form", "未标雷（标准）")
+                mode_text = _translate("Form", "标准（盲扫）")
             else:
-                record_key += "FLAG"
                 mode_text = _translate("Form", "标准")
         elif self.gameMode == 4:
             record_key += "WIN7"
@@ -799,31 +804,75 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         else:
             raise RuntimeError('没有定义的模式代码')
 
+        
         if b.rtime < self.record[record_key]["rtime"]:
-            self.record[record_key]["rtime"] = b.rtime
+            if b.right == 0 and self.gameMode == 0:
+                self.record[record_key]["rtime"] = b.rtime
+                self.record[LNF]["rtime"] = b.rtime
+            else:
+                self.record[record_key]["rtime"] = b.rtime
+        elif b.right == 0 and self.gameMode == 0 and b.rtime < self.record[LNF]["rtime"]:
+            self.record[LNF]["rtime"] = b.rtime
+            nf_items.append(1)
         else:
             del_items.append(1)
         if b.bbbv_s > self.record[record_key]["bbbv_s"]:
-            self.record[record_key]["bbbv_s"] = b.bbbv_s
+            if b.right == 0 and self.gameMode == 0:
+                self.record[record_key]["bbbv_s"] = b.bbbv_s
+                self.record[LNF]["bbbv_s"] = b.bbbv_s
+            else:
+                self.record[record_key]["bbbv_s"] = b.bbbv_s
+        elif b.right == 0 and self.gameMode == 0 and b.bbbv_s > self.record[LNF]["bbbv_s"]:
+            self.record[LNF]["bbbv_s"] = b.bbbv_s
+            nf_items.append(3)
         else:
             del_items.append(3)
         if b.stnb > self.record[record_key]["stnb"]:
-            self.record[record_key]["stnb"] = b.stnb
+            if b.right == 0 and self.gameMode == 0:
+                self.record[record_key]["stnb"] = b.stnb
+                self.record[LNF]["stnb"] = b.stnb
+            else:
+                self.record[record_key]["stnb"] = b.stnb
+        elif b.right == 0 and self.gameMode == 0 and b.stnb > self.record[LNF]["stnb"]:
+            self.record[LNF]["stnb"] = b.stnb
+            nf_items.append(5)
         else:
             del_items.append(5)
         if b.ioe > self.record[record_key]["ioe"]:
-            self.record[record_key]["ioe"] = b.ioe
+            if b.right == 0 and self.gameMode == 0:
+                self.record[record_key]["ioe"] = b.ioe
+                self.record[LNF]["ioe"] = b.ioe
+            else:
+                self.record[record_key]["ioe"] = b.ioe
+        elif b.right == 0 and self.gameMode == 0 and b.ioe > self.record[LNF]["ioe"]:
+            self.record[LNF]["ioe"] = b.ioe
+            nf_items.append(7)
         else:
             del_items.append(7)
         if b.path < self.record[record_key]["path"]:
-            self.record[record_key]["path"] = b.path
+            if b.right == 0 and self.gameMode == 0:
+                self.record[record_key]["path"] = b.path
+                self.record[LNF]["path"] = b.path
+            else:
+                self.record[record_key]["path"] = b.path
+        elif b.right == 0 and self.gameMode == 0 and b.path < self.record[LNF]["path"]:
+            self.record[LNF]["path"] = b.path
+            nf_items.append(9)
         else:
             del_items.append(9)
         if b.rqp < self.record[record_key]["rqp"]:
-            self.record[record_key]["rqp"] = b.rqp
+            if b.right == 0 and self.gameMode == 0:
+                self.record[record_key]["rqp"] = b.rqp
+                self.record[LNF]["rqp"] = b.rqp
+            else:
+                self.record[record_key]["rqp"] = b.rqp
+        elif b.right == 0 and self.gameMode == 0 and b.rqp < self.record[LNF]["rqp"]:
+            self.record[LNF]["rqp"] = b.rqp
+            nf_items.append(11)
         else:
             del_items.append(11)
 
+        # pb相关的弹窗。仅高级（不分FL还是NF）
         if self.gameMode == 0:
             if b.level == 3:
                 if b.rtime < self.record["BEGINNER"][str(b.bbbv)]:
@@ -849,7 +898,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
             del_items += [13, 14, 15]
 
         if len(del_items) < 9:
-            ui = gameRecordPop.ui_Form(self.r_path, del_items, b.bbbv)
+            ui = gameRecordPop.ui_Form(self.r_path, del_items, b.bbbv, nf_items, self.mainWindow)
             ui.Dialog.setModal(True)
             ui.label_16.setText(mode_text)
             ui.Dialog.show()
