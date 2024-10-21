@@ -172,15 +172,19 @@ class ui_Form(Ui_Form):
         if (self.row, self.column, self.mineNum) == (8, 8, 10):
             conf.set("BEGINNER", "board_constraint", str(self.board_constraint))
             conf.set("BEGINNER", "attempt_times_limit", str(self.attempt_times_limit))
+            conf.set("BEGINNER", "pixSize", str(self.pixSize))
         elif (self.row, self.column, self.mineNum) == (16, 16, 40):
             conf.set("INTERMEDIATE", "board_constraint", str(self.board_constraint))
             conf.set("INTERMEDIATE", "attempt_times_limit", str(self.attempt_times_limit))
+            conf.set("INTERMEDIATE", "pixSize", str(self.pixSize))
         elif (self.row, self.column, self.mineNum) == (16, 30, 99):
             conf.set("EXPERT", "board_constraint", str(self.board_constraint))
             conf.set("EXPERT", "attempt_times_limit", str(self.attempt_times_limit))
+            conf.set("EXPERT", "pixSize", str(self.pixSize))
         else:
             conf.set("CUSTOM", "board_constraint", str(self.board_constraint))
             conf.set("CUSTOM", "attempt_times_limit", str(self.attempt_times_limit))
+            conf.set("CUSTOM", "pixSize", str(self.pixSize))
         conf.write(open(self.game_setting_path, "w", encoding='utf-8'))
 
         self.Dialog.close ()

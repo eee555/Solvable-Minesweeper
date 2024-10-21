@@ -55,7 +55,7 @@ class Ui_Form(object):
         self.tableWidget.setWhatsThis("")
         self.tableWidget.setAccessibleName("")
         self.tableWidget.setAccessibleDescription("")
-        self.tableWidget.setStyleSheet("")
+        self.tableWidget.setStyleSheet("font-size: 15px;")
         self.tableWidget.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.tableWidget.setFrameShadow(QtWidgets.QFrame.Plain)
         self.tableWidget.setLineWidth(1)

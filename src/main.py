@@ -1,11 +1,13 @@
 # from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-import sys
+import sys, os
 import mainWindowGUI as mainWindowGUI
 import mineSweeperGUI as mineSweeperGUI
 import ctypes
 from ctypes import wintypes
+
+os.environ["QT_FONT_DPI"] = "96"
 
 
 def find_window(class_name, window_name):
@@ -34,7 +36,7 @@ def find_window(class_name, window_name):
 
 
 if __name__ == "__main__":
-    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    # QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
     app = QtWidgets.QApplication (sys.argv)
     mainWindow = mainWindowGUI.MainWindow()

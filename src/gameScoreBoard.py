@@ -6,7 +6,7 @@ from ui.uiComponents import RoundQWidget
 from safe_eval import safe_eval
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QShortcut
+from PyQt5.QtWidgets import QShortcut, QHeaderView
 
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)
@@ -21,6 +21,7 @@ class ui_Form(Ui_Form):
         self.tableWidget.setColumnWidth(0, 80)
         self.tableWidget.setColumnWidth(1, 150)
         self.tableWidget.verticalHeader().setDefaultSectionSize(24)
+        self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         
         self.QWidget.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico'))))
         

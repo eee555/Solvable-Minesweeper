@@ -122,7 +122,6 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
 
         self.mainWindow.closeEvent_.connect(self.closeEvent_)
         
-
     @property
     def pixSize(self):
         return self._pixSize
