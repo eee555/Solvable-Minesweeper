@@ -20,7 +20,7 @@ class ui_Form(Ui_Form):
         
         self.tableWidget.setColumnWidth(0, 80)
         self.tableWidget.setColumnWidth(1, 150)
-        self.tableWidget.verticalHeader().setDefaultSectionSize(24)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(25)
         self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         
         self.QWidget.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico'))))
