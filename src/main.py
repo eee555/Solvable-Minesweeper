@@ -107,10 +107,21 @@ if __name__ == "__main__":
 #           cell7, cell8, fps, (hizi)
 # 其他类：checksum_ok, race_identifier, mode, is_offical, is_fair
 
+# 工具箱中局面状态和鼠标状态的定义：
+
 # GameBoardState::Ready => Ok(1),
 # GameBoardState::Playing => Ok(2),
 # GameBoardState::Win => Ok(3),
 # GameBoardState::Loss => Ok(4),
 # GameBoardState::PreFlaging => Ok(5),
 # GameBoardState::Display => Ok(6),
+
+# MouseState::UpUp => Ok(1),
+# MouseState::UpDown => Ok(2),
+# MouseState::UpDownNotFlag => Ok(3),
+# MouseState::DownUp => Ok(4),
+# MouseState::Chording => Ok(5),
+# MouseState::ChordingNotFlag => Ok(6),
+# MouseState::DownUpAfterChording => Ok(7),
+# MouseState::Undefined => Ok(8),
 

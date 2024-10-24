@@ -445,10 +445,15 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def mineAreaRightPressed(self, i, j):
         if self.game_state == 'ready' or self.game_state == 'playing' or self.game_state == 'joking':
             if i < self.pixSize * self.row and j < self.pixSize * self.column:
-                if self.label.ms_board.game_board[i//self.pixSize][j//self.pixSize] == 11:
+                # 计算左上角显示的雷数用。必须校验：当前格的状态、鼠标状态为双键都抬起。
+                # 假如按下左键，再切屏（比如快捷键截图），再左键抬起，再切回来，再右键按下，
+                # 就会导致DownUp状态下右键按下。此时不应该标雷，左上角雷数也应该不变
+                if self.label.ms_board.game_board[i//self.pixSize][j//self.pixSize] == 11 and\
+                    self.label.ms_board.mouse_state == 1:
                     self.mineUnFlagedNum += 1
                     self.showMineNum(self.mineUnFlagedNum)
-                elif self.label.ms_board.game_board[i//self.pixSize][j//self.pixSize] == 10:
+                elif self.label.ms_board.game_board[i//self.pixSize][j//self.pixSize] == 10 and\
+                    self.label.ms_board.mouse_state == 1:
                     self.mineUnFlagedNum -= 1
                     self.showMineNum(self.mineUnFlagedNum)
             self.label.ms_board.step('rc', (i, j))
