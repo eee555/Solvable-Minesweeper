@@ -6,22 +6,22 @@ from ui.uiComponents import RoundQWidget
 from safe_eval import safe_eval
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QShortcut
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QShortcut, QHeaderView
 
 class ui_Form(Ui_Form):
     # barSetMineNum = QtCore.pyqtSignal(int)
     # barSetMineNumCalPoss = QtCore.pyqtSignal(int)
     # doubleClick = QtCore.pyqtSignal (int, int)
     # leftClick = QtCore.pyqtSignal (int, int)
-    def __init__(self, r_path, pix_size):
+    def __init__(self, r_path, pix_size, parent):
         self.pix_size = pix_size
-        self.QWidget = RoundQWidget()
+        self.QWidget = RoundQWidget(parent)
         self.setupUi(self.QWidget)
         
         self.tableWidget.setColumnWidth(0, 80)
-        self.tableWidget.setColumnWidth(1, 120)
-        self.tableWidget.verticalHeader().setDefaultSectionSize(24)
+        self.tableWidget.setColumnWidth(1, 150)
+        self.tableWidget.verticalHeader().setDefaultSectionSize(25)
+        self.tableWidget.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
         
         self.QWidget.setWindowIcon (QtGui.QIcon (str(r_path.with_name('media').joinpath('cat.ico'))))
         
@@ -37,13 +37,11 @@ class ui_Form(Ui_Form):
         # 更新数值、指标。指标数量可能变
         table_height = len(index_name_list)*24
         self.tableWidget.setRowCount(len(index_name_list))
-        self.tableWidget.setMinimumWidth(202)
-        self.tableWidget.setMaximumWidth(202)
+        # self.tableWidget.setMinimumWidth(232)
+        # self.tableWidget.setMaximumWidth(232)
         self.tableWidget.setMaximumHeight(table_height + len(index_name_list) + 2)
         self.tableWidget.setMinimumHeight(table_height + len(index_name_list) + 2)
         
-        # self.QWidget.setMinimumSize(QtCore.QSize(224+2, table_height + 88))
-        # self.QWidget.setMaximumSize(QtCore.QSize(224+2, table_height + 88))
         for idx, i in enumerate(index_name_list):
             self.tableWidget.setItem(idx, 0, QTableWidgetItem(i))
         self.show(index_value_list)
@@ -79,7 +77,7 @@ class gameScoreBoardManager():
     
     # is_visible = False
     # 5、错误的表达式，一旦算出报错，永远不再算，显示error
-    def __init__(self, r_path, score_board_path, game_setting_path, pix_size):
+    def __init__(self, r_path, score_board_path, game_setting_path, pix_size, parent):
         # 从文件中读取指标并设置
         # self.ms_board = None
         self.pix_size = pix_size
@@ -121,7 +119,7 @@ class gameScoreBoardManager():
                                   i in _score_board_items]
         self.update_score_board_items_type()
         self.index_num = len(self.score_board_items_type)
-        self.ui = ui_Form(r_path, pix_size)
+        self.ui = ui_Form(r_path, pix_size, parent)
         self.ui.tableWidget.doubleClicked.connect(self.__table_change)
         self.ui.tableWidget.clicked.connect(self.__table_ok)
         self.ui.tableWidget.cellChanged.connect(self.__cell_changed)
@@ -131,12 +129,6 @@ class gameScoreBoardManager():
         self.editing_row = -1 # -1不在编辑状态，-2不能编辑（正在游戏）
         self.editing_column = -1
         
-        # self.ui.QWidget.closeEvent_.connect(self.close) 
-        
-    # def keyPressEvent(self, event):
-    #     print(666)
-    #     if event.key() == Qt.Key_Return:
-    #         self.__table_ok()
 
     def update_score_board_items_type(self):
         self.score_board_items_type = []
@@ -154,6 +146,9 @@ class gameScoreBoardManager():
         # 埋雷结束后调用，固化参数
         # self.pix_size = pix_size
         # self.board = board
+        if "mode" in namespace:
+            self._game_mode_code: int = namespace["mode"]
+            namespace["mode"] = mm.trans_game_mode(namespace["mode"])
         self.namespace.update(namespace)
         # race_designator, mode .etc
         # self.ms_board = ms.BaseVideo(board, pix_size)
@@ -251,7 +246,16 @@ class gameScoreBoardManager():
         # if self.ui.QWidget.isVisible():
         #     self.visible()
         
-    def reshow(self, ms_board, index_type):
+    def reshow(self, ms_board, index_type = 0):
+        if not index_type:
+            if self.ms_board.game_board_state == 1\
+                or self.ms_board.game_board_state == 2\
+                    or self.ms_board.game_board_state == 5:
+                index_type = 1
+            else:
+                # 3、4为win和loss
+                index_type = 2
+            
         # 指标数量有变。增删指标用。游戏开始前。index_type是2
         self.ms_board = ms_board
         index_value_list = self.cal_index_value(ms_board, index_type)
@@ -265,7 +269,16 @@ class gameScoreBoardManager():
         
         
         self.show()
-
+    
+    # 重写窗口的翻译方法。主要是模式的翻译问题
+    def retranslateUi(self, Form):
+        self.ui.retranslateUi(Form)
+        if hasattr(self, "ms_board"):
+            self.with_namespace({
+                "mode": self._game_mode_code,
+                })
+            self.show(self.ms_board, index_type = 1)
+            
     def __table_change(self, e):
         # 编辑开始时，把数值换成公式
         if e.column() == 1 and self.editing_row == -1:
@@ -298,13 +311,7 @@ class gameScoreBoardManager():
             else:
                 self.score_board_items[self.editing_row][1] = new_formula
                 self.update_score_board_items_type()
-            if self.ms_board.game_board_state == 1\
-                or self.ms_board.game_board_state == 2\
-                    or self.ms_board.game_board_state == 5:
-                self.reshow(self.ms_board, 1)
-            else:
-                # 3、4为win和loss
-                self.reshow(self.ms_board, 2)
+            self.reshow(self.ms_board)
             self.editing_row = -1
             self.editing_column = -1
         
@@ -319,7 +326,7 @@ class gameScoreBoardManager():
         # 添加一个空开的行，并刷新显示
         self.score_board_items.append(["", ""])
         self.score_board_items_type.append(1)
-        self.reshow(self.ms_board, 1)
+        self.reshow(self.ms_board)
                 
     def close(self):
         config = configparser.ConfigParser()

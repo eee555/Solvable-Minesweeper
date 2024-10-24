@@ -622,6 +622,9 @@
       <pointsize>12</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
     <property name="title">
      <string>游戏</string>
     </property>
@@ -633,6 +636,9 @@
     <addaction name="actionzhogn_ji"/>
     <addaction name="actiongao_ji"/>
     <addaction name="actionzi_ding_yi"/>
+    <addaction name="separator"/>
+    <addaction name="action_save"/>
+    <addaction name="action_replay"/>
     <addaction name="separator"/>
     <addaction name="actiontui_chu"/>
    </widget>
@@ -1010,6 +1016,22 @@
      <family>微软雅黑</family>
      <pointsize>12</pointsize>
     </font>
+   </property>
+  </action>
+  <action name="action_save">
+   <property name="text">
+    <string>保存</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_replay">
+   <property name="text">
+    <string>回放</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
    </property>
   </action>
  </widget>

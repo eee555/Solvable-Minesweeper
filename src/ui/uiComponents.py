@@ -163,17 +163,18 @@ class StatusLabel (QtWidgets.QLabel):
 
     def setPath(self, r_path):
         # 告诉脸，相对路径
-        game_setting_path = str(r_path.with_name('gameSetting.ini'))
+        # game_setting_path = str(r_path.with_name('gameSetting.ini'))
         self.smileface_path = str(r_path.with_name('media').joinpath('smileface.svg'))
         self.smilefacedown_path = str(r_path.with_name('media').joinpath('smilefacedown.svg'))
 
-        config = configparser.ConfigParser()
-        config.read(game_setting_path, encoding='utf-8')
-        self.pixSize = config.getint('DEFAULT','pixSize')
+        # config = configparser.ConfigParser()
+        # config.read(game_setting_path, encoding='utf-8')
+        # self.pixSize = config.getint('DEFAULT','pixSize')
+        # self.pixSize = 5
         self.pixmap1_svg = QPixmap(self.smilefacedown_path)
         self.pixmap2_svg = QPixmap(self.smileface_path)
-        self.reloadFace(self.pixSize)
-        self.resize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
+        # self.reloadFace(self.pixSize)
+        # self.resize(QtCore.QSize(int(self.pixSize * 1.5), int(self.pixSize * 1.5)))
 
     def mousePressEvent(self, e):  ##重载一下鼠标点击事件
         if e.button () == QtCore.Qt.LeftButton:

@@ -414,6 +414,10 @@ class Ui_MainWindow(object):
         font.setPointSize(12)
         self.german_action.setFont(font)
         self.german_action.setObjectName("german_action")
+        self.action_save = QtWidgets.QAction(MainWindow)
+        self.action_save.setObjectName("action_save")
+        self.action_replay = QtWidgets.QAction(MainWindow)
+        self.action_replay.setObjectName("action_replay")
         self.menu.addAction(self.actionopen)
         self.menu.addSeparator()
         self.menu.addAction(self.actionnew_game)
@@ -422,6 +426,9 @@ class Ui_MainWindow(object):
         self.menu.addAction(self.actionzhogn_ji)
         self.menu.addAction(self.actiongao_ji)
         self.menu.addAction(self.actionzi_ding_yi)
+        self.menu.addSeparator()
+        self.menu.addAction(self.action_save)
+        self.menu.addAction(self.action_replay)
         self.menu.addSeparator()
         self.menu.addAction(self.actiontui_chu)
         self.language_menu.addAction(self.chinese_action)
@@ -464,6 +471,10 @@ class Ui_MainWindow(object):
         self.english_2.setText(_translate("MainWindow", "English"))
         self.chinese_2.setText(_translate("MainWindow", "中文"))
         self.action_mouse.setText(_translate("MainWindow", "鼠标设置"))
+        self.action_save.setText(_translate("MainWindow", "保存"))
+        self.action_save.setShortcut(_translate("MainWindow", "Ctrl+S"))
+        self.action_replay.setText(_translate("MainWindow", "回放"))
+        self.action_replay.setShortcut(_translate("MainWindow", "R"))
 from ui.mineLabel import mineLabel
 from ui.mineNumLabel import mineNumLabel
 from ui.uiComponents import StatusLabel
