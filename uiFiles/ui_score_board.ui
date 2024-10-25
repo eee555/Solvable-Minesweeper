@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>234</width>
+    <width>264</width>
     <height>492</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>234</width>
+    <width>264</width>
     <height>30</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>239</width>
+    <width>264</width>
     <height>1000</height>
    </size>
   </property>
@@ -110,8 +110,20 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>203</width>
+       <width>232</width>
        <height>16777215</height>
+      </size>
+     </property>
+     <property name="sizeIncrement">
+      <size>
+       <width>232</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>232</width>
+       <height>0</height>
       </size>
      </property>
      <property name="toolTip">
@@ -130,7 +142,7 @@
       <string notr="true"/>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">font-size: 15px;</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -185,12 +197,6 @@
      </attribute>
      <attribute name="horizontalHeaderCascadingSectionResizes">
       <bool>false</bool>
-     </attribute>
-     <attribute name="horizontalHeaderMinimumSectionSize">
-      <number>28</number>
-     </attribute>
-     <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>87</number>
      </attribute>
      <attribute name="horizontalHeaderHighlightSections">
       <bool>false</bool>

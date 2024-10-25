@@ -7,10 +7,10 @@ from ui.uiComponents import RoundQDialog
 # 减少ui文件生成的原始的.py的改动
 
 class myGameSettingShortcuts(Ui_Form):
-    def __init__(self, game_setting_path, ico_path, r_path):
+    def __init__(self, game_setting_path, ico_path, r_path, parent):
         self.game_setting_path = game_setting_path
         self.r_path = r_path
-        self.Dialog = RoundQDialog()
+        self.Dialog = RoundQDialog(parent)
         self.setupUi(self.Dialog)
         self.setParameter()
         self.Dialog.setWindowIcon(QtGui.QIcon (ico_path))

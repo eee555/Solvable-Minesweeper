@@ -9,6 +9,7 @@ class MainWindow(QtWidgets.QMainWindow):
     closeEvent_ = QtCore.pyqtSignal()
     flag_drag_border = False
     minimum_counter = 0
+
     def closeEvent(self, event):
         self.closeEvent_.emit()
 

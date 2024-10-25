@@ -1,6 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtGui import QPolygonF, QPainter, QColor, QPixmap, QFont, QPainterPath
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QPolygonF, QPainter, QPixmap, QPainterPath
 import ms_toollib as ms
 from PyQt5.QtCore import QPoint, Qt
 # from PyQt5.QtSvg import QSvgWidget
@@ -59,7 +58,8 @@ class mineLabel(QtWidgets.QLabel):
             self.ms_board = mm.CoreBaseVideo([[0] * column for _ in range(row)], pixSize)
         else:
             if hasattr(self, "ms_board"):
-                if isinstance(self.ms_board, mm.CoreBaseVideo):
+                if isinstance(self.ms_board, mm.CoreBaseVideo) or\
+                    not isinstance(self.ms_board, ms.BaseVideo):
                     self.ms_board = ms.BaseVideo([[0] * column for _ in range(row)], pixSize)
                 else:
                     self.ms_board.reset(row, column, pixSize)
@@ -111,10 +111,7 @@ class mineLabel(QtWidgets.QLabel):
         #所以获取释放点相对本标签的偏移量，矫正发射的信号
         xx = int(e.localPos().x() - 4)
         yy = int(e.localPos().y() - 4)
-        # xx = int((e.localPos().x() - 4) // self.pixSize)
-        # yy = int((e.localPos().y() - 4) // self.pixSize)
-        # print('抬起位置{}, {}'.format(xx, yy))
-        # print(e.button ())
+        
         if yy < 0 or xx < 0 or yy >= self.row * self.pixSize or\
             xx >= self.column * self.pixSize:
             self.current_x = self.row * self.pixSize

@@ -10,19 +10,19 @@
     <x>0</x>
     <y>0</y>
     <width>580</width>
-    <height>530</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>580</width>
-    <height>530</height>
+    <height>608</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>580</width>
-    <height>530</height>
+    <height>608</height>
    </size>
   </property>
   <property name="mouseTracking">
@@ -47,7 +47,7 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>470</y>
+     <y>550</y>
      <width>254</width>
      <height>38</height>
     </rect>
@@ -95,7 +95,7 @@ color:white;</string>
    <property name="geometry">
     <rect>
      <x>297</x>
-     <y>470</y>
+     <y>550</y>
      <width>254</width>
      <height>38</height>
     </rect>
@@ -137,7 +137,7 @@ color:white;</string>
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>450</y>
+     <y>530</y>
      <width>521</width>
      <height>20</height>
     </rect>
@@ -150,7 +150,7 @@ color:white;</string>
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>260</y>
+     <y>310</y>
      <width>511</width>
      <height>31</height>
     </rect>
@@ -186,6 +186,9 @@ color:white;</string>
      <pointsize>12</pointsize>
     </font>
    </property>
+   <property name="toolTip">
+    <string/>
+   </property>
    <property name="text">
     <string>标识：</string>
    </property>
@@ -200,7 +203,7 @@ color:white;</string>
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>230</y>
+     <y>280</y>
      <width>511</width>
      <height>31</height>
     </rect>
@@ -238,7 +241,7 @@ color:white;</string>
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>200</y>
+     <y>250</y>
      <width>511</width>
      <height>31</height>
     </rect>
@@ -493,7 +496,7 @@ color: #3d3d3d;
    </item>
    <item>
     <property name="text">
-     <string>竞速无猜</string>
+     <string>经典无猜</string>
     </property>
    </item>
    <item>
@@ -516,7 +519,7 @@ color: #3d3d3d;
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>320</y>
+     <y>400</y>
      <width>511</width>
      <height>31</height>
     </rect>
@@ -541,7 +544,7 @@ color: #3d3d3d;
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>190</y>
+     <y>240</y>
      <width>521</width>
      <height>20</height>
     </rect>
@@ -554,7 +557,7 @@ color: #3d3d3d;
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>389</y>
+     <y>469</y>
      <width>132</width>
      <height>28</height>
     </rect>
@@ -614,7 +617,7 @@ color: #3d3d3d;</string>
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>385</y>
+     <y>465</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -639,7 +642,7 @@ color: #3d3d3d;</string>
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>352</y>
+     <y>432</y>
      <width>401</width>
      <height>28</height>
     </rect>
@@ -675,7 +678,7 @@ color: #3d3d3d;</string>
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>350</y>
+     <y>430</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -700,7 +703,7 @@ color: #3d3d3d;</string>
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>285</y>
+     <y>365</y>
      <width>511</width>
      <height>41</height>
     </rect>
@@ -834,7 +837,7 @@ color: #3d3d3d;
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>155</y>
+     <y>205</y>
      <width>521</width>
      <height>41</height>
     </rect>
@@ -981,7 +984,7 @@ color: #3d3d3d;
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>415</y>
+     <y>495</y>
      <width>511</width>
      <height>41</height>
     </rect>
@@ -1105,7 +1108,7 @@ color: #3d3d3d;
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>115</y>
+     <y>165</y>
      <width>521</width>
      <height>41</height>
     </rect>
@@ -1134,8 +1137,11 @@ color: #3d3d3d;
         <pointsize>12</pointsize>
        </font>
       </property>
+      <property name="toolTip">
+       <string>用于参加比赛</string>
+      </property>
       <property name="text">
-       <string>比赛后缀：</string>
+       <string>比赛标识：</string>
       </property>
       <property name="scaledContents">
        <bool>false</bool>
@@ -1184,7 +1190,7 @@ color: #3d3d3d;</string>
    <property name="geometry">
     <rect>
      <x>300</x>
-     <y>200</y>
+     <y>250</y>
      <width>231</width>
      <height>32</height>
     </rect>
@@ -1219,6 +1225,113 @@ color: #3d3d3d;</string>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_cursor_limit">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>340</y>
+     <width>511</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>光标不能超出边框</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="horizontalWidget_unique_label" native="true">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>120</y>
+     <width>521</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_5">
+    <property name="spacing">
+     <number>2</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="label_unique_label">
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>用于与其他人相区分，但不希望排名网站和软件展示出来</string>
+      </property>
+      <property name="text">
+       <string>个性标识：</string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="lineEdit_unique_label">
+      <property name="font">
+       <font>
+        <family>微软雅黑</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-width: 2px;
+border-radius: 8px;
+border-style: solid;
+border-top-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-right-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+border-bottom-color: qlineargradient(spread:pad, x1:0.5, y1:0, x2:0.5, y2:1, stop:0 #85b7e3, stop:1 #9ec1db);
+border-left-color: qlineargradient(spread:pad, x1:1, y1:0, x2:0, y2:0, stop:0 #85b7e3, stop:1 #9ec1db);
+background-color: #f4f4f4;
+color: #3d3d3d;</string>
+      </property>
+      <property name="text">
+       <string notr="true"/>
+      </property>
+      <property name="maxLength">
+       <number>1024</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <customwidgets>

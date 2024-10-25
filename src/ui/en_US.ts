@@ -4,7 +4,7 @@
 <context>
     <name>Form</name>
     <message>
-        <location filename="ui_gameSettings.py" line="543"/>
+        <location filename="ui_gameSettings.py" line="589"/>
         <source>游戏设置</source>
         <translation>Game Settings</translation>
     </message>
@@ -29,19 +29,19 @@
         <translation type="obsolete">%</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="546"/>
+        <location filename="ui_gameSettings.py" line="592"/>
         <source>结束后标雷</source>
         <translation>Fill Finished Board With Flags</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="547"/>
+        <location filename="ui_gameSettings.py" line="593"/>
         <source>标识：</source>
-        <translation>Label:</translation>
+        <translation>User identifier:</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="568"/>
         <source>比赛后缀：</source>
-        <translation>Tournament:</translation>
+        <translation type="obsolete">Tournament:</translation>
     </message>
     <message>
         <location filename="ui_gameSettings.py" line="541"/>
@@ -49,12 +49,12 @@
         <translation type="obsolete">When ticked, always use filtering algorithm to generate boards, otherwise the game will decide to use the adjustment algorithm</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="549"/>
+        <location filename="ui_gameSettings.py" line="595"/>
         <source>永远使用筛选法埋雷（不推荐）</source>
         <translation>Use filtering algorithm (not recommended)</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="551"/>
+        <location filename="ui_gameSettings.py" line="597"/>
         <source>自动保存录像（推荐）</source>
         <translation>Auto save video (recommended)</translation>
     </message>
@@ -64,12 +64,12 @@
         <translation type="obsolete">Country:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="552"/>
+        <location filename="ui_gameSettings.py" line="598"/>
         <source>游戏模式：</source>
         <translation>Mode:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="553"/>
+        <location filename="ui_gameSettings.py" line="599"/>
         <source>方格边长：</source>
         <translation>Zoom:</translation>
     </message>
@@ -86,40 +86,40 @@
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="783"/>
         <source>强无猜</source>
-        <translation>Strong solvable</translation>
+        <translation>Strict no guess</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="784"/>
         <source>弱无猜</source>
-        <translation>Weak solvable</translation>
+        <translation>Weak no guess</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="785"/>
-        <source>竞速无猜</source>
-        <translation>Competitive solvable</translation>
+        <source>经典无猜</source>
+        <translation>Classic no guess</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="786"/>
         <source>准无猜</source>
-        <translation>To be solvable</translation>
+        <translation>Blessing mode</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="787"/>
         <source>强可猜</source>
-        <translation>Strong guessable</translation>
+        <translation>Guessable no guess</translation>
     </message>
     <message>
         <location filename="ui_gameSettingShortcuts.py" line="788"/>
         <source>弱可猜</source>
-        <translation>Weak guessable</translation>
+        <translation>Lucky mode</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="565"/>
+        <location filename="ui_gameSettings.py" line="611"/>
         <source>自动重开：</source>
         <translation>Auto restart:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="562"/>
+        <location filename="ui_gameSettings.py" line="608"/>
         <source>允许纪录弹窗（推荐）</source>
         <translation>Allow popovers for best scores (recommended)</translation>
     </message>
@@ -279,29 +279,29 @@ p, li { white-space: pre-wrap; }
         <translation>mine number</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="145"/>
+        <location filename="ui_about.py" line="157"/>
         <source>项目主页：</source>
         <translation>Home:</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="146"/>
+        <location filename="ui_about.py" line="158"/>
         <source>资料教程：</source>
         <translation>Tutorials:</translation>
     </message>
     <message>
-        <location filename="ui_about.py" line="147"/>
+        <location filename="ui_about.py" line="159"/>
         <source>①本软件可以不受任何限制地复制、储存、传播。
 ②任何人可以在任何一个项目中使用本项目源代码的任何一个部分，同时欢迎在本项目主页提出宝贵的意见。</source>
         <translation>①This software can be copied, stored and transmitted without any restrictions.
 ②Anyone can use any  part of the project source code in any project, and you are welcome to make valuable comments on the project home page.</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="566"/>
+        <location filename="ui_gameSettings.py" line="612"/>
         <source>国家或地区：</source>
         <translation>Country or region:</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="567"/>
+        <location filename="ui_gameSettings.py" line="613"/>
         <source>窗口透明度：</source>
         <translation>Window transparency:</translation>
     </message>
@@ -421,12 +421,12 @@ p, li { white-space: pre-wrap; }
         <translation>Expert</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="548"/>
+        <location filename="ui_gameSettings.py" line="594"/>
         <source>勾选后永远使用筛选法埋雷，否则会适时改用调整法</source>
         <translation>Tick the box to always use the filtering method to lay mines, otherwise the adjustment method will be used at the right time</translation>
     </message>
     <message>
-        <location filename="ui_gameSettings.py" line="550"/>
+        <location filename="ui_gameSettings.py" line="596"/>
         <source>完成后自动将录像保存到replay文件夹下</source>
         <translation>After completion, automatically save the recording to the replay folder</translation>
     </message>
@@ -465,6 +465,36 @@ p, li { white-space: pre-wrap; }
         <source>RQP成绩！</source>
         <translation>RQP score!</translation>
     </message>
+    <message>
+        <location filename="ui_gameSettings.py" line="604"/>
+        <source>经典无猜</source>
+        <translation>Classic no guess</translation>
+    </message>
+    <message>
+        <location filename="ui_gameSettings.py" line="614"/>
+        <source>用于参加比赛</source>
+        <translation>The credential for participating in the competition</translation>
+    </message>
+    <message>
+        <location filename="ui_gameSettings.py" line="615"/>
+        <source>比赛标识：</source>
+        <translation>Championship identifier:</translation>
+    </message>
+    <message>
+        <location filename="ui_gameSettings.py" line="616"/>
+        <source>光标不能超出边框</source>
+        <translation>The cursor cannot move out of the border</translation>
+    </message>
+    <message>
+        <location filename="ui_gameSettings.py" line="617"/>
+        <source>用于与其他人相区分，但不希望排名网站和软件展示出来</source>
+        <translation>Used to distinguish from others, but not intended to be displayed on ranking websites and software</translation>
+    </message>
+    <message>
+        <location filename="ui_gameSettings.py" line="618"/>
+        <source>个性标识：</source>
+        <translation>Unique identifier:</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -474,52 +504,52 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Reserved</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="446"/>
+        <location filename="ui_main_board.py" line="453"/>
         <source>游戏</source>
         <translation>Game</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="447"/>
+        <location filename="ui_main_board.py" line="454"/>
         <source>设置</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="449"/>
+        <location filename="ui_main_board.py" line="456"/>
         <source>帮助</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="450"/>
+        <location filename="ui_main_board.py" line="457"/>
         <source>新游戏</source>
         <translation>New Game</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="451"/>
+        <location filename="ui_main_board.py" line="458"/>
         <source>初级</source>
         <translation>Beginner</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="452"/>
+        <location filename="ui_main_board.py" line="459"/>
         <source>中级</source>
         <translation>Intermediate</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="453"/>
+        <location filename="ui_main_board.py" line="460"/>
         <source>高级</source>
         <translation>Expert</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="454"/>
+        <location filename="ui_main_board.py" line="461"/>
         <source>自定义</source>
         <translation>Custom</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="455"/>
+        <location filename="ui_main_board.py" line="462"/>
         <source>退出</source>
         <translation>Exit</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="456"/>
+        <location filename="ui_main_board.py" line="463"/>
         <source>游戏设置</source>
         <translation>Game Settings</translation>
     </message>
@@ -529,62 +559,62 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">A</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="458"/>
+        <location filename="ui_main_board.py" line="465"/>
         <source>词典</source>
         <translation>Dictionary</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="459"/>
+        <location filename="ui_main_board.py" line="466"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="460"/>
+        <location filename="ui_main_board.py" line="467"/>
         <source>入门教程</source>
         <translation>Getting Started</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="461"/>
+        <location filename="ui_main_board.py" line="477"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="462"/>
+        <location filename="ui_main_board.py" line="469"/>
         <source>快捷键设置</source>
         <translation>Shortcut Settings</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="463"/>
+        <location filename="ui_main_board.py" line="470"/>
         <source>打开</source>
         <translation>Open</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="448"/>
+        <location filename="ui_main_board.py" line="455"/>
         <source>语言设置</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="445"/>
+        <location filename="ui_main_board.py" line="452"/>
         <source>元扫雷</source>
         <translation>Metasweeper</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="457"/>
+        <location filename="ui_main_board.py" line="464"/>
         <source>关于</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="464"/>
+        <location filename="ui_main_board.py" line="471"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="465"/>
+        <location filename="ui_main_board.py" line="472"/>
         <source>中文</source>
         <translation>中文</translation>
     </message>
     <message>
-        <location filename="ui_main_board.py" line="466"/>
+        <location filename="ui_main_board.py" line="473"/>
         <source>鼠标设置</source>
         <translation>Mouse Settings</translation>
     </message>
@@ -592,6 +622,21 @@ p, li { white-space: pre-wrap; }
         <location filename="ui_main_board.py" line="434"/>
         <source>M</source>
         <translation type="obsolete">M</translation>
+    </message>
+    <message>
+        <location filename="ui_main_board.py" line="474"/>
+        <source>保存</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <location filename="ui_main_board.py" line="475"/>
+        <source>Ctrl+S</source>
+        <translation>Ctrl+S</translation>
+    </message>
+    <message>
+        <location filename="ui_main_board.py" line="476"/>
+        <source>回放</source>
+        <translation>Replay</translation>
     </message>
 </context>
 </TS>
