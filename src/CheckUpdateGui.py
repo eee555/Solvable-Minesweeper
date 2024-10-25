@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel, QVBoxLayout, QApplication, QHBoxLayout, QSpacerItem,\
 QSizePolicy, QPushButton,QFrame,QMessageBox,QFormLayout,QProgressDialog,QTextEdit,QComboBox
-from githubApi import GitHub, Release
+from githubApi import GitHub, Release,SourceManager,PingThread
 from PyQt5.QtCore import QObject,pyqtSlot,Qt,pyqtSignal,QUrl
 from PyQt5.QtGui import QDesktopServices,QFont
 
@@ -90,9 +90,10 @@ class ReleaseFrame(QFrame):
         
 
 class CheckUpdateGui(QWidget):
-    def __init__(self,source:str, owner:str,repo:str,version:str,versionReStr:str, parent=None):
+    def __init__(self,github:GitHub, parent=None):
         super().__init__(parent)
-        self.github: GitHub = GitHub(source,owner,repo,version,versionReStr,self)
+        self.github: GitHub = github
+        self.github.setParent(self)
         self.checkUpdateButton = QPushButton(
             QObject.tr(self, "CheckUpdate"), self)
         self.releaseArea = QScrollArea()
@@ -102,7 +103,8 @@ class CheckUpdateGui(QWidget):
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
         self.sourceCombo = QComboBox()
-        self.sourceCombo.addItems(["GitHub","fff666.top"])
+        self.sourceCombo.addItems(self.github.sourceManager.sources.keys())
+        self.sourceCombo.setCurrentText(self.github.sourceManager.currentSource)
         self.currentVersionLabel = QLabel(f"Current Version:{self.github.version}")
         self.processDialog = None
         self.initUi()
@@ -185,6 +187,10 @@ class CheckUpdateGui(QWidget):
 if __name__ == '__main__':
     import sys
     app = QApplication(sys.argv)
-    w = CheckUpdateGui("https://api.github.com/repos/","eee555", "Solvable-Minesweeper", "3.1.9", "(\d+\.\d+\.\d+)")
+    data = {
+        "Github": "https://api.github.com/repos/",
+        "fff666": "https://fff666.top/",
+    }
+    w = CheckUpdateGui(GitHub(SourceManager(data),"eee555", "Solvable-Minesweeper", "3.1.9", "(\d+\.\d+\.\d+)"))
     w.show()
     sys.exit(app.exec_())

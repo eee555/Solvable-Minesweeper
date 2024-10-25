@@ -1,11 +1,111 @@
 
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
-from PyQt5.QtCore import QUrl,QObject,pyqtSignal,QEventLoop,QCoreApplication
+from PyQt5.QtCore import QUrl,QObject,pyqtSignal,QEventLoop,QCoreApplication,QThread,QElapsedTimer
 import json
 import re
 import os
 import tempfile
+import subprocess
 
+
+class PingThread(QThread):
+    pingSignal = pyqtSignal(str,float)
+    def __init__(self, name: str,url: str,parent : QObject | None = None) -> None:
+        super().__init__(parent)
+        self.reSet(name,url)
+        
+    def reSet(self,name: str,url: str):
+        self.name = name
+        self.url = url
+        self.host = self.url.split("/")
+        
+    
+    def ping(self):
+        timer = QElapsedTimer()
+        timer.start()
+        try:
+            nam = QNetworkAccessManager(self)
+            request = QNetworkRequest(QUrl(self.url))
+            
+            reply = nam.get(request)
+            loop = QEventLoop()
+            reply.finished.connect(loop.quit)
+            loop.exec_()
+            
+        except Exception as e:
+            return float('inf')
+        time = timer.elapsed()
+        return time
+
+    def run(self):
+        responseTime = self.ping()
+        self.pingSignal.emit(self.name, responseTime)
+
+
+class SourceManager(QObject):
+    quickSource = pyqtSignal(str,float)
+    def __init__(self,sources:dict,parent=None):
+        super().__init__()
+        if not isinstance(sources,dict):
+            raise TypeError
+        if not sources:
+            raise ValueError
+        self.sources = sources
+        # 第一个的key
+        self.currentSource = list(sources.keys())[0]
+        self.speedData = {}
+        self.threads = []
+
+    
+    @property
+    def sources(self):
+        return self.__sources
+
+    @sources.setter
+    def sources(self,sources:dict):
+        if not isinstance(sources,dict):
+            raise TypeError
+        if not sources:
+            raise ValueError
+        for key in sources:
+            sources[key] = sources[key].strip('/')
+        self.__sources = sources
+        self.currentSource = list(sources.keys())[0]
+    
+    @property
+    def currentSource(self):
+        return self.__currentSource
+    
+    @currentSource.setter
+    def currentSource(self,currentSource:str):
+        if currentSource not in self.sources:
+            raise ValueError
+        self.__currentSource = currentSource
+
+    @property
+    def currentSourceUrl(self):
+        return self.sources[self.currentSource]
+
+    def checkSourceSpeed(self):
+        self.threads.clear()
+        self.speedData = {}
+        for source in self.sources:
+            thread = PingThread(source, self.sources[source])
+            thread.pingSignal.connect(self.pingSignal)
+            self.threads.append(thread)
+            thread.start()
+
+    def pingSignal(self,url: str, responseTime: float):
+        self.speedData[url] = responseTime
+        if len(self.speedData) == len(self.sources):
+            quickTime = float('inf')
+            quickKey = ''           
+            for key,value in self.speedData.items():
+                if value < quickTime:
+                    quickTime = value
+                    quickKey = key
+            self.quickSource.emit(quickKey,quickTime)
+    
 class Release:
     def __init__(self,dict):
         self.tag_name = dict['tag_name']
@@ -26,21 +126,21 @@ class GitHub(QObject):
     downloadReleaseAsyncProgressSignal = pyqtSignal(int,int)
     downloadReleaseAsyncFinishSignal = pyqtSignal(str)
     errorSignal = pyqtSignal(str)
-    def __init__(self,source:str,owner:str,repo:str,version:str,versionReStr:str,parent=None):
+    def __init__(self,sourcemanager:SourceManager,owner:str,repo:str,version:str,versionReStr:str,parent=None):
         super().__init__(parent)
-        self.__source = source.strip('/')
+        self.__sourcemanager = sourcemanager
         self.__owner = owner
         self.__repo = repo
         self.__version = version
         self.__versionReStr = versionReStr
     
     @property
-    def source(self):
-        return self.__source
+    def sourceManager(self):
+        return self.__sourcemanager 
 
-    @source.setter
-    def source(self,source:str):
-        self.__source = source
+    @sourceManager.setter
+    def sourceManager(self,sourcemanager:SourceManager):
+        self.__sourcemanager = sourcemanager
     
     @property
     def owner(self):
@@ -75,10 +175,10 @@ class GitHub(QObject):
         self.__versionReStr = versionReStr
     @property
     def latestReleaseUrl(self) -> str:
-        return f'{self.__source}/{self.__owner}/{self.__repo}/releases/latest'
+        return f'{self.sourceManager.currentSourceUrl}/{self.__owner}/{self.__repo}/releases/latest'
     @property
     def releasesUrl(self) -> str:
-        return f'{self.__source}/{self.__owner}/{self.__repo}/releases'
+        return f'{self.sourceManager.currentSourceUrl}/{self.__owner}/{self.__repo}/releases'
     @property
     def header(self) -> dict:
         return {
@@ -228,8 +328,15 @@ class GitHub(QObject):
 
 if __name__ == '__main__':
     app = QCoreApplication([])
-    github = GitHub("https://api.github.com/repos/","eee555","Solvable-Minesweeper","3.1.9","(\d+\.\d+\.\d+)")
+    data = {
+        "Github": "https://api.github.com/repos/",
+        "fff666": "https://fff666.top/",
+    }
+    github = GitHub(SourceManager(data),"eee555","Solvable-Minesweeper","3.1.9","(\d+\.\d+\.\d+)")
     github.releasesAsyncSignal.connect(lambda x:print(x))
     github.releases()
+    # manager = SourceManager(data)
+    # manager.quickSource.connect(lambda x,y:print(x,y))
+    # manager.checkSourceSpeed()
     app.exec_()
     
