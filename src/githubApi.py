@@ -6,7 +6,7 @@ import re
 import os
 import tempfile
 import subprocess
-
+import uuid
 
 class PingThread(QThread):
     pingSignal = pyqtSignal(str,float)
@@ -74,10 +74,22 @@ class SourceManager(QObject):
     
     @property
     def currentSource(self):
+        """
+        当前使用的源
+        """
         return self.__currentSource
     
     @currentSource.setter
     def currentSource(self,currentSource:str):
+        """
+        设置当前使用的源
+
+        Args:
+            currentSource (str): 源名称
+
+        Raises:
+            ValueError: 如果currentSource不在sources中
+        """
         if currentSource not in self.sources:
             raise ValueError
         self.__currentSource = currentSource
@@ -87,6 +99,9 @@ class SourceManager(QObject):
         return self.sources[self.currentSource]
 
     def checkSourceSpeed(self):
+        """
+        检查所有源的速度,并发射quickSource(name:str,time:float)信号
+        """
         self.threads.clear()
         self.speedData = {}
         for source in self.sources:
@@ -127,12 +142,21 @@ class GitHub(QObject):
     downloadReleaseAsyncFinishSignal = pyqtSignal(str)
     errorSignal = pyqtSignal(str)
     def __init__(self,sourcemanager:SourceManager,owner:str,repo:str,version:str,versionReStr:str,parent=None):
+        """
+        :param sourcemanager: 一个SourceManager实例，提供了多个github api的url
+        :param owner: github的owner
+        :param repo: github的仓库名
+        :param version: 当前的版本号
+        :param versionReStr: 一个正则表达式串，用于从github的release中，提取版本号
+        :param parent: 一个QObject实例，父对象
+        """
         super().__init__(parent)
         self.__sourcemanager = sourcemanager
         self.__owner = owner
         self.__repo = repo
         self.__version = version
         self.__versionReStr = versionReStr
+        self.__replyDict = {}
     
     @property
     def sourceManager(self):
@@ -175,9 +199,15 @@ class GitHub(QObject):
         self.__versionReStr = versionReStr
     @property
     def latestReleaseUrl(self) -> str:
+        """
+        获取最新的release的url
+        """
         return f'{self.sourceManager.currentSourceUrl}/{self.__owner}/{self.__repo}/releases/latest'
     @property
     def releasesUrl(self) -> str:
+        """
+        获取所有release的url
+        """
         return f'{self.sourceManager.currentSourceUrl}/{self.__owner}/{self.__repo}/releases'
     @property
     def header(self) -> dict:
@@ -185,10 +215,20 @@ class GitHub(QObject):
             'Accept':'application/vnd.github.v3+json',
             'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'
         }
-    def isNeedUpdate(self,isAsync:bool = True) -> bool | None:
+    def isNeedUpdate(self,isAsync:bool = True) -> bool | str | None:
+        """
+        判断是否需要更新
+        
+        :param isAsync: 是否异步
+        :return: bool :如果不是异步，返回True表示需要更新，False表示不需要更新，None表示网络错误 \n
+                 str: 如果是异步，返回一个当前请求的唯一标识，并发射isNeedUpdateAsyncSignal信号
+        """
+        
         nam = QNetworkAccessManager(self)
         request = QNetworkRequest(QUrl(self.latestReleaseUrl))
         reply = nam.get(request)
+        reply.setObjectName(str(uuid.uuid1()))
+        self.__replyDict[reply.objectName()] = reply
         if not isAsync:
             loop = QEventLoop()
             reply.finished.connect(loop.quit)
@@ -197,11 +237,12 @@ class GitHub(QObject):
                 self.error(reply.errorString())
                 return None
             data = reply.readAll().data().decode('utf-8')
+            self.__replyDict.pop(reply.objectName())
             reply.deleteLater()
             return self.__isNeedUpdate(data)
         else:
             nam.finished.connect(self.__isNeedUpdateAsync)
-            return None
+            return reply.objectName()
             
     def __isNeedUpdate(self,data)->bool:
         release = Release(json.loads(data))
@@ -215,16 +256,29 @@ class GitHub(QObject):
             return True
     
     def __isNeedUpdateAsync(self,reply:QNetworkReply):
-        if reply.error() != QNetworkReply.NoError:
+        if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
+            pass
+        elif reply.error() != QNetworkReply.NoError:
             self.error(reply.errorString())
-            return
-        self.isNeedUpdateAsyncSignal.emit(self.__isNeedUpdate(reply.readAll().data().decode('utf-8')))
+        else:
+            self.isNeedUpdateAsyncSignal.emit(self.__isNeedUpdate(reply.readAll().data().decode('utf-8')))
+        self.__replyDict.pop(reply.objectName())
         reply.deleteLater()
 
-    def latestRelease(self,isAsync:bool = True) -> Release | None:
+    def latestRelease(self,isAsync:bool = True) -> Release | str | None:
+        """
+        获取最新的release
+        
+        :param isAsync: 是否异步
+        :return: bool :如果不是异步，返回一个Release实例
+                 str: 如果是异步，返回一个当前请求的唯一标识，并发射latestReleaseAsyncSignal信号
+        """
+        
         nam = QNetworkAccessManager(self)
         request = QNetworkRequest(QUrl(self.latestReleaseUrl))
         reply = nam.get(request)
+        reply.setObjectName(str(uuid.uuid1()))
+        self.__replyDict[reply.objectName()] = reply
         if not isAsync:
             loop = QEventLoop()
             reply.finished.connect(loop.quit)
@@ -233,23 +287,36 @@ class GitHub(QObject):
                 self.error(reply.errorString())
                 return None
             data = reply.readAll().data().decode('utf-8')
+            self.__replyDict.pop(reply.objectName())
             reply.deleteLater()
             return Release(json.loads(data))
         else:
             nam.finished.connect(self.__lastReleaseAsync)
-            return None
+            return reply.objectName()
     
     def __lastReleaseAsync(self,reply:QNetworkReply):
-        if reply.error() != QNetworkReply.NoError:
+        if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
+            pass
+        elif reply.error() != QNetworkReply.NoError:
             self.error(reply.errorString())
-            return
-        self.latestReleaseAsyncSignal.emit(Release(json.loads(reply.readAll().data().decode('utf-8'))))
-        
+        else:
+            self.latestReleaseAsyncSignal.emit(Release(json.loads(reply.readAll().data().decode('utf-8'))))
+        self.__replyDict.pop(reply.objectName())
+        reply.deleteLater()
     
-    def releases(self,isAsync:bool = True) -> list | None:
+    def releases(self,isAsync:bool = True) -> list | str | None:
+        """
+        获取所有release
+        
+        :param isAsync: 是否异步
+        :return: list :如果不是异步，返回一个Release实例的列表
+                 str: 如果是异步，返回一个当前请求的唯一标识，并发射releasesAsyncSignal信号
+        """
         nam = QNetworkAccessManager(self)
         request = QNetworkRequest(QUrl(self.releasesUrl))
         reply = nam.get(request)
+        reply.setObjectName(str(uuid.uuid1()))
+        self.__replyDict[reply.objectName()] = reply
         if not isAsync:
             loop = QEventLoop()
             reply.finished.connect(loop.quit)
@@ -258,51 +325,79 @@ class GitHub(QObject):
                 self.error(reply.errorString())
                 return None
             data = reply.readAll().data().decode('utf-8')
+            self.__replyDict.pop(reply.objectName())
             reply.deleteLater()
             return self.__releases(data)
         else:
             nam.finished.connect(self.__releasesAsync)
-            return None
+            return reply.objectName()
         
         
     def __releases(self,data) -> list | None:
         return [Release(x) for x in json.loads(data)]
         
     def __releasesAsync(self,reply:QNetworkReply):
-        if reply.error() != QNetworkReply.NoError:
+        if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
+            pass
+        elif reply.error() != QNetworkReply.NoError:
             self.error(reply.errorString())
-            return
-        releases = self.__releases(reply.readAll().data().decode('utf-8'))
+        else:
+            releases = self.__releases(reply.readAll().data().decode('utf-8'))
+            self.releasesAsyncSignal.emit(releases)
+        self.__replyDict.pop(reply.objectName(),None)    
         reply.deleteLater()
-        self.releasesAsyncSignal.emit(releases)    
 
-    def downloadRelease(self,release:Release):
-        nam = QNetworkAccessManager(self)
+
+    def downloadRelease(self,release:Release) -> str:   
+        """
+        下载release
+        
+        :param release: 需要下载的release
+        :return: 一个当前请求的唯一标识
+        """      
         self.downloadReleaseAsyncStartSignal.emit(release)
+        nam = QNetworkAccessManager(self)
         request = QNetworkRequest(QUrl(release.assets_browser_download_url))
         request.setAttribute(QNetworkRequest.Attribute.FollowRedirectsAttribute,True)
         reply = nam.get(request)
+        reply.setObjectName(str(uuid.uuid1()))
+        self.__replyDict[reply.objectName()] = reply
         reply.downloadProgress.connect(self.downloadProgress)
         reply.finished.connect( lambda : self.saveFile(release))
+        return reply.objectName()
      
     def downloadProgress(self,bytesReceived:int,bytesTotal:int):
+        """
+        用于触发downloadReleaseAsyncProgressSignal信号
+        
+        :param bytesReceived: 已经下载的字节数
+        :param bytesTotal: 需要下载的总字节数
+        """
         self.downloadReleaseAsyncProgressSignal.emit(bytesReceived,bytesTotal)
     def saveFile(self,release:Release):
-        reply:QNetworkReply = self.sender()
-        if reply.error() != QNetworkReply.NoError:
-            self.error(reply.errorString())
-            return
-        # 临时文件夹
-        tempDir = tempfile.gettempdir()
-        path = os.path.join(tempDir,release.assets_name)
-        # 判断是否存在
-        if os.path.exists(path):
-            os.remove(path)
-        with open(path,'wb') as f:
-            f.write(reply.readAll())
-        reply.deleteLater()
-        self.downloadReleaseAsyncFinishSignal.emit(path)
+        """
+        从reply中读取数据并根据release.assets_name保存到临时文件夹
         
+        :param release: 需要保存的release
+        :return: None
+        """
+        reply:QNetworkReply = self.sender()
+        if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
+            pass
+        elif reply.error() != QNetworkReply.NoError:
+            self.error(reply.errorString())
+        else:
+            # 临时文件夹
+            tempDir = tempfile.gettempdir()
+            path = os.path.join(tempDir,release.assets_name)
+            # 判断是否存在
+            if os.path.exists(path):
+                os.remove(path)
+            with open(path,'wb') as f:
+                f.write(reply.readAll())
+            self.downloadReleaseAsyncFinishSignal.emit(path)
+        self.__replyDict.pop(reply.objectName())
+        reply.deleteLater()
     def compareVersion(self,v2) -> str:
         v = re.findall(self.__versionReStr,self.__version)
         if len(v) == 0:
@@ -324,8 +419,21 @@ class GitHub(QObject):
     def error(self,errorStr:str):
         self.errorSignal.emit(errorStr)
     
-    
+    def closeAllRequest(self):
+        """关闭所有的请求"""
+        keys = list(self.__replyDict.keys())
+        for key in keys:
+            self.__replyDict[key].abort()
+        self.__replyDict.clear()
+    def closeRequest(self,id:str):
+        """关闭单个请求
 
+        Args:
+            id (str): 请求的唯一标识
+        """
+        if id in self.__replyDict:
+            self.__replyDict[id].abort()
+            self.__replyDict.pop(id)
 if __name__ == '__main__':
     app = QCoreApplication([])
     data = {
