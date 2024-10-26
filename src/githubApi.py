@@ -100,17 +100,17 @@ class SourceManager(QObject):
 
     def checkSourceSpeed(self):
         """
-        检查所有源的速度,并发射quickSource(name:str,time:float)信号
+        检查所有源的速度,并发射quickSource(name:str,time:float)信号来获取最快的源，所有的源的速度可以通过speedData属性获取
         """
         self.threads.clear()
         self.speedData = {}
         for source in self.sources:
             thread = PingThread(source, self.sources[source])
-            thread.pingSignal.connect(self.pingSignal)
+            thread.pingSignal.connect(self.__pingSignal)
             self.threads.append(thread)
             thread.start()
 
-    def pingSignal(self,url: str, responseTime: float):
+    def __pingSignal(self,url: str, responseTime: float):
         self.speedData[url] = responseTime
         if len(self.speedData) == len(self.sources):
             quickTime = float('inf')
@@ -246,14 +246,7 @@ class GitHub(QObject):
             
     def __isNeedUpdate(self,data)->bool:
         release = Release(json.loads(data))
-        current = re.findall(self.__versionReStr,release.tag_name)
-        if len(current) == 0:
-            return False
-        new = re.findall(self.__versionReStr,self.__version)
-        if len(new) == 0:
-            return False
-        if new[0] > current[0]:
-            return True
+        return self.compareVersion(release.tag_name) == '>'
     
     def __isNeedUpdateAsync(self,reply:QNetworkReply):
         if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
@@ -362,11 +355,11 @@ class GitHub(QObject):
         reply = nam.get(request)
         reply.setObjectName(str(uuid.uuid1()))
         self.__replyDict[reply.objectName()] = reply
-        reply.downloadProgress.connect(self.downloadProgress)
-        reply.finished.connect( lambda : self.saveFile(release))
+        reply.downloadProgress.connect(self.__downloadProgress)
+        reply.finished.connect( lambda : self.__saveFile(release))
         return reply.objectName()
      
-    def downloadProgress(self,bytesReceived:int,bytesTotal:int):
+    def __downloadProgress(self,bytesReceived:int,bytesTotal:int):
         """
         用于触发downloadReleaseAsyncProgressSignal信号
         
@@ -374,7 +367,7 @@ class GitHub(QObject):
         :param bytesTotal: 需要下载的总字节数
         """
         self.downloadReleaseAsyncProgressSignal.emit(bytesReceived,bytesTotal)
-    def saveFile(self,release:Release):
+    def __saveFile(self,release:Release):
         """
         从reply中读取数据并根据release.assets_name保存到临时文件夹
         
@@ -398,11 +391,19 @@ class GitHub(QObject):
             self.downloadReleaseAsyncFinishSignal.emit(path)
         self.__replyDict.pop(reply.objectName())
         reply.deleteLater()
-    def compareVersion(self,v2) -> str:
+    def compareVersion(self,v2:str) -> str:
+        """和当前版本比较
+
+        Args:
+            v2 (str): 需要比较的版本
+
+        Returns:
+            str: "<","=" or ">"
+        """
         v = re.findall(self.__versionReStr,self.__version)
         if len(v) == 0:
             return '<'
-        v1 = new = re.findall(self.__versionReStr,v2)
+        v1 = re.findall(self.__versionReStr,v2)
         if len(v1) == 0:
             return '<'
         v1 = v1[0]
@@ -434,6 +435,7 @@ class GitHub(QObject):
         if id in self.__replyDict:
             self.__replyDict[id].abort()
             self.__replyDict.pop(id)
+
 if __name__ == '__main__':
     app = QCoreApplication([])
     data = {
