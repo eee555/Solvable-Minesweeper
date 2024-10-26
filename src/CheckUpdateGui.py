@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel, QVBoxLayout, QApplicat
     QSizePolicy, QPushButton, QFrame, QMessageBox, QFormLayout, QProgressDialog, QTextEdit, QComboBox
 from githubApi import GitHub, Release, SourceManager, PingThread
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QUrl, QPropertyAnimation, \
-    QRect, QSize, pyqtProperty, QVariantAnimation
+    QRect, QSize, pyqtProperty, QVariantAnimation,QDateTime
 from PyQt5.QtGui import QDesktopServices, QFont, QIcon, QPainter, QPixmap, QPaintEvent
 
 
@@ -53,6 +53,7 @@ class ReleaseFrame(QFrame):
         self.showButton = AnimationButton()
         self.showButton.setCheckable(True)
         self.showButton.pixmap = QPixmap("media/unfold.png")
+        self.dateTimeLabel = QLabel()
         self.titleWidget = QWidget()
         self.formWidget = QWidget()
         self.downloadButton = QPushButton(QObject.tr(self, "Download"))
@@ -70,6 +71,10 @@ class ReleaseFrame(QFrame):
         row1 = QHBoxLayout()
         row1.addWidget(self.showButton)
         row1.addWidget(QLabel(self.release.tag_name))
+        row1.addItem(QSpacerItem(
+            20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
+        self.dateTimeLabel.setText(QDateTime.fromString(self.release.assets_created_at, "yyyy-MM-ddThh:mm:ssZ").toString("yyyy-MM-dd hh:mm:ss"))
+        row1.addWidget(self.dateTimeLabel)
         row1.addItem(QSpacerItem(
             20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum))
         self.downloadButton.setEnabled(self.mode == ">")
@@ -93,7 +98,7 @@ class ReleaseFrame(QFrame):
         formLayout.addRow(QObject.tr(self, "download_count"),
                           QLabel(str(self.release.assets_download_count)))
         formLayout.addRow(QObject.tr(self, "created_at"),
-                          QLabel(self.release.assets_created_at))
+                          QLabel(QDateTime.fromString(self.release.assets_created_at, "yyyy-MM-ddThh:mm:ssZ").toString("yyyy-MM-dd hh:mm:ss")))
         downloadUrlLabel = QLabel()
         downloadUrlLabel.setText("<a href='" + self.release.assets_browser_download_url +
                                  "'>" + QObject.tr(self, "open download links") + "</a>")
@@ -236,6 +241,8 @@ class CheckUpdateGui(QWidget):
         self.sourceSpeedLabel.setText("---ms")
         self.pingThread.pingSignal.connect(lambda x,y: self.sourceSpeedLabel.setText(f"{int(y)}ms"))
         self.pingThread.start()
+        self.github.sourceManager.currentSource = source
+        self.checkUpdateButton.click()
     @pyqtSlot(list)
     def checkUpdate(self, releases: list):
         widget = self.releaseArea.widget()
@@ -266,6 +273,10 @@ class CheckUpdateGui(QWidget):
         if self.processDialog is not None:
             self.processDialog.close()
         self.processDialog = QProgressDialog(self)
+        # 取消信号
+        self.processDialog.canceled.connect(
+            self.downloadCancel
+        )
         self.processDialog.setWindowTitle(QObject.tr(
             self, f"{release.tag_name} Downloading..."))
 
@@ -283,6 +294,11 @@ class CheckUpdateGui(QWidget):
         # 使用系统默认方式打开文件
         QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
+    def downloadCancel(self):
+        self.github.closeAllRequest()
+        if self.processDialog is not None:
+            self.processDialog.close()
+            self.processDialog = None
 
 if __name__ == '__main__':
     import sys

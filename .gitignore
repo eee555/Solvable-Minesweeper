@@ -26,6 +26,8 @@ wheels/
 OCRModel/
 pip-wheel-metadata/
 share/python-wheels/
+Metaminesweeper-v3.1.11/
+Output/
 *.egg-info/
 .installed.cfg
 *.egg
