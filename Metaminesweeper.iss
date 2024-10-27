@@ -18,7 +18,7 @@
 ; 根目录
 #define RootPath "Metaminesweeper-v3.1.11"
 ; 图标
-#define IconPath "Metaminesweeper-v3.1.11\media\cat.ico"
+#define IconPath "media\cat.ico"
 [Setup]
 ;注意：AppId 的值唯一标识此应用程序。不要在其他应用程序的安装程序中使用相同的 AppId 值。
 ;（要生成新的 GUID，请单击 Tools |在 IDE 中生成 GUID
@@ -47,8 +47,8 @@ OutputBaseFilename=Metaminesweeper-{#MyAppVersion}
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
-SetupIconFile={#IconPath}
-UninstallDisplayIcon={#IconPath}
+SetupIconFile={#RootPath}\{#IconPath}
+UninstallDisplayIcon={app}\{#IconPath}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -64,9 +64,166 @@ Source: {#RootPath}\*; DestDir: "{app}"; Flags: ignoreversion recursesubdirs cre
 ;注意：不要在任何共享系统文件上使用 “Flags： ignoreversion”
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#AppPath}\{#MyAppExeName}"
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#AppPath}\{#MyAppExeName}";
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#AppPath}\{#MyAppExeName}"; Tasks: desktopicon;
 
 [Run]
 Filename: "{app}\{#AppPath}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent runascurrentuser
+[Code]
+var
+    Page: TWizardPage;
+    AVFCheckbox, EVFCheckbox, RMVCheckbox, MVFCheckbox: TNewCheckbox;
+procedure FileAssociationPage;
+begin
+    Page := CreateCustomPage(wpSelectDir, '文件打开方式', '勾选对应的文件类型,以添加对应文件类型使用{#MyAppName}的打开方式，然后点击“下一步”按钮。');
 
+    AVFCheckbox := TNewCheckbox.Create(Page);
+    AVFCheckbox.Top := 0;
+    AVFCheckbox.Left := 0;
+    AVFCheckbox.Width := Page.SurfaceWidth;
+    AVFCheckbox.Caption := '.avf';
+    AVFCheckbox.Checked := False;
+    AVFCheckbox.Parent := Page.Surface;
+
+    EVFCheckbox := TNewCheckbox.Create(Page);
+    EVFCheckbox.Top := 20;
+    EVFCheckbox.Left := 0;
+    EVFCheckbox.Width := Page.SurfaceWidth;
+    EVFCheckbox.Caption := '.evf';
+    EVFCheckbox.Checked := False;
+    EVFCheckbox.Parent := Page.Surface;
+
+    RMVCheckbox := TNewCheckbox.Create(Page);
+    RMVCheckbox.Top := 40;
+    RMVCheckbox.Left := 0;
+    RMVCheckbox.Width := Page.SurfaceWidth;
+    RMVCheckbox.Caption := '.rmv';
+    RMVCheckbox.Checked := False;
+    RMVCheckbox.Parent := Page.Surface;
+
+    MVFCheckbox := TNewCheckbox.Create(Page);
+    MVFCheckbox.Top := 60;
+    MVFCheckbox.Left := 0;
+    MVFCheckbox.Width := Page.SurfaceWidth;
+    MVFCheckbox.Caption := '.mvf';
+    MVFCheckbox.Checked := False;
+    MVFCheckbox.Parent := Page.Surface;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+    if CurStep = ssPostInstall then
+    begin
+        if not (AVFCheckbox.Checked or EVFCheckbox.Checked or RMVCheckbox.Checked or MVFCheckbox.Checked) then
+        begin
+            RegDeleteKeyIncludingSubkeys(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}');
+        end;
+
+        if AVFCheckbox.Checked then
+        begin
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', '','{#MyAppName}');
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', 'FriendlyAppName', '{#MyAppName}');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.avf\OpenWithProgids', '', '{#MyAppName}.avf');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.avf', '','{#MyAppName}.avf');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.avf\DefaultIcon', '', ExpandConstant('{app}\media\AVF.ico,0'));
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.avf\shell\open\command', '', ExpandConstant('"' + ExpandConstant('{app}\{#AppPath}\{#MyAppExeName}') + '" "%1"'));
+        end
+        else
+        begin
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.avf\OpenWithProgids', '');
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.avf', '');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.avf\shell\open\command');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.avf\DefaultIcon');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.avf');
+        end;
+
+        if EVFCheckbox.Checked then
+        begin
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', '','{#MyAppName}');
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', 'FriendlyAppName', '{#MyAppName}');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.evf\OpenWithProgids', '', '{#MyAppName}.evf');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.evf', '','{#MyAppName}.evf');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.evf\DefaultIcon', '', ExpandConstant('{app}\media\EVF.ico,0'));
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.evf\shell\open\command', '', ExpandConstant('"' + ExpandConstant('{app}\{#AppPath}\{#MyAppExeName}') + '" "%1"'));
+        end
+        else
+        begin
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.evf\OpenWithProgids', '');
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.evf', '');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.evf\shell\open\command');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.evf\DefaultIcon');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.evf');
+        end;
+
+        if RMVCheckbox.Checked then
+        begin
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', '','{#MyAppName}');
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', 'FriendlyAppName', '{#MyAppName}');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.rmv\OpenWithProgids', '', '{#MyAppName}.rmv');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.rmv', '','{#MyAppName}.rmv');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv\DefaultIcon', '', ExpandConstant('{app}\media\RMV.ico,0'));
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv\shell\open\command', '', ExpandConstant('"' + ExpandConstant('{app}\{#AppPath}\{#MyAppExeName}') + '" "%1"'));
+        end
+        else
+        begin
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.rmv\OpenWithProgids', '');
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.rmv', '');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv\shell\open\command');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv\DefaultIcon');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv');
+        end;
+
+        if MVFCheckbox.Checked then
+        begin
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', '','{#MyAppName}');
+            RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}', 'FriendlyAppName', '{#MyAppName}');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.mvf\OpenWithProgids', '', '{#MyAppName}.rmv');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '.mvf', '','{#MyAppName}.mvf');
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf\DefaultIcon', '', ExpandConstant('{app}\media\MVF.ico,0'));
+            RegWriteStringValue(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf\shell\open\command', '', ExpandConstant('"' + ExpandConstant('{app}\{#AppPath}\{#MyAppExeName}') + '" "%1"'));
+        end
+        else
+        begin
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.mvf\OpenWithProgids', '');
+            RegDeleteValue(HKEY_CLASSES_ROOT, '.mvf', '');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf\shell\open\command');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf\DefaultIcon');
+            RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf');       
+        end;
+    end;
+end;
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+    if CurUninstallStep = usPostUninstall then
+    begin
+        RegDeleteKeyIncludingSubkeys(HKEY_LOCAL_MACHINE, 'SOFTWARE\Classes\Applications\{#MyAppExeName}');
+
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.avf\OpenWithProgids', '');
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.avf', '');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.avf\shell\open\command');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.avf\DefaultIcon');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.avf');
+
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.evf\OpenWithProgids', '');
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.evf', '');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.evf\shell\open\command');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.evf\DefaultIcon');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.evf');
+
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.rmv\OpenWithProgids', '');
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.rmv', '');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv\shell\open\command');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv\DefaultIcon');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.rmv');
+
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.mvf\OpenWithProgids', '');
+        RegDeleteValue(HKEY_CLASSES_ROOT, '.mvf', '');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf\shell\open\command');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf\DefaultIcon');
+        RegDeleteKeyIncludingSubkeys(HKEY_CLASSES_ROOT, '{#MyAppName}.mvf');
+    end;
+end;
+procedure InitializeWizard;
+begin
+    FileAssociationPage;
+end;
