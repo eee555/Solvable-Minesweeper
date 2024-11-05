@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QScrollArea, QLabel, QVBoxLayout, QApplication, QHBoxLayout, QSpacerItem, \
+from PyQt5.QtWidgets import QWidget, QDialog, QScrollArea, QLabel, QVBoxLayout, QApplication, QHBoxLayout, QSpacerItem, \
     QSizePolicy, QPushButton, QFrame, QMessageBox, QFormLayout, QProgressDialog, QTextEdit, QComboBox
 from githubApi import GitHub, Release, SourceManager, PingThread
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QUrl, QPropertyAnimation, \
@@ -47,12 +47,12 @@ class AnimationButton(QPushButton):
 class ReleaseFrame(QFrame):
     downLoadFile = pyqtSignal(Release)
 
-    def __init__(self, release: Release, mode=">", parent=None):
+    def __init__(self, release: Release, mode=">", parent=None, r_path=""):
         super().__init__(parent)
         self.release: Release = release
         self.showButton = AnimationButton()
         self.showButton.setCheckable(True)
-        self.showButton.pixmap = QPixmap("media/unfold.png")
+        self.showButton.pixmap = QPixmap(str(r_path.with_name('media').joinpath('unfold.png')).replace("\\", "/"))
         self.dateTimeLabel = QLabel()
         self.titleWidget = QWidget()
         self.formWidget = QWidget()
@@ -169,9 +169,10 @@ class ReleaseFrame(QFrame):
         self.downLoadFile.emit(self.release)
 
 
-class CheckUpdateGui(QWidget):
+class CheckUpdateGui(QDialog):
     def __init__(self, github: GitHub, parent=None):
-        super().__init__(parent)
+        super().__init__(parent.mainWindow)
+        self.r_path = parent.r_path
         self.github: GitHub = github
         self.github.setParent(self)
         self.checkUpdateButton = QPushButton(
@@ -253,7 +254,7 @@ class CheckUpdateGui(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         for release in releases:
             frame = ReleaseFrame(
-                release, self.github.compareVersion(release.tag_name))
+                release, self.github.compareVersion(release.tag_name), r_path=self.r_path)
             layout.addWidget(frame)
             frame.downLoadFile.connect(self.github.downloadRelease)
         # 底部加一个空白区域
@@ -300,14 +301,14 @@ class CheckUpdateGui(QWidget):
             self.processDialog.close()
             self.processDialog = None
 
-if __name__ == '__main__':
-    import sys
-    app = QApplication(sys.argv)
-    data = {
-        "Github": "https://api.github.com/repos/",
-        "fff666": "https://fff666.top/",
-    }
-    w = CheckUpdateGui(GitHub(SourceManager(data), "eee555",
-                       "Solvable-Minesweeper", "3.1.9", "(\d+\.\d+\.\d+)"))
-    w.show()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     import sys
+#     app = QApplication(sys.argv)
+#     data = {
+#         "Github": "https://api.github.com/repos/",
+#         "fff666": "https://fff666.top/",
+#     }
+#     w = CheckUpdateGui(GitHub(SourceManager(data), "eee555",
+#                        "Solvable-Minesweeper", "3.1.9", "(\d+\.\d+\.\d+)"))
+#     w.show()
+#     sys.exit(app.exec_())

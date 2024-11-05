@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QApplication, QFileDialog
 import gameDefinedParameter
 import superGUI, gameAbout, gameSettings, gameSettingShortcuts,\
     captureScreen, mine_num_bar, videoControl, gameRecordPop
+from CheckUpdateGui import CheckUpdateGui
+from githubApi import GitHub, SourceManager
 import minesweeper_master as mm
 import ms_toollib as ms
 import configparser
@@ -61,6 +63,7 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         self.action_kuaijiejian.triggered.connect(self.action_QEvent)
         self.action_mouse.triggered.connect(self.action_mouse_setting)
         self.actiongaun_yv.triggered.connect(self.action_AEvent)
+        self.actionauto_update.triggered.connect(self.auto_Update)
         self.actionopen.triggered.connect(self.action_OpenFile)
         self.english_action.triggered.connect(lambda: self.trans_language("en_US"))
         self.chinese_action.triggered.connect(lambda: self.trans_language("zh_CN"))
@@ -1127,6 +1130,17 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
         ui.Dialog.setModal(True)
         ui.Dialog.show()
         ui.Dialog.exec_()
+
+    def auto_Update(self):
+        data = {
+            "Github": "https://api.github.com/repos/",
+            "fff666": "https://fff666.top/",
+        }
+        update_dialog = CheckUpdateGui(GitHub(SourceManager(data), "eee555",
+                       "Solvable-Minesweeper", superGUI.version.decode( "UTF-8" ), "(\d+\.\d+\.\d+)"), parent = self)
+        update_dialog.setModal(True)
+        update_dialog.show()
+        update_dialog.exec_()
 
     def screenShot(self):
         # ‘ctrl’ + ‘space’ 事件，启动截图

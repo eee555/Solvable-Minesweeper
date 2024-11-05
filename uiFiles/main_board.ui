@@ -677,6 +677,7 @@
      <string>帮助</string>
     </property>
     <addaction name="actiongaun_yv"/>
+    <addaction name="actionauto_update"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -1032,6 +1033,17 @@
    </property>
    <property name="shortcut">
     <string>R</string>
+   </property>
+  </action>
+  <action name="actionauto_update">
+   <property name="text">
+    <string>检查更新</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>微软雅黑</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
   </action>
  </widget>
