@@ -111,6 +111,7 @@ class ReleaseFrame(QFrame):
         font = QFont("Microsoft YaHei UI", 13)
         font.setBold(True)
         self.bodyEdit.setFont(font)
+        self.bodyEdit.setFixedHeight(150)
         self.bodyEdit.setVerticalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         dataLayout.addWidget(self.bodyEdit)
@@ -164,11 +165,15 @@ class ReleaseFrame(QFrame):
         animation2.start(QPropertyAnimation.DeletionPolicy.DeleteWhenStopped)
         animation.start(QPropertyAnimation.DeletionPolicy.DeleteWhenStopped)
         animation.finished.connect(lambda: self.formWidget.setVisible(checked))
+        animation.finished.connect(lambda: self.resWidth())
 
     def downLoadButtonClicked(self):
         self.downLoadFile.emit(self.release)
 
-
+    def resWidth(self):
+        area:QScrollArea = self.parentWidget().parentWidget().parentWidget()
+        width = area.verticalScrollBar().width() if area.verticalScrollBar().isVisible() else 0
+        self.resize(area.width() - width, self.height())
 class CheckUpdateGui(QDialog):
     def __init__(self, github: GitHub, parent=None):
         super().__init__(parent.mainWindow)
@@ -245,7 +250,7 @@ class CheckUpdateGui(QDialog):
         self.github.sourceManager.currentSource = source
         self.checkUpdateButton.click()
     @pyqtSlot(list)
-    def checkUpdate(self, releases: list):
+    def checkUpdate(self, releases: list[Release]):
         widget = self.releaseArea.widget()
         if widget is not None:
             widget.deleteLater()

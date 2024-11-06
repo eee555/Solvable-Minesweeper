@@ -122,11 +122,11 @@ class SourceManager(QObject):
             self.quickSource.emit(quickKey,quickTime)
     
 class Release:
-    def __init__(self,dict):
-        self.tag_name = dict['tag_name']
-        self.body = dict['body']
-        self.html_url = dict['html_url']
-        m_assert = dict['assets'][0]
+    def __init__(self,data:dict,versionReStr:str) -> None:
+        self.tag_name = data['tag_name'] if re.search(versionReStr,data['tag_name']) else data['name']
+        self.body = data['body']
+        self.html_url = data['html_url']
+        m_assert = data['assets'][0]
         self.assets_name = m_assert['name']
         self.assets_content_type = m_assert['content_type']
         self.assets_size = m_assert['size']
@@ -245,7 +245,7 @@ class GitHub(QObject):
             return reply.objectName()
             
     def __isNeedUpdate(self,data)->bool:
-        release = Release(json.loads(data))
+        release = Release(json.loads(data),self.versionReStr)
         return self.compareVersion(release.tag_name) == '>'
     
     def __isNeedUpdateAsync(self,reply:QNetworkReply):
@@ -282,7 +282,7 @@ class GitHub(QObject):
             data = reply.readAll().data().decode('utf-8')
             self.__replyDict.pop(reply.objectName())
             reply.deleteLater()
-            return Release(json.loads(data))
+            return Release(json.loads(data),self.versionReStr)
         else:
             nam.finished.connect(self.__lastReleaseAsync)
             return reply.objectName()
@@ -293,7 +293,7 @@ class GitHub(QObject):
         elif reply.error() != QNetworkReply.NoError:
             self.error(reply.errorString())
         else:
-            self.latestReleaseAsyncSignal.emit(Release(json.loads(reply.readAll().data().decode('utf-8'))))
+            self.latestReleaseAsyncSignal.emit(Release(json.loads(reply.readAll().data().decode('utf-8')),self.versionReStr))
         self.__replyDict.pop(reply.objectName())
         reply.deleteLater()
     
@@ -327,7 +327,7 @@ class GitHub(QObject):
         
         
     def __releases(self,data) -> list | None:
-        return [Release(x) for x in json.loads(data)]
+        return [Release(x,self.versionReStr) for x in json.loads(data)]
         
     def __releasesAsync(self,reply:QNetworkReply):
         if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
@@ -389,8 +389,9 @@ class GitHub(QObject):
             with open(path,'wb') as f:
                 f.write(reply.readAll())
             self.downloadReleaseAsyncFinishSignal.emit(path)
-        self.__replyDict.pop(reply.objectName())
-        reply.deleteLater()
+        if reply.objectName() in self.__replyDict:
+            self.__replyDict.pop(reply.objectName())
+            reply.deleteLater()
     def compareVersion(self,v2:str) -> str:
         """和当前版本比较
 
