@@ -226,6 +226,7 @@ class GitHub(QObject):
         
         nam = QNetworkAccessManager(self)
         request = QNetworkRequest(QUrl(self.latestReleaseUrl))
+        request.setAttribute(QNetworkRequest.Attribute.FollowRedirectsAttribute,True)
         reply = nam.get(request)
         reply.setObjectName(str(uuid.uuid1()))
         self.__replyDict[reply.objectName()] = reply
@@ -269,6 +270,7 @@ class GitHub(QObject):
         
         nam = QNetworkAccessManager(self)
         request = QNetworkRequest(QUrl(self.latestReleaseUrl))
+        request.setAttribute(QNetworkRequest.Attribute.FollowRedirectsAttribute,True)
         reply = nam.get(request)
         reply.setObjectName(str(uuid.uuid1()))
         self.__replyDict[reply.objectName()] = reply
@@ -307,6 +309,7 @@ class GitHub(QObject):
         """
         nam = QNetworkAccessManager(self)
         request = QNetworkRequest(QUrl(self.releasesUrl))
+        request.setAttribute(QNetworkRequest.Attribute.FollowRedirectsAttribute,True)
         reply = nam.get(request)
         reply.setObjectName(str(uuid.uuid1()))
         self.__replyDict[reply.objectName()] = reply
