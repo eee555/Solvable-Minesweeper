@@ -1,4 +1,4 @@
-# 元扫雷（MetaSweeper）
+# 元扫雷（Metasweeper）
 - 包含8种模式的扫雷项目、第三代扫雷录像播放器及高性能算法工具箱
 - project with 8 modes of minesweeper, third generation minesweeper video player and high performance algorithm toolbox
  
