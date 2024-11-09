@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QDialog, QScrollArea, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, \
-    QSizePolicy, QPushButton, QFrame, QMessageBox, QFormLayout, QProgressDialog, QTextEdit, QComboBox
-from githubApi import GitHub, Release, PingThread
 from PyQt5.QtCore import QObject, pyqtSlot, Qt, pyqtSignal, QUrl, QPropertyAnimation, \
     QSize, QVariantAnimation, QDateTime, QEvent, QEasingCurve
 from PyQt5.QtGui import QDesktopServices, QFont, QMouseEvent, QPainter, QPixmap, QEnterEvent
+from PyQt5.QtWidgets import QWidget, QDialog, QScrollArea, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, \
+    QSizePolicy, QPushButton, QFrame, QMessageBox, QFormLayout, QProgressDialog, QTextEdit, QComboBox
+
+from githubApi import GitHub, ReleaseInfo, PingThread
 
 
 class AnimationButton(QPushButton):
@@ -22,6 +23,7 @@ class AnimationButton(QPushButton):
     def setRotate(self, rotate):
         self.__rotate = rotate
         self.update()
+
     # rotate = property(int,rotate, setRotate)
 
     def paintEvent(self, event):
@@ -48,11 +50,11 @@ class AnimationButton(QPushButton):
 
 
 class ReleaseFrame(QFrame):
-    downLoadFile = pyqtSignal(Release)
+    downLoadFile = pyqtSignal(ReleaseInfo)
 
-    def __init__(self, release: Release, mode=">", parent=None, r_path=""):
+    def __init__(self, release: ReleaseInfo, mode=">", parent=None, r_path=""):
         super().__init__(parent)
-        self.release: Release = release
+        self.release: ReleaseInfo = release
         self.showButton = AnimationButton()
         self.showButton.setToolTip(self.tr("unfold"))
         self.showButton.setCheckable(True)
@@ -104,7 +106,8 @@ class ReleaseFrame(QFrame):
         formLayout.addRow(QObject.tr(self, "download_count"),
                           QLabel(str(self.release.assets_download_count)))
         formLayout.addRow(QObject.tr(self, "created_at"),
-                          QLabel(QDateTime.fromString(self.release.assets_created_at, "yyyy-MM-ddThh:mm:ssZ").toString("yyyy-MM-dd hh:mm:ss")))
+                          QLabel(QDateTime.fromString(self.release.assets_created_at, "yyyy-MM-ddThh:mm:ssZ").toString(
+                              "yyyy-MM-dd hh:mm:ss")))
         downloadUrlLabel = QLabel()
         downloadUrlLabel.setText("<a href='" + self.release.assets_browser_download_url +
                                  "'>" + QObject.tr(self, "open download links") + "</a>")
@@ -126,19 +129,7 @@ class ReleaseFrame(QFrame):
         layout.addWidget(self.titleWidget)
         layout.addWidget(self.formWidget)
         self.setLayout(layout)
-        rgbStr = ""
-        if self.mode == ">":
-            # 样式表绿色
-            rgbStr = "rgb(200,255,250)"
-        elif self.mode == "=":
-            # 样式表蓝色
-            rgbStr = "rgb(200,216,230)"
-        else:
-            # 样式表红色背景
-            rgbStr = "rgb(249, 179, 163)"
-        # label字体微软雅黑Ui,大小13,圆角 8
-        self.setStyleSheet(
-            f"QFrame{{background-color:{rgbStr}; font-family:Microsoft YaHei UI; font-size:14px; border-radius: 5px;}}")
+        self.__setStyleSheet(False)
 
     def initConnect(self):
         self.showButton.clicked.connect(self.showButtonClicked)
@@ -153,10 +144,6 @@ class ReleaseFrame(QFrame):
         animation2.setEasingCurve(easingCurveType)
         animation.setDuration(300)
         animation2.setDuration(300)
-        start: QSize = None
-        end: QSize = None
-        start1: QSize = None
-        end1: QSize = None
         if checked:
             self.showButton.setToolTip(QObject.tr(self, "fold"))
             start = QSize(self.width(), 0)
@@ -193,7 +180,6 @@ class ReleaseFrame(QFrame):
             self.showButton.click()
 
     def __setStyleSheet(self, isEnter: bool):
-        rgbStr = ""
         if self.mode == ">":
             # 样式表绿色
             rgbStr = "rgb(200,255,250)"
@@ -230,7 +216,7 @@ class CheckUpdateGui(QDialog):
         self.setWindowTitle(QObject.tr(self, "CheckUpdate"))
         # 去掉问号
         self.setWindowFlags(self.windowFlags() & ~
-                            Qt.WindowContextHelpButtonHint)
+        Qt.WindowContextHelpButtonHint)
         self.r_path = parent.r_path
         self.github: GitHub = github
         self.github.setParent(self)
@@ -308,7 +294,7 @@ class CheckUpdateGui(QDialog):
         self.checkUpdateButton.click()
 
     @pyqtSlot(list)
-    def checkUpdate(self, releases: list[Release]):
+    def checkUpdate(self, releases: list[ReleaseInfo]):
         widget = self.releaseArea.widget()
         if widget is not None:
             widget.deleteLater()
@@ -338,7 +324,7 @@ class CheckUpdateGui(QDialog):
             widget.deleteLater()
         QMessageBox.critical(self, QObject.tr(self, "Error"), msg)
 
-    def showDownloadDialog(self, release: Release):
+    def showDownloadDialog(self, release: ReleaseInfo):
         if self.processDialog is not None:
             self.processDialog.close()
         self.processDialog = QProgressDialog(self)
@@ -354,7 +340,7 @@ class CheckUpdateGui(QDialog):
             self.processDialog.setValue(a)
             self.processDialog.setMaximum(b)
             self.processDialog.setLabelText(
-                f'{a/1000000: .2f}/{b/1000000: .2f} MB')
+                f'{a / 1000000: .2f}/{b / 1000000: .2f} MB')
 
     def hideDownloadDialog(self, path: str):
         if self.processDialog is not None:
