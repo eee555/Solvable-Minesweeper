@@ -4,19 +4,19 @@
 ; 或者 cd 到Inno Setup 的安装目录，然后在命令行中使用 iscc "{xxx.iss}" 进行编译
 ; 安装程序生成在该脚本的根目录下的Output目录下 
 ; 程序名称
-#define MyAppName "Metaminesweeper"
+#define MyAppName "Metasweeper"
 ; 程序版本
-#define MyAppVersion "3.1.11"
+#define MyAppVersion "3.2.0"
 ; 发行商
 #define MyAppPublisher "eee555"
 ; 官网
-#define MyAppURL "https://github.com/eee555/Solvable-Minesweeper"
+#define MyAppURL "https://github.com/eee555/Metasweeper"
 ; 运行主程序名称
 #define MyAppExeName "metaminesweeper.exe"
 ; 程序目录
 #define AppPath "metaminesweeper"
 ; 根目录
-#define RootPath "Metaminesweeper-v3.1.11"
+#define RootPath "Metaminesweeper-snapshot"
 ; 图标
 #define IconPath "media\cat.ico"
 [Setup]
