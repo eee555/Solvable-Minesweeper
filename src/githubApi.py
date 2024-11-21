@@ -444,9 +444,9 @@ if __name__ == '__main__':
     app = QCoreApplication([])
     data = {
         "Github": "https://api.github.com/repos/",
-        "fff666": "https://fff666.top/",
+        "gitee": "https://api.gitee.com/repos/",
     }
-    github = GitHub(SourceManager(data),"eee555","Solvable-Minesweeper","3.1.9","(\d+\.\d+\.\d+)")
+    github = GitHub(SourceManager(data),"eee555","Metasweeper","3.1.9","(\d+\.\d+\.\d+)")
     github.releasesAsyncSignal.connect(lambda x:print(x))
     github.releases()
     # manager = SourceManager(data)

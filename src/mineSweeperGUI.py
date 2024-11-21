@@ -1134,10 +1134,10 @@ class MineSweeperGUI(superGUI.Ui_MainWindow):
     def auto_Update(self):
         data = {
             "Github": "https://api.github.com/repos/",
-            "fff666": "https://fff666.top/",
+            # "Gitee": "https://api.gitee.com/repos/",
         }
         update_dialog = CheckUpdateGui(GitHub(SourceManager(data), "eee555",
-                       "Solvable-Minesweeper", superGUI.version.decode( "UTF-8" ), "(\d+\.\d+\.\d+)"), parent = self)
+                       "Metasweeper", superGUI.version.decode( "UTF-8" ), "(\d+\.\d+\.\d+)"), parent = self)
         update_dialog.setModal(True)
         update_dialog.show()
         update_dialog.exec_()
