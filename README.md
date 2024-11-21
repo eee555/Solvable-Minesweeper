@@ -160,8 +160,8 @@ Currently in the lengthy development phase, with updates approximately every 1 t
 ## 下载链接
 
 ### 正式版v3.2.0：
-修改为安装包安装。“竞速无猜”更名为“经典无猜”。修复了游戏开始前点“保存”会崩溃，标准模式pb不能正常保存，标雷后缩放窗口导致异常，不同缩放下窗口尺寸不同，切屏引发崩溃等问题。现在任务栏只会出现一个主窗口，能够正确处理盲扫和标雷相关的弹窗逻辑。增加了自动更新的模块，可以在游戏内选择服务器自动更新。
-链接：[https://gitee.com/ee55/Solvable-Minesweeper/releases/download/3.2.0/Metaminesweeper-v3.2.0.zip](https://gitee.com/ee55/Solvable-Minesweeper/releases/download/3.2.0/Metaminesweeper-v3.2.0.zip)、[https://github.com/eee555/Metasweeper/releases/download/3.2.0/Metaminesweeper-v3.2.0.zip](https://github.com/eee555/Metasweeper/releases/download/3.2.0/Metaminesweeper-v3.2.0.zip)
+修改为安装包安装。“竞速无猜”更名为“经典无猜”。修复了游戏开始前点“保存”会崩溃，标准模式pb不能正常保存，标雷后缩放窗口导致异常，不同缩放下窗口尺寸不同，切屏引发崩溃等问题。现在任务栏只会出现一个主窗口，能够正确处理盲扫和标雷相关的弹窗逻辑。增加了自动更新的模块，可以在游戏内选择服务器自动更新。  
+链接：[https://gitee.com/ee55/Metasweeper/releases/download/3.2.0/Metaminesweeper-v3.2.0.zip](https://gitee.com/ee55/Metasweeper/releases/download/3.2.0/Metaminesweeper-v3.2.0.zip)、[https://github.com/eee555/Metasweeper/releases/download/3.2.0/Metaminesweeper-3.2.0.exe](https://github.com/eee555/Metasweeper/releases/download/3.2.0/Metaminesweeper-3.2.0.exe)
 
 ### 正式版v3.1.11：
 修复了若干严重问题。计数器标题可以翻译。兼容高清屏。  
