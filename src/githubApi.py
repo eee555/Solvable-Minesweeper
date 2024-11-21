@@ -27,14 +27,13 @@ class PingThread(QThread):
         timer = QElapsedTimer()
         timer.start()
         try:
-            nam = QNetworkAccessManager(self)
+            nam = QNetworkAccessManager()
             request = QNetworkRequest(QUrl(self.url))
 
             reply = nam.get(request)
             loop = QEventLoop()
             reply.finished.connect(loop.quit)
             loop.exec_()
-
         except Exception:
             return float('inf')
         time = timer.elapsed()

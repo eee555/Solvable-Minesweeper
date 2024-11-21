@@ -9,6 +9,10 @@ from githubApi import GitHub, ReleaseInfo, PingThread
 
 class AnimationButton(QPushButton):
     def __init__(self, parent=None):
+        """
+        :param parent: QWidget
+        AnimationButton的构造函数
+       ."""
         super().__init__(parent)
         self.pixmap: QPixmap = None
         self.clicked.connect(self.animationStart)
@@ -39,6 +43,11 @@ class AnimationButton(QPushButton):
             self.setMask(self.pixmap.scaled(size, size).mask())
 
     def animationStart(self, check):
+        """
+        :param check: bool
+        点击按钮时，开始动画。
+        check为True时，从0度到90度，否则从90度到0度，持续时间300ms。
+        """
         if check:
             self.animation.setStartValue(0)
             self.animation.setEndValue(90)
@@ -136,6 +145,16 @@ class ReleaseFrame(QFrame):
         self.downloadButton.clicked.connect(self.downLoadButtonClicked)
 
     def showButtonClicked(self, checked: bool):
+        """
+        切换显示和隐藏的按钮点击事件处理函数。
+
+        根据参数checked的值，切换formWidget的可见性，并执行相应的展开或折叠动画。
+        当checked为True时，展开formWidget并设置按钮提示为"fold"，
+        否则折叠formWidget并设置按钮提示为"unfold"。
+
+        Args:
+            checked (bool): 指示按钮是否被选中的布尔值。
+        """
         self.formWidget.setVisible(True)
         animation = QPropertyAnimation(self.formWidget, b"size", self)
         easingCurveType = QEasingCurve.Type.OutBack if checked else QEasingCurve.Type.InBack
@@ -163,7 +182,7 @@ class ReleaseFrame(QFrame):
         animation2.start(QPropertyAnimation.DeletionPolicy.DeleteWhenStopped)
         animation.start(QPropertyAnimation.DeletionPolicy.DeleteWhenStopped)
         animation.finished.connect(lambda: self.formWidget.setVisible(checked))
-        animation.finished.connect(lambda: self.resWidth())
+        # animation.finished.connect(lambda: self.resWidth())
 
     def downLoadButtonClicked(self):
         self.downLoadFile.emit(self.release)
@@ -199,7 +218,9 @@ class ReleaseFrame(QFrame):
         else:
             # label字体微软雅黑Ui,大小13,圆角 8
             self.setStyleSheet(
-                f"QFrame{{background-color:{rgbStr}; font-family:Microsoft YaHei UI; font-size:14px; border-radius: 5px;}}")
+                f"""QFrame{{background-color:{rgbStr}; font-family:Microsoft YaHei UI; font-size:14px; border-radius: 5px;}}
+                ReleaseFrame{{border: 1px solid transparent;}}
+                """)
 
     def enterEvent(self, a0: QEnterEvent) -> None:
         self.__setStyleSheet(True)
@@ -227,6 +248,9 @@ class CheckUpdateGui(QDialog):
         # 禁用横向滚动条
         self.releaseArea.setHorizontalScrollBarPolicy(
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+        self.releaseArea.setVerticalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOn
         )
         self.pingThread = None
         self.sourceSpeedLabel = QLabel()
