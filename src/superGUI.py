@@ -15,8 +15,7 @@ import minesweeper_master as mm
 from country_name import country_name
 
 
-# version = "元3.1.11".encode( "UTF-8" )
-version = "测试3.1.16".encode( "UTF-8" )
+version = "元3.2.0".encode( "UTF-8" )
 
 
 class Ui_MainWindow(Ui_MainWindow):
