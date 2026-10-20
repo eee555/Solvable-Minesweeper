@@ -370,15 +370,19 @@ def board_list_to_bytes(board: List[List[int]]) -> bytes:
     return bytes(raw_data)
 
 
+# 按高位到低位展开，与 board_list_to_bytes 的位序一致。
+_BOARD_BYTE_CELLS = tuple(
+    tuple(-1 if value & (1 << bit) else 0 for bit in range(7, -1, -1))
+    for value in range(256)
+)
+
+
 def board_bytes_to_board(rows: int, cols: int, board_bytes: bytes) -> list[list[int]]:
     total = rows * cols
-    result = [[0] * cols for _ in range(rows)]
-    for i in range(total):
-        byte_idx = i // 8
-        if byte_idx < len(board_bytes):
-            is_mine = (board_bytes[byte_idx] >> (7 - i % 8)) & 1
-        else:
-            is_mine = 0
-        if is_mine:
-            result[i // cols][i % cols] = -1
+    cells = []
+    for value in board_bytes[:(total + 7) // 8]:
+        cells.extend(_BOARD_BYTE_CELLS[value])
+    if len(cells) < total:
+        cells.extend([0] * (total - len(cells)))
+    result = [cells[i * cols:(i + 1) * cols] for i in range(rows)]
     return ms.cal_board_numbers(result)

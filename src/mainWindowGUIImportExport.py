@@ -12,8 +12,7 @@ import re
 from pathlib import Path
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
-import csv
-from datetime import datetime
+from time import perf_counter
 from PySide6.QtWidgets import QFileDialog, QMessageBox, QApplication
 from mainWindowGUI import MainWindow
 from ui.ui_import import Ui_Form as Ui_Import
@@ -478,15 +477,17 @@ class MainWindowGUIImportExport(MineSweeperVideoPlayer):
         return count
 
     def _export_csv(self, all=False):
-        '''
-        # 导出 Arbiter Stats CSV，只导出胜利、标准、正式、公平、非自定义的记录
-        '''
+        """选择路径后，在后台导出 CSV，界面通过信号更新进度。"""
+        from utils.csv_export import CsvExportWorker, CsvExportProgressDialog
+
+        started = perf_counter()
         dat_path = self.setting_path / 'stats.dat'
         if not dat_path.exists() or dat_path.stat().st_size == 0:
             QMessageBox.warning(self.mainWindow, _translate(
                 "MainWindow", "导出失败"), _translate("MainWindow", "stats.dat 不存在或为空"))
             return
 
+        dialog_started = perf_counter()
         safe_name = re.sub(r'[\\/:*?"<>|] ', '_', self.player_identifier)
         if all:
             default_name = f"{safe_name}_textstats.csv"
@@ -504,103 +505,27 @@ class MainWindowGUIImportExport(MineSweeperVideoPlayer):
                 str(self.setting_path / default_name),
                 _translate("MainWindow", "Stats CSV 文件 (*.csv)")
             )
+        print(f"[_export_csv] 保存对话框（含用户等待）: {perf_counter() - dialog_started:.6f} s")
         if not save_path:
             return
 
-        records = []
-        with open(dat_path, 'rb') as f:
-            f.read(1)  # version byte
-            while True:
-                len_bytes = f.read(2)
-                if not len_bytes or len(len_bytes) < 2:
-                    break
-                blob_length = int.from_bytes(len_bytes, 'big')
-                blob = f.read(blob_length)
-                if not blob or len(blob) < blob_length:
-                    break
-
-                nonce = blob[:12]
-                tag = blob[12:28]
-                ciphertext = blob[28:]
-
-                try:
-                    cipher = AES.new(superGUI.STATS_DAT_KEY,
-                                     AES.MODE_GCM, nonce=nonce)
-                    plaintext = cipher.decrypt_and_verify(ciphertext, tag)
-                    records.append(utils.StatsRecord.decode(plaintext))
-                except Exception:
-                    continue
-
-        if not records:
-            QMessageBox.warning(self.mainWindow, _translate(
-                "MainWindow", "导出失败"), _translate("MainWindow", "未找到有效的记录"))
+        dialog = CsvExportProgressDialog(self.mainWindow)
+        worker = CsvExportWorker(
+            dat_path, save_path, superGUI.STATS_DAT_KEY, all, parent=dialog)
+        worker.progress.connect(dialog.update_progress)
+        worker.finished.connect(dialog.accept)
+        # exec 的事件循环持续处理窗口绘制和进度信号。
+        QTimer.singleShot(0, worker.start)
+        dialog.exec()
+        worker.wait()
+        error, record_num = worker.error, worker.record_num
+        print(f"[_export_csv] 总耗时（含保存对话框等待）: {perf_counter() - started:.6f} s",
+              flush=True)
+        dialog.deleteLater()
+        if error is not None:
+            QMessageBox.warning(self.mainWindow, _translate("MainWindow", "导出失败"),
+                                _translate("MainWindow", "导出 CSV 失败：{error}").replace("{error}", error))
             return
-
-        if all:
-            headers = [
-                "Mode", "Event", "Year", "Month", "Day", "Hour", "Minute", "Second", "Level", "Width", "Height", "Mines", "Time", "Solved 3BV", "3BV", "ZiNi", "HZiNi", "Openings", "Islands", "Left Clicks", "Right Clicks", "Double Clicks", "Left Effective Clicks", "Right Effective Clicks", "Double Effective Clicks", "Path", "Ones", "Twos", "Threes", "Fours", "Fives", "Sixes", "Sevens", "Eights"
-            ]
-        else:
-            headers = [
-                "Day", "Month", "Year", "Hour", "Min", "Sec", "mode", "Time", "BBBV", "BBBVs", "style", "cell0", "cell1", "cell2", "cell3", "cell4", "cell5", "cell6", "cell7", "cell8", "Lcl", "Rcl", "Dcl", "Leff", "Reff", "Deff", "Openings", "Islands", "Path", "GZiNi", "HZiNi"
-            ]
-
-        with open(save_path, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.writer(f)
-            writer.writerow(headers)
-
-            record_num = 0
-            for rec in records:
-                if not rec.is_fair:
-                    continue  # 只导出公平的记录
-                if not all:
-                    if rec.game_state != 6 or rec.mode != 0:
-                        continue  # 只导出胜利的标准记录
-                    if not (rec.is_official):
-                        continue  # 只导出正式的记录
-
-                if (rec.row, rec.column, rec.mine_num) == (8, 8, 10):
-                    mode = "BEG"
-                elif (rec.row, rec.column, rec.mine_num) == (16, 16, 40):
-                    mode = "INT"
-                elif (rec.row, rec.column, rec.mine_num) == (16, 30, 99):
-                    mode = "EXP"
-                else:
-                    mode = "CUS"
-                if not all and mode == "CUS":
-                    continue  # 非标准模式不导出
-
-                dt = datetime.fromtimestamp(
-                    rec.start_time / 1_000_000 + rec.rtime_ms / 1000.0)
-
-                style = "NF" if rec.rce == 0 else "Flag"
-                list_board = utils.board_bytes_to_board(
-                    rec.row, rec.column, rec.board_bytes)
-                board = ms.Board(list_board)
-
-                if all:
-                    # 标准0、win74、经典无猜5、强无猜6、弱无猜7、准无猜8、强可猜9、弱可猜10
-                    game_mode = ["classic", "", "", "", "win7", "classic no guess", "strict no guess",
-                                 "weak no guess", "blessing no guess", "guessable no guess", "lucky mode"][rec.mode]
-
-                if all:
-                    writer.writerow([
-                        game_mode, "win" if rec.game_state == 6 else "blast", dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second,
-                        mode, rec.column, rec.row, rec.mine_num, rec.rtime_ms /
-                        1000.0, rec.bbbv_solved, rec.bbbv, rec.zini, board.hzini,
-                        board.op, board.isl, rec.left, rec.right, rec.double, rec.lce, rec.rce, rec.dce, rec.path, board.cell1, board.cell2, board.cell3, board.cell4, board.cell5, board.cell6, board.cell7, board.cell8
-                    ])
-                else:
-                    writer.writerow([
-                        dt.day, dt.month, dt.year, dt.hour, dt.minute, dt.second,
-                        mode, rec.rtime_ms / 1000.0, rec.bbbv, rec.bbbv_solved, style,
-                        board.cell0, board.cell1, board.cell2, board.cell3, board.cell4,
-                        board.cell5, board.cell6, board.cell7, board.cell8,
-                        rec.left, rec.right, rec.double,
-                        rec.lce, rec.rce, rec.dce,
-                        board.op, board.isl, rec.path, rec.zini, board.hzini,
-                    ])
-                record_num += 1
 
         QMessageBox.information(self.mainWindow, _translate("MainWindow", "导出成功"),
                                 _translate("MainWindow", "已导出 {n} 条记录到\n{path}").replace("{n}", str(record_num)).replace("{path}", save_path))

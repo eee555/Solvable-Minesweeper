@@ -231,3 +231,44 @@ class TestEnumerateChangeBoard:
 class TestEnuLimit:
     def test_enu_limit_value(self):
         assert EnuLimit >= 50
+
+
+def _original_board_bytes_to_board(rows, cols, board_bytes):
+    """Optimization reference: preserve the former implementation exactly."""
+    import ms_toollib as ms
+    total = rows * cols
+    result = [[0] * cols for _ in range(rows)]
+    for i in range(total):
+        byte_idx = i // 8
+        if byte_idx < len(board_bytes):
+            is_mine = (board_bytes[byte_idx] >> (7 - i % 8)) & 1
+        else:
+            is_mine = 0
+        if is_mine:
+            result[i // cols][i % cols] = -1
+    return ms.cal_board_numbers(result)
+
+
+def test_board_bytes_all_byte_values_match_original():
+    for value in range(256):
+        data = bytes([value])
+        assert board_bytes_to_board(2, 4, data) == _original_board_bytes_to_board(2, 4, data)
+
+
+def test_board_bytes_random_shapes_and_lengths_match_original():
+    from random import Random
+    rng = Random(2026)
+    for rows, cols in [(1, 1), (1, 7), (3, 3), (8, 8), (16, 16), (16, 30), (7, 13)]:
+        size = (rows * cols + 7) // 8
+        for length in (0, 1, max(0, size - 1), size, size + 5):
+            for _ in range(10):
+                data = rng.randbytes(length)
+                assert board_bytes_to_board(rows, cols, data) == _original_board_bytes_to_board(rows, cols, data)
+
+
+def test_board_bytes_zero_dimensions_match_original(monkeypatch):
+    # Compare the input to the native function; empty boards may not be supported by it.
+    import utils.board_funcs as module
+    monkeypatch.setattr(module.ms, "cal_board_numbers", lambda board: board)
+    for rows, cols in [(0, 0), (0, 3), (3, 0)]:
+        assert board_bytes_to_board(rows, cols, b"\xff") == _original_board_bytes_to_board(rows, cols, b"\xff")
