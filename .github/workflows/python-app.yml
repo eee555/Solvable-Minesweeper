@@ -118,6 +118,8 @@ jobs:
       - name: Copy plugin resources into metasweeper dist
         run: |
           $dest = "dist\metasweeper"
+          Copy-Item "AI_AGENT_POLICY.md" -Destination $dest -Force
+          Copy-Item "README.md" -Destination $dest -Force
           Copy-Item "dist\plugin_manager_out\plugin_manager\plugin_manager.exe" -Destination $dest -Force
           Copy-Item "dist\plugin_manager_out\plugin_manager\_internal\*" -Destination "$dest\_internal" -Recurse -Force
           Copy-Item "src\params.onnx" -Destination "$dest\params.onnx" -Force

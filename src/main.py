@@ -1,3 +1,8 @@
+from policy_guard import enforce_policy_integrity
+
+if __name__ == "__main__":
+    enforce_policy_integrity()
+
 import time
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtWidgets import QApplication

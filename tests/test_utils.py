@@ -9,6 +9,70 @@ from utils import (
 from utils import path_utils
 
 
+class TestPolicyIntegrity:
+    def test_current_policy_matches_expected_md5(self):
+        import policy_guard
+
+        policy_guard.validate_policy_file(policy_guard.get_policy_path())
+
+    def test_missing_policy_is_rejected(self, tmp_path):
+        import policy_guard
+
+        with pytest.raises(policy_guard.PolicyIntegrityError, match="missing or unreadable"):
+            policy_guard.validate_policy_file(tmp_path / policy_guard.POLICY_FILENAME)
+
+    def test_modified_policy_is_rejected(self, tmp_path):
+        import policy_guard
+
+        policy_path = tmp_path / policy_guard.POLICY_FILENAME
+        policy_path.write_bytes(b"modified policy")
+        with pytest.raises(policy_guard.PolicyIntegrityError, match="MD5 mismatch"):
+            policy_guard.validate_policy_file(policy_path)
+
+    def test_invalid_policy_exits(self, monkeypatch, tmp_path):
+        import policy_guard
+
+        monkeypatch.setattr(policy_guard, "get_policy_path", lambda: tmp_path / "missing.md")
+        monkeypatch.setattr(policy_guard.sys, "platform", "linux")
+        with pytest.raises(SystemExit) as error:
+            policy_guard.enforce_policy_integrity()
+        assert error.value.code == 1
+
+    def test_main_rejects_missing_policy_before_gui_import(self, monkeypatch, tmp_path):
+        import runpy
+        from pathlib import Path
+        import policy_guard
+
+        monkeypatch.setattr(policy_guard, "get_policy_path", lambda: tmp_path / "missing.md")
+        monkeypatch.setattr(policy_guard.sys, "platform", "linux")
+        imported_modules = []
+        original_import = __import__
+
+        def track_import(name, *args, **kwargs):
+            imported_modules.append(name)
+            return original_import(name, *args, **kwargs)
+
+        monkeypatch.setattr("builtins.__import__", track_import)
+        main_path = Path(policy_guard.__file__).resolve().parent / "main.py"
+        with pytest.raises(SystemExit) as error:
+            runpy.run_path(str(main_path), run_name="__main__")
+        assert error.value.code == 1
+        assert not any(name.startswith("PySide6") for name in imported_modules)
+
+    @pytest.mark.parametrize("runtime", ["source", "pyinstaller", "nuitka"])
+    def test_policy_location(self, monkeypatch, tmp_path, runtime):
+        import policy_guard
+
+        monkeypatch.setattr(policy_guard, "__file__", str(tmp_path / "repo" / "src" / "policy_guard.py"))
+        monkeypatch.setattr(policy_guard.sys, "executable", str(tmp_path / "package" / "metasweeper.exe"))
+        monkeypatch.setattr(policy_guard.sys, "frozen", runtime == "pyinstaller", raising=False)
+        monkeypatch.delattr(policy_guard, "__compiled__", raising=False)
+        if runtime == "nuitka":
+            monkeypatch.setattr(policy_guard, "__compiled__", object(), raising=False)
+        base = tmp_path / ("repo" if runtime == "source" else "package")
+        assert policy_guard.get_policy_path() == base / policy_guard.POLICY_FILENAME
+
+
 class TestRuntimeMode:
     def test_source_mode(self, monkeypatch):
         monkeypatch.delattr(path_utils, "__compiled__", raising=False)

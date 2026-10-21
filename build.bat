@@ -50,6 +50,10 @@ if errorlevel 1 exit /b 1
 
 copy /y "%OUT%\plugin_manager\plugin_manager.exe" "%DEST%\"
 if errorlevel 1 exit /b 1
+copy /y "AI_AGENT_POLICY.md" "%DEST%\"
+if errorlevel 1 exit /b 1
+copy /y "README.md" "%DEST%\"
+if errorlevel 1 exit /b 1
 xcopy /e /y /i "%OUT%\plugin_manager\_internal" "%DEST%\_internal" >nul
 if errorlevel 1 exit /b 1
 mkdir "%DEST%\user_plugins" >nul 2>&1

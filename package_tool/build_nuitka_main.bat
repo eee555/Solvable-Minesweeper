@@ -54,6 +54,8 @@ if exist "%MANAGER_STAGE%" (
     --windows-console-mode=%NUITKA_CONSOLE_MODE% ^
     --output-dir="%MAIN_STAGE%" ^
     --output-filename=metasweeper.exe ^
+    --include-data-files=AI_AGENT_POLICY.md=AI_AGENT_POLICY.md ^
+    --include-data-files=README.md=README.md ^
     --include-data-dir=src\media=media ^
     --include-data-files=src\en_US.qm=en_US.qm ^
     --include-data-files=src\de_DE.qm=de_DE.qm ^
