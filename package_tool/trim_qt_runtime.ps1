@@ -21,8 +21,8 @@ foreach ($file in $files) {
     $output = & $dumpbin.Source /NOLOGO /DEPENDENTS $file.FullName 2>&1
     if ($LASTEXITCODE -ne 0) { throw "Cannot inspect $($file.FullName): $output" }
     $imports[$file.FullName] = @($output | ForEach-Object {
-        if ($_ -match '^\s+([\w.\-]+\.dll)\s*$') { $Matches[1].ToLowerInvariant() }
-    })
+            if ($_ -match '^\s+([\w.\-]+\.dll)\s*$') { $Matches[1].ToLowerInvariant() }
+        })
 }
 $removable = @{}
 foreach ($name in $candidates.Keys) { $removable[$name] = $true }
