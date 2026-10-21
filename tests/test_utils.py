@@ -6,6 +6,47 @@ from utils import (
     StatsRecord, trans_game_mode, EnuLimit,
     enumerate_change_board,
 )
+from utils import path_utils
+
+
+class TestRuntimeMode:
+    def test_source_mode(self, monkeypatch):
+        monkeypatch.delattr(path_utils, "__compiled__", raising=False)
+        monkeypatch.setattr(path_utils.sys, "frozen", False, raising=False)
+        assert path_utils.get_runtime_mode() == "source"
+
+    def test_pyinstaller_mode(self, monkeypatch):
+        monkeypatch.setattr(path_utils.sys, "frozen", True, raising=False)
+        assert path_utils.get_runtime_mode() == "pyinstaller"
+
+    def test_nuitka_mode(self, monkeypatch):
+        monkeypatch.setattr(path_utils.sys, "frozen", False, raising=False)
+        monkeypatch.setattr(path_utils, "__compiled__", object(), raising=False)
+        assert path_utils.get_runtime_mode() == "nuitka"
+
+
+class TestPluginManagerRuntimePaths:
+    def test_nuitka_bundle_and_builtin_plugin_paths(self, monkeypatch, tmp_path):
+        from plugin_manager import app_paths
+
+        executable_dir = tmp_path / "package"
+        builtin_plugin_dir = executable_dir / "internal" / "plugins"
+        user_plugin_dir = executable_dir / "plugins"
+        builtin_plugin_dir.mkdir(parents=True)
+        user_plugin_dir.mkdir()
+
+        monkeypatch.setattr(app_paths, "__compiled__", object(), raising=False)
+        monkeypatch.setattr(app_paths.sys, "frozen", False, raising=False)
+        monkeypatch.setattr(
+            app_paths.sys,
+            "executable",
+            str(executable_dir / "plugin_manager.exe"),
+        )
+
+        assert app_paths.get_bundle_dir() == executable_dir
+        assert app_paths.get_executable_dir() == executable_dir
+        assert app_paths.get_builtin_plugin_dirs() == [builtin_plugin_dir]
+        assert app_paths.get_user_plugin_dirs() == [user_plugin_dir]
 
 
 class TestBoardBytes:

@@ -1,8 +1,9 @@
 """
-应用路径工具（PyInstaller 兼容）
+应用路径工具（PyInstaller / Nuitka 兼容）
 
-解决 PyInstaller 打包后的路径问题：
-- sys.frozen=True 时运行在 _MEIPASS 临时目录中
+解决打包后的路径问题：
+- PyInstaller: 资源位于 _MEIPASS
+- Nuitka: 资源位于 EXE 同级目录
 - 需要区分：只读资源路径 vs 可写数据路径 vs 插件发现路径
 """
 from __future__ import annotations
@@ -17,9 +18,16 @@ logger = loguru.logger.bind(name="AppPaths")
 
 # ── 运行环境判断 ──────────────────────────────────────
 
+def is_nuitka_compiled() -> bool:
+    """当前模块是否由 Nuitka 编译"""
+    return "__compiled__" in globals()
+
+
 def is_frozen() -> bool:
-    """是否运行在 PyInstaller 打包环境中"""
-    return getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS")
+    """是否运行在 PyInstaller 或 Nuitka 打包环境中"""
+    return is_nuitka_compiled() or (
+        getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS")
+    )
 
 
 def get_bundle_dir() -> Path:
@@ -27,8 +35,11 @@ def get_bundle_dir() -> Path:
     获取应用根目录（只读）
 
     - 开发模式: src/ 目录
-    - 打包模式:   _MEIPASS 临时解压目录
+    - PyInstaller: _MEIPASS 临时解压目录
+    - Nuitka: EXE 所在目录
     """
+    if is_nuitka_compiled():
+        return Path(sys.executable).resolve().parent
     if is_frozen():
         return Path(sys._MEIPASS)
     # 开发模式：返回 src/ 所在目录（即项目根目录的子目录）
@@ -138,10 +149,15 @@ def get_builtin_plugin_dirs() -> list[Path]:
 
     内置插件随应用一起分发：
     - 开发模式: <project>/src/plugins/
-    - 打包模式:   <_MEIPASS>/src/plugins/  （PyInstaller 打包时需用 collect_subdirs 或 Tree 收集）
+    - PyInstaller: <_MEIPASS>/plugins/
+    - Nuitka: <EXE目录>/internal/plugins/
     """
     bundle = get_bundle_dir()
-    plugin_dir = bundle / "plugins"
+    plugin_dir = (
+        bundle / "internal" / "plugins"
+        if is_nuitka_compiled()
+        else bundle / "plugins"
+    )
     if plugin_dir.is_dir():
         return [plugin_dir]
     logger.warning(f"内置插件目录不存在: {plugin_dir}")

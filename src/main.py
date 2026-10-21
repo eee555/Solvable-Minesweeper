@@ -12,6 +12,7 @@ import ms_toollib as ms
 import ctypes
 from pathlib import Path
 from utils.app_logger import logger
+from utils.path_utils import get_executable_dir, get_runtime_mode
 
 # 插件系统（新）
 from plugin_sdk import GameServerBridge
@@ -153,6 +154,7 @@ if __name__ == "__main__":
         sys.exit(exit_code)
 
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle("windowsvista")
     serverName = "MineSweeperServer"
     socket = QLocalSocket()
     socket.connectToServer(serverName)
@@ -197,8 +199,8 @@ if __name__ == "__main__":
 
         if not _plugin_manager_running:
             # 打包后直接调用 plugin_manager.exe，开发模式用 python -m
-            if getattr(sys, 'frozen', False):
-                base_dir = os.path.dirname(sys.executable)
+            if get_runtime_mode() != "source":
+                base_dir = str(get_executable_dir())
                 plugin_exe = os.path.join(base_dir, "plugin_manager.exe")
                 if not os.path.exists(plugin_exe):
                     QtWidgets.QMessageBox.warning(

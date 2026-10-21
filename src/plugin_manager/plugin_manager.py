@@ -24,7 +24,7 @@ from shared_types.events import LanguageChangeEvent
 from .event_dispatcher import EventDispatcher
 from plugin_sdk.plugin_base import BasePlugin
 from .plugin_loader import PluginLoader
-from .app_paths import get_all_plugin_dirs, patch_sys_path_for_frozen
+from .app_paths import get_all_plugin_dirs, get_bundle_dir, patch_sys_path_for_frozen
 
 if TYPE_CHECKING:
     from PySide6.QtWidgets import QApplication, QWidget
@@ -53,7 +53,7 @@ class _TranslatorInstaller(QObject):
             app.removeTranslator(self._translator)
             self._translator = None
         if language != "zh_CN":
-            qm_path = Path(__file__).resolve().parent.parent / f"{language}.qm"
+            qm_path = get_bundle_dir() / f"{language}.qm"
             if qm_path.exists():
                 self._translator = QTranslator()
                 self._translator.load(str(qm_path))
