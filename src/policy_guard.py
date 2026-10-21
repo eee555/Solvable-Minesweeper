@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 POLICY_FILENAME = "AI_AGENT_POLICY.md"
-EXPECTED_POLICY_MD5 = "be3c5a1895f20cfb4820f727ce2c7f30"
+EXPECTED_POLICY_MD5 = "9f5502bc3cc7fe0f50509bb6a7a97ecc"
 
 
 class PolicyIntegrityError(RuntimeError):
