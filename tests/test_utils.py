@@ -10,10 +10,138 @@ from utils import path_utils
 
 
 class TestPolicyIntegrity:
+    def test_validation_releases_file(self, tmp_path):
+        import policy_guard
+
+        policy_path = tmp_path / policy_guard.POLICY_FILENAME
+        policy_path.write_bytes(policy_guard.get_policy_path().read_bytes())
+        policy_guard.validate_policy_file(policy_path)
+        policy_path.unlink()
+
+    def test_failed_validation_releases_file(self, tmp_path):
+        import policy_guard
+
+        policy_path = tmp_path / policy_guard.POLICY_FILENAME
+        policy_path.write_bytes(b"modified policy")
+        with pytest.raises(policy_guard.PolicyIntegrityError):
+            policy_guard.validate_policy_file(policy_path)
+        policy_path.unlink()
+
+    def test_startup_retains_one_handle(self, monkeypatch, tmp_path):
+        import policy_guard
+
+        policy_path = tmp_path / policy_guard.POLICY_FILENAME
+        policy_path.write_bytes(policy_guard.get_policy_path().read_bytes())
+        monkeypatch.setattr(policy_guard, "get_policy_path", lambda: policy_path)
+        monkeypatch.setattr(policy_guard, "_policy_file", None)
+        try:
+            policy_guard.enforce_policy_integrity()
+            retained_file = policy_guard._policy_file
+            assert retained_file is not None and not retained_file.closed
+            policy_guard.enforce_policy_integrity()
+            assert policy_guard._policy_file is retained_file
+        finally:
+            policy_guard._close_policy_file()
+        assert retained_file.closed
+        policy_path.unlink()
+
+    def test_windows_cross_process_sharing(self, monkeypatch, tmp_path):
+        import json
+        import subprocess
+        import sys
+        import policy_guard
+
+        if sys.platform != "win32":
+            pytest.skip("Windows file sharing semantics")
+        policy_path = tmp_path / policy_guard.POLICY_FILENAME
+        contents = policy_guard.get_policy_path().read_bytes()
+        policy_path.write_bytes(contents)
+        monkeypatch.setattr(policy_guard, "get_policy_path", lambda: policy_path)
+        monkeypatch.setattr(policy_guard, "_policy_file", None)
+        probe = """
+import json
+import sys
+from pathlib import Path
+policy = Path(sys.argv[1])
+replacement = policy.with_suffix('.replacement')
+replacement.write_bytes(b'replacement')
+results = {'read': bool(policy.read_bytes())}
+operations = {
+    'write': lambda: policy.write_bytes(b'modified'),
+    'delete': policy.unlink,
+    'rename': lambda: policy.rename(policy.with_suffix('.renamed')),
+    'replace': lambda: replacement.replace(policy),
+}
+for name, operation in operations.items():
+    try:
+        operation()
+    except OSError as error:
+        results[name] = isinstance(error, PermissionError) or error.winerror == 32
+    else:
+        results[name] = False
+print(json.dumps(results))
+"""
+        try:
+            policy_guard.enforce_policy_integrity()
+            result = subprocess.run(
+                [sys.executable, "-c", probe, str(policy_path)],
+                capture_output=True, text=True, check=True, timeout=15,
+            )
+            assert json.loads(result.stdout) == {
+                "read": True, "write": True, "delete": True,
+                "rename": True, "replace": True,
+            }
+            assert policy_path.read_bytes() == contents
+        finally:
+            policy_guard._close_policy_file()
+        policy_path.write_bytes(b"unlocked")
+        policy_path.unlink()
+
     def test_current_policy_matches_expected_md5(self):
         import policy_guard
 
         policy_guard.validate_policy_file(policy_guard.get_policy_path())
+
+    def test_windows_existing_writer_is_rejected(self, tmp_path):
+        import sys
+        import policy_guard
+
+        if sys.platform != "win32":
+            pytest.skip("Windows file sharing semantics")
+        policy_path = tmp_path / policy_guard.POLICY_FILENAME
+        policy_path.write_bytes(policy_guard.get_policy_path().read_bytes())
+        with policy_path.open("r+b"):
+            with pytest.raises(policy_guard.PolicyIntegrityError, match="cannot be locked"):
+                policy_guard.validate_policy_file(policy_path)
+        policy_guard.validate_policy_file(policy_path)
+
+    def test_windows_process_exit_releases_lock(self, tmp_path):
+        import subprocess
+        import sys
+        from pathlib import Path
+        import policy_guard
+
+        if sys.platform != "win32":
+            pytest.skip("Windows file sharing semantics")
+        policy_path = tmp_path / policy_guard.POLICY_FILENAME
+        policy_path.write_bytes(policy_guard.get_policy_path().read_bytes())
+        probe = """
+import sys
+from pathlib import Path
+sys.path.insert(0, sys.argv[1])
+import policy_guard
+policy_guard.get_policy_path = lambda: Path(sys.argv[2])
+policy_guard.enforce_policy_integrity()
+assert policy_guard._policy_file is not None
+assert not policy_guard._policy_file.closed
+"""
+        subprocess.run(
+            [sys.executable, "-c", probe,
+             str(Path(policy_guard.__file__).resolve().parent), str(policy_path)],
+            capture_output=True, check=True, timeout=15,
+        )
+        policy_path.write_bytes(b"released after process exit")
+        policy_path.unlink()
 
     def test_missing_policy_is_rejected(self, tmp_path):
         import policy_guard
