@@ -7,7 +7,7 @@ from typing import BinaryIO
 
 
 POLICY_FILENAME = "AI_AGENT_POLICY.md"
-EXPECTED_POLICY_MD5 = "9f5502bc3cc7fe0f50509bb6a7a97ecc"
+EXPECTED_POLICY_MD5 = "520385c76160b3e49cd3235550997378"
 _policy_file: BinaryIO | None = None
 
 
