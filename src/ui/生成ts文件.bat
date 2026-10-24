@@ -1,5 +1,5 @@
 set HISTORY_PLUGIN=..\plugins\History\plugin.py ..\plugins\History\main_widget.py ..\plugins\History\history_table.py ..\plugins\History\table_views.py ..\plugins\History\models.py ..\plugins\History\filter_dialog.py ..\plugins\History\sort_dialog.py ..\plugins\History\columns_dialog.py
-set LLM_PLUGIN=..\plugins\llm_minesweeper_controller\config.py ..\plugins\llm_minesweeper_controller\widgets.py ..\plugins\llm_minesweeper_controller\plugin.py ..\plugins\llm_minesweeper_controller\api_client.py ..\plugins\llm_minesweeper_controller\function_registry.py
+set LLM_PLUGIN=..\plugins\llm_minesweeper_controller\config.py ..\plugins\llm_minesweeper_controller\widgets.py ..\plugins\llm_minesweeper_controller\plugin.py
 set XIANNI_PLUGIN=..\plugins\XianNiUpgrade\plugin.py ..\plugins\XianNiUpgrade\widgets.py ..\plugins\XianNiUpgrade\models.py
 set PLUGIN_MANAGER=..\plugin_manager\main_window.py
 set DIALOGS=..\dialogs\videoControl.py ..\dialogs\gameScores.py

@@ -1,6 +1,4 @@
-"""
-llm_minesweeper_controller - 使用requests进行反向控制扫雷并处理func calling的插件
-"""
+"""元扫雷 MCP 服务。保留原包和插件类名。"""
 from __future__ import annotations
 
 from .plugin import LlmMinesweeperControllerPlugin

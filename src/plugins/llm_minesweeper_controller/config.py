@@ -1,79 +1,55 @@
-"""
-llm_minesweeper_controller - 配置定义
-"""
 from __future__ import annotations
 
-from PySide6.QtCore import QCoreApplication
-from plugin_sdk import OtherInfoBase, BoolConfig, IntConfig, TextConfig, ChoiceConfig
+import json
+import os
+import tempfile
+from pathlib import Path
 
-_translate = QCoreApplication.translate
+from plugin_sdk import IntConfig, OtherInfoBase
+
+
+CONFIG_IDENTITIES = ("LlmMinesweeperControllerPlugin", "LLM反控扫雷", "元扫雷 MCP 服务")
+
+
+def valid_port(value: object) -> bool:
+    return type(value) is int and 1024 <= value <= 65535
 
 
 class LlmMinesweeperControllerConfig(OtherInfoBase):
-    """插件配置"""
+    port = IntConfig(default=8765, label="MCP 端口", min_value=1024, max_value=65535,
+                     validator=lambda value: None if valid_port(value) else "端口必须为 1024..65535 的整数")
 
-    # LLM API设置
-    api_key = TextConfig(
-        default="",
-        label=_translate("Form", "API密钥"),
-    )
+    def from_dict(self, data: dict, silent: bool = True) -> None:
+        port = data.get("port", 8765) if isinstance(data, dict) else 8765
+        super().from_dict(
+            {"port": port if valid_port(port) else 8765}, silent=silent)
 
-    api_base_url = TextConfig(
-        default="https://api.openai.com/v1",
-        label=_translate("Form", "API基础URL"),
-    )
 
-    model_name = TextConfig(
-        default="gpt-4o-mini",
-        label=_translate("Form", "模型名称"),
-    )
-
-    request_timeout = IntConfig(
-        default=60,
-        label=_translate("Form", "请求超时(秒)"),
-    )
-
-    # 游戏设置
-    default_difficulty = ChoiceConfig(
-        default="medium",
-        label=_translate("Form", "默认游戏难度"),
-        choices=[
-            ("easy", _translate("Form", "初级 (8x8, 10雷)")),
-            ("medium", _translate("Form", "中级 (16x16, 40雷)")),
-            ("hard", _translate("Form", "高级 (16x30, 99雷)")),
-        ],
-    )
-
-    # 功能开关
-    enable_auto_action = BoolConfig(
-        default=False,
-        label=_translate("Form", "自动执行LLM操作(否则需确认)"),
-    )
-
-    temperature = IntConfig(
-        default=30,
-        label=_translate("Form", "温度参数(0-100)"),
-    )
-
-    max_history_messages = IntConfig(
-        default=20,
-        label=_translate("Form", "上下文上限"),
-        description=_translate("Form", "超过此值时触发压缩"),
-    )
-
-    min_history_messages = IntConfig(
-        default=5,
-        label=_translate("Form", "上下文下限"),
-        description=_translate("Form", "压缩后保留的最少消息数"),
-    )
-
-    deep_thinking = ChoiceConfig(
-        default="medium",
-        label=_translate("Form", "深度思考"),
-        choices=[
-            ("off", _translate("Form", "关闭")),
-            ("low", _translate("Form", "低")),
-            ("medium", _translate("Form", "中")),
-            ("high", _translate("Form", "高")),
-        ],
-    )
+def sanitize_legacy_configs(data_dir: Path) -> None:
+    paths = [data_dir / "config.json"]
+    paths.extend(data_dir / name / "config.json" for name in CONFIG_IDENTITIES)
+    if data_dir.name in CONFIG_IDENTITIES:
+        paths.extend(data_dir.parent / name /
+                     "config.json" for name in CONFIG_IDENTITIES)
+    for path in paths:
+        if (not path.is_file() or path.is_symlink()
+                or any(parent.is_symlink() for parent in path.parents)):
+            continue
+        temporary = None
+        try:
+            try:
+                with path.open(encoding="utf-8") as source:
+                    data = json.load(source)
+            except (ValueError, UnicodeError):
+                data = {}
+            port = data.get("port", 8765) if isinstance(data, dict) else 8765
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                             prefix=".mcp-config-", delete=False) as target:
+                temporary = Path(target.name)
+                json.dump({"port": port if valid_port(port) else 8765}, target)
+            os.replace(temporary, path)
+        except OSError:
+            raise RuntimeError("旧配置清理失败，MCP 服务保持停止") from None
+        finally:
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
