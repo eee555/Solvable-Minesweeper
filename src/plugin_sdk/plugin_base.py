@@ -856,6 +856,25 @@ class BasePlugin(QObject, Generic[ConfigT]):
             return self._client.request(command, timeout)
         return None
 
+    def query(self, query: Any, timeout: float = 5.0) -> Any:
+        """
+        发送只读查询并等待强类型响应
+
+        与 request() 不同，查询不进入控制授权，但仍受主进程
+        allowed_controls（如 board_update）约束。
+
+        Usage::
+
+            from shared_types import GetBoardStateQuery, BoardStateResult
+
+            result = self.query(GetBoardStateQuery())
+            if isinstance(result, BoardStateResult) and result.success:
+                print(result.cells, result.game_status)
+        """
+        if self._client:
+            return self._client.query(query, timeout)
+        return None
+
     # ═══════════════════════════════════════════════════════════════════
     # 服务注册（插件间通讯）
     # ═══════════════════════════════════════════════════════════════════

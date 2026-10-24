@@ -13,9 +13,12 @@ from lib_zmq_plugins.serializer import Serializer
 from lib_zmq_plugins.shared.base import (
     BaseCommand,
     BaseEvent,
+    BaseQuery,
+    BaseQueryResult,
     CommandResponse,
     SyncCommand,
     get_event_tag,
+    peek_struct_tag,
 )
 
 
@@ -57,6 +60,7 @@ class ZMQClient:
 
         self._subscribers: dict[str, list[Callable[[BaseEvent], None]]] = {}
         self._pending_requests: dict[str, Future[CommandResponse]] = {}
+        self._pending_queries: dict[str, Future[BaseQueryResult]] = {}
         self._pending_lock = threading.Lock()
         self._sync_topics: dict[str, str] = {}  # request_id → topic
 
@@ -82,6 +86,14 @@ class ZMQClient:
 
     def register_command_types(self, *types: type[BaseCommand]) -> None:
         self._serializer.register_command_types(*types)
+
+    def register_query_types(
+            self, *types: type[BaseQuery],
+            result_types: tuple[type[BaseQueryResult], ...] = ()) -> None:
+        """注册查询请求类型；同时可注册响应用于解析"""
+        self._serializer.register_query_types(*types)
+        if result_types:
+            self._serializer.register_query_result_types(*result_types)
 
     # ── 连接管理 ──
 
@@ -205,6 +217,20 @@ class ZMQClient:
         self._dealer_socket.send(payload)
         return future.result(timeout=timeout)
 
+    def query(
+        self, query: BaseQuery, timeout: float = 5.0
+    ) -> BaseQueryResult:
+        """发送只读查询并等待强类型响应（不经过控制授权）"""
+        if self._dealer_socket is None:
+            raise RuntimeError("Client is not connected")
+        query.request_id = uuid.uuid4().hex
+        future: Future[BaseQueryResult] = Future()
+        with self._pending_lock:
+            self._pending_queries[query.request_id] = future
+        payload = self._serializer.encode_query(query)
+        self._dealer_socket.send(payload)
+        return future.result(timeout=timeout)
+
     # ── 后台轮询 ──
 
     def _poll_loop(self) -> None:
@@ -279,6 +305,16 @@ class ZMQClient:
         if len(msg) < 2:
             return
         payload = msg[1] if msg[0] == b"" else msg[-1]
+        tag = peek_struct_tag(payload)
+        if self._serializer.is_query_result_tag(tag):
+            try:
+                query_result = self._serializer.decode_query_result(payload)
+            except Exception:
+                self._log.warning(
+                    "Failed to decode query result", exc_info=True)
+                return
+            self._resolve_query_result(query_result)
+            return
         try:
             resp = self._serializer.decode_response(payload)
         except Exception:
@@ -311,6 +347,12 @@ class ZMQClient:
             future = self._pending_requests.pop(resp.request_id, None)
         if future:
             future.set_result(resp)
+
+    def _resolve_query_result(self, result: BaseQueryResult) -> None:
+        with self._pending_lock:
+            future = self._pending_queries.pop(result.request_id, None)
+        if future:
+            future.set_result(result)
 
     # ── 重连 ──
 

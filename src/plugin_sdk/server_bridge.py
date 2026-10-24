@@ -26,9 +26,11 @@ from concurrent.futures import Future
 from PySide6.QtCore import QObject, Signal, Qt
 
 from lib_zmq_plugins.server.zmq_server import ZMQServer
-from lib_zmq_plugins.shared.base import BaseEvent, BaseCommand, CommandResponse
+from lib_zmq_plugins.shared.base import (
+    BaseCommand, BaseEvent, BaseQuery, BaseQueryResult, CommandResponse,
+)
 
-from shared_types import EVENT_TYPES, COMMAND_TYPES
+from shared_types import COMMAND_TYPES, EVENT_TYPES, QUERY_RESULT_TYPES, QUERY_TYPES
 
 if TYPE_CHECKING:
     from lib_zmq_plugins.log import LogHandler
@@ -39,6 +41,7 @@ logger = loguru.logger.bind(name="ServerBridge")
 # 泛型：指令类型
 _C = TypeVar("_C", bound=BaseCommand)
 _E = TypeVar("_E", bound=BaseEvent)
+_Q = TypeVar("_Q", bound=BaseQuery)
 
 
 class GameServerBridge(QObject):
@@ -114,6 +117,8 @@ class GameServerBridge(QObject):
         # 注册类型
         self._server.register_event_types(*EVENT_TYPES)
         self._server.register_command_types(*COMMAND_TYPES)
+        self._server.register_query_types(*QUERY_TYPES)
+        self._server.register_query_result_types(*QUERY_RESULT_TYPES)
 
         self._initialized = True
 
@@ -141,6 +146,31 @@ class GameServerBridge(QObject):
             logger.error(f"Handler error: {e}", exc_info=True)
             if future is not None:
                 future.set_exception(e)
+
+    def register_query_handler(
+        self,
+        query_type: type[_Q],
+        handler: Callable[[_Q], BaseQueryResult],
+    ) -> None:
+        """
+        注册只读查询处理器（自动在主线程执行，不检查控制授权）
+
+        Usage::
+
+            def handle_board(query: GetBoardStateQuery) -> BoardStateResult:
+                return BoardStateResult(cells=..., rows=...)
+
+            bridge.register_query_handler(GetBoardStateQuery, handle_board)
+        """
+
+        def wrapped_handler(query: _Q) -> BaseQueryResult:
+            future: Future[BaseQueryResult] = Future()
+            self._execute_signal.emit(handler, query, future)
+            return future.result(timeout=5.0)
+
+        self._server.register_query_handler(query_type, wrapped_handler)
+        logger.info(
+            f"查询处理器已注册: {query_type.__struct_config__.tag}")
 
     def register_handler(
         self,

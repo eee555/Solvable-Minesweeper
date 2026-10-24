@@ -18,7 +18,7 @@ from lib_zmq_plugins.log import LogHandler
 from lib_zmq_plugins.shared.base import BaseEvent, get_event_tag
 from PySide6.QtCore import QObject, Qt, Signal
 
-from shared_types import EVENT_TYPES, COMMAND_TYPES
+from shared_types import COMMAND_TYPES, EVENT_TYPES, QUERY_RESULT_TYPES, QUERY_TYPES
 from shared_types.events import LanguageChangeEvent
 
 from .event_dispatcher import EventDispatcher
@@ -129,6 +129,8 @@ class PluginManager:
         # 注册类型
         self._client.register_event_types(*EVENT_TYPES)
         self._client.register_command_types(*COMMAND_TYPES)
+        self._client.register_query_types(
+            *QUERY_TYPES, result_types=tuple(QUERY_RESULT_TYPES))
 
         self._started = False
         self._shutdown_requested = False

@@ -17,6 +17,18 @@ from .commands import (
     COMMAND_TYPES,
 )
 
+from .queries import (
+    GetBoardStateQuery,
+    GetGameStatusQuery,
+    GetGameContextQuery,
+    BoardStateResult,
+    GameStatusResult,
+    GameContextResult,
+    ControlPermissions,
+    QUERY_TYPES,
+    QUERY_RESULT_TYPES,
+)
+
 from .enums import (
     BaseDiaPlayEnum,
     GameBoardState,
@@ -37,6 +49,16 @@ __all__ = [
     "NewPresetGameCommand",
     "MouseClickCommand",
     "COMMAND_TYPES",
+    # 查询
+    "GetBoardStateQuery",
+    "GetGameStatusQuery",
+    "GetGameContextQuery",
+    "BoardStateResult",
+    "GameStatusResult",
+    "GameContextResult",
+    "ControlPermissions",
+    "QUERY_TYPES",
+    "QUERY_RESULT_TYPES",
     # 枚举
     "BaseDiaPlayEnum",
     "GameBoardState",

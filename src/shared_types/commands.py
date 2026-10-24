@@ -13,7 +13,7 @@ from .enums import GameLevel, GameMode
 class NewGameCommand(BaseCommand, tag="new_random_game"):
     """
     新随机游戏指令，不安全，official和fair为false。
-    
+
     Attributes:
         level: 游戏难度，使用 GameLevel 枚举值
             - 3: 初级 (8x8, 10雷)
@@ -32,25 +32,22 @@ class NewGameCommand(BaseCommand, tag="new_random_game"):
     mode: Optional[int] = GameMode.Standard.value
 
 
-
-
 class NewPresetGameCommand(BaseCommand, tag="new_preset_game"):
     """
     新预设游戏指令，official和fair可能为true。但是gamemode必定为upk。
-    
+
     Attributes:
         board: 可选，预设局面，-1表示雷
         mode: 可选，游戏模式，使用 GameMode 枚举值
     """
-    board: List[List[int]] = None # type: ignore
+    board: List[List[int]] = None  # type: ignore
     mode: Optional[int] = GameMode.Standard.value
-
 
 
 class MouseClickCommand(BaseCommand, tag="mouse_click"):
     """
     鼠标点击指令
-    
+
     Attributes:
         row: 行索引（从 0 开始）
         col: 列索引（从 0 开始）
@@ -65,12 +62,12 @@ class MouseClickCommand(BaseCommand, tag="mouse_click"):
     button: int = 0
     modifiers: int = 0
 
-    
+
 class InitOpenCommand(BaseCommand, tag="init_open"):
     """
     初始化翻开指令。此指令是安全的，但是要求局面使用预设局面，且最终模式为upk。
     此指令仅会在局面初始化时，翻开指定的格子。游戏过程中是否使用，还需要讨论，目前不可以。
-    
+
     Attributes:
         row: 行索引（从 0 开始）
         col: 列索引（从 0 开始）
@@ -79,4 +76,5 @@ class InitOpenCommand(BaseCommand, tag="init_open"):
     col: int = 0
 
 
-COMMAND_TYPES = [NewGameCommand, NewPresetGameCommand, MouseClickCommand, InitOpenCommand]
+COMMAND_TYPES = [NewGameCommand, NewPresetGameCommand,
+                 MouseClickCommand, InitOpenCommand]

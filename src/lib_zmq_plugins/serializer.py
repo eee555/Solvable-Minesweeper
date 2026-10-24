@@ -5,10 +5,12 @@ from typing import TYPE_CHECKING, Any, Union
 import enum
 import msgspec
 
-from lib_zmq_plugins.shared.base import CommandResponse
+from lib_zmq_plugins.shared.base import (
+    BaseQueryResult, CommandResponse, get_struct_tag,
+)
 
 if TYPE_CHECKING:
-    from lib_zmq_plugins.shared.base import BaseCommand, BaseEvent
+    from lib_zmq_plugins.shared.base import BaseCommand, BaseEvent, BaseQuery
 
 
 def _enc_hook(obj: object) -> Any:
@@ -38,8 +40,16 @@ class Serializer:
     def __init__(self) -> None:
         self._event_types: list[type[BaseEvent]] = []
         self._command_types: list[type[BaseCommand]] = []
+        self._query_types: list[type[BaseQuery]] = []
+        # 基类始终可解：服务端在无处理器/异常时只返回 BaseQueryResult
+        self._query_result_types: list[type[BaseQueryResult]] = [
+            BaseQueryResult]
+        self._query_tags: set[str] = set()
+        self._query_result_tags: set[str] = {get_struct_tag(BaseQueryResult)}
         self._event_union: type = object
         self._command_union: type = object
+        self._query_union: type = object
+        self._query_result_union: type = BaseQueryResult
 
     def register_event_types(self, *types: type[BaseEvent]) -> None:
         self._event_types.extend(types)
@@ -48,6 +58,26 @@ class Serializer:
     def register_command_types(self, *types: type[BaseCommand]) -> None:
         self._command_types.extend(types)
         self._command_union = _make_union(self._command_types)
+
+    def register_query_types(self, *types: type[BaseQuery]) -> None:
+        self._query_types.extend(types)
+        self._query_tags.update(get_struct_tag(query_type)
+                                for query_type in types)
+        self._query_union = _make_union(self._query_types)
+
+    def register_query_result_types(self, *types: type[BaseQueryResult]) -> None:
+        self._query_result_types.extend(types)
+        self._query_result_tags.update(get_struct_tag(
+            result_type) for result_type in types)
+        self._query_result_union = _make_union(self._query_result_types)
+
+    def is_query_tag(self, tag: str) -> bool:
+        """该 tag 是否属于已注册的查询请求"""
+        return tag in self._query_tags
+
+    def is_query_result_tag(self, tag: str) -> bool:
+        """该 tag 是否属于已注册的查询响应"""
+        return tag in self._query_result_tags
 
     def encode_event(self, event: BaseEvent) -> bytes:
         return msgspec.msgpack.encode(event, enc_hook=_enc_hook)
@@ -75,4 +105,24 @@ class Serializer:
     def decode_response(self, data: bytes) -> CommandResponse:
         return msgspec.msgpack.decode(
             data, type=CommandResponse, dec_hook=_dec_hook
+        )
+
+    def encode_query(self, query: BaseQuery) -> bytes:
+        return msgspec.msgpack.encode(query, enc_hook=_enc_hook)
+
+    def decode_query(self, data: bytes) -> BaseQuery:
+        if not self._query_types:
+            raise ValueError("No query types registered")
+        return msgspec.msgpack.decode(
+            data, type=self._query_union, dec_hook=_dec_hook
+        )
+
+    def encode_query_result(self, result: BaseQueryResult) -> bytes:
+        return msgspec.msgpack.encode(result, enc_hook=_enc_hook)
+
+    def decode_query_result(self, data: bytes) -> BaseQueryResult:
+        if not self._query_result_types:
+            raise ValueError("No query result types registered")
+        return msgspec.msgpack.decode(
+            data, type=self._query_result_union, dec_hook=_dec_hook
         )

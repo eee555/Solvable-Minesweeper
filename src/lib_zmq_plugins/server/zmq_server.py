@@ -12,9 +12,13 @@ from lib_zmq_plugins.serializer import Serializer
 from lib_zmq_plugins.shared.base import (
     BaseCommand,
     BaseEvent,
+    BaseQuery,
+    BaseQueryResult,
     CommandResponse,
     SyncCommand,
     get_event_tag,
+    get_struct_tag,
+    peek_struct_tag,
 )
 
 
@@ -48,6 +52,8 @@ class ZMQServer:
         self._serializer.register_command_types(SyncCommand)
         self._handlers: dict[str, Callable[[
             BaseCommand], CommandResponse | None]] = {}
+        self._query_handlers: dict[str, Callable[[
+            BaseQuery], BaseQueryResult]] = {}
         self._snapshot_providers: dict[str, Callable[[], BaseEvent]] = {}
         self._log: LogHandler = log_handler or NullHandler()
 
@@ -66,6 +72,12 @@ class ZMQServer:
     def register_command_types(self, *types: type[BaseCommand]) -> None:
         self._serializer.register_command_types(*types)
 
+    def register_query_types(self, *types: type[BaseQuery]) -> None:
+        self._serializer.register_query_types(*types)
+
+    def register_query_result_types(self, *types: type[BaseQueryResult]) -> None:
+        self._serializer.register_query_result_types(*types)
+
     # ── Handler / Snapshot 注册 ──
 
     def register_handler(
@@ -77,6 +89,14 @@ class ZMQServer:
         if isinstance(tag, type):
             tag = tag.__name__
         self._handlers[str(tag)] = handler
+
+    def register_query_handler(
+        self,
+        query_type: type[BaseQuery],
+        handler: Callable[[BaseQuery], BaseQueryResult],
+    ) -> None:
+        """注册只读查询处理器（不经过控制授权）"""
+        self._query_handlers[get_struct_tag(query_type)] = handler
 
     def register_snapshot_provider(
         self, topic: type[BaseEvent], provider: Callable[[], BaseEvent]
@@ -159,6 +179,16 @@ class ZMQServer:
                         continue
                     client_id = msg[0]
                     payload = msg[1]
+                    tag = peek_struct_tag(payload)
+                    if self._serializer.is_query_tag(tag):
+                        try:
+                            query = self._serializer.decode_query(payload)
+                        except Exception:
+                            self._log.warning(
+                                "Failed to decode query", exc_info=True)
+                            continue
+                        self._dispatch_query(client_id, query)
+                        continue
                     try:
                         cmd = self._serializer.decode_command(payload)
                     except Exception:
@@ -200,6 +230,36 @@ class ZMQServer:
 
         if result is not None and cmd.request_id:
             self._send_to_client(client_id, result)
+
+    def _dispatch_query(self, client_id: bytes, query: BaseQuery) -> None:
+        """分发只读查询，不检查控制授权"""
+        tag = get_struct_tag(query)
+        self._log.info("[Server] 收到查询: tag=%s", tag)
+        handler = self._query_handlers.get(tag)
+        if handler is None:
+            result: BaseQueryResult = BaseQueryResult(
+                request_id=query.request_id, success=False,
+                error=f"No handler for query: {tag}")
+        else:
+            try:
+                result = handler(query)
+            except Exception as e:
+                self._log.error(
+                    "Query handler error for %s: %s", tag, e, exc_info=True)
+                result = BaseQueryResult(
+                    request_id=query.request_id, success=False, error=str(e))
+        if query.request_id:
+            self._send_query_result(client_id, result)
+
+    def _send_query_result(self, client_id: bytes, result: BaseQueryResult) -> None:
+        if self._router_socket is None:
+            return
+        try:
+            payload = self._serializer.encode_query_result(result)
+            self._router_socket.send_multipart(
+                [client_id, b"", payload], flags=zmq.NOBLOCK)
+        except zmq.ZMQError:
+            self._log.warning("Failed to send query result", exc_info=True)
 
     def _handle_sync(self, client_id: bytes, cmd: SyncCommand) -> None:
         topic = cmd.topic
