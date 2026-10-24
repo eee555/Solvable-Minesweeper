@@ -11,7 +11,7 @@ from .handlers import HANDLER_TYPES, ClipboardHandler
 
 class ClipboardReplayConfig(OtherInfoBase):
     """插件配置"""
-    
+
     enable_feature = BoolConfig(
         default=True,
         label="监听剪贴板（总开关）",
@@ -27,7 +27,8 @@ def add_handler_fields(
     for handler_type in handler_types:
         key = handler_type.config_key()
         if key in fields:
-            raise ValueError(f"Duplicate clipboard handler configuration key: {key}")
+            raise ValueError(
+                f"Duplicate clipboard handler configuration key: {key}")
         label = handler_type.display_name or handler_type.__name__
         field = BoolConfig(
             default=True,

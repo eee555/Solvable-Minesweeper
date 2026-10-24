@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 from tempfile import gettempdir
 from unittest.mock import Mock
+from urllib.parse import parse_qs
 
 import pytest
 from PySide6.QtCore import QByteArray, QMimeData, QObject, QThread, Signal, Slot
@@ -17,6 +18,7 @@ from plugins.clipboard_replay.handlers.base import ClipboardHandler
 from plugins.clipboard_replay.handlers import download as download_module
 from plugins.clipboard_replay.handlers.openms.handler import find_video_id
 from plugins.clipboard_replay.handlers.saolei.handler import find_video_id as find_saolei_video_id
+from plugins.clipboard_replay.handlers.classic95.handler import find_replay_code
 from plugins.clipboard_replay.plugin import ClipboardReplayPlugin
 from plugins.clipboard_replay.widgets import ClipboardReplayWidget
 from plugins.clipboard_replay.replay import (
@@ -57,6 +59,40 @@ def test_find_saolei_video_id(text, expected):
     assert find_saolei_video_id(text) == expected
 
 
+@pytest.mark.parametrize(("text", "expected"), [
+    ("95经典扫雷|79228415-263-107", "79228415-263-107"),
+    ("95经典扫雷|79228415-263-81", "79228415-263-81"),
+    (" 95经典扫雷 | 79228415 - 263 - 107\n", "79228415-263-107"),
+    ("95经典扫雷|0079228415-0263-00107", "79228415-263-107"),
+    ("95经典扫雷|" + "-".join(["9" * 20] * 3), "-".join(["9" * 20] * 3)),
+    ("95经典扫雷|263-117", None),
+    ("95经典扫雷|263-81", None),
+    ("79228415-263-107", None),
+    ("其他扫雷|79228415-263-107", None),
+    ("95精简扫雷|79228415-263-107", None),
+    ("95经典扫雷|0-263-107", None),
+    ("95经典扫雷|79228415-0-107", None),
+    ("95经典扫雷|79228415-263-0", None),
+    ("95经典扫雷|-79228415-263-107", None),
+    ("95经典扫雷|79228415--263-107", None),
+    ("95经典扫雷|79228415-263--107", None),
+    ("95经典扫雷|79228415-263-107extra", None),
+    ("95经典扫雷|79228415-263-107&uid=81", None),
+    ("95经典扫雷|79228415-263-107?id=81", None),
+    ("95经典扫雷|79228415-263-107-81", None),
+    ("95经典扫雷|-263-107", None),
+    ("95经典扫雷|79228415--107", None),
+    ("95经典扫雷|79228415-263-", None),
+    ("95经典扫雷|xxxx-263-107", None),
+    ("95经典扫雷|" + "9" * 21 + "-263-107", None),
+    ("95经典扫雷|79228415-" + "9" * 21 + "-107", None),
+    ("95经典扫雷|79228415-263-" + "9" * 21, None),
+    ("95经典扫雷|79228415-263-107" + " " * 256, None),
+])
+def test_find_classic95_replay_code(text, expected):
+    assert find_replay_code(text) == expected
+
+
 @pytest.mark.parametrize(("disposition", "expected"), [
     ('attachment; filename="Exp_FL_62.89_MY_Tian.avf"', ".avf"),
     ("attachment; filename*=UTF-8''replay%20one.EVF", ".evf"),
@@ -89,7 +125,8 @@ def test_playback_command(tmp_path):
     main_py = tmp_path / "src" / "main.py"
     main_py.parent.mkdir()
     main_py.touch()
-    assert playback_command(replay, tmp_path) == [sys.executable, str(main_py), str(replay)]
+    assert playback_command(replay, tmp_path) == [
+        sys.executable, str(main_py), str(replay)]
 
 
 class FakeClipboard(QObject):
@@ -175,7 +212,8 @@ class PluginHarness(ClipboardReplayPlugin):
 def monitor(tmp_path, monkeypatch, request, qapp):
     application = qapp
     clipboard = FakeClipboard()
-    monkeypatch.setattr(plugin_module.QApplication, "clipboard", lambda: clipboard)
+    monkeypatch.setattr(plugin_module.QApplication,
+                        "clipboard", lambda: clipboard)
     monkeypatch.setattr(download_module, "QNetworkAccessManager", FakeNetwork)
     cleanup_timers = Mock()
     monkeypatch.setattr(download_module, "Timer", cleanup_timers)
@@ -198,7 +236,8 @@ def test_clipboard_download_and_duplicate_suppression(monitor):
     clipboard.set_text("https://openms.top/api/video/download/1")
     application.processEvents()
     assert len(handler._network.requests) == 1
-    assert handler._network.requests[0].url().toString() == "https://openms.top/api/video/download/1"
+    assert handler._network.requests[0].url().toString(
+    ) == "https://openms.top/api/video/download/1"
     reply = handler._network.replies[0]
     reply.finished.emit()
     path = launch.call_args.args[0]
@@ -222,7 +261,8 @@ def test_latest_pending_video_wins(monitor):
     plugin, _, launch, _ = monitor
     handler = plugin._handlers[0]
     for video_id in ("1", "2", "3"):
-        plugin._on_text_changed(f"https://openms.top/api/video/download/{video_id}")
+        plugin._on_text_changed(
+            f"https://openms.top/api/video/download/{video_id}")
     handler._network.replies[0].finished.emit()
     launch.assert_not_called()
     assert handler._network.requests[-1].url().toString().endswith("/3")
@@ -232,7 +272,7 @@ def test_latest_pending_video_wins(monitor):
 
 def test_saolei_clipboard_download_uses_temporary_file(monitor):
     plugin, clipboard, launch, application = monitor
-    openms, saolei = plugin._handlers
+    openms, saolei = plugin._handlers[:2]
     events = []
     plugin._output.connect(events.append)
     clipboard.set_text("https://new.saolei.wang/video/download/345964")
@@ -248,14 +288,15 @@ def test_saolei_clipboard_download_uses_temporary_file(monitor):
     assert path.is_relative_to(Path(gettempdir()))
     assert path.read_bytes() == b"replay data"
     assert not (plugin.data_dir / "downloads").exists()
-    assert any(event["source"] == "扫雷网录像" and event["kind"] == "opened" for event in events)
+    assert any(event["source"] == "扫雷网录像" and event["kind"]
+               == "opened" for event in events)
     download_module.Timer.call_args.args[1]()
     assert not path.parent.exists()
 
 
 def test_saolei_switch_cancels_only_saolei(monitor):
     plugin, _, launch, _ = monitor
-    openms, saolei = plugin._handlers
+    openms, saolei = plugin._handlers[:2]
     plugin._on_text_changed("https://openms.top/api/video/download/1")
     plugin._on_text_changed("https://new.saolei.wang/video/download/345964")
     openms_reply = openms._network.replies[0]
@@ -266,6 +307,107 @@ def test_saolei_switch_cancels_only_saolei(monitor):
     assert openms.enabled
     assert not saolei.enabled
     launch.assert_not_called()
+
+
+def test_classic95_clipboard_download_and_dedup(monitor):
+    plugin, clipboard, launch, application = monitor
+    handler = plugin._handlers[2]
+    events = []
+    plugin._output.connect(events.append)
+    assert plugin.other_info.enable_handler_classic95 is True
+    clipboard.set_text("95经典扫雷|79228415-263-107")
+    application.processEvents()
+    assert handler._network.requests[0].url().toString() == (
+        "https://mg.xiean.net:6789/v1/replay/open?season=263&id=107&uid=79228415")
+    assert parse_qs(handler._network.requests[0].url().query()) == {
+        "season": ["263"], "id": ["107"], "uid": ["79228415"]}
+    assert all(not other._network.requests for other in plugin._handlers[:2])
+    reply = handler._network.replies[0]
+    reply.headers["Content-Disposition"] = b'attachment; filename="79228415-263-107.evf"'
+    reply.finished.emit()
+    path = launch.call_args.args[0]
+    assert path.name == "classic95_79228415-263-107.evf"
+    assert path.is_relative_to(Path(gettempdir()))
+    assert not path.is_relative_to(plugin.data_dir)
+    assert path.read_bytes() == b"replay data"
+    assert any(event["source"] == "95经典扫雷小程序" and event["kind"] == "opened"
+               for event in events)
+    assert any(event["kind"] == "downloading" and event["video_id"] == "79228415-263-107"
+               for event in events)
+    clipboard.set_text("95经典扫雷|0079228415-0263-00107")
+    application.processEvents()
+    assert len(handler._network.requests) == 1
+    clipboard.set_text("95经典扫雷|79228415-264-107")
+    application.processEvents()
+    assert handler._network.requests[-1].url(
+    ).query() == "season=264&id=107&uid=79228415"
+    cleanup_timers = download_module.Timer
+    assert isinstance(cleanup_timers, Mock)
+    assert cleanup_timers.call_args.args[0] == 10.0
+    cleanup_timers.call_args.args[1]()
+    assert not path.parent.exists()
+
+
+def test_classic95_different_uids_are_not_duplicates(monitor):
+    plugin, clipboard, launch, application = monitor
+    handler = plugin._handlers[2]
+    paths = []
+    for uid in ("79228415", "79228416"):
+        clipboard.set_text(f"95经典扫雷|{uid}-263-107")
+        application.processEvents()
+        assert handler._network.requests[-1].url(
+        ).query() == f"season=263&id=107&uid={uid}"
+        reply = handler._network.replies[-1]
+        reply.headers["Content-Disposition"] = b'attachment; filename="replay.evf"'
+        reply.finished.emit()
+        paths.append(launch.call_args.args[0])
+    assert len(handler._network.requests) == 2
+    assert launch.call_count == 2
+    assert [path.name for path in paths] == [
+        "classic95_79228415-263-107.evf", "classic95_79228416-263-107.evf"]
+
+
+def test_classic95_old_code_does_not_download(monitor):
+    plugin, clipboard, launch, application = monitor
+    clipboard.set_text("95经典扫雷|263-117")
+    application.processEvents()
+    assert all(not handler._network.requests for handler in plugin._handlers)
+    launch.assert_not_called()
+
+
+def test_classic95_switch_and_global_switch_preserve_choice(monitor):
+    plugin, _, launch, application = monitor
+    openms, _, handler = plugin._handlers[:3]
+    plugin._on_text_changed("https://openms.top/api/video/download/1")
+    plugin._on_text_changed("95经典扫雷|79228415-263-107")
+    reply = handler._network.replies[0]
+    plugin.other_info.enable_handler_classic95 = False
+    assert reply.aborted
+    assert not openms._network.replies[0].aborted
+    assert openms.enabled
+    assert not handler.enabled
+    plugin.other_info.enable_feature = False
+    plugin.other_info.enable_feature = True
+    application.processEvents()
+    assert plugin.other_info.enable_handler_classic95 is False
+    assert not handler.enabled
+    launch.assert_not_called()
+
+
+@pytest.mark.parametrize("monitor", [
+    {"enable_feature": True, "enable_handler_classic95": True},
+    {"enable_feature": True, "enable_handler_classic95": False},
+    {"enable_feature": False, "enable_handler_classic95": True},
+    {"enable_feature": False, "enable_handler_classic95": False},
+], indirect=True)
+def test_classic95_saved_switches_control_download(monitor):
+    plugin, clipboard, _, application = monitor
+    handler = plugin._handlers[2]
+    expected = plugin.other_info.enable_feature and plugin.other_info.enable_handler_classic95
+    assert handler.enabled == expected
+    clipboard.set_text("95经典扫雷|79228415-263-107")
+    application.processEvents()
+    assert len(handler._network.requests) == int(expected)
 
 
 @pytest.mark.parametrize("failure", ["html", "empty", "size", "timeout", "network", "status"])
@@ -380,7 +522,8 @@ def test_handler_failure_does_not_block_other_handlers(monitor, monkeypatch, sta
     plugin, _, _, _ = monitor
     broken = RecordingHandler(plugin.data_dir, Mock(), parent=plugin)
     following = RecordingHandler(plugin.data_dir, Mock(), parent=plugin)
-    monkeypatch.setattr(broken, stage, Mock(side_effect=ValueError("broken handler")))
+    monkeypatch.setattr(broken, stage, Mock(
+        side_effect=ValueError("broken handler")))
     plugin._handlers.insert(0, broken)
     plugin._handlers.append(following)
     plugin._on_text_changed("record:first")
@@ -437,7 +580,8 @@ def test_new_handler_switch_is_persisted_without_manual_field_definition():
     config.enable_feature = False
     config.enable_handler_recording = False
     saved = config.to_dict()
-    assert saved == {"enable_feature": False, "enable_handler_recording": False}
+    assert saved == {"enable_feature": False,
+                     "enable_handler_recording": False}
     restored = ExtraConfig()
     restored.from_dict(saved)
     assert restored.to_dict() == saved
@@ -628,7 +772,8 @@ def test_log_is_bounded_and_can_be_cleared(qtbot):
     widget = ClipboardReplayWidget()
     qtbot.addWidget(widget)
     for index in range(1100):
-        widget.handle_output({"message": f"entry {index}", "source": "Recording"})
+        widget.handle_output(
+            {"message": f"entry {index}", "source": "Recording"})
     assert widget.log_output.document().blockCount() <= 1000
     assert widget._clear_button.isEnabled()
     widget._clear_button.click()

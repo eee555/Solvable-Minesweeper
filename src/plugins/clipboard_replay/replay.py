@@ -13,7 +13,8 @@ SUPPORTED_SUFFIXES = {".avf", ".evf", ".evfs", ".mvf", ".rmv"}
 def replay_suffix(content_disposition: str, content_type: str) -> str:
     media_type = content_type.partition(";")[0].strip().lower()
     if media_type.startswith("text/") or media_type in {"application/json", "application/problem+json"}:
-        raise ValueError("Server returned a page or API error instead of a replay")
+        raise ValueError(
+            "Server returned a page or API error instead of a replay")
     message = Message()
     message["Content-Disposition"] = content_disposition
     filename = message.get_filename() or ""

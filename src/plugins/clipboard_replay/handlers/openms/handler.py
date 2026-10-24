@@ -14,7 +14,8 @@ def find_video_id(text: str) -> str | None:
             continue
         if parsed.netloc.lower() != "openms.top":
             continue
-        match = re.fullmatch(r"/api/video/download/([0-9]{1,20})/?", parsed.path)
+        match = re.fullmatch(
+            r"/api/video/download/([0-9]{1,20})/?", parsed.path)
         if match and int(match[1]) > 0:
             return str(int(match[1]))
     return None

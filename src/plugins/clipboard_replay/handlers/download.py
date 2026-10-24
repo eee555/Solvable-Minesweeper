@@ -19,6 +19,9 @@ if TYPE_CHECKING:
 class ReplayDownloadHandler(ClipboardHandler[str]):
     download_url_template = ""
 
+    def build_download_url(self, video_id: str) -> str:
+        return self.download_url_template.format(video_id=video_id)
+
     def __init__(self, data_dir: Path, logger: Logger, parent: QObject | None = None):
         super().__init__(data_dir, logger, parent)
         self._pending_id: str | None = None
@@ -37,7 +40,8 @@ class ReplayDownloadHandler(ClipboardHandler[str]):
             self.report(f"识别到录像 {match}", kind="matched", video_id=match)
             self._start_download()
         else:
-            self.report(f"录像 {match} 已加入等待，保留最新请求", kind="queued", video_id=match)
+            self.report(f"录像 {match} 已加入等待，保留最新请求",
+                        kind="queued", video_id=match)
 
     def _start_download(self) -> None:
         if not self.enabled or self._pending_id is None:
@@ -47,7 +51,7 @@ class ReplayDownloadHandler(ClipboardHandler[str]):
         self._buffer.clear()
         self._download_error = ""
         request = QNetworkRequest(QUrl(
-            self.download_url_template.format(video_id=self._active_id)))
+            self.build_download_url(self._active_id)))
         request.setHeader(QNetworkRequest.KnownHeaders.UserAgentHeader,
                           "MetaSweeper-ClipboardReplay/1.0")
         request.setAttribute(QNetworkRequest.Attribute.RedirectPolicyAttribute,
@@ -58,7 +62,8 @@ class ReplayDownloadHandler(ClipboardHandler[str]):
         self._reply.downloadProgress.connect(self._on_download_progress)
         self._reply.finished.connect(self._finish_download)
         self._timeout.start(30000)
-        self.logger.info(f"Downloading {self.display_name} replay {self._active_id}")
+        self.logger.info(
+            f"Downloading {self.display_name} replay {self._active_id}")
         self.report(f"正在下载录像 {self._active_id}", kind="downloading",
                     video_id=self._active_id)
 
@@ -103,21 +108,26 @@ class ReplayDownloadHandler(ClipboardHandler[str]):
                 raise ValueError(self._download_error)
             if reply.error() != QNetworkReply.NetworkError.NoError:
                 raise OSError(reply.errorString())
-            status = reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute)
+            status = reply.attribute(
+                QNetworkRequest.Attribute.HttpStatusCodeAttribute)
             if status != 200:
                 raise ValueError(f"Unexpected HTTP status: {status}")
             suffix = replay_suffix(
-                bytes(reply.rawHeader("Content-Disposition")).decode("utf-8", errors="replace"),
-                bytes(reply.rawHeader("Content-Type")).decode("ascii", errors="replace"),
+                bytes(reply.rawHeader("Content-Disposition")
+                      ).decode("utf-8", errors="replace"),
+                bytes(reply.rawHeader("Content-Type")
+                      ).decode("ascii", errors="replace"),
             )
             if not self._buffer:
                 raise ValueError("Downloaded replay is empty")
             temporary = TemporaryDirectory(
                 prefix="metasweeper_clipboard_", ignore_cleanup_errors=True)
-            path = Path(temporary.name) / f"{self.handler_id}_{self._active_id}{suffix}"
+            path = Path(temporary.name) / \
+                f"{self.handler_id}_{self._active_id}{suffix}"
             try:
                 path.write_bytes(self._buffer)
-                self.report("录像下载完成，使用系统临时文件", kind="downloaded", path=str(path))
+                self.report("录像下载完成，使用系统临时文件",
+                            kind="downloaded", path=str(path))
                 play_replay(path, get_executable_dir())
                 cleanup = Timer(10.0, temporary.cleanup)
                 cleanup.daemon = True
@@ -126,10 +136,12 @@ class ReplayDownloadHandler(ClipboardHandler[str]):
                 temporary.cleanup()
                 raise
             self.logger.info(f"Opened replay: {path}")
-            self.report("已提交录像播放，临时文件将在 10 秒后清理", kind="opened", path=str(path))
+            self.report("已提交录像播放，临时文件将在 10 秒后清理",
+                        kind="opened", path=str(path))
         except Exception as error:
             self.reset_match()
-            self.logger.error(f"Cannot open {self.display_name} replay {self._active_id}: {error}")
+            self.logger.error(
+                f"Cannot open {self.display_name} replay {self._active_id}: {error}")
             self.report(f"录像处理失败：{error}", kind="error")
         finally:
             self._buffer.clear()

@@ -91,13 +91,15 @@ class ClipboardReplayPlugin(BasePlugin[ClipboardReplayConfig]):
                 handler.set_enabled(self._handler_enabled(handler))
                 self._handlers.append(handler)
             except Exception as error:
-                self.logger.error(f"Cannot initialize {handler_type.__name__}: {error}")
-                self._report(f"无法初始化 {handler_type.__name__}：{error}", kind="error")
+                self.logger.error(
+                    f"Cannot initialize {handler_type.__name__}: {error}")
+                self._report(
+                    f"无法初始化 {handler_type.__name__}：{error}", kind="error")
         self.config_changed.connect(self._on_settings_changed)
         self.run_on_gui(self._start_watcher)
         self.logger.info("Clipboard replay monitoring initialized")
         self._report("剪贴板监听已启动" if self._enabled() else "剪贴板监听已暂停",
-                 kind="state", enabled=self._enabled())
+                     kind="state", enabled=self._enabled())
 
     def _start_watcher(self) -> None:
         if self._stopped.is_set():
@@ -129,7 +131,8 @@ class ClipboardReplayPlugin(BasePlugin[ClipboardReplayConfig]):
             try:
                 handler.process(text)
             except Exception as error:
-                self.logger.error(f"Clipboard handler {type(handler).__name__} failed: {error}")
+                self.logger.error(
+                    f"Clipboard handler {type(handler).__name__} failed: {error}")
                 handler.report(f"处理失败：{error}", kind="error")
 
     @Slot(str, object)
@@ -147,8 +150,10 @@ class ClipboardReplayPlugin(BasePlugin[ClipboardReplayConfig]):
                     handler.set_enabled(enabled)
                     refresh = refresh or enabled
             except Exception as error:
-                self.logger.error(f"Cannot update {type(handler).__name__}: {error}")
-                self._report(f"无法更新 {type(handler).__name__}：{error}", kind="error")
+                self.logger.error(
+                    f"Cannot update {type(handler).__name__}: {error}")
+                self._report(
+                    f"无法更新 {type(handler).__name__}：{error}", kind="error")
         if value and refresh and self._watcher is not None:
             self.run_on_gui(self._watcher.refresh)
 
@@ -160,4 +165,5 @@ class ClipboardReplayPlugin(BasePlugin[ClipboardReplayConfig]):
             try:
                 handler.shutdown()
             except Exception as error:
-                self.logger.error(f"Cannot stop {type(handler).__name__}: {error}")
+                self.logger.error(
+                    f"Cannot stop {type(handler).__name__}: {error}")

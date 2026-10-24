@@ -58,17 +58,21 @@ class ClipboardReplayWidget(QWidget):
         if payload.get("kind") == "state" and source == "系统":
             enabled = payload.get("enabled")
             if isinstance(enabled, bool):
-                self.status_label.setText(self.tr("监听中") if enabled else self.tr("已暂停"))
+                self.status_label.setText(
+                    self.tr("监听中") if enabled else self.tr("已暂停"))
         message = payload.get("message")
         if not isinstance(message, str) or not message:
             return
         timestamp = payload.get("time")
         if not isinstance(timestamp, str) or not timestamp:
             timestamp = QTime.currentTime().toString("HH:mm:ss")
-        is_error = payload.get("level") == "error" or payload.get("kind") == "error"
+        is_error = payload.get(
+            "level") == "error" or payload.get("kind") == "error"
         level = self.tr("错误") if is_error else self.tr("信息")
         scrollbar = self.log_output.verticalScrollBar()
         scroll_position = scrollbar.value()
         follow_tail = scroll_position >= scrollbar.maximum()
-        self.log_output.appendPlainText(f"[{timestamp}] [{level}] [{source}] {message}")
-        scrollbar.setValue(scrollbar.maximum() if follow_tail else scroll_position)
+        self.log_output.appendPlainText(
+            f"[{timestamp}] [{level}] [{source}] {message}")
+        scrollbar.setValue(scrollbar.maximum()
+                           if follow_tail else scroll_position)
