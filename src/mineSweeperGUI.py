@@ -263,7 +263,11 @@ class MineSweeperGUI(MainWindowGUIImportExport):
                     self.unlimit_cursor()
                 # if game_state in ("study", "joking", "jowin", "jofail", "show"):
             case "joking" | "show":
+                # joking/show 是「看过概率/启用辅助」形态的对局，等价于 playing。
+                # 离开该形态进入结束或重开状态时同样要落库并广播 GameFinishedEvent，
+                # 否则勾选任何控制权限（对局变 joking）后插件收不到游戏结束事件。
                 if game_state not in ("playing", "show", "joking"):
+                    self.onGameFinished(game_state)
                     self.timer_10ms.stop()
                     self.unlimit_cursor()
             case "display" | "showdisplay":

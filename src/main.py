@@ -254,7 +254,7 @@ if __name__ == "__main__":
             """处理随机新游戏命令"""
             from lib_zmq_plugins.shared.base import CommandResponse
 
-            if 'new_game' not in ui._allowed_controls:
+            if 'new_random_game' not in ui._allowed_controls:
                 return CommandResponse(request_id=cmd.request_id, success=False)
 
             # 根据 level 确定参数

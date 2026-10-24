@@ -7,7 +7,7 @@ from shared_types.commands import COMMAND_TYPES
 
 _COMMAND_LABELS = {
     "mouse_click": QCoreApplication.translate("Form", "鼠标点击（MouseClickCommand）"),
-    "new_game": QCoreApplication.translate("Form", "重开新局（NewGameCommand）"),
+    "new_random_game": QCoreApplication.translate("Form", "重开新局（NewGameCommand）"),
     "board_update": QCoreApplication.translate("Form", "棋盘更新（BoardUpdateEvent）"),
 }
 

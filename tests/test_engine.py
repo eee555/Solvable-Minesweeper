@@ -42,6 +42,56 @@ class TestGameEngine:
         assert e.cell_is_in_board(0, 8) is False
         assert e.cell_is_in_board(8, 0) is False
 
+
+class TestAssistedGameFinishEvent:
+    """启用任何控制权限后对局进入 joking 形态，结束时仍必须广播 GameFinishedEvent"""
+
+    @staticmethod
+    def _stub(state: str, finished: list):
+        class Stub:
+            _game_state = state
+
+            def onGameFinished(self, new_state: str) -> None:
+                finished.append(new_state)
+
+            def unlimit_cursor(self) -> None:
+                pass
+
+            def _send_board_update_event(self) -> None:
+                pass
+
+        Stub.timer_10ms = type("Timer", (), {"stop": lambda self: None})()
+        return Stub()
+
+    @pytest.mark.parametrize("target", ["jowin", "jofail", "ready", "study"])
+    def test_joking_to_terminal_calls_on_game_finished(self, target):
+        from mineSweeperGUI import MineSweeperGUI
+
+        finished: list[str] = []
+        stub = self._stub("joking", finished)
+        MineSweeperGUI.game_state.fset(stub, target)
+        assert finished == [target]
+        assert stub._game_state == target
+
+    @pytest.mark.parametrize("target", ["show", "joking", "playing"])
+    def test_joking_internal_transitions_do_not_finish(self, target):
+        from mineSweeperGUI import MineSweeperGUI
+
+        finished: list[str] = []
+        stub = self._stub("joking", finished)
+        MineSweeperGUI.game_state.fset(stub, target)
+        assert finished == []
+
+    def test_playing_to_terminal_still_calls_on_game_finished(self):
+        from mineSweeperGUI import MineSweeperGUI
+
+        finished: list[str] = []
+        stub = self._stub("playing", finished)
+        MineSweeperGUI.game_state.fset(stub, "win")
+        assert finished == ["win"]
+
+
+class TestEngineMisc:
     def test_mineNumWheel(self):
         e = GameEngine()
         e.game_state = READY
